@@ -1,5 +1,6 @@
 import React from "react";
 
+console.log(process.env.DB_HOST);
 const App = () => {
   return (
     <div>

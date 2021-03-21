@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const Dotenv = require("dotenv-webpack");
 
 const MODE = process.env.NODE_ENV;
 const ENTRY = path.join(__dirname, "..", "src", "index.js");
@@ -24,6 +25,9 @@ const config = {
     ],
   },
   plugins: [
+    new Dotenv({
+      path: path.join(__dirname, "..", `.env.${MODE}`),
+    }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
