@@ -14,4 +14,5 @@ psd
 thumb
 sketch
 
-dist
+build
+.env.*

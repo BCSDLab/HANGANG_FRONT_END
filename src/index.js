@@ -1,12 +1,14 @@
+import App from "App";
+import GlobalStyle from "GlobalStyle";
 import React from "react";
+import ReactDom from "react-dom";
+import { Provider } from "react-redux";
+import store from "./store";
 
-const App = () => {
-  return (
-    <>
-      <h1>한강 프로젝트</h1>
-      <span>자 드가자</span>
-    </>
-  );
-};
-
-export default App;
+ReactDom.render(
+  <Provider store={store}>
+    <GlobalStyle />
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
