@@ -6,13 +6,13 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const MODE = process.env.NODE_ENV;
 const ENTRY = path.join(__dirname, "..", "src", "index.js");
-const OUTPUT = path.join(__dirname, "..", "dist");
+const OUTPUT = path.join(__dirname, "..", "build");
 
 const config = {
   entry: ENTRY,
   output: {
     path: OUTPUT,
-    filename: "bundle.[chunkhash].js",
+    filename: "bundle.js",
   },
   mode: MODE,
   module: {
@@ -29,11 +29,11 @@ const config = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: "./dist/index.html",
+      template: "./public/index.html",
     }),
   ],
   devServer: {
-    contentBase: path.resolve(__dirname, "./dist"),
+    contentBase: path.resolve(__dirname, "./build"),
     historyApiFallback: true, //  새로 고침 시
   },
 };
