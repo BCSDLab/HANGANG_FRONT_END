@@ -23,11 +23,8 @@ export const MODIFY_INFO = "MODIFY_INFO";
 export const MODIFY_INFO_SUCCESS = "MODIFY_INFO_SUCCESS";
 export const MODIFY_INFO_ERROR = "MODIFY_INFO_ERROR";
 
-export const TEST = "TEST";
-
 // Action Creators
 export const login = (payload) => ({ type: LOGIN, payload });
-export const test = (payload) => ({ type: TEST, payload });
 
 const INITIAL_STATE = {
   token: null,
@@ -39,7 +36,6 @@ const INITIAL_STATE = {
   isAvailable: false,
   checkedAutoLogin: false,
   error: null,
-  testValue: null,
 };
 
 export default function authReducer(state = INITIAL_STATE, action) {
@@ -49,12 +45,6 @@ export default function authReducer(state = INITIAL_STATE, action) {
         ...state,
         data: null,
         authInProgree: true,
-      };
-    case TEST:
-      console.log(action);
-      return {
-        ...state,
-        testValue: action.payload,
       };
     default:
       return state;
