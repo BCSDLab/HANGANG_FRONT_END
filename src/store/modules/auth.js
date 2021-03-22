@@ -7,6 +7,8 @@ export const LOGOUT = "LOGOUT";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGOUT_ERROR = "LOGOUT_ERROR";
 
+export const EMAIL_AUTH = "EMAIL_AUTH";
+
 export const SIGNUP = "SIGNUP";
 export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const SIGNUP_ERROR = "SIGNUP_ERROR";
@@ -25,6 +27,8 @@ export const MODIFY_INFO_ERROR = "MODIFY_INFO_ERROR";
 
 // Action Creators
 export const login = (payload) => ({ type: LOGIN, payload });
+export const emailAuth = (payload) => ({ type: EMAIL_AUTH, payload });
+export const signUp = (payload) => ({ type: SIGNUP, payload });
 
 const INITIAL_STATE = {
   token: null,
@@ -43,8 +47,17 @@ export default function authReducer(state = INITIAL_STATE, action) {
     case LOGIN:
       return {
         ...state,
-        data: null,
-        authInProgree: true,
+        token: action.payload,
+      };
+    case EMAIL_AUTH:
+      return {
+        ...state,
+        userInfo: action.payload,
+      };
+    case SIGNUP:
+      return {
+        ...state,
+        userInfo: action.payload,
       };
     default:
       return state;
