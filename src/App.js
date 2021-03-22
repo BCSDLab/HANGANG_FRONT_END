@@ -1,11 +1,25 @@
 import React from "react";
+import styled from "styled-components";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import LoginPage from "pages/AuthPages/LoginPage";
+import SignUpPage from "pages/AuthPages/SignUpPage";
+import EmailAuthPage from "pages/AuthPages/EmailAuthPage";
 
-console.log(process.env.DB_HOST);
+const Main = styled.main`
+  height: 100%;
+`;
+
 const App = () => {
   return (
-    <div>
-      <h1>테스트 3</h1>
-    </div>
+    <Main role="main">
+      <Router>
+        <Switch>
+          <Route path="/login" component={LoginPage} />
+          <Route path="/emailauth" component={EmailAuthPage} />
+          <Route path="/signup" component={SignUpPage} />
+        </Switch>
+      </Router>
+    </Main>
   );
 };
 
