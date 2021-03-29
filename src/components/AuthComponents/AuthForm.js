@@ -1,56 +1,135 @@
 import React from "react";
+import {
+  AlertColor,
+  BorderColor,
+  ButtonColor,
+  NonClickButtonColor,
+} from "static/styles/authPageStyle";
 import styled from "styled-components";
+import {
+  AlertImg as LoginAlertImg,
+  Input as LoginInput,
+  LoginButton,
+  KoreatechSpan as KSpan,
+} from "./LoginForm";
 
-const AuthFormWrapper = styled.div`
+const Form = styled.div`
+  margin-top: 50px;
   width: 100%;
-  margin-top: 40px;
 `;
 
-const AuthSection = styled.div`
+export const Section = styled.section`
+  position: relative;
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
   justify-content: space-between;
   align-items: center;
+  border-bottom: ${BorderColor} 1px solid;
 `;
 
-const Label = styled.div`
+export const AuthSection = styled(Section)`
+  border: none;
+`;
+
+export const LabelSection = styled.section`
   width: 100%;
-  font-size: 15px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 `;
 
-const Input = styled.input`
-  box-sizing: border-box;
-  width: 65%;
-  height: 30px;
-  padding-left: 20px;
-  border: #d2dae2 1px solid;
-  outline: none;
-  font-size: 15px;
+export const Label = styled.span`
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 8px;
+`;
+
+export const AlertMsg = styled.span`
+  color: ${AlertColor};
+  font-size: 11px;
+`;
+
+const EmailWrapper = styled.div`
+  position: relative;
+`;
+
+export const EmailAuthInput = styled(LoginInput)`
+  width: 258px;
+  padding-right: 33px;
+  border: none;
+  font-size: 14px;
 
   &::placeholder {
-    letter-spacing: -0.8px;
-    color: #bec9d5;
-    font-size: 15px;
+    font-size: 14px;
+  }
+
+  &:disabled {
+    background-color: #fff;
   }
 `;
 
-const KoreatechSpan = styled.span`
-  width: 32%;
-  font-size: 15px;
+const AlertImg = styled(LoginAlertImg)`
+  position: absolute;
+  top: 6px;
+  right: 0;
+  margin-right: 4px;
 `;
 
-const SmallButton = styled.button`
-  width: 32%;
-  font-size: 15px;
+const NumberAuthInput = styled(EmailAuthInput)`
+  border-bottom: ${BorderColor} 1px solid;
+
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type="number"] {
+    -moz-appearance: textfield;
+  }
 `;
 
-const BigButton = styled.button`
-  width: 100%;
+export const KoreatechSpan = styled(KSpan)`
+  font-size: 14px;
+  line-height: 32px;
+`;
+
+const AuthSendButton = styled(LoginButton)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 108px;
+  height: 100%;
+  line-height: 0px;
+  padding: 4px 13px;
+  margin: 0;
+  border: none;
+  background-color: ${({ emailEmpty }) =>
+    emailEmpty ? `${NonClickButtonColor}` : `${ButtonColor}`};
+  font-size: 14px;
+  cursor: ${({ emailEmpty }) => (emailEmpty ? "default" : "pointer")};
+
+  &:disabled {
+    background-color: transparent;
+  }
+`;
+
+const ResendButton = styled(AuthSendButton)`
+  color: ${ButtonColor};
+  border: 1px solid ${ButtonColor};
+  background-color: transparent;
+`;
+
+export const AuthCompleteButton = styled(LoginButton)`
+  margin-top: 24px;
   height: 35px;
-  margin-bottom: 10px;
-  font-size: 15px;
+  background-color: ${({ emptySecret }) =>
+    emptySecret ? `${ButtonColor}` : `${NonClickButtonColor}`};
+`;
+
+const PortalSendButton = styled(AuthCompleteButton)`
+  margin-top: 48px;
+  background-color: ${AlertColor};
 `;
 
 const PortalLink = styled.a`
@@ -58,25 +137,114 @@ const PortalLink = styled.a`
   cursor: pointer;
 `;
 
-const AuthForm = ({ authInfo, onChange, checkPortalEmail, checkEmailConfig, accountDisabled }) => {
+const AuthForm = ({
+  authInfo,
+  errorCode,
+  setErrorCode,
+  sentEmail,
+  resend,
+  setResend,
+  setAccountDisabled,
+  onChange,
+  checkPortalEmail,
+  checkEmailConfig,
+  accountDisabled,
+}) => {
   const { account, secret } = authInfo;
+
   return (
-    <AuthFormWrapper>
-      <Label>학교 이메일 인증</Label>
-      <AuthSection>
-        <Input name="account" value={account} onChange={onChange} disabled={accountDisabled} />
+    <Form>
+      <LabelSection>
+        <Label>학교 이메일 인증</Label>
+        {errorCode === 14 && <AlertMsg>이미 가입된 이메일입니다!</AlertMsg>}
+        {accountDisabled && <AlertMsg>인증 요청한 이메일은 변경할 수 없습니다.</AlertMsg>}
+      </LabelSection>
+      <Section>
+        <EmailWrapper>
+          <EmailAuthInput
+            type="text"
+            value={account}
+            onChange={onChange}
+            name="account"
+            placeholder="학교 이메일을 입력해주세요."
+            disabled={accountDisabled}
+            autocomplete="off"
+          />
+          {errorCode === 14 && <AlertImg />}
+        </EmailWrapper>
         <KoreatechSpan>@koreatech.ac.kr</KoreatechSpan>
-      </AuthSection>
-      <Label>인증번호</Label>
+      </Section>
+      <LabelSection>
+        <Label>인증번호</Label>
+        {errorCode === 11 && <AlertMsg>이메일 인증번호가 만료되었습니다.</AlertMsg>}
+        {errorCode === 13 && <AlertMsg>인증번호가 일치하지 않습니다.</AlertMsg>}
+        {errorCode === 16 && <AlertMsg>인증번호는 6글자 입니다.</AlertMsg>}
+        {errorCode === 22 && <AlertMsg>인증 횟수가 초과되었습니다.</AlertMsg>}
+        {resend && <AlertMsg>인증번호를 재전송하였습니다.</AlertMsg>}
+      </LabelSection>
       <AuthSection>
-        <Input name="secret" value={secret} onChange={onChange} />
-        <SmallButton onClick={() => checkPortalEmail(account)}>인증번호 전송</SmallButton>
+        <EmailWrapper>
+          <NumberAuthInput
+            type="number"
+            value={secret}
+            onChange={(e) => {
+              if (resend) {
+                setResend(false);
+              }
+              onChange(e);
+            }}
+            name="secret"
+            placeholder="학교 이메일로 인증번호가 전송됩니다."
+            autocomplete="off"
+          />
+          {(errorCode === 11 ||
+            errorCode === 13 ||
+            errorCode === 16 ||
+            errorCode === 22) && <AlertImg />}
+        </EmailWrapper>
+
+        {!sentEmail && (
+          <AuthSendButton
+            as="input"
+            type="button"
+            value="인증번호 전송"
+            emailEmpty={authInfo.account.length === 0}
+            onClick={() => {
+              if (authInfo.account.length !== 0) {
+                checkPortalEmail(account);
+              }
+              setErrorCode();
+            }}
+          />
+        )}
+        {sentEmail && (
+          <ResendButton
+            as="input"
+            type="button"
+            value="재전송"
+            onClick={() => {
+              if (authInfo.account.length !== 0) {
+                checkPortalEmail(account, "resend");
+              }
+              setErrorCode();
+            }}
+          />
+        )}
       </AuthSection>
       <PortalLink target="_blank" href="https://portal.koreatech.ac.kr/">
-        <BigButton>아우누리 바로가기</BigButton>
+        <PortalSendButton>아우누리 바로가기</PortalSendButton>
       </PortalLink>
-      <BigButton onClick={() => checkEmailConfig(secret)}>인증 완료</BigButton>
-    </AuthFormWrapper>
+      <AuthCompleteButton
+        type="button"
+        emptySecret={secret.length !== 0}
+        onClick={() => {
+          checkEmailConfig(secret);
+          setAccountDisabled(false);
+        }}
+      >
+        인증 완료
+      </AuthCompleteButton>
+    </Form>
   );
 };
 
