@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
+import CopyRight from "./CopyRight";
+import Logo from "./Logo";
 
 const ContainerWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
 `;
 
 const ChildrenWrapper = styled.div`
@@ -14,13 +16,17 @@ const ChildrenWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 400px;
-  padding: 30px;
+  padding: 16px;
 `;
 
 const Container = ({ children }) => {
   return (
     <ContainerWrapper>
-      <ChildrenWrapper>{children}</ChildrenWrapper>
+      <ChildrenWrapper>
+        <Logo />
+        {children}
+        <CopyRight />
+      </ChildrenWrapper>
     </ContainerWrapper>
   );
 };

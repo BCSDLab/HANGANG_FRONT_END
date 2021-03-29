@@ -1,47 +1,41 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { BorderColor, FontColor } from "static/styles/authPageStyle";
 
 const HelpFieldWrapper = styled.div`
   width: 100%;
-  height: 43px;
-  border-top: 1px #d2dae2 solid;
-  padding-top: 18px;
-  letter-spacing: -0.6px;
+  border-top: 1px solid ${BorderColor};
+  padding-top: 16px;
   font-size: 12px;
-  color: #858585;
   text-align: center;
 `;
 
-const FindUserIdLink = styled.a`
-  border-right: 1px #d2dae2 solid;
-  padding-right: 19px;
-  padding-left: 14px;
-  color: #858585;
-  text-decoration: none;
-  cursor: pointer;
-`;
-
 const SignUpLink = styled(Link)`
-  padding-right: 19px;
-  padding-left: 14px;
-  color: #858585;
+  height: 12px;
+  padding-left: 35px;
+  color: ${FontColor};
   text-decoration: none;
   cursor: pointer;
 `;
 
 const FindPasswordLink = styled(SignUpLink)`
-  border-right: 1px #d2dae2 solid;
+  border-right: 1px solid ${BorderColor};
+  padding-right: 35px;
+`;
+
+const FindUserIdLink = styled(FindPasswordLink)`
+  padding-left: 0px;
 `;
 
 const HelpField = () => {
   return (
     <HelpFieldWrapper>
-      <FindUserIdLink target="_blank" href="https://portal.koreatech.ac.kr/kut/page/findUser.jsp">
+      <FindUserIdLink as="a" target="_blank" href="https://portal.koreatech.ac.kr/kut/page/findUser.jsp">
         아이디 찾기
       </FindUserIdLink>
-      <FindPasswordLink to="/findpw">비밀번호 찾기</FindPasswordLink>
-      <SignUpLink to="/emailauth">회원가입</SignUpLink>
+      <FindPasswordLink to="/findpwauth">비밀번호 찾기</FindPasswordLink>
+      <SignUpLink to="/signupauth">회원가입</SignUpLink>
     </HelpFieldWrapper>
   );
 };
