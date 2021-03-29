@@ -1,24 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
+
 import AuthAPI from "api/auth";
 import Container from "components/AuthComponents/Container";
-import CopyRight from "components/AuthComponents/CopyRight";
 import HelpField from "components/AuthComponents/HelpField";
 import LoginForm from "components/AuthComponents/LoginForm";
-import Logo from "components/AuthComponents/Logo";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { login } from "store/modules/auth";
+import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
+import { succeedTokenCheck } from "store/modules/auth";
 
 const LoginContainer = () => {
   const { addToast } = useToasts();
+  const { account } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
   const [loginInfo, setLoginInfo] = useState({
     portal_account: "",
     password: "",
   });
-  const [autoLogin, setAutoLogin] = useState(false);
+  const [error, setError] = useState(false);
+  const [autoLogin, setAutoLogin] = useState(true);
+
+  useEffect(() => {
+    if (getValueOnLocalStorage("didHangangAutoLogin") !== null) {
+      setAutoLogin(getValueOnLocalStorage("didHangangAutoLogin"));
+    }
+
+    if (account !== "") {
+      setLoginInfo({ ...loginInfo, portal_account: `${account}` });
+    }
+  }, []);
+
+  useEffect(() => {
+    setValueOnLocalStorage("didHangangAutoLogin", autoLogin);
+  }, [autoLogin]);
 
   const onChange = (e) => {
     setLoginInfo({ ...loginInfo, [e.target.name]: e.target.value });
@@ -26,46 +42,44 @@ const LoginContainer = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    AuthAPI.login(loginInfo)
-      .then(({ status, data }) => {
-        if (status === 200) {
+    AuthAPI.login({
+      ...loginInfo,
+      portal_account: `${loginInfo.portal_account}@koreatech.ac.kr`,
+    })
+      .then((res) => {
+        if (res.status === 200) {
           addToast("로그인에 성공하였습니다.", {
             appearance: "success",
             autoDismiss: true,
           });
-          dispatch(login(data));
+          dispatch(succeedTokenCheck({ isLoggedIn: true, token: res.data }));
+          setValueOnLocalStorage("token", res.data);
           history.push("/");
         }
       })
       .catch(({ response: { data, status } }) => {
-        const { code, errorMessage } = data;
         if (status === 400) {
-          addToast(errorMessage, {
+          addToast(data.errorMessage, {
             appearance: "error",
             autoDismiss: true,
           });
-        } else {
-          if (code === 8) {
-            // ACCESS TOKEN 요청
-          } else if (code === 9) {
-            // REFRESH TOKEN 요청
-          }
         }
+        setError(true);
       });
   };
 
   return (
     <Container>
-      <Logo />
       <LoginForm
         loginInfo={loginInfo}
+        error={error}
+        setError={setError}
         onChange={onChange}
         onSubmit={onSubmit}
         autoLogin={autoLogin}
         setAutoLogin={setAutoLogin}
       />
       <HelpField />
-      <CopyRight />
     </Container>
   );
 };

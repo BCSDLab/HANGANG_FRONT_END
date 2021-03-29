@@ -1,6 +1,7 @@
 import axios from "axios";
 
-axios.defaults.baseURL = `${process.env.BACKEND_URL}/user`;
+axios.defaults.baseURL = "https://api.hangang.in/user";
+// axios.defaults.baseURL = `${process.env.BACKEND_URL}/user`;
 
 export default {
   requestEmail: async (infos) => {
@@ -17,6 +18,32 @@ export default {
   },
   login: async (infos) => {
     const response = await axios.post("/login", infos);
+    return response;
+  },
+  renewPw: async (infos) => {
+    const response = await axios.post("/password-find", infos);
+    return response;
+  },
+  checkValidNickname: async (nickname) => {
+    const response = await axios.post(`/nickname-check?nickname=${nickname}`);
+    return response;
+  },
+  authTest: async (accessToken) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    const response = await axios.get("/auth-test", config);
+    return response;
+  },
+  refreshToken: async (refreshToken) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    };
+    const response = await axios.get("/refresh", config);
     return response;
   },
 };

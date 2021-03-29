@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable no-useless-escape */
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
+import { debounce } from "lodash";
 
 import AuthAPI from "api/auth";
 import Container from "components/AuthComponents/Container";
-import Logo from "components/AuthComponents/Logo";
 import SignUpForm from "components/AuthComponents/SignUpForm";
 import { signUp } from "store/modules/auth";
 
 const SignUpContainer = () => {
   const { addToast } = useToasts();
-  const { userInfo } = useSelector((state) => state.authReducer);
+  const { account, isVerifiedEmail } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
   const [signUpInfo, setSignUpInfo] = useState({
@@ -26,15 +27,77 @@ const SignUpContainer = () => {
     hangang: false,
     privacy: false,
   });
+  const [error, setError] = useState({});
+  const [nicknameTest, setNicknameTest] = useState({
+    tried: false,
+    errorCode: "",
+  });
+
+  const letterLengthRegex = /^.{8,15}$/;
+  const numberRegex = /[0-9]/gi;
+  const symbolRegex = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 
   useEffect(() => {
-    if (userInfo !== null) {
-      setSignUpInfo({ ...signUpInfo, account: userInfo.account });
+    if (!letterLengthRegex.test(signUpInfo.pw)) {
+      setError({ pwLetterLengthError: true });
+    } else if (!numberRegex.test(signUpInfo.pw)) {
+      setError({ pwNumberError: true });
+    } else if (!symbolRegex.test(signUpInfo.pw)) {
+      setError({ pwSymbolError: true });
+    } else {
+      setError({});
     }
-  }, [userInfo]);
+
+    if (signUpInfo.pw !== signUpInfo.pwConfirm) {
+      setError((prev) => ({ ...prev, notEqualPw: true }));
+    } else {
+      setError((prev) => ({ ...prev, notEqualPw: false }));
+    }
+  }, [signUpInfo.pw, signUpInfo.pwConfirm]);
+
+  useEffect(() => {
+    if (account !== null) {
+      setSignUpInfo({ ...signUpInfo, account: account });
+    }
+  }, [account]);
+
+  /**
+   * 약관 동의를 핸들링 하는 함수
+   * 1. all 약관이 true가 아닌데 나머지 두개를 선택하는 경우
+   * 2. all 을 true로 해서 모든 term이 true인데 다른 하나를 false하는 경우
+   */
+  useEffect(() => {
+    if (!terms.all && terms.hangang && terms.privacy) {
+      setTerms({ ...terms, all: true });
+    } else if ((terms.all && !terms.hangang) || (terms.all && !terms.privacy)) {
+      setTerms({ ...terms, all: false });
+    }
+  }, [terms]);
 
   const onChange = (e) => {
     setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value });
+  };
+
+  /**
+   * sendQuery, delayedQueryCall, onNicknameChange
+   *
+   * nickname 중복 체크 함수로, 디바운싱을 걸어두었다.
+   */
+  const sendQuery = async (query) => {
+    if (query.length === 0) return;
+    try {
+      const res = await AuthAPI.checkValidNickname(query);
+      if (res.data.httpStatus === "OK") {
+        setNicknameTest({ tried: true, errorCode: "" });
+      }
+    } catch ({ response }) {
+      setNicknameTest({ tried: true, errorCode: response.data.code });
+    }
+  };
+  const delayedQueryCall = useRef(debounce((q) => sendQuery(q), 300)).current;
+  const onNicknameChange = (e) => {
+    setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value });
+    delayedQueryCall(e.target.value);
   };
 
   const onClickMajor = (value) => {
@@ -48,12 +111,12 @@ const SignUpContainer = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const { majors, nickname, pw, account } = signUpInfo;
+
     const infos = {
-      major: majors,
-      nickname: nickname,
-      password: pw,
-      portal_account: account,
+      major: signUpInfo.majors,
+      nickname: signUpInfo.nickname,
+      password: signUpInfo.pw,
+      portal_account: `${signUpInfo.account}@koreatech.ac.kr`,
     };
     AuthAPI.signUp(infos)
       .then(({ status, data }) => {
@@ -63,7 +126,7 @@ const SignUpContainer = () => {
             appearance: "success",
             autoDismiss: true,
           });
-          dispatch(signUp(signUpInfo));
+          dispatch(signUp(signUpInfo.account));
           history.push("/login");
         }
       })
@@ -78,17 +141,30 @@ const SignUpContainer = () => {
       });
   };
 
+  const kickOut = () => {
+    history.push("/login");
+    alert("이메일 인증 이후에 접근할 수 있습니다.");
+  };
+
   return (
-    <Container>
-      <Logo />
-      <SignUpForm
-        onChange={onChange}
-        onSubmit={onSubmit}
-        signUpInfo={signUpInfo}
-        terms={terms}
-        onClickMajor={onClickMajor}
-      />
-    </Container>
+    <>
+      {!isVerifiedEmail && kickOut()}
+      {isVerifiedEmail && (
+        <Container>
+          <SignUpForm
+            onChange={onChange}
+            onNicknameChange={onNicknameChange}
+            onSubmit={onSubmit}
+            signUpInfo={signUpInfo}
+            error={error}
+            terms={terms}
+            setTerms={setTerms}
+            nicknameTest={nicknameTest}
+            onClickMajor={onClickMajor}
+          />
+        </Container>
+      )}
+    </>
   );
 };
 
