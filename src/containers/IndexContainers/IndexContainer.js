@@ -16,7 +16,7 @@ const StyledLink = styled(Link)``;
 const IndexContainer = () => {
   const { addToast } = useToasts();
   const history = useHistory();
-  const { didTokenCheck, isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
 
   // 참고 : https://app.diagrams.net/#G1fdPJc3IfiFc6l8OMxSJ2rOJisJsp0k8i
@@ -82,14 +82,14 @@ const IndexContainer = () => {
   };
 
   useEffect(() => {
-    if (!didTokenCheck) {
+    if (!isCheckedToken) {
       checkTokenOnLocalStorage();
     }
   }, []);
 
   return (
     <>
-      {didTokenCheck && (
+      {isCheckedToken && (
         <>
           {!isLoggedIn && (
             <StyledLink to="/login">
