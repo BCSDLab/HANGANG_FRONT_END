@@ -6,8 +6,8 @@ import { useToasts } from "react-toast-notifications";
 import { debounce } from "lodash";
 
 import AuthAPI from "api/auth";
-import Container from "components/AuthComponents/Container";
-import SignUpForm from "components/AuthComponents/SignUpForm";
+import Container from "components/AuthComponents/Shared/Container";
+import SignUpForm from "components/AuthComponents/SignUp/SignUpForm";
 import { signUp } from "store/modules/auth";
 
 const SignUpContainer = () => {
@@ -119,13 +119,16 @@ const SignUpContainer = () => {
       portal_account: `${signUpInfo.account}@koreatech.ac.kr`,
     };
     AuthAPI.signUp(infos)
-      .then(({ status, data }) => {
-        const { message } = data;
+      .then(({ status }) => {
         if (status === 200) {
-          addToast(message, {
-            appearance: "success",
-            autoDismiss: true,
-          });
+          addToast(
+            `환영합니다. 
+          한기대 강의평, 이제는 한강에서 만나요!`,
+            {
+              appearance: "success",
+              autoDismiss: true,
+            }
+          );
           dispatch(signUp(signUpInfo.account));
           history.push("/login");
         }

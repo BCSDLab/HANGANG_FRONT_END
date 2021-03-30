@@ -4,9 +4,9 @@ import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 
 import AuthAPI from "api/auth";
-import Container from "components/AuthComponents/Container";
-import HelpField from "components/AuthComponents/HelpField";
-import LoginForm from "components/AuthComponents/LoginForm";
+import Container from "components/AuthComponents/Shared/Container";
+import HelpField from "components/AuthComponents/Login/HelpField";
+import LoginForm from "components/AuthComponents/Login/LoginForm";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 import { succeedTokenCheck } from "store/modules/auth";
 
@@ -57,14 +57,10 @@ const LoginContainer = () => {
           history.push("/");
         }
       })
-      .catch(({ response: { data, status } }) => {
+      .catch(({ response: { status } }) => {
         if (status === 400) {
-          addToast(data.errorMessage, {
-            appearance: "error",
-            autoDismiss: true,
-          });
+          setError(true);
         }
-        setError(true);
       });
   };
 

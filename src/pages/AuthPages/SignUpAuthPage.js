@@ -1,4 +1,4 @@
-import EmailAuthContainer from "containers/AuthContainers/EmailAuthContainer";
+import EmailAuthContainer from "containers/AuthContainers/Shared/EmailAuthContainer";
 import React from "react";
 
 const SignUpAuthPage = () => {

@@ -1,8 +1,8 @@
-import NewPwContainer from "containers/AuthContainers/NewPwContainer";
+import FindPwContainer from "containers/AuthContainers/FindPwContainer";
 import React from "react";
 
 const FindPwPage = () => {
-  return <NewPwContainer />;
+  return <FindPwContainer />;
 };
 
 export default FindPwPage;
