@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const CanSeeIcon = styled.img.attrs(() => ({
   src: "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/eye_on.png",
@@ -30,7 +31,15 @@ const PasswordToggleIcon = ({ target }) => {
     }
   };
 
-  return <div onClick={() => togglePw(target)}>{canSee ? <CanSeeIcon /> : <CantSeeIcon />}</div>;
+  return (
+    <div onClick={() => togglePw(target)}>
+      {canSee ? <CanSeeIcon /> : <CantSeeIcon />}
+    </div>
+  );
+};
+
+PasswordToggleIcon.propTypes = {
+  target: PropTypes.object.isRequired,
 };
 
 export default PasswordToggleIcon;

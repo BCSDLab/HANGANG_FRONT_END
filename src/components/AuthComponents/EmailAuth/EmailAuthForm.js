@@ -1,11 +1,13 @@
 import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+
 import {
   AlertColor,
   BorderColor,
   ButtonColor,
   NonClickButtonColor,
 } from "static/styles/authPageStyle";
-import styled from "styled-components";
 import {
   AlertImg as LoginAlertImg,
   Input as LoginInput,
@@ -137,18 +139,18 @@ const PortalLink = styled.a`
   cursor: pointer;
 `;
 
-const AuthForm = ({
+const EmailAuthForm = ({
+  accountDisabled,
   authInfo,
   errorCode,
-  setErrorCode,
-  sentEmail,
   resend,
-  setResend,
-  setAccountDisabled,
+  sentEmail,
   onChange,
+  setAccountDisabled,
+  setErrorCode,
+  setResend,
   checkPortalEmail,
   checkEmailConfig,
-  accountDisabled,
 }) => {
   const { account, secret } = authInfo;
 
@@ -249,4 +251,21 @@ const AuthForm = ({
   );
 };
 
-export default AuthForm;
+EmailAuthForm.propTypes = {
+  accountDisabled: PropTypes.bool,
+  authInfo: PropTypes.shape({
+    account: PropTypes.string,
+    secret: PropTypes.string,
+  }),
+  errorCode: PropTypes.number,
+  resend: PropTypes.bool,
+  sentEmail: PropTypes.bool,
+  onChange: PropTypes.func,
+  setAccountDisabled: PropTypes.func,
+  setErrorCode: PropTypes.func,
+  setResend: PropTypes.func,
+  checkPortalEmail: PropTypes.func,
+  checkEmailConfig: PropTypes.func,
+};
+
+export default EmailAuthForm;

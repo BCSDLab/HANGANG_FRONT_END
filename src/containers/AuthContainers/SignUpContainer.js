@@ -10,11 +10,22 @@ import Container from "components/AuthComponents/Shared/Container";
 import SignUpForm from "components/AuthComponents/SignUp/SignUpForm";
 import { signUp } from "store/modules/auth";
 
+/**
+ * SignUpContainer
+ * 사용자의 정보들을 받아 회원 가입을 요청합니다.
+ * 회원 가입에 성공할 경우 홈으로 이동시킵니다.
+ */
 const SignUpContainer = () => {
   const { addToast } = useToasts();
   const { account, isVerifiedEmail } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const [error, setError] = useState({});
+  const [nicknameTest, setNicknameTest] = useState({
+    tried: false,
+    errorCode: "",
+  });
   const [signUpInfo, setSignUpInfo] = useState({
     account: "",
     pw: "",
@@ -26,11 +37,6 @@ const SignUpContainer = () => {
     all: false,
     hangang: false,
     privacy: false,
-  });
-  const [error, setError] = useState({});
-  const [nicknameTest, setNicknameTest] = useState({
-    tried: false,
-    errorCode: "",
   });
 
   const letterLengthRegex = /^.{8,15}$/;
@@ -80,8 +86,7 @@ const SignUpContainer = () => {
 
   /**
    * sendQuery, delayedQueryCall, onNicknameChange
-   *
-   * nickname 중복 체크 함수로, 디바운싱을 걸어두었다.
+   * nickname 중복 체크 함수로, 300ms debounce를 걸어두었다.
    */
   const sendQuery = async (query) => {
     if (query.length === 0) return;
@@ -151,19 +156,19 @@ const SignUpContainer = () => {
 
   return (
     <>
-      {!isVerifiedEmail && kickOut()}
-      {isVerifiedEmail && (
+      {isVerifiedEmail && kickOut()}
+      {!isVerifiedEmail && (
         <Container>
           <SignUpForm
-            onChange={onChange}
-            onNicknameChange={onNicknameChange}
-            onSubmit={onSubmit}
-            signUpInfo={signUpInfo}
             error={error}
+            nicknameTest={nicknameTest}
+            signUpInfo={signUpInfo}
             terms={terms}
             setTerms={setTerms}
-            nicknameTest={nicknameTest}
+            onChange={onChange}
             onClickMajor={onClickMajor}
+            onNicknameChange={onNicknameChange}
+            onSubmit={onSubmit}
           />
         </Container>
       )}

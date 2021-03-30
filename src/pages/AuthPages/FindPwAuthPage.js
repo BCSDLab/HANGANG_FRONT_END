@@ -2,7 +2,7 @@ import EmailAuthContainer from "containers/AuthContainers/Shared/EmailAuthContai
 import React from "react";
 
 const FindPwAuthPage = () => {
-  return <EmailAuthContainer findForWhat="findpw" />;
+  return <EmailAuthContainer emailAuthForWhat="findpw" />;
 };
 
 export default FindPwAuthPage;

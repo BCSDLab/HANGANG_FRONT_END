@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
+
 import {
   Section as AuthSection,
   Label as AuthLabel,
@@ -105,6 +107,16 @@ const FindPwForm = ({ infos, error, onChange, onSubmit }) => {
       </Button>
     </Form>
   );
+};
+
+FindPwForm.propTypes = {
+  error: PropTypes.object,
+  infos: PropTypes.shape({
+    newPw: PropTypes.string,
+    confirmPw: PropTypes.string,
+  }),
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
 export default FindPwForm;

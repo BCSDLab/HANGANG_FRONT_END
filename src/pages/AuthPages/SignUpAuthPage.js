@@ -2,7 +2,7 @@ import EmailAuthContainer from "containers/AuthContainers/Shared/EmailAuthContai
 import React from "react";
 
 const SignUpAuthPage = () => {
-  return <EmailAuthContainer findForWhat="signup" />;
+  return <EmailAuthContainer emailAuthForWhat="signup" />;
 };
 
 export default SignUpAuthPage;

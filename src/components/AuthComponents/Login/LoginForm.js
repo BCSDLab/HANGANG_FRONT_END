@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
+
 import {
   AlertColor,
   BorderColor,
@@ -135,13 +137,13 @@ const AutoLoginTrueImg = styled(AutoLoginFalseImg).attrs({
 })``;
 
 const LoginForm = ({
-  loginInfo,
+  autoLogin,
   error,
+  loginInfo,
+  setAutoLogin,
   setError,
   onChange,
   onSubmit,
-  autoLogin,
-  setAutoLogin,
 }) => {
   const { portal_account, password } = loginInfo;
   return (
@@ -188,6 +190,19 @@ const LoginForm = ({
       </AutoLoginField>
     </>
   );
+};
+
+LoginForm.propTypes = {
+  autoLogin: PropTypes.bool,
+  error: PropTypes.bool,
+  loginInfo: PropTypes.shape({
+    portal_account: PropTypes.string,
+    password: PropTypes.string,
+  }),
+  setAutoLogin: PropTypes.func,
+  setError: PropTypes.func,
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
 export default LoginForm;

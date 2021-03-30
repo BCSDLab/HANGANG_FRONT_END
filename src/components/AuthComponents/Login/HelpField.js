@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+
 import { BorderColor, FontColor } from "static/styles/authPageStyle";
 
 const HelpFieldWrapper = styled.div`
@@ -31,7 +32,11 @@ const FindUserIdLink = styled(FindPasswordLink)`
 const HelpField = () => {
   return (
     <HelpFieldWrapper>
-      <FindUserIdLink as="a" target="_blank" href="https://portal.koreatech.ac.kr/kut/page/findUser.jsp">
+      <FindUserIdLink
+        as="a"
+        target="_blank"
+        href="https://portal.koreatech.ac.kr/kut/page/findUser.jsp"
+      >
         아이디 찾기
       </FindUserIdLink>
       <FindPasswordLink to="/findpwauth">비밀번호 찾기</FindPasswordLink>

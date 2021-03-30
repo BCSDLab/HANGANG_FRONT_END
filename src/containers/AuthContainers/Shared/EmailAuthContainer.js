@@ -2,18 +2,22 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
+import PropTypes from "prop-types";
 
 import AuthAPI from "api/auth";
-import AuthForm from "components/AuthComponents/EmailAuth/EmailAuthForm";
+import EmailAuthForm from "components/AuthComponents/EmailAuth/EmailAuthForm";
 import Container from "components/AuthComponents/Shared/Container";
 import { emailAuth } from "store/modules/auth";
 
 /**
  * EmailAuthContainer
- * @param {*} param0
- * @returns
+ * 이메일 인증 페이지에서 사용하는 컨테이너 입니다.
+ * 사용자의 이메일 인증을 위해 한강 백엔드 서버에게 이메일 요청을 하며,
+ * 올바른 인증번호를 넣는지 체킹합니다.
+ * 인증번호가 유효하다면 SignUp / FindPw 페이지로 이동시킵니다.
+ * 공동 사용 중 : FindPwAuthPage, SignUpAuthPage
  */
-const EmailAuthContainer = ({ findForWhat }) => {
+const EmailAuthContainer = ({ emailAuthForWhat }) => {
   const { addToast } = useToasts();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -37,7 +41,7 @@ const EmailAuthContainer = ({ findForWhat }) => {
    */
   const checkPortalEmail = (account, resend) => {
     const infos = {
-      flag: findForWhat === "signup" ? 0 : 1,
+      flag: emailAuthForWhat === "signup" ? 0 : 1,
       portal_account: `${account}@koreatech.ac.kr`,
     };
     AuthAPI.requestEmail(infos)
@@ -87,7 +91,7 @@ const EmailAuthContainer = ({ findForWhat }) => {
    */
   const checkEmailConfig = (secret) => {
     const infos = {
-      flag: findForWhat === "signup" ? 0 : 1,
+      flag: emailAuthForWhat === "signup" ? 0 : 1,
       portal_account: `${authInfo.account}@koreatech.ac.kr`,
       secret: secret,
     };
@@ -100,7 +104,7 @@ const EmailAuthContainer = ({ findForWhat }) => {
             autoDismiss: true,
           });
           dispatch(emailAuth(authInfo.account));
-          history.push(findForWhat === "signup" ? "/signup" : "/findpw");
+          history.push(emailAuthForWhat === "signup" ? "/signup" : "/findpw");
         }
       })
       .catch(({ response: { data } }) => {
@@ -111,21 +115,25 @@ const EmailAuthContainer = ({ findForWhat }) => {
 
   return (
     <Container>
-      <AuthForm
+      <EmailAuthForm
+        accountDisabled={accountDisabled}
         authInfo={authInfo}
         errorCode={errorCode}
-        setErrorCode={setErrorCode}
-        sentEmail={sentEmail}
         resend={resend}
-        setResend={setResend}
-        setAccountDisabled={setAccountDisabled}
+        sentEmail={sentEmail}
         onChange={onChange}
+        setAccountDisabled={setAccountDisabled}
+        setErrorCode={setErrorCode}
+        setResend={setResend}
         checkPortalEmail={checkPortalEmail}
         checkEmailConfig={checkEmailConfig}
-        accountDisabled={accountDisabled}
       />
     </Container>
   );
+};
+
+EmailAuthContainer.propTypes = {
+  emailAuthForWhat: PropTypes.string,
 };
 
 export default EmailAuthContainer;

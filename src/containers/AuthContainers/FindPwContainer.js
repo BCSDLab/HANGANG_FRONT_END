@@ -8,6 +8,12 @@ import FindPwForm from "components/AuthComponents/FindPw/FindPwForm";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
+/**
+ * FindPwContainer
+ * 사용자가 새로운 비밀번호를 설정하도록 해줍니다.
+ * 올바른 비밀번호를 입력하는지 체킹하며,
+ * 정상적인 비밀번호를 입력했을 경우 로그인 페이지로 이동시킵니다.
+ */
 const FindPwContainer = () => {
   const { addToast } = useToasts();
   const { account, isVerifiedEmail } = useSelector((state) => state.authReducer);
@@ -102,8 +108,8 @@ const FindPwContainer = () => {
       {isVerifiedEmail && (
         <Container>
           <FindPwForm
-            infos={infos}
             error={error}
+            infos={infos}
             onChange={onChange}
             onSubmit={onSubmit}
           />

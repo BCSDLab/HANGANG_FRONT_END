@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+
 import { majorsFullName } from "static/majors";
+import Terms from "static/terms";
 import {
   BorderColor,
   ButtonColor,
@@ -7,8 +11,7 @@ import {
   NonClickButtonColor,
   PlaceholderColor,
 } from "static/styles/authPageStyle";
-import Terms from "static/terms";
-import styled from "styled-components";
+
 import {
   Section as AuthSection,
   Label as AuthLabel,
@@ -133,15 +136,15 @@ const TermContent = styled.textarea`
 `;
 
 const SignUpForm = ({
-  onChange,
-  onNicknameChange,
-  onSubmit,
-  signUpInfo,
   error,
+  nicknameTest,
+  signUpInfo,
   terms,
   setTerms,
-  nicknameTest,
+  onChange,
   onClickMajor,
+  onNicknameChange,
+  onSubmit,
 }) => {
   const { account, pw, pwConfirm, nickname, majors } = signUpInfo;
   const pwRef = useRef();
@@ -330,6 +333,31 @@ const SignUpForm = ({
       </Button>
     </Form>
   );
+};
+
+SignUpForm.propTypes = {
+  error: PropTypes.object,
+  nicknameTest: PropTypes.shape({
+    tried: PropTypes.bool,
+    errorCode: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  }),
+  signUpInfo: PropTypes.shape({
+    account: PropTypes.string,
+    pw: PropTypes.string,
+    pwConfirm: PropTypes.string,
+    nickname: PropTypes.string,
+    majors: PropTypes.arrayOf(PropTypes.string),
+  }),
+  terms: PropTypes.shape({
+    all: PropTypes.bool,
+    hangang: PropTypes.bool,
+    privacy: PropTypes.bool,
+  }),
+  setTerms: PropTypes.func,
+  onChange: PropTypes.func,
+  onClickMajor: PropTypes.func,
+  onNicknameChange: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
 export default SignUpForm;

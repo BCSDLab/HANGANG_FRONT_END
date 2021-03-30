@@ -10,17 +10,24 @@ import LoginForm from "components/AuthComponents/Login/LoginForm";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 import { succeedTokenCheck } from "store/modules/auth";
 
+/**
+ * LoginContainer
+ * 사용자의 아이디, 비밀번호를 받아 로그인 요청합니다.
+ * 로그인에 성공할 경우 홈으로 이동시킵니다.
+ * 사용자가 아이디, 비밀번호, 회원가입을 요청할 수 있도록 HelpField Component를 가지고 있습니다.
+ */
 const LoginContainer = () => {
   const { addToast } = useToasts();
   const { account } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const [autoLogin, setAutoLogin] = useState(true);
+  const [error, setError] = useState(false);
   const [loginInfo, setLoginInfo] = useState({
     portal_account: "",
     password: "",
   });
-  const [error, setError] = useState(false);
-  const [autoLogin, setAutoLogin] = useState(true);
 
   useEffect(() => {
     if (getValueOnLocalStorage("didHangangAutoLogin") !== null) {
@@ -67,13 +74,13 @@ const LoginContainer = () => {
   return (
     <Container>
       <LoginForm
-        loginInfo={loginInfo}
+        autoLogin={autoLogin}
         error={error}
+        loginInfo={loginInfo}
+        setAutoLogin={setAutoLogin}
         setError={setError}
         onChange={onChange}
         onSubmit={onSubmit}
-        autoLogin={autoLogin}
-        setAutoLogin={setAutoLogin}
       />
       <HelpField />
     </Container>
