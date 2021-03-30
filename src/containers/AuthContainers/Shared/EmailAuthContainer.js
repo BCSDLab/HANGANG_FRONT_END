@@ -17,7 +17,7 @@ import { emailAuth } from "store/modules/auth";
  * 인증번호가 유효하다면 SignUp / FindPw 페이지로 이동시킵니다.
  * 공동 사용 중 : FindPwAuthPage, SignUpAuthPage
  */
-const EmailAuthContainer = ({ emailAuthForWhat }) => {
+const EmailAuthContainer = ({ emailAuthForWhat = "signup" }) => {
   const { addToast } = useToasts();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -26,7 +26,7 @@ const EmailAuthContainer = ({ emailAuthForWhat }) => {
     account: "",
     secret: "",
   });
-  const [errorCode, setErrorCode] = useState();
+  const [errorCode, setErrorCode] = useState(0);
   const [resend, setResend] = useState(false);
   const [sentEmail, setSentEmail] = useState(false);
 
