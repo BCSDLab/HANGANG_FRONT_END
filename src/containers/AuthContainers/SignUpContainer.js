@@ -156,8 +156,8 @@ const SignUpContainer = () => {
 
   return (
     <>
-      {isVerifiedEmail && kickOut()}
-      {!isVerifiedEmail && (
+      {!isVerifiedEmail && kickOut()}
+      {isVerifiedEmail && (
         <Container>
           <SignUpForm
             error={error}
