@@ -21,14 +21,14 @@ const App = () => {
     window.addEventListener("beforeunload", () => {
       const autoLoginKey = getValueOnLocalStorage("didHangangAutoLogin");
       if (!autoLoginKey) {
-        removeValueOnLocalStorage("token");
+        removeValueOnLocalStorage("hangangToken");
       }
     });
     return () => {
       window.removeEventListener("beforeunload", () => {
         const autoLoginKey = getValueOnLocalStorage("didHangangAutoLogin");
         if (!autoLoginKey) {
-          removeValueOnLocalStorage("token");
+          removeValueOnLocalStorage("hangangToken");
         }
       });
     };

@@ -60,7 +60,7 @@ const LoginContainer = () => {
             autoDismiss: true,
           });
           dispatch(succeedTokenCheck({ isLoggedIn: true, token: res.data }));
-          setValueOnLocalStorage("token", res.data);
+          setValueOnLocalStorage("hangangToken", res.data);
           history.push("/");
         }
       })
