@@ -32,6 +32,7 @@ const config = {
       template: "./public/index.html",
     }),
   ],
+  devtool: "source-map",
   devServer: {
     contentBase: path.resolve(__dirname, "./build"),
     historyApiFallback: true, //  새로 고침 시
