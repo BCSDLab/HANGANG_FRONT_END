@@ -40,10 +40,10 @@ export default {
   refreshToken: async (refreshToken) => {
     let config = {
       headers: {
-        Authorization: `Bearer ${refreshToken}`,
+        RefreshToken: `Bearer ${refreshToken}`,
       },
     };
-    const response = await axios.get("/refresh", config);
+    const response = await axios.post("/refresh", null, config);
     return response;
   },
 };
