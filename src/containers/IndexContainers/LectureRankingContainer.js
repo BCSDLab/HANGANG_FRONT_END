@@ -32,17 +32,24 @@ const Topbar = styled.div`
 `;
 
 const Department = styled.div`
+  box-sizing: content-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 7px;
   height: 100%;
 
-  /* border-bottom: 1px solid #ffab2e; */
-  padding: 11px 0px;
-  text-align: center;
+  border-bottom: 2px solid ${({ now }) => (now ? `#ffab2e` : `transparent`)};
+
+  span {
+    color: ${({ now }) => (now ? `${ConceptColor}` : `${PlaceholderColor}`)};
+  }
 `;
 
 const DepartmentLabel = styled.span`
   height: 18px;
   font-size: 12px;
-  color: ${({ now }) => (now ? `${ConceptColor}` : `${PlaceholderColor}`)};
+  padding-top: 6px;
   cursor: pointer;
 `;
 
@@ -148,11 +155,8 @@ const LectureRankingContainer = () => {
       <Content>
         <Topbar>
           {departmentList.map(({ label }, index) => (
-            <Department key={label}>
-              <DepartmentLabel
-                now={department.label === label}
-                onClick={() => setDepartment(departmentList[index])}
-              >
+            <Department key={label} now={department.label === label}>
+              <DepartmentLabel onClick={() => setDepartment(departmentList[index])}>
                 {label}
               </DepartmentLabel>
             </Department>

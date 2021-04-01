@@ -16,9 +16,9 @@ const NavigationWrapper = styled.nav`
 const InnerContent = styled.div`
   position: relative;
   display: flex;
+  align-items: center;
   width: ${InnerContentWidth};
   height: 100%;
-  padding: 25px 0px;
 `;
 
 const Logo = styled.img.attrs({
@@ -30,6 +30,12 @@ const Logo = styled.img.attrs({
   margin-right: 40px;
 `;
 
+const StyledLinkWrapper = styled.div`
+  position: relative;
+  display: flex;
+  height: 100%;
+`;
+
 const StyledLink = styled(Link)`
   all: unset;
   box-sizing: border-box;
@@ -37,10 +43,34 @@ const StyledLink = styled(Link)`
   align-items: center;
   justify-content: center;
   width: 98px;
-  height: 100%;
   font-size: 17px;
   color: ${ConceptColor};
   cursor: pointer;
+`;
+
+const currentConverter = (current) => {
+  switch (current) {
+    case "/":
+      return 0;
+    case "/lectures":
+      return 1;
+    case "/resources":
+      return 2;
+    case "/timetables":
+      return 3;
+    default:
+      return;
+  }
+};
+
+const NavigationUnderline = styled.div`
+  position: absolute;
+  bottom: -1px;
+  width: 98px;
+  height: 2px;
+  background-color: ${ConceptColor};
+  transition: transform 0.3s ease;
+  transform: translateX(${({ current }) => currentConverter(current) * 98}px);
 `;
 
 const AuthBox = styled.div`
@@ -84,9 +114,11 @@ const NavigationContainer = () => {
     !ignorePathList.includes(window.location.pathname)
   );
   const history = useHistory();
+  const [current, setCurrent] = useState(window.location.pathname);
 
   useEffect(() => {
     return history.listen((loc) => {
+      setCurrent(loc.pathname);
       setIsVisible(!ignorePathList.includes(loc.pathname));
     });
   }, [history]);
@@ -95,11 +127,16 @@ const NavigationContainer = () => {
     isVisible && (
       <NavigationWrapper>
         <InnerContent>
-          <Logo />
-          <StyledLink to="/">홈</StyledLink>
-          <StyledLink to="/lectures">강의평</StyledLink>
-          <StyledLink to="/resources">강의자료</StyledLink>
-          <StyledLink to="/timetables">시간표</StyledLink>
+          <Link to="/" style={{ all: "unset" }}>
+            <Logo />
+          </Link>
+          <StyledLinkWrapper>
+            <StyledLink to="/">홈</StyledLink>
+            <StyledLink to="/lectures">강의평</StyledLink>
+            <StyledLink to="/resources">강의자료</StyledLink>
+            <StyledLink to="/timetables">시간표</StyledLink>
+            <NavigationUnderline current={current} />
+          </StyledLinkWrapper>
           {isCheckedToken && (
             <AuthBox>
               {!isLoggedIn && <Item to="/login">로그인</Item>}
