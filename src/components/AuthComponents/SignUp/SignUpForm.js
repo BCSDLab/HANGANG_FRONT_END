@@ -2,15 +2,15 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { majorsFullName } from "static/majors";
-import Terms from "static/terms";
+import { majorsFullName } from "static/AuthPage/majors";
+import Terms from "static/AuthPage/terms";
 import {
   BorderColor,
   ButtonColor,
   FontColor,
   NonClickButtonColor,
   PlaceholderColor,
-} from "static/styles/authPageStyle";
+} from "static/Shared/commonStyles";
 
 import {
   Section as AuthSection,

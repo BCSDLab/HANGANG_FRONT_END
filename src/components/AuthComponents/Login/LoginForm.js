@@ -8,7 +8,7 @@ import {
   ButtonColor,
   FontColor,
   PlaceholderColor,
-} from "static/styles/authPageStyle";
+} from "static/Shared/commonStyles";
 
 const Form = styled.form`
   width: 100%;

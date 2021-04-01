@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import { BorderColor, FontColor } from "static/styles/authPageStyle";
+import { BorderColor, FontColor } from "static/Shared/commonStyles";
 
 const HelpFieldWrapper = styled.div`
   width: 100%;
