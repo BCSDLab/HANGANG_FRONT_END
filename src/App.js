@@ -1,19 +1,24 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import styled from "styled-components";
+
+import {
+  getValueOnLocalStorage,
+  removeValueOnLocalStorage,
+} from "utils/localStorageUtils";
+
 import LoginPage from "pages/AuthPages/LoginPage";
 import FindPwPage from "pages/AuthPages/FindPwPage";
 import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
 import SignUpPage from "pages/AuthPages/SignUpPage";
 import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
 import IndexPage from "pages/IndexPage";
-import {
-  getValueOnLocalStorage,
-  removeValueOnLocalStorage,
-} from "utils/localStorageUtils";
+import NavigationContainer from "containers/Shared/NavigationContainer";
+import FooterContainer from "containers/Shared/FooterContainer";
 
 const Main = styled.main`
   height: 100%;
+  min-height: 1080px;
 `;
 
 const App = () => {
@@ -37,6 +42,7 @@ const App = () => {
   return (
     <Main role="main">
       <Router>
+        <NavigationContainer />
         <Switch>
           <Route path="/" exact component={IndexPage} />
           <Route path="/login" component={LoginPage} />
@@ -45,6 +51,7 @@ const App = () => {
           <Route path="/signupauth" component={SignUpAuthPage} />
           <Route path="/signup" component={SignUpPage} />
         </Switch>
+        <FooterContainer />
       </Router>
     </Main>
   );
