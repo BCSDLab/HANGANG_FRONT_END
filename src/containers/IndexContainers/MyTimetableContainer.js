@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import {
+  BorderColor,
+  ConceptColor,
+  FontColor,
+  PlaceholderColor,
+} from "static/Shared/commonStyles";
 import { Link } from "react-router-dom";
 
 const Label = styled.label`
@@ -12,6 +17,7 @@ const Label = styled.label`
 
 const Content = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -19,6 +25,55 @@ const Content = styled.div`
   border: 1px solid ${BorderColor};
   border-radius: 8px;
   margin-top: 16px;
+  padding: 12px 20px;
+`;
+
+const Lecture = styled.div`
+  position: relative;
+  width: 100%;
+  height: 39px;
+  margin: 12px 0px;
+`;
+
+const Name = styled.span`
+  position: absolute;
+  top: 2px;
+  left: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${FontColor};
+`;
+
+const Professor = styled.span`
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  font-size: 12px;
+  color: #828282;
+`;
+
+const AssessButton = styled(Link)`
+  all: unset;
+  position: absolute;
+  top: calc(50% - 14px);
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 28px;
+  border-radius: 20px;
+  background-color: ${ConceptColor};
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+`;
+
+const AssessedButton = styled(AssessButton)`
+  color: ${PlaceholderColor};
+  background-color: ${BorderColor};
+  cursor: default;
 `;
 
 const NoTimetable = styled.div`
@@ -49,16 +104,42 @@ const GotoTimetableButton = styled.button`
 `;
 
 const MyTimetableContainer = () => {
+  const sampleTimetableLectures = [
+    { name: "사랑의 역사", professor: "김사랑", isAssessed: true },
+    { name: "하트의 역사", professor: "박사랑", isAssessed: false },
+    { name: "사랑의 히스토리", professor: "김하트", isAssessed: false },
+    { name: "사랑역사", professor: "최사랑", isAssessed: false },
+  ];
+  // API 연결 후 아래 주석 해제
+  // eslint-disable-next-line no-unused-vars
+  const [timetableLectures, setTimetableLectures] = useState(sampleTimetableLectures);
+
+  // useEffect(() => {
+  //   // API call
+  //   setTimetableLectures(~~~)
+  // }, [])
+
   return (
     <>
       <Label>내 시간표</Label>
       <Content>
-        <NoTimetable>
-          <NoTimetableSpan>아직 작성한 시간표가 없습니다.</NoTimetableSpan>
-          <GotoTimetable to="/timetables">
-            <GotoTimetableButton>작성하러 가기</GotoTimetableButton>
-          </GotoTimetable>
-        </NoTimetable>
+        {timetableLectures.length === 0 && (
+          <NoTimetable>
+            <NoTimetableSpan>아직 작성한 시간표가 없습니다.</NoTimetableSpan>
+            <GotoTimetable to="/timetables">
+              <GotoTimetableButton>작성하러 가기</GotoTimetableButton>
+            </GotoTimetable>
+          </NoTimetable>
+        )}
+        {timetableLectures.length !== 0 &&
+          timetableLectures.map(({ name, professor, isAssessed }, index) => (
+            <Lecture key={index}>
+              <Name>{name}</Name>
+              <Professor>{professor}</Professor>
+              {!isAssessed && <AssessButton to="/lectures">평가하기</AssessButton>}
+              {isAssessed && <AssessedButton as="div">평가완료</AssessedButton>}
+            </Lecture>
+          ))}
       </Content>
     </>
   );
