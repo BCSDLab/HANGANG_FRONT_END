@@ -1,27 +1,27 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "https://api.hangang.in/user";
-// axios.defaults.baseURL = `${process.env.BACKEND_URL}/user`;
+axios.defaults.baseURL = "https://api.hangang.in";
+// axios.defaults.baseURL = `${process.env.BACKEND_URL}`;
 
 export default {
   requestEmail: async (infos) => {
-    const response = await axios.post("/email", infos);
+    const response = await axios.post("/user/email", infos);
     return response;
   },
   requestEmailConfig: async (infos) => {
-    const response = await axios.post("/email/config", infos);
+    const response = await axios.post("/user/email/config", infos);
     return response;
   },
   signUp: async (infos) => {
-    const response = await axios.post("/sign-up", infos);
+    const response = await axios.post("/user/sign-up", infos);
     return response;
   },
   login: async (infos) => {
-    const response = await axios.post("/login", infos);
+    const response = await axios.post("/user/login", infos);
     return response;
   },
   renewPw: async (infos) => {
-    const response = await axios.post("/password-find", infos);
+    const response = await axios.post("/user/password-find", infos);
     return response;
   },
   checkValidNickname: async (nickname) => {
@@ -34,7 +34,7 @@ export default {
         Authorization: `Bearer ${accessToken}`,
       },
     };
-    const response = await axios.get("/auth-test", config);
+    const response = await axios.get("/user/auth-test", config);
     return response;
   },
   refreshToken: async (refreshToken) => {
@@ -43,7 +43,7 @@ export default {
         RefreshToken: `Bearer ${refreshToken}`,
       },
     };
-    const response = await axios.post("/refresh", null, config);
+    const response = await axios.post("/user/refresh", null, config);
     return response;
   },
 };

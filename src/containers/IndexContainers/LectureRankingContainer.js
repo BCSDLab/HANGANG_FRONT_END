@@ -28,7 +28,7 @@ const Topbar = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 40px;
-  padding: 0px 18px;
+  padding: 0px 12px;
   border-bottom: 1px solid ${BorderColor};
 `;
 
@@ -55,6 +55,7 @@ const DepartmentLabel = styled.span`
 `;
 
 const LectureRow = styled.div`
+  position: relative;
   display: flex;
   width: 100%;
   height: 70px;
@@ -103,11 +104,9 @@ const Classification = styled.span`
   text-align: center;
 `;
 
-const Credit = styled(Classification)`
-  width: 30px;
-`;
-
 const Rating = styled(Classification)`
+  position: absolute;
+  right: 24px;
   width: 24px;
   font-size: 16px;
   font-weight: 500;

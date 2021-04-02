@@ -60,11 +60,12 @@ const currentConverter = (current) => {
     case "/timetables":
       return 3;
     default:
-      return;
+      return -1;
   }
 };
 
 const NavigationUnderline = styled.div`
+  display: ${({ current }) => (currentConverter(current) === -1 ? "none" : "block")};
   position: absolute;
   bottom: -1px;
   width: 98px;
