@@ -1,0 +1,67 @@
+import React from "react";
+import { FontColor } from "static/Shared/commonStyles";
+import styled from "styled-components";
+import MajorInfoArray from "static/IndexPage/majorInfoArray";
+import { Link } from "react-router-dom";
+
+const Label = styled.label`
+  color: ${FontColor};
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+const Content = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+`;
+
+const MajorCard = styled(Link)`
+  all: unset;
+  position: relative;
+  width: 100px;
+  height: 87px;
+  background-image: url(${({ imagesrc }) => imagesrc});
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+`;
+
+const MajorLabel = styled.label`
+  position: absolute;
+  left: calc(50% - 34px);
+  bottom: 5px;
+  width: 68px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #fff;
+  text-align: center;
+`;
+
+/**
+ * MajorSearchContainer
+ * 학부별 탐색 란에 해당하며, 클릭 시 lectures로 이동합니다.
+ * 다만 lectures로 이동하며 해당 학부를 검색할 수 있어야 하는데,
+ * 아직 강의평 페이지가 구현되지 않아 이는 추후에 개발할 예정입니다.
+ * 검색할 데이터를 store에 넣고 관리할 것 같습니다.
+ */
+const MajorSearchContainer = () => {
+  return (
+    <>
+      <Label>학부별 탐색</Label>
+      <Content>
+        {MajorInfoArray.map(({ src, label }) => {
+          return (
+            <MajorCard to="/lectures" key={label} imagesrc={src}>
+              <MajorLabel>{label}</MajorLabel>
+            </MajorCard>
+          );
+        })}
+      </Content>
+    </>
+  );
+};
+
+export default MajorSearchContainer;

@@ -7,7 +7,7 @@ import {
   BorderColor,
   ButtonColor,
   NonClickButtonColor,
-} from "static/styles/authPageStyle";
+} from "static/Shared/commonStyles";
 import {
   AlertImg as LoginAlertImg,
   Input as LoginInput,
@@ -234,7 +234,11 @@ const EmailAuthForm = ({
           />
         )}
       </AuthSection>
-      <PortalLink target="_blank" href="https://portal.koreatech.ac.kr/">
+      <PortalLink
+        target="_blank"
+        href="https://portal.koreatech.ac.kr/"
+        rel="noopener noreferrer"
+      >
         <PortalSendButton>아우누리 바로가기</PortalSendButton>
       </PortalLink>
       <AuthCompleteButton

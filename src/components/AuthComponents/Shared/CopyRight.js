@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { CopyRightColor } from "static/styles/authPageStyle";
+import { CopyRightColor } from "static/Shared/commonStyles";
 
 const CopyRightText = styled.footer`
   margin-top: 48px;
