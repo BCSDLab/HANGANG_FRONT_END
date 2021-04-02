@@ -1,5 +1,5 @@
 const departmentList = [
-  { label: "교양", department: "교양학과" },
+  { label: "교양", department: "교양학부" },
   { label: "HRD", department: "HRD학과" },
   { label: "기계", department: "기계공학부" },
   { label: "디·건", department: "디자인ㆍ건축공학부" },
