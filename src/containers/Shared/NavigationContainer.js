@@ -28,6 +28,7 @@ const Logo = styled.img.attrs({
 })`
   width: 80px;
   margin-right: 40px;
+  cursor: pointer;
 `;
 
 const StyledLinkWrapper = styled.div`
