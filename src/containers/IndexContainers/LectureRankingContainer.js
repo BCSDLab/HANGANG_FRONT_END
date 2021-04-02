@@ -143,24 +143,13 @@ const LectureRankingContainer = () => {
           ))}
         </Topbar>
         <LectureList>
-          {lectures.map(({ name, professor, classification, total_rating }, index) => (
+          {lectures.map(({ name, professor, total_rating }, index) => (
             <LectureRow key={index}>
               <Ranking>{`0${index + 1}`}</Ranking>
               <TitleProfessorWrapper>
                 <Title>{name}</Title>
                 <Professor>{professor}</Professor>
               </TitleProfessorWrapper>
-              {classification === "교선" && <Classification>교양 선택</Classification>}
-              {classification === "교필" && <Classification>교양 필수</Classification>}
-              {classification === "전선" && <Classification>전공 선택</Classification>}
-              {classification === "전필" && <Classification>전공 필수</Classification>}
-              {classification === "학부선" && <Classification>햑부 선택</Classification>}
-              {classification === "학부필" && <Classification>햑부 필수</Classification>}
-              {classification === "공학선" && <Classification>공학 선택</Classification>}
-              {classification === "공학필" && <Classification>공학 필수</Classification>}
-              {classification === "HRD선택" && <Classification>HRD 선택</Classification>}
-              {classification === "HRD필수" && <Classification>HRD 필수</Classification>}
-              <Credit>2학점</Credit>
               <Rating>{total_rating}</Rating>
             </LectureRow>
           ))}
