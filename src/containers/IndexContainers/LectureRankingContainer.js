@@ -114,6 +114,11 @@ const Rating = styled(Classification)`
   margin: 5px 0px 0px 0px;
 `;
 
+/**
+ * LectureRankingContainer
+ * 강의랭킹 페이지입니다.
+ * department에 따라 API를 호출합니다.
+ */
 const LectureRankingContainer = () => {
   const [department, setDepartment] = useState(departmentList[0]);
   const [lectures, setLectures] = useState([]);

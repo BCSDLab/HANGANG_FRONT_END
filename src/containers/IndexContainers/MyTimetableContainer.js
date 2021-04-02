@@ -103,6 +103,12 @@ const GotoTimetableButton = styled.button`
   cursor: pointer;
 `;
 
+/**
+ * MyTimetableContainer
+ * 내 시간표 컨테이너입니다.
+ * timetableLectures의 크기에 따라 없으면 안내 문구, 있으면 내 시간표 강의를 보여줍니다.
+ * 추후에 API 연결이 필요합니다.
+ */
 const MyTimetableContainer = () => {
   const sampleTimetableLectures = [
     { name: "사랑의 역사", professor: "김사랑", isAssessed: true },

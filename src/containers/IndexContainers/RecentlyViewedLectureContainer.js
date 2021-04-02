@@ -60,6 +60,12 @@ const NoViewedLectureMaterial = styled.span`
   color: ${PlaceholderColor};
 `;
 
+/**
+ * RecentlyViewedLectureContainer
+ * 최근 본 강의 컨테이너입니다.
+ * lectureMaterials의 크기에 따라 없으면 안내 문구, 있으면 최근 본 강의를 보여줍니다.
+ * 추후에 API 연결이 필요합니다.
+ */
 const RecentlyViewedLectureContainer = () => {
   const sampleLectureMaterials = [
     { name: "사랑의 역사", professor: "김사랑", total_rating: "1.2" },
@@ -67,7 +73,7 @@ const RecentlyViewedLectureContainer = () => {
     { name: "사랑의 히스토리", professor: "김하트", total_rating: "2.2" },
     { name: "사랑역사", professor: "최사랑", total_rating: "0.8" },
   ];
-  // API 연결 후 아래 주석 해제
+  // API 연결 후 아래 주석 해제, sampleLectureMaterials 삭제
   // eslint-disable-next-line no-unused-vars
   const [lectureMaterials, setLectureMaterials] = useState(sampleLectureMaterials);
 

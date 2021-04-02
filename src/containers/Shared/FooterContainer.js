@@ -107,6 +107,13 @@ const CopyRight = styled.span`
   color: #b5b5b5;
 `;
 
+/**
+ * FooterContainer
+ * 하단 Footer 바입니다.
+ * NavigationContainer와 마찬가지로 history를 추적하며
+ * ignorePathList에 현재 path가 있을 경우 Navigation bar가 보이지 않게 합니다.
+ * ignorePathList는 AuthPage 관련 path들입니다.
+ */
 const FooterContainer = () => {
   return (
     <FooterWrapper>

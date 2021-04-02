@@ -40,6 +40,13 @@ const MajorLabel = styled.label`
   text-align: center;
 `;
 
+/**
+ * MajorSearchContainer
+ * 학부별 탐색 란에 해당하며, 클릭 시 lectures로 이동합니다.
+ * 다만 lectures로 이동하며 해당 학부를 검색할 수 있어야 하는데,
+ * 아직 강의평 페이지가 구현되지 않아 이는 추후에 개발할 예정입니다.
+ * 검색할 데이터를 store에 넣고 관리할 것 같습니다.
+ */
 const MajorSearchContainer = () => {
   return (
     <>

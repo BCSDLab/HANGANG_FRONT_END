@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import { sampleRecommendResources } from "static/IndexPage/sampleRecommendResources";
 
 const Label = styled.label`
   color: ${FontColor};
@@ -88,7 +89,7 @@ const ThumbnailWrapper = styled.div`
 const Title = styled.span`
   position: absolute;
   left: 12px;
-  bottom: 12px;
+  bottom: 10px;
   width: ${({ index }) => (index === 1 || index === 2 ? "94px" : "111px")};
   padding: 1px 0px;
   white-space: nowrap;
@@ -114,54 +115,26 @@ const NoResource = styled.span`
   color: ${PlaceholderColor};
 `;
 
+/**
+ * RecommendResourceContainer
+ * 추천 강의자료 컨테이너입니다.
+ * recommendResources의 크기에 따라 없으면 안내 문구, 있으면 추천 강의자료를 보여줍니다.
+ * 추후에 API 연결이 필요합니다.
+ */
 const RecommendResourceContainer = () => {
-  const sampleRecommenResources = [
-    {
-      title: "이것만 알면 디자인사는 A+",
-      lectureName: "디자인사",
-      author: "김태균",
-      thumbnail:
-        "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/sample_thumbnail.png",
-    },
-    {
-      title: "디자인 특허 족보팔아요",
-      lectureName: "디자인특허",
-      author: "김효광",
-      thumbnail:
-        "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/sample_thumbnail.png",
-    },
-    {
-      title: "디자인 특허 족보팔아요",
-      lectureName: "디자인특허",
-      author: "김효광",
-      thumbnail:
-        "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/sample_thumbnail.png",
-    },
-    {
-      title: "CF 과제 레퍼런스 입니다.",
-      lectureName: "CMF",
-      author: "카페스트라니 파울로",
-      thumbnail:
-        "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/sample_thumbnail.png",
-    },
-    {
-      title: "CF 과제 레퍼런스 입니다.",
-      lectureName: "CMF",
-      author: "카페스트라니 파울로",
-      thumbnail:
-        "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/sample_thumbnail.png",
-    },
-  ];
-
-  // API 연결 후 아래 주석 해제
+  // API 연결 후 아래 주석 해제, sampleRecommendResources 지우기
   // eslint-disable-next-line no-unused-vars
-  const [recommendResources, setRecommendResources] = useState(sampleRecommenResources);
+  const [recommendResources, setRecommendResources] = useState(sampleRecommendResources);
 
   // useEffect(() => {
   //   // API call
   //   setTimetableLectures(~~~)
   // }, [])
 
+  /**
+   * 인덱스를 받아 해당 인덱스에 맞는 썸네일 반환
+   * @param {number} index
+   */
   const Thumbnail = ({ index }) => (
     <ThumbnailWrapper index={index} thumbnailURL={recommendResources[index].thumbnail}>
       <Title index={index}>{recommendResources[index].title}</Title>
