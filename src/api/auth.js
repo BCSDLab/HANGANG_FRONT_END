@@ -25,7 +25,7 @@ export default {
     return response;
   },
   checkValidNickname: async (nickname) => {
-    const response = await axios.post(`/nickname-check?nickname=${nickname}`);
+    const response = await axios.post(`/user/nickname-check?nickname=${nickname}`);
     return response;
   },
   authTest: async (accessToken) => {
