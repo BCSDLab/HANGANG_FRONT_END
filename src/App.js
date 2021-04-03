@@ -20,6 +20,7 @@ import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
 import IndexPage from "pages/IndexPage";
 import NavigationContainer from "containers/Shared/NavigationContainer";
 import FooterContainer from "containers/Shared/FooterContainer";
+import MyPage from "pages/MyPage";
 
 const Main = styled.main`
   height: 100%;
@@ -151,6 +152,7 @@ const App = () => {
         <Route path="/findpw" component={FindPwPage} />
         <Route path="/signupauth" component={SignUpAuthPage} />
         <Route path="/signup" component={SignUpPage} />
+        <Route path="/my" component={MyPage} />
       </Switch>
       <FooterContainer />
     </Main>
