@@ -1,11 +1,13 @@
 // Actions
 export const LOGIN = "LOGIN";
+export const LOGOUT = "LOGOUT";
 export const EMAIL_AUTH = "EMAIL_AUTH";
 export const SIGNUP = "SIGNUP";
 export const SUCCEED_TOKEN_CHECK = "SUCCEDED_TOKEN_CHECK";
 
 // Action Creators
 export const login = (payload) => ({ type: LOGIN, payload });
+export const logout = () => ({ type: LOGOUT });
 export const emailAuth = (payload) => ({ type: EMAIL_AUTH, payload });
 export const signUp = (payload) => ({ type: SIGNUP, payload });
 export const succeedTokenCheck = (payload) => ({ type: SUCCEED_TOKEN_CHECK, payload });
@@ -24,6 +26,11 @@ export default function authReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         token: action.payload,
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE,
+        isCheckedToken: true,
       };
     case EMAIL_AUTH:
       return {

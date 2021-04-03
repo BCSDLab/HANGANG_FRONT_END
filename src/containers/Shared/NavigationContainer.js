@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import { BorderColor, ConceptColor, InnerContentWidth } from "static/Shared/commonStyles";
+import { removeValueOnLocalStorage } from "utils/localStorageUtils";
+import { logout } from "store/modules/auth";
 
 const NavigationWrapper = styled.nav`
   display: flex;
@@ -117,6 +119,7 @@ const NavigationContainer = () => {
   );
   const history = useHistory();
   const [current, setCurrent] = useState(window.location.pathname);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     return history.listen((loc) => {
@@ -124,6 +127,12 @@ const NavigationContainer = () => {
       setIsVisible(!ignorePathList.includes(loc.pathname));
     });
   }, [history]);
+
+  const executeLogout = () => {
+    dispatch(logout());
+    removeValueOnLocalStorage("hangangToken");
+    history.push("/");
+  };
 
   return (
     isVisible && (
@@ -145,7 +154,11 @@ const NavigationContainer = () => {
               {isLoggedIn && <Item to="/my">마이페이지</Item>}
               <MiddleLine />
               {!isLoggedIn && <Item to="/signupauth">회원가입</Item>}
-              {isLoggedIn && <LogoutButton as="button">로그아웃</LogoutButton>}
+              {isLoggedIn && (
+                <LogoutButton as="button" onClick={() => executeLogout()}>
+                  로그아웃
+                </LogoutButton>
+              )}
             </AuthBox>
           )}
         </InnerContent>
