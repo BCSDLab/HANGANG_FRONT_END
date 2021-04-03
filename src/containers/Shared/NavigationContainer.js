@@ -43,7 +43,7 @@ const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 98px;
+  width: 107px;
   font-size: 17px;
   color: ${ConceptColor};
   cursor: pointer;
@@ -68,11 +68,11 @@ const NavigationUnderline = styled.div`
   display: ${({ current }) => (currentConverter(current) === -1 ? "none" : "block")};
   position: absolute;
   bottom: -1px;
-  width: 98px;
+  width: 107px;
   height: 2px;
   background-color: ${ConceptColor};
   transition: transform 0.3s ease;
-  transform: translateX(${({ current }) => currentConverter(current) * 98}px);
+  transform: translateX(${({ current }) => currentConverter(current) * 107}px);
 `;
 
 const AuthBox = styled.div`
