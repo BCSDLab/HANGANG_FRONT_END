@@ -6,9 +6,11 @@ import { useToasts } from "react-toast-notifications";
 import { debounce } from "lodash";
 
 import AuthAPI from "api/auth";
+import { kickOut } from "utils/kickOut";
+import { signUp } from "store/modules/auth";
+
 import Container from "components/AuthComponents/Shared/Container";
 import SignUpForm from "components/AuthComponents/SignUp/SignUpForm";
-import { signUp } from "store/modules/auth";
 
 /**
  * SignUpContainer
@@ -147,11 +149,6 @@ const SignUpContainer = () => {
           });
         }
       });
-  };
-
-  const kickOut = () => {
-    history.push("/login");
-    alert("이메일 인증 이후에 접근할 수 있습니다.");
   };
 
   return (
