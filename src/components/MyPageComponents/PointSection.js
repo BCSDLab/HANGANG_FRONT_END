@@ -3,13 +3,14 @@ import {
   BorderColor,
   ConceptColor,
   FontColor,
+  MyPageSectionHeight,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import styled from "styled-components";
 
 const Section = styled.section`
-  margin-top: 48px;
-  width: 100%;
+  min-height: ${MyPageSectionHeight};
+  padding-top: 48px;
 `;
 
 const Label = styled.label`
