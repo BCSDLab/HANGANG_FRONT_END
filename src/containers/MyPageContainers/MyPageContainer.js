@@ -1,18 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { debounce } from "lodash";
+import styled from "styled-components";
+
+import MypageAPI from "api/mypage";
+import { logout } from "store/modules/auth";
+import { InnerContentWidth } from "static/Shared/commonStyles";
 import {
   getValueOnLocalStorage,
   removeValueOnLocalStorage,
 } from "utils/localStorageUtils";
-import MypageAPI from "api/mypage";
+import { kickOut } from "utils/kickOut";
+
 import UserInfo from "components/MyPageComponents/UserInfo";
-import { InnerContentWidth } from "static/Shared/commonStyles";
 import PointSection from "components/MyPageComponents/PointSection";
+import ScrapSection from "components/MyPageComponents/ScrapSection";
 import SettingSection from "components/MyPageComponents/SettingSection";
-import debounce from "lodash.debounce";
-import { logout } from "store/modules/auth";
+import PurchasedSection from "components/MyPageComponents/PurchasedSection";
 
 const Wrapper = styled.div`
   position: relative;
@@ -40,74 +45,16 @@ const Content = styled.div`
 const MyPageContainer = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  // const [isLoaded, setIsLoaded] = useState(false);
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
 
+  let accessToken;
+  if (getValueOnLocalStorage("hangangToken") === null) {
+    kickOut(1);
+  } else {
+    accessToken = getValueOnLocalStorage("hangangToken").access_token;
+  }
   const [current, setCurrent] = useState("pointRecords");
-
-  // const [pointRecords, setPointRecords] = useState([
-  //   {
-  //     id: 4,
-  //     user_id: 20,
-  //     variance: 20,
-  //     title: "회원 가입",
-  //     created_at: "2021-03-22T10:55:52.000+00:00",
-  //   },
-  //   {
-  //     id: 5,
-  //     user_id: 20,
-  //     variance: 50,
-  //     title: "강의자료 업로드",
-  //     created_at: "2021-03-24T12:55:52.000+00:00",
-  //   },
-  //   {
-  //     id: 6,
-  //     user_id: 20,
-  //     variance: 50,
-  //     title: "강의자료 업로드",
-  //     created_at: "2021-03-24T16:55:52.000+00:00",
-  //   },
-  //   {
-  //     id: 7,
-  //     user_id: 20,
-  //     variance: 20,
-  //     title: "강의평가 작성",
-  //     created_at: "2021-03-24T20:55:52.000+00:00",
-  //   },
-  //   {
-  //     id: 8,
-  //     user_id: 20,
-  //     variance: -100,
-  //     title: "강의자료 구입",
-  //     created_at: "2021-03-24T22:55:52.000+00:00",
-  //   },
-  // ]);
-
-  // const [userInfo, setUserInfo] = useState({
-  //   activityAmount: {
-  //     getLectureBankCommentCount: 0,
-  //     LectureReview: 0,
-  //     getLectureBankCount: 3,
-  //   },
-  //   infoDatas: {
-  //     id: 20,
-  //     portal_account: "jong1434@koreatech.ac.kr",
-  //     nickname: "테스트4",
-  //     major: ["산업경영학부", "컴퓨터공학부"],
-  //     point: 20,
-  //     is_deleted: false,
-  //     created_at: "2021-03-22T10:55:51.000+00:00",
-  //     updated_at: "2021-03-22T10:55:51.000+00:00",
-  //   },
-  // });
-
-  const [pointRecords, setPointRecords] = useState([]);
-  const accessToken = getValueOnLocalStorage("hangangToken").access_token || "";
-  const [nicknameTest, setNicknameTest] = useState({
-    currentNickname: "테스트4",
-    tried: false,
-    errorCode: "",
-  });
+  const [isLoaded, setIsLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
     activityAmount: {
       getLectureBankCommentCount: -1,
@@ -125,20 +72,33 @@ const MyPageContainer = () => {
       updated_at: "",
     },
   });
+  const [pointRecords, setPointRecords] = useState([]);
   const [purchased, setPurchased] = useState([]);
   const [scrapped, setScrapped] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [nicknameTest, setNicknameTest] = useState({
+    currentNickname: "",
+    tried: false,
+    errorCode: "",
+  });
 
   useEffect(async () => {
-    if (isCheckedToken && isLoggedIn) {
-      const { data: activityAmount } = await MypageAPI.getAmountOfActivity(accessToken);
-      const { data: infoDatas } = await MypageAPI.getInfo(accessToken);
-      setUserInfo({ activityAmount, infoDatas });
-      setNicknameTest((prev) => ({
-        ...prev,
-        currentNickname: infoDatas.nickname,
-      }));
-      setIsLoaded(true);
+    if (isCheckedToken && !isLoggedIn) {
+      kickOut(1);
+    } else if (isCheckedToken && isLoggedIn) {
+      try {
+        const { data: activityAmount } = await MypageAPI.getAmountOfActivity(accessToken);
+        const { data: infoDatas } = await MypageAPI.getInfo(accessToken);
+        setUserInfo({ activityAmount, infoDatas });
+        setNicknameTest((prev) => ({
+          ...prev,
+          currentNickname: infoDatas.nickname,
+        }));
+      } catch (error) {
+        console.log("여기요 1");
+        kickOut(error.reponse.data.code);
+      } finally {
+        setIsLoaded(true);
+      }
     }
   }, [isCheckedToken, isLoggedIn]);
 
@@ -146,14 +106,26 @@ const MyPageContainer = () => {
     switch (current) {
       case "pointRecords":
         if (pointRecords.length === 0) {
-          const { data } = await MypageAPI.getPointRecords(accessToken);
-          setPointRecords(data);
+          try {
+            const { data } = await MypageAPI.getPointRecords(accessToken);
+            setPointRecords(data);
+          } catch (error) {
+            console.log("여기요 2");
+            kickOut(error.reponse.data.code);
+          }
+        }
+        break;
+      case "scrapped":
+        if (scrapped.length === 0) {
+          const { data } = await MypageAPI.getScrapReviews(accessToken);
+          setScrapped(data);
+          console.log(data);
         }
         break;
       default:
         break;
     }
-  }, [current]);
+  }, [isLoaded, current]);
 
   const sendQuery = async (query) => {
     if (query.length === 0) return;
@@ -243,15 +215,11 @@ const MyPageContainer = () => {
     }
   };
 
-  const kickOut = () => {
-    history.push("/");
-    alert("로그인 이후에 접근할 수 있습니다.");
-  };
-
   return (
     <Wrapper>
-      {!isLoaded && <span>로딩중</span>}
-      {isLoaded && (
+      {isCheckedToken && isLoggedIn && !isLoaded && <span>로딩중</span>}
+
+      {isCheckedToken && isLoggedIn && isLoaded && (
         <>
           <UpperContent>
             <UserInfo userInfo={userInfo} current={current} setCurrent={setCurrent} />
@@ -264,8 +232,8 @@ const MyPageContainer = () => {
                   totalPoint={userInfo.infoDatas.point}
                 />
               )}
-              {current === "purchased" && <span>구매한 강의자료</span>}
-              {current === "scrapped" && <span>내 스크랩</span>}
+              {current === "purchased" && <PurchasedSection />}
+              {current === "scrapped" && <ScrapSection scrapped={scrapped} />}
               {current === "setting" && (
                 <SettingSection
                   nicknameTest={nicknameTest}
@@ -280,13 +248,6 @@ const MyPageContainer = () => {
           </BelowContent>
         </>
       )}
-      {/* {isCheckedToken && isLoggedIn && (
-        <div>
-          <span>sdfsf</span>
-          <span>sdfsf</span>
-        </div>
-      )} */}
-      {/* {isCheckedToken && !isLoggedIn && kickOut()} */}
     </Wrapper>
   );
 };
