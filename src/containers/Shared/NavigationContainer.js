@@ -112,7 +112,7 @@ const MiddleLine = styled.div`
  * ignorePathList는 AuthPage 관련 path들입니다.
  */
 const NavigationContainer = () => {
-  const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
   const ignorePathList = ["/login", "/findpwauth", "/findpw", "/signupauth", "/signup"];
   const [isVisible, setIsVisible] = useState(
     !ignorePathList.includes(window.location.pathname)
@@ -148,19 +148,17 @@ const NavigationContainer = () => {
             <StyledLink to="/timetables">시간표</StyledLink>
             <NavigationUnderline current={current} />
           </StyledLinkWrapper>
-          {isCheckedToken && (
-            <AuthBox>
-              {!isLoggedIn && <Item to="/login">로그인</Item>}
-              {isLoggedIn && <Item to="/my">마이페이지</Item>}
-              <MiddleLine />
-              {!isLoggedIn && <Item to="/signupauth">회원가입</Item>}
-              {isLoggedIn && (
-                <LogoutButton as="button" onClick={() => executeLogout()}>
-                  로그아웃
-                </LogoutButton>
-              )}
-            </AuthBox>
-          )}
+          <AuthBox>
+            {!isLoggedIn && <Item to="/login">로그인</Item>}
+            {isLoggedIn && <Item to="/my">마이페이지</Item>}
+            <MiddleLine />
+            {!isLoggedIn && <Item to="/signupauth">회원가입</Item>}
+            {isLoggedIn && (
+              <LogoutButton as="button" onClick={() => executeLogout()}>
+                로그아웃
+              </LogoutButton>
+            )}
+          </AuthBox>
         </InnerContent>
       </NavigationWrapper>
     )
