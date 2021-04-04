@@ -25,6 +25,7 @@ import MyPage from "pages/MyPage";
 const Main = styled.main`
   height: 100%;
   min-height: 1080px;
+  min-width: 1135px;
 `;
 
 const App = () => {
