@@ -7,15 +7,19 @@ import {
   ConceptColor,
   CopyRightColor,
   FontColor,
+  MyPageSectionHeight,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import styled from "styled-components";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 
+const SettingSectionWrapper = styled.div`
+  min-height: ${MyPageSectionHeight};
+  padding-top: 48px;
+`;
+
 const Profile = styled.div`
   width: 100%;
-  height: fit-content;
-  margin-top: 48px;
 `;
 
 const Setting = styled.div`
@@ -23,9 +27,7 @@ const Setting = styled.div`
   margin-top: 40px;
 `;
 
-const Etc = styled(Setting)`
-  margin-bottom: 112px;
-`;
+const Etc = styled(Setting)``;
 
 const ProfileLeftSection = styled.div`
   width: 547px;
@@ -205,7 +207,7 @@ const SettingSection = ({
   );
 
   return (
-    <>
+    <SettingSectionWrapper>
       <Profile>
         <Label>프로필</Label>
         <div style={{ display: "flex" }}>
@@ -293,7 +295,7 @@ const SettingSection = ({
           </WithdrawalButton>
         </Row>
       </Etc>
-    </>
+    </SettingSectionWrapper>
   );
 };
 
