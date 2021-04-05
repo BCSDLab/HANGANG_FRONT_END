@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { useToasts } from "react-toast-notifications";
 import { debounce } from "lodash";
 import styled from "styled-components";
 
@@ -18,6 +19,7 @@ import PointSection from "components/MyPageComponents/PointSection";
 import ScrapSection from "components/MyPageComponents/ScrapSection";
 import SettingSection from "components/MyPageComponents/SettingSection";
 import PurchasedSection from "components/MyPageComponents/PurchasedSection";
+import SettingSectionContainer from "./SettingSectionContainer";
 
 const Wrapper = styled.div`
   position: relative;
@@ -43,34 +45,16 @@ const Content = styled.div`
 `;
 
 const MyPageContainer = () => {
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const { addToast } = useToasts();
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  let accessToken;
-  if (getValueOnLocalStorage("hangangToken") === null) {
-    kickOut(1);
-  } else {
-    accessToken = getValueOnLocalStorage("hangangToken").access_token;
-  }
-  const [current, setCurrent] = useState("pointRecords");
+  const [current, setCurrent] = useState("scrapped");
   const [isLoaded, setIsLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    activityAmount: {
-      getLectureBankCommentCount: -1,
-      LectureReview: -1,
-      getLectureBankCount: -1,
-    },
-    infoDatas: {
-      id: -1,
-      portal_account: "",
-      nickname: "",
-      major: [],
-      point: 0,
-      is_deleted: false,
-      created_at: "",
-      updated_at: "",
-    },
+    activityAmount: {},
+    infoDatas: {},
   });
   const [pointRecords, setPointRecords] = useState([]);
   const [purchased, setPurchased] = useState([]);
@@ -81,9 +65,16 @@ const MyPageContainer = () => {
     errorCode: "",
   });
 
+  let accessToken;
+  if (getValueOnLocalStorage("hangangToken") === null) {
+    // kickOut(1);
+  } else {
+    accessToken = getValueOnLocalStorage("hangangToken").access_token;
+  }
+
   useEffect(async () => {
     if (isCheckedToken && !isLoggedIn) {
-      kickOut(1);
+      // kickOut(1);
     } else if (isCheckedToken && isLoggedIn) {
       try {
         const { data: activityAmount } = await MypageAPI.getAmountOfActivity(accessToken);
@@ -95,7 +86,7 @@ const MyPageContainer = () => {
         }));
       } catch (error) {
         console.log("여기요 1");
-        kickOut(error.reponse.data.code);
+        kickOut(error.response.data.code);
       } finally {
         setIsLoaded(true);
       }
@@ -111,7 +102,15 @@ const MyPageContainer = () => {
             setPointRecords(data);
           } catch (error) {
             console.log("여기요 2");
-            kickOut(error.reponse.data.code);
+            console.dir(error);
+
+            if (error.response.data.code === 5) {
+              history.push("/");
+              addToast("토큰이 만료되었습니다. 다시 로그인 해주세요.", {
+                appearance: "error",
+                autoDismiss: true,
+              });
+            }
           }
         }
         break;
@@ -127,97 +126,36 @@ const MyPageContainer = () => {
     }
   }, [isLoaded, current]);
 
-  const sendQuery = async (query) => {
-    if (query.length === 0) return;
-    try {
-      const res = await MypageAPI.checkValidNickname(query);
-      if (res.data.httpStatus === "OK") {
-        setNicknameTest((prev) => ({ ...prev, tried: true, errorCode: "" }));
-      }
-    } catch ({ response }) {
-      setNicknameTest((prev) => ({
-        ...prev,
-        tried: true,
-        errorCode: response.data.code,
-      }));
-    }
-  };
-  const delayedQueryCall = useRef(debounce((q) => sendQuery(q), 200)).current;
-  const checkValidNickname = (e) => {
-    setNicknameTest((prev) => ({ ...prev, currentNickname: e.target.value }));
-    delayedQueryCall(e.target.value);
-  };
-
-  const changeNickname = async () => {
-    if (confirm("닉네임을 변경하시겠습니까?")) {
-      try {
-        await MypageAPI.updateUserInfo(
-          accessToken,
-          userInfo.infoDatas.major,
-          nicknameTest.currentNickname
-        );
-        setUserInfo((prev) => ({
-          ...prev,
-          infoDatas: {
-            ...prev.infoDatas,
-            nickname: nicknameTest.currentNickname,
-          },
-        }));
-        alert("닉네임을 성공적으로 변경하였습니다.");
-      } catch (err) {
-        alert("닉네임 변경 중 오류가 발생하였습니다.");
-      }
-    }
-  };
-
-  const changeMajor = async (target) => {
-    let currentMajor = userInfo.infoDatas.major;
-    if (currentMajor.includes(target)) {
-      currentMajor = currentMajor.filter((elem) => elem !== target);
-    } else {
-      currentMajor = [...currentMajor, target];
-    }
-
-    try {
-      await MypageAPI.updateUserInfo(
-        accessToken,
-        currentMajor,
-        userInfo.infoDatas.nickname
-      );
-
-      setUserInfo((prev) => ({
-        ...prev,
-        infoDatas: {
-          ...prev.infoDatas,
-          major: currentMajor,
-        },
-      }));
-    } catch (err) {
-      if (err.response.data.code === 10) {
-        alert("1개 이상의 전공이 선택되어야 합니다.");
-      } else {
-        alert("전공 변경 중 오류가 발생하였습니다.");
-      }
-    }
-  };
-
-  const membershipWithdrawal = async () => {
-    if (confirm("회원 탈퇴를 하시겠습니까?")) {
-      try {
-        await MypageAPI.deleteUser(accessToken);
-        alert("성공적으로 탈퇴 처리가 되었습니다.");
-        dispatch(logout());
-        removeValueOnLocalStorage("hangangToken");
-        history.push("/");
-      } catch (err) {
-        alert("회원 탈퇴 처리 중 오류가 발생하였습니다.");
-      }
-    }
-  };
-
   return (
     <Wrapper>
-      {isCheckedToken && isLoggedIn && !isLoaded && <span>로딩중</span>}
+      {isLoaded && (
+        <>
+          <UpperContent>
+            <UserInfo userInfo={userInfo} current={current} setCurrent={setCurrent} />
+          </UpperContent>
+          <BelowContent>
+            <Content>
+              {current === "pointRecords" && (
+                <PointSection
+                  breakdown={pointRecords}
+                  totalPoint={userInfo.infoDatas.point}
+                />
+              )}
+              {current === "purchased" && <PurchasedSection />}
+              {current === "scrapped" && <ScrapSection scrapped={scrapped} />}
+              {current === "setting" && (
+                <SettingSectionContainer
+                  userInfo={userInfo}
+                  setUserInfo={setUserInfo}
+                  nicknameTest={nicknameTest}
+                  setNicknameTest={setNicknameTest}
+                />
+              )}
+            </Content>
+          </BelowContent>
+        </>
+      )}
+      {/* {isCheckedToken && isLoggedIn && !isLoaded && <span>로딩중</span>}
 
       {isCheckedToken && isLoggedIn && isLoaded && (
         <>
@@ -235,19 +173,17 @@ const MyPageContainer = () => {
               {current === "purchased" && <PurchasedSection />}
               {current === "scrapped" && <ScrapSection scrapped={scrapped} />}
               {current === "setting" && (
-                <SettingSection
+                <SettingSectionContainer
+                  userInfo={userInfo}
+                  setUserInfo={setUserInfo}
                   nicknameTest={nicknameTest}
-                  checkValidNickname={checkValidNickname}
-                  changeNickname={changeNickname}
-                  changeMajor={changeMajor}
-                  userInfo={userInfo.infoDatas}
-                  membershipWithdrawal={membershipWithdrawal}
+                  setNicknameTest={setNicknameTest}
                 />
               )}
             </Content>
           </BelowContent>
         </>
-      )}
+      )} */}
     </Wrapper>
   );
 };
