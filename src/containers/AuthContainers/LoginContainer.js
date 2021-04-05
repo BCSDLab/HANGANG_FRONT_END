@@ -74,21 +74,18 @@ const LoginContainer = () => {
 
   return (
     <>
-      {isLoggedIn && kickOut(2)}
-      {!isLoggedIn && (
-        <Container>
-          <LoginForm
-            autoLogin={autoLogin}
-            error={error}
-            loginInfo={loginInfo}
-            setAutoLogin={setAutoLogin}
-            setError={setError}
-            onChange={onChange}
-            onSubmit={onSubmit}
-          />
-          <HelpField />
-        </Container>
-      )}
+      <Container>
+        <LoginForm
+          autoLogin={autoLogin}
+          error={error}
+          loginInfo={loginInfo}
+          setAutoLogin={setAutoLogin}
+          setError={setError}
+          onChange={onChange}
+          onSubmit={onSubmit}
+        />
+        <HelpField />
+      </Container>
     </>
   );
 };

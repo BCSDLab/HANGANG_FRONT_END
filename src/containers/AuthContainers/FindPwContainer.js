@@ -101,17 +101,9 @@ const FindPwContainer = () => {
 
   return (
     <>
-      {!isVerifiedEmail && kickOut(0)}
-      {isVerifiedEmail && (
-        <Container>
-          <FindPwForm
-            error={error}
-            infos={infos}
-            onChange={onChange}
-            onSubmit={onSubmit}
-          />
-        </Container>
-      )}
+      <Container>
+        <FindPwForm error={error} infos={infos} onChange={onChange} onSubmit={onSubmit} />
+      </Container>
     </>
   );
 };
