@@ -129,7 +129,7 @@ const NavigationContainer = () => {
   }, [history]);
 
   const executeLogout = () => {
-    dispatch(logout());
+    dispatch(logout({ errorCode: null }));
     removeValueOnLocalStorage("hangangToken");
     history.push("/");
   };
