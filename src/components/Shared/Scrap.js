@@ -89,6 +89,11 @@ const Bookmark = styled.img.attrs({
   width: 32px;
 `;
 
+/**
+ * Scrap
+ *
+ * Usage : ~/my(scrapped) , ~/lectures
+ */
 const Scrap = ({ isChosen, setIsChosen, ...rest }) => {
   console.log(rest);
   return (
