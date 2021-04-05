@@ -63,13 +63,10 @@ const App = () => {
       if (err.response.data.code === 9) {
         removeValueOnLocalStorage("hangangToken");
         history.push("/login");
-        addToast(
-          "2주 이내로 로그인 하지 않아 토큰이 만료되었습니다. 다시 로그인 해주세요.",
-          {
-            appearance: "error",
-            autoDismiss: true,
-          }
-        );
+        addToast("토큰이 만료되었습니다. 다시 로그인 해주세요.", {
+          appearance: "error",
+          autoDismiss: true,
+        });
       }
     }
   };
