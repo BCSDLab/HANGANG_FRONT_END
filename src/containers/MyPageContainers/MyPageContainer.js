@@ -13,11 +13,15 @@ import UserInfo from "components/MyPageComponents/UserInfo";
 import PointSection from "components/MyPageComponents/PointSection";
 import ScrapSection from "components/MyPageComponents/ScrapSection";
 import PurchasedSection from "components/MyPageComponents/PurchasedSection";
+import LoadingSpinner from "components/Shared/LoadingSpinner";
+
 import SettingSectionContainer from "./SettingSectionContainer";
+
+const minHeight = "798px";
 
 const Wrapper = styled.div`
   position: relative;
-  min-height: 798px;
+  min-height: ${minHeight};
   width: 100%;
 `;
 
@@ -130,7 +134,7 @@ const MyPageContainer = () => {
 
   return (
     <Wrapper>
-      {isCheckedToken && isLoggedIn && !isLoaded && <span>로딩중</span>}
+      {isCheckedToken && isLoggedIn && !isLoaded && <LoadingSpinner height={minHeight} />}
 
       {isCheckedToken && isLoggedIn && isLoaded && (
         <>
