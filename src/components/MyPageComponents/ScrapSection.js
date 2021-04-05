@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import MypageAPI from "api/mypage";
 import { FontColor, MyPageSectionHeight } from "static/Shared/commonStyles";
@@ -146,6 +147,56 @@ const ScrapSection = ({ scrapped, setScrapped }) => {
       </ScrapGrid>
     </ScrapSectionWrapper>
   );
+};
+
+ScrapSection.defaultProps = {
+  scrapped: [
+    {
+      classification: "",
+      created_at: "",
+      department: "",
+      id: 0,
+      is_deleted: false,
+      name: "",
+      professor: "",
+      review_count: 0,
+      semested_data: [""],
+      top3_hash_tag: [
+        {
+          id: 0,
+          tag: "",
+        },
+      ],
+      total_rating: 0,
+      updated_at: "",
+    },
+  ],
+  setScrapped: () => {},
+};
+
+ScrapSection.propTypes = {
+  scrapped: PropTypes.arrayOf(
+    PropTypes.shape({
+      classification: PropTypes.string,
+      created_at: PropTypes.string,
+      department: PropTypes.string,
+      id: PropTypes.number,
+      is_deleted: PropTypes.bool,
+      name: PropTypes.string,
+      professor: PropTypes.string,
+      review_count: PropTypes.number,
+      semested_data: PropTypes.arrayOf(PropTypes.string),
+      top3_hash_tag: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number,
+          tag: PropTypes.string,
+        })
+      ),
+      total_rating: PropTypes.number,
+      updated_at: PropTypes.string,
+    })
+  ),
+  setScrapped: PropTypes.func,
 };
 
 export default ScrapSection;

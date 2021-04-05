@@ -184,6 +184,7 @@ const Purchased = ({ label, lecture, uploadFiles }) => {
 };
 
 const PurchasedSection = ({ purchased }) => {
+  console.log(purchased);
   return (
     <SectionWrapper>
       {purchased.map(({ id, title, lecture, uploadFiles }) => (
@@ -193,8 +194,50 @@ const PurchasedSection = ({ purchased }) => {
   );
 };
 
+PurchasedSection.defaultProps = {
+  purchased: [
+    {
+      id: 0,
+      lecture: {
+        id: 0,
+        name: "",
+        professor: "",
+      },
+      reported: false,
+      title: "",
+      uploadFiles: [
+        {
+          id: 0,
+          fileName: "",
+          ext: "",
+        },
+      ],
+      user_id: 0,
+    },
+  ],
+};
+
 PurchasedSection.propTypes = {
-  purchased: PropTypes.arrayOf(PropTypes.object),
+  purchased: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      lecture: PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+        professor: PropTypes.string,
+      }),
+      reported: PropTypes.bool,
+      title: PropTypes.string,
+      uploadFiles: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number,
+          fileName: PropTypes.string,
+          ext: PropTypes.string,
+        })
+      ),
+      user_id: PropTypes.number,
+    })
+  ),
 };
 
 export default PurchasedSection;

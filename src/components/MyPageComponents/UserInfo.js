@@ -62,7 +62,6 @@ const ActivityAmountWrapper = styled.div`
   justify-content: space-between;
   width: 240px;
   height: 45px;
-  /* background-color: red; */
 `;
 
 const ActivityWrapper = styled.div`
@@ -81,13 +80,6 @@ const Label = styled.label`
   font-size: 12px;
   color: ${PlaceholderColor};
 `;
-
-const Activity = ({ amount, label }) => (
-  <ActivityWrapper>
-    <Amount>{amount}</Amount>
-    <Label>{label}</Label>
-  </ActivityWrapper>
-);
 
 const CurrentNavigator = styled.div`
   position: absolute;
@@ -134,6 +126,13 @@ const CurrentBottomBar = styled.div`
   transition: all 0.3s ease;
   transform: translateX(${({ current }) => currentConverter(current)[1]}px);
 `;
+
+const Activity = ({ amount, label }) => (
+  <ActivityWrapper>
+    <Amount>{amount}</Amount>
+    <Label>{label}</Label>
+  </ActivityWrapper>
+);
 
 const UserInfo = ({ userInfo: { activityAmount, infoDatas }, current, setCurrent }) => {
   return (

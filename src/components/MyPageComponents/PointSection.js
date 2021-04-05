@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import {
   BorderColor,
@@ -106,6 +107,10 @@ const Variance = styled.span`
 `;
 
 const PointSection = ({ breakdown, totalPoint }) => {
+  /**
+   * DB에 저장되있는 time을 기획에 맞게 보여줍니다.
+   * @param {string} createdAt
+   */
   const createdAtConverter = (createdAt) => {
     const splitedTime = createdAt.split(".")[0].split("T");
     let date = splitedTime[0].split("-");
@@ -115,6 +120,11 @@ const PointSection = ({ breakdown, totalPoint }) => {
     return date + time;
   };
 
+  /**
+   * - 를 포함하지 않는다면 + 를 붙여주고,
+   * 아니라면 - 를 붙여줍니다.
+   * @param {number} variance
+   */
   const varianceConverter = (variance) => {
     if (!String(variance).includes("-")) {
       return `+ ${variance}P`;
@@ -159,6 +169,30 @@ const PointSection = ({ breakdown, totalPoint }) => {
       </div>
     </Section>
   );
+};
+
+PointSection.defaultProps = {
+  breakdown: {
+    created_at: "",
+    id: 0,
+    title: "",
+    user_id: 0,
+    variance: 0,
+  },
+  totalPoint: 0,
+};
+
+PointSection.propTypes = {
+  breakdown: PropTypes.arrayOf(
+    PropTypes.shape({
+      created_at: PropTypes.string,
+      id: PropTypes.number,
+      title: PropTypes.string,
+      user_id: PropTypes.number,
+      variance: PropTypes.number,
+    })
+  ),
+  totalPoint: PropTypes.number,
 };
 
 export default PointSection;
