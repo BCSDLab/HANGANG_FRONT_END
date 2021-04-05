@@ -1,11 +1,13 @@
 import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+
 import {
   ConceptColor,
   FontColor,
   InnerContentWidth,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
@@ -157,6 +159,50 @@ const UserInfo = ({ userInfo: { activityAmount, infoDatas }, current, setCurrent
       </CurrentNavigator>
     </Wrapper>
   );
+};
+
+UserInfo.defaultProps = {
+  userInfo: {
+    activityAmount: {
+      getLectureBankCommentCount: 0,
+      LectureReview: 0,
+      getLectureBankCount: 0,
+    },
+    infoDatas: {
+      id: 0,
+      portal_account: "",
+      nickname: "",
+      major: [""],
+      point: 0,
+      is_deleted: false,
+      created_at: "",
+      updated_at: "",
+    },
+  },
+  current: "pointRecords",
+  setCurrent: () => {},
+};
+
+UserInfo.propTypes = {
+  userInfo: PropTypes.shape({
+    activityAmount: PropTypes.shape({
+      getLectureBankCommentCount: PropTypes.number,
+      LectureReview: PropTypes.number,
+      getLectureBankCount: PropTypes.number,
+    }),
+    infoDatas: PropTypes.shape({
+      id: PropTypes.number,
+      portal_account: PropTypes.string,
+      nickname: PropTypes.string,
+      major: PropTypes.arrayOf(PropTypes.string),
+      point: PropTypes.number,
+      is_deleted: PropTypes.bool,
+      created_at: PropTypes.string,
+      updated_at: PropTypes.string,
+    }),
+  }),
+  current: PropTypes.string,
+  setCurrent: PropTypes.func,
 };
 
 export default UserInfo;
