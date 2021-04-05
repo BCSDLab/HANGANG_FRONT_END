@@ -9,8 +9,6 @@ export const kickOut = (code = 0) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  console.log(code);
-
   switch (code) {
     case 1:
       // mypage : 로그인이 되어 있지 않은데 url로 접근할 경우
