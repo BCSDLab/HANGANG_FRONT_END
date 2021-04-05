@@ -1,12 +1,22 @@
 import React, { useState } from "react";
 import { FontColor, MyPageSectionHeight } from "static/Shared/commonStyles";
 import styled from "styled-components";
-import Scrap from "./Scrap/Scrap";
+import Scrap from "../Shared/Scrap";
 
 const ScrapSectionWrapper = styled.div`
-  min-height: ${MyPageSectionHeight};
-  padding-top: 48px;
-  height: 100%;
+  height: calc(${MyPageSectionHeight} - 48px);
+  min-height: calc(${MyPageSectionHeight} - 48px);
+  padding-top: 26px;
+  margin-bottom: 48px;
+  overflow-y: scroll;
+
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // FireFox
+
+  //Chrome
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ActionRow = styled.div`
@@ -72,7 +82,20 @@ const ScrapSection = ({ scrapped }) => {
       </ActionRow>
       <ScrapGrid>
         {scrapped.map((attributes, index) => (
-          <Scrap key={index} attributes={attributes} />
+          <>
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+            <Scrap key={index} attributes={attributes} />
+          </>
         ))}
       </ScrapGrid>
     </ScrapSectionWrapper>

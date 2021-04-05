@@ -17,8 +17,19 @@ const Wrapper = styled.div`
 `;
 
 const SectionWrapper = styled.div`
-  min-height: ${MyPageSectionHeight};
+  height: calc(${MyPageSectionHeight} - 48px);
+  min-height: calc(${MyPageSectionHeight} - 48px);
   padding-top: 48px;
+  margin-bottom: 48px;
+  overflow-y: scroll;
+
+  // hide overflow scrollbar
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // FireFox
+  //Chrome
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
   ${Wrapper}:not(:last-child) {
     margin-bottom: 40px;
@@ -218,6 +229,42 @@ const PurchasedSection = () => {
 
   return (
     <SectionWrapper>
+      <Purchased
+        label={label}
+        className={className}
+        professor={professor}
+        materialArr={materialArr}
+      />
+      <Purchased
+        label={label}
+        className={className}
+        professor={professor}
+        materialArr={materialArr}
+      />
+      <Purchased
+        label={label}
+        className={className}
+        professor={professor}
+        materialArr={materialArr}
+      />
+      <Purchased
+        label={label}
+        className={className}
+        professor={professor}
+        materialArr={materialArr}
+      />
+      <Purchased
+        label={label}
+        className={className}
+        professor={professor}
+        materialArr={materialArr}
+      />
+      <Purchased
+        label={label}
+        className={className}
+        professor={professor}
+        materialArr={materialArr}
+      />
       <Purchased
         label={label}
         className={className}

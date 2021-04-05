@@ -1,4 +1,6 @@
 import React from "react";
+import styled from "styled-components";
+
 import {
   BorderColor,
   ConceptColor,
@@ -6,7 +8,7 @@ import {
   MyPageSectionHeight,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import styled from "styled-components";
+import { PointGuidanceArr } from "static/MyPage/PointGuidance";
 
 const Section = styled.section`
   min-height: ${MyPageSectionHeight};
@@ -61,10 +63,17 @@ const TotalLabel = styled(Label)`
 `;
 
 const BreakdownWrapper = styled.div`
-  border-top: 1px solid ${BorderColor};
+  overflow-y: scroll;
+  height: 290px;
+  padding-top: 16px;
   margin-top: 16px;
-  padding: 16px 0px;
-  height: fit-content;
+  border-top: 1px solid ${BorderColor};
+
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Chrome
+  }
 `;
 
 const Breakdown = styled.div`
@@ -121,40 +130,67 @@ const PointSection = ({ breakdown, totalPoint }) => {
         <SystemGuidance>
           포인트 시스템은 강의평가 서비스와 강의자료 서비스에서 사용하는 가상 포인트를
           적립하고, 사용하는 시스템입니다.
-          <br /> 포인트 획득을 위해 허위/중복/성의없는 정보를 작성할 경우, 허위 신고하는
-          경우, 그 외 부적절한 방법으로 포인트 시스템을 남용하는 경우에 서비스 이용이 영구
-          제한될 수 있습니다.
+          <br /> 포인트 획득을 위해 허위 / 중복 / 성의없는 정보를 작성할 경우, 허위
+          신고하는 경우, 그 외 부적절한 방법으로 포인트 시스템을 남용하는 경우에 서비스
+          이용이 영구 제한될 수 있습니다.
         </SystemGuidance>
       </Wrapper>
       <Wrapper>
         <Label>{"포인트 적립 & 사용"}</Label>
-        <UsageGuidance>
-          <Mark>- 가입시 기본 지급</Mark>
-          <PointGuidance>+ 20P</PointGuidance>
-        </UsageGuidance>
-        <UsageGuidance>
-          <Mark>- 강의평가 작성</Mark>
-          <PointGuidance>+ 20P</PointGuidance>
-        </UsageGuidance>
-        <UsageGuidance>
-          <Mark>- 강의자료 업로드</Mark>
-          <PointGuidance>+ 50P</PointGuidance>
-        </UsageGuidance>
-        <UsageGuidance>
-          <Mark>- 강의자료 구입</Mark>
-          <PointGuidance>- 100P</PointGuidance>
-        </UsageGuidance>
+        {PointGuidanceArr.map(({ guidance, point }) => (
+          <UsageGuidance key={guidance}>
+            <Mark>{guidance}</Mark>
+            <PointGuidance>{point}</PointGuidance>
+          </UsageGuidance>
+        ))}
       </Wrapper>
       <div style={{ position: "relative", marginBottom: "24px" }}>
         <Label>내 포인트 내역</Label>
         <TotalLabel>{`합계 : ${totalPoint}P`}</TotalLabel>
         <BreakdownWrapper>
           {breakdown.map(({ id, variance, title, created_at }) => (
-            <Breakdown key={id}>
-              <Title>{title}</Title>
-              <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-              <Variance>{varianceConverter(variance)}</Variance>
-            </Breakdown>
+            <>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+              <Breakdown key={id}>
+                <Title>{title}</Title>
+                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+                <Variance>{varianceConverter(variance)}</Variance>
+              </Breakdown>
+            </>
           ))}
         </BreakdownWrapper>
       </div>
