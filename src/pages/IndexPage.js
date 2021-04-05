@@ -1,16 +1,5 @@
-import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useToasts } from "react-toast-notifications";
+import React from "react";
 import styled from "styled-components";
-
-import AuthAPI from "api/auth";
-import {
-  getValueOnLocalStorage,
-  removeValueOnLocalStorage,
-  setValueOnLocalStorage,
-} from "utils/localStorageUtils";
-import { succeedTokenCheck } from "store/modules/auth";
 
 import { FontColor, InnerContentWidth } from "static/Shared/commonStyles";
 import MajorSearchContainer from "containers/IndexContainers/MajorSearchContainer";
