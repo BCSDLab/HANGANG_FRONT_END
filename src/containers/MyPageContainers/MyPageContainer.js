@@ -1,23 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
-import { debounce } from "lodash";
 import styled from "styled-components";
 
 import MypageAPI from "api/mypage";
-import { logout } from "store/modules/auth";
 import { InnerContentWidth } from "static/Shared/commonStyles";
-import {
-  getValueOnLocalStorage,
-  removeValueOnLocalStorage,
-} from "utils/localStorageUtils";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { kickOut } from "utils/kickOut";
 
 import UserInfo from "components/MyPageComponents/UserInfo";
 import PointSection from "components/MyPageComponents/PointSection";
 import ScrapSection from "components/MyPageComponents/ScrapSection";
-import SettingSection from "components/MyPageComponents/SettingSection";
 import PurchasedSection from "components/MyPageComponents/PurchasedSection";
 import SettingSectionContainer from "./SettingSectionContainer";
 
@@ -47,10 +41,9 @@ const Content = styled.div`
 const MyPageContainer = () => {
   const { addToast } = useToasts();
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
-  const dispatch = useDispatch();
   const history = useHistory();
 
-  const [current, setCurrent] = useState("scrapped");
+  const [current, setCurrent] = useState("pointRecords");
   const [isLoaded, setIsLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
     activityAmount: {},
@@ -67,14 +60,14 @@ const MyPageContainer = () => {
 
   let accessToken;
   if (getValueOnLocalStorage("hangangToken") === null) {
-    // kickOut(1);
+    kickOut(1);
   } else {
     accessToken = getValueOnLocalStorage("hangangToken").access_token;
   }
 
   useEffect(async () => {
     if (isCheckedToken && !isLoggedIn) {
-      // kickOut(1);
+      kickOut(1);
     } else if (isCheckedToken && isLoggedIn) {
       try {
         const { data: activityAmount } = await MypageAPI.getAmountOfActivity(accessToken);
@@ -85,7 +78,6 @@ const MyPageContainer = () => {
           currentNickname: infoDatas.nickname,
         }));
       } catch (error) {
-        console.log("여기요 1");
         kickOut(error.response.data.code);
       } finally {
         setIsLoaded(true);
@@ -101,9 +93,6 @@ const MyPageContainer = () => {
             const { data } = await MypageAPI.getPointRecords(accessToken);
             setPointRecords(data);
           } catch (error) {
-            console.log("여기요 2");
-            console.dir(error);
-
             if (error.response.data.code === 5) {
               history.push("/");
               addToast("토큰이 만료되었습니다. 다시 로그인 해주세요.", {
@@ -116,9 +105,8 @@ const MyPageContainer = () => {
         break;
       case "scrapped":
         if (scrapped.length === 0) {
-          const { data } = await MypageAPI.getScrapReviews(accessToken);
+          const { data } = await MypageAPI.getScrapLecture(accessToken);
           setScrapped(data);
-          console.log(data);
         }
         break;
       default:
@@ -142,7 +130,9 @@ const MyPageContainer = () => {
                 />
               )}
               {current === "purchased" && <PurchasedSection />}
-              {current === "scrapped" && <ScrapSection scrapped={scrapped} />}
+              {current === "scrapped" && (
+                <ScrapSection scrapped={scrapped} setScrapped={setScrapped} />
+              )}
               {current === "setting" && (
                 <SettingSectionContainer
                   userInfo={userInfo}

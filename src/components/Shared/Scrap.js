@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   BorderColor,
   ConceptColor,
@@ -16,6 +16,7 @@ const ScrapWrapper = styled.div`
   border-radius: 8px;
   border: solid 1px ${BorderColor};
   background-color: ${({ isChosen }) => (isChosen ? `${BorderColor}` : "#fff")};
+  cursor: ${({ isEditMode }) => (isEditMode ? "pointer" : "default")};
 `;
 
 const LeftSide = styled.div`
@@ -94,25 +95,35 @@ const Bookmark = styled.img.attrs({
  *
  * Usage : ~/my(scrapped) , ~/lectures
  */
-const Scrap = ({ isChosen, setIsChosen, ...rest }) => {
-  console.log(rest);
+const Scrap = ({
+  isScrapped = false,
+  isChosen = false,
+  isEditMode = false,
+  chooseScrap = () => {},
+  ...rest
+}) => {
   return (
-    <ScrapWrapper onClick={() => setIsChosen((prev) => !prev)} isChosen={isChosen}>
-      <Bookmark />
+    <ScrapWrapper
+      onClick={() => isEditMode && chooseScrap(rest.data.id)}
+      isEditMode={isEditMode}
+      isChosen={isChosen}
+    >
+      {isScrapped && <Bookmark />}
       <LeftSide>
         <Title>
-          문명과 역사<Amount>(0)</Amount>
+          {rest.data.name}
+          <Amount>({rest.data.review_count})</Amount>
         </Title>
-        <Professor>김유진</Professor>
+        <Professor>{rest.data.professor}</Professor>
         <HashTagWrapper>
-          {["배운거많음", "진심수면제", "교수님좋음"].map((elem, index) => (
-            <HashTag key={index}>{`# ${elem} `} </HashTag>
+          {rest.data.top3_hash_tag.map(({ id, tag }) => (
+            <HashTag key={id}>{`# ${tag} `} </HashTag>
           ))}
         </HashTagWrapper>
       </LeftSide>
       <RightSide>
-        <Classification>교양필수</Classification>
-        <Rating>3.5</Rating>
+        <Classification>{rest.data.classification}</Classification>
+        <Rating>{rest.data.total_rating}</Rating>
       </RightSide>
     </ScrapWrapper>
   );

@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const axiosConfig = (accessToken) => {
+const axiosConfig = (accessToken, data = null) => {
   let config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   };
+  if (data !== null) config["data"] = data;
   return config;
 };
 
@@ -26,8 +27,15 @@ export default {
     const response = await axios.get("/user/purchase", axiosConfig(accessToken));
     return response;
   },
-  getScrapReviews: async (accessToken) => {
-    const response = await axios.get("/reviews/scrap", axiosConfig(accessToken));
+  getScrapLecture: async (accessToken) => {
+    const response = await axios.get("/scrap/lecture", axiosConfig(accessToken));
+    return response;
+  },
+  deleteScrapLecture: async (accessToken, id = []) => {
+    const response = await axios.delete(
+      "/scrap/lecture",
+      axiosConfig(accessToken, { id })
+    );
     return response;
   },
   updateUserInfo: async (accessToken, major = [], nickname = "") => {
@@ -38,14 +46,6 @@ export default {
     const response = await axios.put("/user/me", body, axiosConfig(accessToken));
     return response;
   },
-  //   deleteScrapReviews: async (accessToken) => {
-  //     const response = await axios.delete("/reviews/scrap", axiosConfig(accessToken));
-  //     return response;
-  //   },
-  //   changeInfo: async(user) => {
-  //     const response = await axios.put("/user/me", axiosConfig(accessToken));
-  //     return response;
-  //   }
   deleteUser: async (accessToken) => {
     const response = await axios.delete("/user/me", axiosConfig(accessToken));
     return response;

@@ -1,7 +1,11 @@
-import React, { useState } from "react";
-import { FontColor, MyPageSectionHeight } from "static/Shared/commonStyles";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+
+import MypageAPI from "api/mypage";
+import { FontColor, MyPageSectionHeight } from "static/Shared/commonStyles";
+
 import Scrap from "../Shared/Scrap";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const ScrapSectionWrapper = styled.div`
   height: calc(${MyPageSectionHeight} - 48px);
@@ -34,8 +38,10 @@ const ActionLabel = styled.label`
 `;
 
 const AllChoose = styled(ActionLabel)`
+  top: -4px;
   left: 0;
   width: fit-content;
+  text-align: center;
 `;
 
 const CheckImg = styled.img.attrs({
@@ -45,6 +51,7 @@ const CheckImg = styled.img.attrs({
 })`
   width: 18px;
   margin-right: 4px;
+  margin-bottom: 2px;
 `;
 
 const ScrapGrid = styled.div`
@@ -55,47 +62,86 @@ const ScrapGrid = styled.div`
   margin-top: 30px;
 `;
 
-const ScrapSection = ({ scrapped }) => {
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
+const ScrapSection = ({ scrapped, setScrapped }) => {
+  const [selectedScrap, setSelectedScrap] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const deleteScrap = () => {
+  /**
+   * chooseScrap
+   * id를 받아 selectedScrap에 추가 또는 제거합니다.
+   * @param {number} id
+   */
+  const chooseScrap = (id) => {
+    if (selectedScrap.includes(id)) {
+      setSelectedScrap((prev) => prev.filter((elem) => elem !== id));
+    } else {
+      console.log(id);
+      setSelectedScrap((prev) => [...prev, id]);
+    }
+  };
+
+  /**
+   * chooseAll
+   * 전체 선택 클릭 시 모든 내 스크랩 id를 selectedScrap에 추가합니다.
+   */
+  const chooseAll = () => {
+    scrapped.forEach(({ id }) => {
+      if (!selectedScrap.includes(id)) {
+        setSelectedScrap((prev) => [...prev, id]);
+      }
+    });
+  };
+
+  /**
+   * deleteScrap
+   * 선택된 자료를 삭제합니다.
+   * 자료가 선택되어 있지 않을 경우 alert 창을 내보냅니다.
+   * 자료가 선택되었을 경우 delete API 호출과 함께 현재 scrap state도 변경시켜 줍니다.
+   */
+  const deleteScrap = async () => {
     if (confirm("정말로 삭제하시겠습니까?")) {
-      //API CALL
-      setIsDeleteMode(false);
-      alert("정상적으로 자료들을 삭제하였습니다.");
+      if (selectedScrap.length === 0) {
+        alert("자료를 선택해주세요.");
+      } else {
+        try {
+          let accessToken = getValueOnLocalStorage("hangangToken").accessToken;
+
+          await MypageAPI.deleteScrapLecture(accessToken, selectedScrap);
+          setScrapped((prev) => prev.filter((elem) => !selectedScrap.includes(elem.id)));
+          setIsEditMode(false);
+          alert("정상적으로 자료들을 삭제하였습니다.");
+        } catch (err) {
+          console.dir(err);
+          alert("자료 삭제에 실패하였습니다.");
+        }
+      }
     }
   };
 
   return (
     <ScrapSectionWrapper>
       <ActionRow>
-        {!isDeleteMode && (
-          <ActionLabel onClick={() => setIsDeleteMode(true)}>편집</ActionLabel>
+        {!isEditMode && (
+          <ActionLabel onClick={() => setIsEditMode(true)}>편집</ActionLabel>
         )}
-        {isDeleteMode && <ActionLabel onClick={() => deleteScrap()}>삭제</ActionLabel>}
-        {isDeleteMode && (
-          <AllChoose>
+        {isEditMode && <ActionLabel onClick={() => deleteScrap()}>삭제</ActionLabel>}
+        {isEditMode && (
+          <AllChoose onClick={() => chooseAll()}>
             <CheckImg />
             전체선택
           </AllChoose>
         )}
       </ActionRow>
       <ScrapGrid>
-        {scrapped.map((attributes, index) => (
-          <>
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-            <Scrap key={index} attributes={attributes} />
-          </>
+        {scrapped.map((data) => (
+          <Scrap
+            key={data.id}
+            data={data}
+            isScrapped={true}
+            isChosen={selectedScrap.includes(data.id)}
+            isEditMode={isEditMode}
+            chooseScrap={chooseScrap}
+          />
         ))}
       </ScrapGrid>
     </ScrapSectionWrapper>
