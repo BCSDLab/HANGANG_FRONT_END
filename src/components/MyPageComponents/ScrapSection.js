@@ -76,7 +76,6 @@ const ScrapSection = ({ scrapped, setScrapped }) => {
     if (selectedScrap.includes(id)) {
       setSelectedScrap((prev) => prev.filter((elem) => elem !== id));
     } else {
-      console.log(id);
       setSelectedScrap((prev) => [...prev, id]);
     }
   };

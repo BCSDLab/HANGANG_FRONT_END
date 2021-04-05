@@ -184,7 +184,6 @@ const Purchased = ({ label, lecture, uploadFiles }) => {
 };
 
 const PurchasedSection = ({ purchased }) => {
-  console.log(purchased);
   return (
     <SectionWrapper>
       {purchased.map(({ id, title, lecture, uploadFiles }) => (
