@@ -1,4 +1,7 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+
 import MaterialIcon from "static/MyPage/MateriaIcon";
 import {
   BorderColor,
@@ -6,7 +9,6 @@ import {
   MyPageSectionHeight,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
@@ -91,6 +93,7 @@ const RightIcon = styled.img.attrs({
 
 const LeftIcon = styled(RightIcon)`
   left: 0;
+  transform: rotate(180deg);
 `;
 
 const MaterialName = styled.span`
@@ -101,6 +104,11 @@ const MaterialName = styled.span`
   color: ${FontColor};
 `;
 
+/**
+ * type, name을 parameter로 받습니다.
+ * type에 따라 확장자 아이콘을 보여줍니다.
+ * name은 7글자가 넘어갈 경우 말줄임표로 보여줍니다.
+ */
 const Material = ({ type, name }) => {
   const nameSlicer = (name) => {
     let convertedName = name;
@@ -120,165 +128,73 @@ const Material = ({ type, name }) => {
   );
 };
 
-const Purchased = ({ label, className, professor, materialArr }) => {
-  const rowRef = useRef();
+const Purchased = ({ label, lecture, uploadFiles }) => {
+  const slidingDistance = 400;
+  const materialRef = useRef();
+  const [current, setCurrent] = useState(0);
+  const [coverage, setCoverage] = useState(0);
 
+  /**
+   * 마운트 되면서 자료들의 총 길이를 이동해야 할 거리로 나눕니다.
+   * coverage는 섹션이라고 생각하면 될 것 같습니다.
+   * 처음, 그리고 끝 섹션에서 커서를 없애기 위해 두었습니다.
+   */
+  useEffect(() => {
+    setCoverage(Math.ceil(materialRef.current.offsetWidth / slidingDistance));
+  }, []);
+
+  /**
+   * current가 변화할 때마다 X축으로 이동시킵니다.
+   */
+  useEffect(() => {
+    materialRef.current.style.transform = `translateX(${current * slidingDistance}px)`;
+  }, [current]);
+
+  /**
+   * right일 경우 current에 -1, left는 +1을 해줍니다.
+   * @param {string} direction
+   */
   const move = (direction) => {
-    // console.log(rowRef.current.offsetWidth);
-    let slidingDistance = "300px";
     if (direction === "right") {
-      slidingDistance = `-${slidingDistance}`;
+      setCurrent((prev) => prev - 1);
+    } else {
+      setCurrent((prev) => prev + 1);
     }
-
-    rowRef.current.style.transform = `translateX(${slidingDistance})`;
   };
 
   return (
     <Wrapper>
       <Label>{label}</Label>
       <SubLabel>
-        {className}
+        {lecture.name}
         <MiddleLine />
-        {professor}
+        {lecture.professor}
       </SubLabel>
-      <MaterialRow ref={rowRef}>
-        {materialArr.map(({ type, name }, index) => (
-          <Material type={type} name={name} key={index} />
+      <MaterialRow ref={materialRef}>
+        {uploadFiles.map(({ id, ext, fileName }) => (
+          <Material type={ext} name={fileName} key={id} />
         ))}
       </MaterialRow>
-      <LeftIcon onClick={() => move("left")} />
-      <RightIcon onClick={() => move("right")} />
+      {current !== 0 && <LeftIcon onClick={() => move("left")} />}
+      {current !== 0 && current !== -coverage && (
+        <RightIcon onClick={() => move("right")} />
+      )}
     </Wrapper>
   );
 };
 
-const PurchasedSection = () => {
-  let label = "디자인논리논술 필기본인데 참고하세요.";
-  let className = "디자인논리 및 경영";
-  let professor = "카페스트라니 파올로";
-  let materialArr = [
-    {
-      type: "doc",
-      name: "박종호",
-    },
-    {
-      type: "pdf",
-      name: "박종호",
-    },
-    {
-      type: "xls",
-      name: "박종호박종호박종호박종호박종호박종호박종호",
-    },
-    {
-      type: "ppt",
-      name: "박종호",
-    },
-    {
-      type: "xls",
-      name: "박종호",
-    },
-    {
-      type: "doc",
-      name: "박종호",
-    },
-    {
-      type: "pdf",
-      name: "박종호",
-    },
-    {
-      type: "xls",
-      name: "박종호박종호박종호박종호박종호박종호박종호",
-    },
-    {
-      type: "ppt",
-      name: "박종호",
-    },
-    {
-      type: "doc",
-      name: "박종호",
-    },
-    {
-      type: "pdf",
-      name: "박종호",
-    },
-    {
-      type: "xls",
-      name: "박종호박종호박종호박종호박종호박종호박종호",
-    },
-    {
-      type: "ppt",
-      name: "박종호",
-    },
-    {
-      type: "hwp",
-      name: "박종호",
-    },
-    {
-      type: "ppt",
-      name: "박종호",
-    },
-    {
-      type: "png",
-      name: "박종호",
-    },
-    {
-      type: "xls",
-      name: "박종호",
-    },
-  ];
-
+const PurchasedSection = ({ purchased }) => {
   return (
     <SectionWrapper>
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
-      <Purchased
-        label={label}
-        className={className}
-        professor={professor}
-        materialArr={materialArr}
-      />
+      {purchased.map(({ id, title, lecture, uploadFiles }) => (
+        <Purchased key={id} label={title} lecture={lecture} uploadFiles={uploadFiles} />
+      ))}
     </SectionWrapper>
   );
+};
+
+PurchasedSection.propTypes = {
+  purchased: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default PurchasedSection;

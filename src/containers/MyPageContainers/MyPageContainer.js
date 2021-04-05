@@ -103,10 +103,24 @@ const MyPageContainer = () => {
           }
         }
         break;
+      case "purchased":
+        if (purchased.length === 0) {
+          try {
+            const { data } = await MypageAPI.getPurchasedRecords(accessToken);
+            setPurchased(data);
+          } catch (error) {
+            kickOut(5);
+          }
+        }
+        break;
       case "scrapped":
         if (scrapped.length === 0) {
-          const { data } = await MypageAPI.getScrapLecture(accessToken);
-          setScrapped(data);
+          try {
+            const { data } = await MypageAPI.getScrapLecture(accessToken);
+            setScrapped(data);
+          } catch (error) {
+            kickOut(5);
+          }
         }
         break;
       default:
@@ -116,7 +130,9 @@ const MyPageContainer = () => {
 
   return (
     <Wrapper>
-      {isLoaded && (
+      {isCheckedToken && isLoggedIn && !isLoaded && <span>로딩중</span>}
+
+      {isCheckedToken && isLoggedIn && isLoaded && (
         <>
           <UpperContent>
             <UserInfo userInfo={userInfo} current={current} setCurrent={setCurrent} />
@@ -129,7 +145,7 @@ const MyPageContainer = () => {
                   totalPoint={userInfo.infoDatas.point}
                 />
               )}
-              {current === "purchased" && <PurchasedSection />}
+              {current === "purchased" && <PurchasedSection purchased={purchased} />}
               {current === "scrapped" && (
                 <ScrapSection scrapped={scrapped} setScrapped={setScrapped} />
               )}
@@ -145,35 +161,6 @@ const MyPageContainer = () => {
           </BelowContent>
         </>
       )}
-      {/* {isCheckedToken && isLoggedIn && !isLoaded && <span>로딩중</span>}
-
-      {isCheckedToken && isLoggedIn && isLoaded && (
-        <>
-          <UpperContent>
-            <UserInfo userInfo={userInfo} current={current} setCurrent={setCurrent} />
-          </UpperContent>
-          <BelowContent>
-            <Content>
-              {current === "pointRecords" && (
-                <PointSection
-                  breakdown={pointRecords}
-                  totalPoint={userInfo.infoDatas.point}
-                />
-              )}
-              {current === "purchased" && <PurchasedSection />}
-              {current === "scrapped" && <ScrapSection scrapped={scrapped} />}
-              {current === "setting" && (
-                <SettingSectionContainer
-                  userInfo={userInfo}
-                  setUserInfo={setUserInfo}
-                  nicknameTest={nicknameTest}
-                  setNicknameTest={setNicknameTest}
-                />
-              )}
-            </Content>
-          </BelowContent>
-        </>
-      )} */}
     </Wrapper>
   );
 };
