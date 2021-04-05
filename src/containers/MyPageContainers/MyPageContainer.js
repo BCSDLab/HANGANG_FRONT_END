@@ -144,7 +144,7 @@ const MyPageContainer = () => {
 
   return (
     <Wrapper>
-      {isCheckedToken && isLoggedIn && !isLoaded && <LoadingSpinner height={minHeight} />}
+      {isCheckedToken && isLoggedIn && !isLoaded && <LoadingSpinner height="1005px" />}
 
       {isCheckedToken && isLoggedIn && isLoaded && (
         <>
