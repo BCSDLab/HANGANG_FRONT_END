@@ -149,48 +149,11 @@ const PointSection = ({ breakdown, totalPoint }) => {
         <TotalLabel>{`합계 : ${totalPoint}P`}</TotalLabel>
         <BreakdownWrapper>
           {breakdown.map(({ id, variance, title, created_at }) => (
-            <>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-              <Breakdown key={id}>
-                <Title>{title}</Title>
-                <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
-                <Variance>{varianceConverter(variance)}</Variance>
-              </Breakdown>
-            </>
+            <Breakdown key={id}>
+              <Title>{title}</Title>
+              <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
+              <Variance>{varianceConverter(variance)}</Variance>
+            </Breakdown>
           ))}
         </BreakdownWrapper>
       </div>
