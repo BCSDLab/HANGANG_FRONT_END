@@ -9,6 +9,7 @@ import HelpField from "components/AuthComponents/Login/HelpField";
 import LoginForm from "components/AuthComponents/Login/LoginForm";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 import { succeedTokenCheck } from "store/modules/auth";
+import { kickOut } from "utils/kickOut";
 
 /**
  * LoginContainer
@@ -18,7 +19,7 @@ import { succeedTokenCheck } from "store/modules/auth";
  */
 const LoginContainer = () => {
   const { addToast } = useToasts();
-  const { account } = useSelector((state) => state.authReducer);
+  const { account, isLoggedIn } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -72,18 +73,23 @@ const LoginContainer = () => {
   };
 
   return (
-    <Container>
-      <LoginForm
-        autoLogin={autoLogin}
-        error={error}
-        loginInfo={loginInfo}
-        setAutoLogin={setAutoLogin}
-        setError={setError}
-        onChange={onChange}
-        onSubmit={onSubmit}
-      />
-      <HelpField />
-    </Container>
+    <>
+      {isLoggedIn && kickOut(2)}
+      {!isLoggedIn && (
+        <Container>
+          <LoginForm
+            autoLogin={autoLogin}
+            error={error}
+            loginInfo={loginInfo}
+            setAutoLogin={setAutoLogin}
+            setError={setError}
+            onChange={onChange}
+            onSubmit={onSubmit}
+          />
+          <HelpField />
+        </Container>
+      )}
+    </>
   );
 };
 

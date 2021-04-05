@@ -101,7 +101,7 @@ const FindPwContainer = () => {
 
   return (
     <>
-      {!isVerifiedEmail && kickOut()}
+      {!isVerifiedEmail && kickOut(0)}
       {isVerifiedEmail && (
         <Container>
           <FindPwForm

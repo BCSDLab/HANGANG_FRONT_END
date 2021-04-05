@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 
-import { accessWithNotVerified, logout } from "store/modules/auth";
+import { logout } from "store/modules/auth";
 
 export const kickOut = (code = 0) => {
   const { addToast } = useToasts();
@@ -19,6 +19,14 @@ export const kickOut = (code = 0) => {
         autoDismiss: true,
       });
       break;
+    case 2:
+      history.push("/");
+      dispatch(logout({ errorCode: 2 }));
+      addToast("이미 로그인이 되어있습니다.", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      break;
     case 8:
       // mypage : 토큰 만료
       history.push("/");
@@ -30,8 +38,8 @@ export const kickOut = (code = 0) => {
       break;
     default:
       // URL 입력으로 findpw, signup 접근하려 할 시
-      history.push("/login");
-      dispatch(accessWithNotVerified());
+      history.push("/");
+      dispatch(logout({ errorCode: 0 }));
       addToast("허용되지 않은 접근입니다.", {
         appearance: "error",
         autoDismiss: true,
