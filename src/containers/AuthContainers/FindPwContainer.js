@@ -1,12 +1,14 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 
 import AuthAPI from "api/auth";
+import { kickOut } from "utils/kickOut";
+
 import Container from "components/AuthComponents/Shared/Container";
 import FindPwForm from "components/AuthComponents/FindPw/FindPwForm";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 
 /**
  * FindPwContainer
@@ -97,24 +99,11 @@ const FindPwContainer = () => {
     }
   };
 
-  const kickOut = () => {
-    history.push("/login");
-    alert("이메일 인증 이후에 접근할 수 있습니다.");
-  };
-
   return (
     <>
-      {!isVerifiedEmail && kickOut()}
-      {isVerifiedEmail && (
-        <Container>
-          <FindPwForm
-            error={error}
-            infos={infos}
-            onChange={onChange}
-            onSubmit={onSubmit}
-          />
-        </Container>
-      )}
+      <Container>
+        <FindPwForm error={error} infos={infos} onChange={onChange} onSubmit={onSubmit} />
+      </Container>
     </>
   );
 };

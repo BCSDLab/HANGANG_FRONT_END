@@ -5,12 +5,15 @@ import { ToastProvider } from "react-toast-notifications";
 import store from "store";
 import App from "App";
 import GlobalStyle from "GlobalStyle";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDom.render(
   <Provider store={store}>
     <ToastProvider>
       <GlobalStyle />
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </ToastProvider>
   </Provider>,
   document.getElementById("root")

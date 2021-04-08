@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import { BorderColor, ConceptColor, InnerContentWidth } from "static/Shared/commonStyles";
+import { removeValueOnLocalStorage } from "utils/localStorageUtils";
+import { logout } from "store/modules/auth";
 
 const NavigationWrapper = styled.nav`
   display: flex;
@@ -43,7 +45,7 @@ const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 98px;
+  width: 107px;
   font-size: 17px;
   color: ${ConceptColor};
   cursor: pointer;
@@ -60,18 +62,19 @@ const currentConverter = (current) => {
     case "/timetables":
       return 3;
     default:
-      return;
+      return -1;
   }
 };
 
 const NavigationUnderline = styled.div`
+  display: ${({ current }) => (currentConverter(current) === -1 ? "none" : "block")};
   position: absolute;
   bottom: -1px;
-  width: 98px;
+  width: 107px;
   height: 2px;
   background-color: ${ConceptColor};
   transition: transform 0.3s ease;
-  transform: translateX(${({ current }) => currentConverter(current) * 98}px);
+  transform: translateX(${({ current }) => currentConverter(current) * 107}px);
 `;
 
 const AuthBox = styled.div`
@@ -109,13 +112,14 @@ const MiddleLine = styled.div`
  * ignorePathList는 AuthPage 관련 path들입니다.
  */
 const NavigationContainer = () => {
-  const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
   const ignorePathList = ["/login", "/findpwauth", "/findpw", "/signupauth", "/signup"];
   const [isVisible, setIsVisible] = useState(
     !ignorePathList.includes(window.location.pathname)
   );
   const history = useHistory();
   const [current, setCurrent] = useState(window.location.pathname);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     return history.listen((loc) => {
@@ -123,6 +127,12 @@ const NavigationContainer = () => {
       setIsVisible(!ignorePathList.includes(loc.pathname));
     });
   }, [history]);
+
+  const executeLogout = () => {
+    dispatch(logout({ errorCode: null }));
+    removeValueOnLocalStorage("hangangToken");
+    history.push("/");
+  };
 
   return (
     isVisible && (
@@ -138,15 +148,17 @@ const NavigationContainer = () => {
             <StyledLink to="/timetables">시간표</StyledLink>
             <NavigationUnderline current={current} />
           </StyledLinkWrapper>
-          {isCheckedToken && (
-            <AuthBox>
-              {!isLoggedIn && <Item to="/login">로그인</Item>}
-              {isLoggedIn && <Item to="/my">마이페이지</Item>}
-              <MiddleLine />
-              {!isLoggedIn && <Item to="/signupauth">회원가입</Item>}
-              {isLoggedIn && <LogoutButton as="button">로그아웃</LogoutButton>}
-            </AuthBox>
-          )}
+          <AuthBox>
+            {!isLoggedIn && <Item to="/login">로그인</Item>}
+            {isLoggedIn && <Item to="/my">마이페이지</Item>}
+            <MiddleLine />
+            {!isLoggedIn && <Item to="/signupauth">회원가입</Item>}
+            {isLoggedIn && (
+              <LogoutButton as="button" onClick={() => executeLogout()}>
+                로그아웃
+              </LogoutButton>
+            )}
+          </AuthBox>
         </InnerContent>
       </NavigationWrapper>
     )

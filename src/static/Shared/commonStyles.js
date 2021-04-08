@@ -14,3 +14,6 @@ export const BorderColor = "#eeeeee";
 export const ConceptColor = "#238bfe";
 
 export const InnerContentWidth = "1135px";
+
+//MyPage
+export const MyPageSectionHeight = "720px";
