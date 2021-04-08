@@ -5,9 +5,10 @@
 (작업 내역 확인하기 편하도록 gif 첨부)
 
 ## :heavy_check_mark: 셀프 체크리스트
+
 > ~최소 1명 이상의 assign을 받아야만 Merge 가능합니다.~
 
-- [x] Warning Message가 발생하지 않았나요? 
+- [x] Warning Message가 발생하지 않았나요?
 - [x] Coding Convention을 준수했나요?
 - [x] 'npm run lint'나 'yarn lint'를 실행하였나요?
 
@@ -26,4 +27,3 @@
 - (특이 사항 1)
 - (특이 사항 2)
 - (특이 사항 3)
-
