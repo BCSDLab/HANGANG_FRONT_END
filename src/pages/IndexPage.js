@@ -10,14 +10,14 @@ import LectureRankingContainer from "containers/IndexContainers/LectureRankingCo
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
-  margin: 0 auto;
+  height: fit-content;
+  margin: 40px auto 100px auto;
 `;
 
 const Banner = styled.div`
   position: relative;
   min-width: ${InnerContentWidth};
   height: 289px;
-  margin-top: 40px;
 `;
 
 const CatchPhraseWrapper = styled.div`
@@ -100,7 +100,7 @@ const IndexPage = () => (
     <MajorSearchSection>
       <MajorSearchContainer />
     </MajorSearchSection>
-    <div style={{ display: "flex", marginBottom: "100px" }}>
+    <div style={{ display: "flex" }}>
       <LectureRankingSection>
         <LectureRankingContainer />
       </LectureRankingSection>
