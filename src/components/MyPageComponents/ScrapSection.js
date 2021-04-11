@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import MypageAPI from "api/mypage";
 import { FontColor, MyPageSectionHeight } from "static/Shared/commonStyles";
 
-import Scrap from "../Shared/Scrap";
+import LectureCard from "../Shared/LectureCard";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const ScrapSectionWrapper = styled.div`
@@ -134,7 +134,7 @@ const ScrapSection = ({ scrapped, setScrapped }) => {
       </ActionRow>
       <ScrapGrid>
         {scrapped.map((data) => (
-          <Scrap
+          <LectureCard
             key={data.id}
             data={data}
             isScrapped={true}

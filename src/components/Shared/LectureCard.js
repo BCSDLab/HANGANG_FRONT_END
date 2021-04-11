@@ -7,7 +7,7 @@ import {
 } from "static/Shared/commonStyles";
 import styled from "styled-components";
 
-const ScrapWrapper = styled.div`
+const Wrapper = styled.div`
   position: relative;
   display: flex;
   width: 555px;
@@ -91,11 +91,11 @@ const Bookmark = styled.img.attrs({
 `;
 
 /**
- * Scrap
+ * LectureCard
  *
  * Usage : ~/my(scrapped) , ~/lectures
  */
-const Scrap = ({
+const LectureCard = ({
   isScrapped = false,
   isChosen = false,
   isEditMode = false,
@@ -103,7 +103,7 @@ const Scrap = ({
   ...rest
 }) => {
   return (
-    <ScrapWrapper
+    <Wrapper
       onClick={() => isEditMode && chooseScrap(rest.data.id)}
       isEditMode={isEditMode}
       isChosen={isChosen}
@@ -125,8 +125,8 @@ const Scrap = ({
         <Classification>{rest.data.classification}</Classification>
         <Rating>{rest.data.total_rating}</Rating>
       </RightSide>
-    </ScrapWrapper>
+    </Wrapper>
   );
 };
 
-export default Scrap;
+export default LectureCard;

@@ -9,7 +9,10 @@ import {
   InnerContentWidth,
 } from "static/Shared/commonStyles";
 
+import lectureFilterList from "static/LecturePage/lectureFilterList.json";
+
 import LectureSearchForm from "components/LecturesComponents/LectureSearchForm";
+import FilterBox from "components/Shared/FilterBox";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -59,18 +62,28 @@ const FilterImage = styled.img.attrs({
   right: 0;
   width: 24px;
   height: 24px;
+  cursor: pointer;
 `;
 
 const LecturesContainer = () => {
+  const defaultFilterOptions = {
+    sort: "평점순",
+    classification: [],
+    hashtag: [],
+  };
+
   const [filterOptions, setFilterOptions] = useState({
-    classification: [""],
-    department: "",
-    hashtag: ["0"],
     keyword: "",
+    department: "",
     limit: 8,
     page: 1,
-    sort: "평점순",
+    ...defaultFilterOptions,
   });
+  const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
+
+  const setDefault = () => {
+    setFilterOptions((prev) => ({ ...prev, ...defaultFilterOptions }));
+  };
 
   const clickFilterButton = (e, department) => {
     if (filterOptions.department !== department) {
@@ -83,6 +96,7 @@ const LecturesContainer = () => {
   useEffect(() => {
     console.log(filterOptions);
   }, [filterOptions]);
+
   return (
     <Wrapper>
       <SearchSection>
@@ -99,7 +113,16 @@ const LecturesContainer = () => {
             {label}
           </FilterButton>
         ))}
-        <FilterImage />
+        <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
+        {isFilterBoxVisible && (
+          <FilterBox
+            filterList={lectureFilterList}
+            filterOptions={filterOptions}
+            setFilterOptions={setFilterOptions}
+            setIsFilterBoxVisible={setIsFilterBoxVisible}
+            setDefault={setDefault}
+          />
+        )}
       </FilterSection>
     </Wrapper>
   );
