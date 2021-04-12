@@ -1,11 +1,13 @@
 import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+
 import {
   BorderColor,
   ConceptColor,
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
@@ -134,6 +136,22 @@ const LectureCard = ({
       </RightSide>
     </Wrapper>
   );
+};
+
+LectureCard.defaultProps = {
+  isScrapped: false,
+  isChosen: false,
+  isEditMode: false,
+  chooseScrap: () => {},
+  rest: {},
+};
+
+LectureCard.propTypes = {
+  isScrapped: PropTypes.bool,
+  isChosen: PropTypes.bool,
+  isEditMode: PropTypes.bool,
+  chooseScrap: PropTypes.func,
+  rest: PropTypes.object,
 };
 
 export default LectureCard;

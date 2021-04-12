@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
 
 import {
   BorderColor,
@@ -143,6 +144,12 @@ const labelConverter = (key) => {
   }
 };
 
+/**
+ * 강의평, 강의자료에서 공동으로 사용합니다.
+ *
+ * 각 페이지는 type에 따라 구분합니다. (type = "lecture" | "materials")
+ * filterList는 필터해야 할 항목입니다. static에 json 형태로 보관합니다.
+ */
 const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
   const dispatch = useDispatch();
   const filterOptions = useSelector((state) => state.lectureReducer);
@@ -156,6 +163,14 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
     dispatch(requestLectures());
   };
 
+  /**
+   * filterOption의 현재 값과 비교하여
+   * 일치하거나, 현재 속해있는 값이 있으면 true를 반환합니다.
+   *
+   * @param {string} key
+   * @param {string} value
+   * @returns boolean
+   */
   const isChoiced = (key, value) => {
     switch (key) {
       case "sort":
@@ -197,6 +212,18 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
       <ApplyButton onClick={() => apply()} />
     </Wrapper>
   );
+};
+
+FilterBox.defaultProps = {
+  type: "lecture",
+  filterList: {},
+  setIsFilterBoxVisible: () => {},
+};
+
+FilterBox.propTypes = {
+  type: PropTypes.string,
+  filterList: PropTypes.object,
+  setIsFilterBoxVisible: PropTypes.func,
 };
 
 export default FilterBox;
