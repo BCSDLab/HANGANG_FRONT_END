@@ -1,5 +1,6 @@
 // Actions
 const SET_DEPARTMENT = "SET_DEPARTMENT";
+const SET_KEYWORD = "SET_KEYWORD";
 const SET_LECTURE_FILTER = "SET_LECTURE_FILTER";
 const SET_DEFAULT_LECTURE_FILTER = "SET_DEFAULT_LECTURE_FILTER";
 
@@ -8,6 +9,7 @@ const SET_LOADING_FINISHED = "SET_LOADING_FINISHED";
 
 // Action Creators
 export const setDepartment = (payload) => ({ type: SET_DEPARTMENT, payload });
+export const setKeyword = (payload) => ({ type: SET_KEYWORD, payload });
 export const setLectureFilter = (payload) => ({ type: SET_LECTURE_FILTER, payload });
 export const setDefaultLectureFilter = () => ({ type: SET_DEFAULT_LECTURE_FILTER });
 
@@ -35,6 +37,11 @@ export default function lectureReducer(state = INITIAL_FILTER_OPTIONS, action) {
       return {
         ...state,
         department: action.payload.department,
+      };
+    case SET_KEYWORD:
+      return {
+        ...state,
+        keyword: action.payload.keyword,
       };
     case SET_LECTURE_FILTER:
       // eslint-disable-next-line no-case-declarations

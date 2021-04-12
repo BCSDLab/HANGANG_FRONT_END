@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { ConceptColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import { useDispatch } from "react-redux";
+import { requestLectures, setKeyword } from "store/modules/lectures";
 
 const Wrapper = styled.div`
   position: relative;
@@ -39,6 +41,16 @@ const SearchIcon = styled.img.attrs({
   cursor: pointer;
 `;
 
+const CancelIcon = styled(SearchIcon).attrs({
+  src:
+    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/lecturespage/exit.png",
+  alt: "cancel",
+})`
+  right: 53px;
+  cursor: pointer;
+  z-index: 9990;
+`;
+
 const SearchForm = styled.form`
   all: unset;
 `;
@@ -55,30 +67,41 @@ const Input = styled.input.attrs({
   border: none;
   outline: none;
 
-  ::placeholder {
-    color: ${PlaceholderColor};
+  ::-webkit-search-cancel-button {
+    display: none;
   }
 `;
 
 const LectureSearchForm = () => {
+  const dispatch = useDispatch();
   const [term, setTerm] = useState("");
+  const [isVisibleCancelButton, setIsVisibleCancelButton] = useState(false);
+
+  useEffect(() => {
+    if (term.length !== 0) setIsVisibleCancelButton(true);
+    else setIsVisibleCancelButton(false);
+  }, [term]);
 
   const onSearch = (e) => {
     e.preventDefault();
-    console.log(term);
+    dispatch(setKeyword({ keyword: term }));
+    dispatch(requestLectures());
+  };
+
+  const clickCancelButton = () => {
+    setTerm("");
+    dispatch(setKeyword({ keyword: "" }));
+    dispatch(requestLectures());
   };
 
   return (
     <Wrapper>
       <Label>강의평가</Label>
       <Delimiter />
-      <SearchForm
-        value={term}
-        onChange={(e) => setTerm(e.target.value)}
-        onSubmit={(e) => onSearch(e)}
-      >
-        <Input />
+      <SearchForm onSubmit={(e) => onSearch(e)}>
+        <Input value={term} onChange={(e) => setTerm(e.target.value)} />
       </SearchForm>
+      {isVisibleCancelButton && <CancelIcon onClick={() => clickCancelButton()} />}
       <SearchIcon />
     </Wrapper>
   );

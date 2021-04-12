@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
+import LectureAPI from "api/lecture";
+import MypageAPI from "api/mypage";
+
+import LectureSearchForm from "components/LecturesComponents/LectureSearchForm";
+import FilterBox from "components/Shared/FilterBox";
+import LectureCard from "components/Shared/LectureCard";
+import LoadingSpinner from "components/Shared/LoadingSpinner";
+
 import {
   BorderColor,
   ConceptColor,
@@ -11,13 +19,6 @@ import {
 import lectureFilterList from "static/LecturePage/lectureFilterList.json";
 import { majorList } from "static/LecturePage/majorList";
 import { requestFinished, requestLectures, setDepartment } from "store/modules/lectures";
-
-import LectureAPI from "api/lecture";
-import MypageAPI from "api/mypage";
-
-import LectureSearchForm from "components/LecturesComponents/LectureSearchForm";
-import FilterBox from "components/Shared/FilterBox";
-import LectureCard from "components/Shared/LectureCard";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const Wrapper = styled.div`
@@ -26,6 +27,12 @@ const Wrapper = styled.div`
   margin: 90px auto 98px auto;
 `;
 
+const SpinnerWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+`;
 const SearchSection = styled.section`
   width: 100%;
   display: flex;
@@ -111,6 +118,7 @@ const LecturesContainer = () => {
 
   const [lectures, setLectures] = useState([]);
   const [scrapped, setScrapped] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
 
   /**
    * 처음 마운트 되었을 때
@@ -142,6 +150,7 @@ const LecturesContainer = () => {
       console.log(error);
     } finally {
       dispatch(requestFinished());
+      setIsFetched(true);
     }
   }, [isLoggedIn]);
 
@@ -168,48 +177,56 @@ const LecturesContainer = () => {
 
   return (
     <Wrapper>
-      <SearchSection>
-        <LectureSearchForm />
-      </SearchSection>
+      {!isFetched && (
+        <SpinnerWrapper>
+          <LoadingSpinner />
+        </SpinnerWrapper>
+      )}
 
-      <FilterSection>
-        {majorList.map(({ label, department }) => (
-          <FilterButton
-            key={label}
-            name="department"
-            onClick={() => {
-              dispatch(setDepartment({ department }));
-              !isFilterBoxVisible && dispatch(requestLectures());
-            }}
-            isChosen={filterOptions.department === department}
-          >
-            {label}
-          </FilterButton>
-        ))}
-        <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
-        {isFilterBoxVisible && (
-          <FilterBox
-            type="lecture"
-            filterList={lectureFilterList}
-            setIsFilterBoxVisible={setIsFilterBoxVisible}
-          />
-        )}
-      </FilterSection>
+      {isFetched && (
+        <>
+          <SearchSection>
+            <LectureSearchForm />
+          </SearchSection>
 
-      <LecturesSection>
-        {/* {isLoading && <LoadingSpinner />} */}
+          <FilterSection>
+            {majorList.map(({ label, department }) => (
+              <FilterButton
+                key={label}
+                name="department"
+                onClick={() => {
+                  dispatch(setDepartment({ department }));
+                  dispatch(requestLectures());
+                }}
+                isChosen={filterOptions.department === department}
+              >
+                {label}
+              </FilterButton>
+            ))}
+            <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
+            {isFilterBoxVisible && (
+              <FilterBox
+                type="lecture"
+                filterList={lectureFilterList}
+                setIsFilterBoxVisible={setIsFilterBoxVisible}
+              />
+            )}
+          </FilterSection>
 
-        <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
-        <CardGrid>
-          {lectures.map((data) => (
-            <LectureCard
-              data={data}
-              isScrapped={scrapped.includes(data.id)}
-              key={data.id}
-            />
-          ))}
-        </CardGrid>
-      </LecturesSection>
+          <LecturesSection>
+            <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
+            <CardGrid>
+              {lectures.map((data) => (
+                <LectureCard
+                  data={data}
+                  isScrapped={scrapped.includes(data.id)}
+                  key={data.id}
+                />
+              ))}
+            </CardGrid>
+          </LecturesSection>
+        </>
+      )}
     </Wrapper>
   );
 };
