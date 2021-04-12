@@ -10,7 +10,7 @@ import styled from "styled-components";
 const Wrapper = styled.div`
   position: relative;
   display: flex;
-  width: 555px;
+  width: 559px;
   height: 133px;
   padding: 24px 0px 16px 28px;
   border-radius: 8px;

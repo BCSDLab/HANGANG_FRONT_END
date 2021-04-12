@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
+import LectureAPI from "api/lecture";
 import {
   BorderColor,
   ConceptColor,
@@ -10,10 +11,11 @@ import {
 } from "static/Shared/commonStyles";
 import lectureFilterList from "static/LecturePage/lectureFilterList.json";
 import { majorList } from "static/LecturePage/majorList";
+import { requestFinished, requestLectures, setDepartment } from "store/modules/lectures";
 
 import LectureSearchForm from "components/LecturesComponents/LectureSearchForm";
-import { setDepartment } from "store/modules/lectures";
 import FilterBox from "components/Shared/FilterBox";
+import LectureCard from "components/Shared/LectureCard";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -65,27 +67,87 @@ const FilterImage = styled.img.attrs({
   cursor: pointer;
 `;
 
+const LecturesSection = styled.section`
+  width: 100%;
+  height: 1000px;
+  padding: 24px 0px 98px 0px;
+`;
+
+const SearchResultLabel = styled.label`
+  display: block;
+  margin-bottom: 24px;
+
+  color: ${FontColor};
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const CardGrid = styled.div`
+  display: grid;
+  /* overflow-y: scroll; */
+  width: 1135px;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 30px 18px;
+`;
+
 const LecturesContainer = () => {
   const dispatch = useDispatch();
-  const filterOptions = useSelector((state) => state.lectureReducer);
+  const { isLoading, ...filterOptions } = useSelector((state) => state.lectureReducer);
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
 
-  useEffect(() => {
-    console.log(filterOptions);
-  }, [filterOptions]);
+  const [lectures, setLectures] = useState([]);
+
+  /**
+   * 처음 마운트 되었을 때 요청
+   */
+  useEffect(async () => {
+    try {
+      const { data } = await LectureAPI.getLectures(filterOptions);
+      setLectures(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(requestFinished());
+    }
+  }, []);
+
+  /**
+   * 첫 요청 이후 isLoading 이 true가 될 경우 API를 재요청한다.
+   *
+   * isLoading = true가 될 경우는 다음과 같다.
+   * 1. 전공을 눌렀을 때
+   * 2. 검색창에 검색했을 때
+   * 3. 필터 창에 적용 버튼을 눌렀을 때
+   */
+  useEffect(async () => {
+    if (isLoading) {
+      try {
+        const { data } = await LectureAPI.getLectures(filterOptions);
+        setLectures(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(requestFinished());
+      }
+    }
+  }, [isLoading]);
 
   return (
     <Wrapper>
       <SearchSection>
         <LectureSearchForm />
       </SearchSection>
+
       <FilterSection>
         {majorList.map(({ label, department }) => (
           <FilterButton
             key={label}
             name="department"
-            onClick={() => dispatch(setDepartment({ department }))}
+            onClick={() => {
+              dispatch(setDepartment({ department }));
+              !isFilterBoxVisible && dispatch(requestLectures());
+            }}
             isChosen={filterOptions.department === department}
           >
             {label}
@@ -100,6 +162,17 @@ const LecturesContainer = () => {
           />
         )}
       </FilterSection>
+
+      <LecturesSection>
+        {/* {isLoading && <LoadingSpinner />} */}
+
+        <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
+        <CardGrid>
+          {lectures.map((data) => (
+            <LectureCard data={data} key={data.id} />
+          ))}
+        </CardGrid>
+      </LecturesSection>
     </Wrapper>
   );
 };

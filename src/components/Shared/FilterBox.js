@@ -9,7 +9,11 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import { setDefaultLectureFilter, setLectureFilter } from "store/modules/lectures";
+import {
+  requestLectures,
+  setDefaultLectureFilter,
+  setLectureFilter,
+} from "store/modules/lectures";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -23,6 +27,8 @@ const Wrapper = styled.div`
   background-color: #fff;
   border: solid 1px ${CopyRightColor};
   padding: 20px;
+
+  z-index: 9998;
 `;
 
 const NotifyLabel = styled.label`
@@ -147,7 +153,7 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
   };
 
   const apply = () => {
-    // setIsFilterBoxVisible(false);
+    dispatch(requestLectures());
   };
 
   const isChoiced = (key, value) => {

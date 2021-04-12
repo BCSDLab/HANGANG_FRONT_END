@@ -57,8 +57,8 @@ const CheckImg = styled.img.attrs({
 
 const ScrapGrid = styled.div`
   display: grid;
-  grid-template-columns: 555px 555px;
-  grid-gap: 30px 25px;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 30px 18px;
   width: 100%;
   margin-top: 30px;
 `;
