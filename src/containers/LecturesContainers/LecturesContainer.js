@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
-import LectureAPI from "api/lecture";
 import {
   BorderColor,
   ConceptColor,
@@ -13,9 +12,13 @@ import lectureFilterList from "static/LecturePage/lectureFilterList.json";
 import { majorList } from "static/LecturePage/majorList";
 import { requestFinished, requestLectures, setDepartment } from "store/modules/lectures";
 
+import LectureAPI from "api/lecture";
+import MypageAPI from "api/mypage";
+
 import LectureSearchForm from "components/LecturesComponents/LectureSearchForm";
 import FilterBox from "components/Shared/FilterBox";
 import LectureCard from "components/Shared/LectureCard";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -101,24 +104,45 @@ const CardGrid = styled.div`
 const LecturesContainer = () => {
   const dispatch = useDispatch();
   const { isLoading, ...filterOptions } = useSelector((state) => state.lectureReducer);
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
 
   const [lectures, setLectures] = useState([]);
+  const [scrapped, setScrapped] = useState([]);
 
   /**
    * 처음 마운트 되었을 때 요청
+   *
+   * 로그인 되어있을 경우 사용자가 스크랩한 강의를 받는다.
+   * 스크랩한 강의가 lectures에 있을 경우 스크랩 아이콘을 추가해준다.
    */
   useEffect(async () => {
     try {
-      const { data } = await LectureAPI.getLectures(filterOptions);
-      setLectures(data);
+      if (isLoggedIn) {
+        const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+        const { data } = await MypageAPI.getScrapLecture(accessToken);
+
+        let scrappedId = [];
+        data.forEach(({ id }) => scrappedId.push(id));
+        setScrapped(scrappedId);
+
+        if (lectures.length === 0) {
+          const { data } = await LectureAPI.getLectures(filterOptions);
+          setLectures(data);
+        }
+      }
+
+      if (!isLoggedIn) {
+        const { data } = await LectureAPI.getLectures(filterOptions);
+        setLectures(data);
+      }
     } catch (error) {
       console.log(error);
     } finally {
       dispatch(requestFinished());
     }
-  }, []);
+  }, [isLoggedIn]);
 
   /**
    * 첫 요청 이후 isLoading 이 true가 될 경우 API를 재요청한다.
@@ -177,7 +201,11 @@ const LecturesContainer = () => {
         <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
         <CardGrid>
           {lectures.map((data) => (
-            <LectureCard data={data} key={data.id} />
+            <LectureCard
+              data={data}
+              isScrapped={scrapped.includes(data.id)}
+              key={data.id}
+            />
           ))}
         </CardGrid>
       </LecturesSection>
