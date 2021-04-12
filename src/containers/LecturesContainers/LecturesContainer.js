@@ -88,6 +88,7 @@ const SearchResultLabel = styled.label`
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(4, 133px);
   grid-gap: 30px 18px;
 
   width: 1135px;
@@ -112,7 +113,7 @@ const LecturesContainer = () => {
   const [scrapped, setScrapped] = useState([]);
 
   /**
-   * 처음 마운트 되었을 때 요청
+   * 처음 마운트 되었을 때
    *
    * 로그인 되어있을 경우 사용자가 스크랩한 강의를 받는다.
    * 스크랩한 강의가 lectures에 있을 경우 스크랩 아이콘을 추가해준다.
