@@ -22,7 +22,7 @@ const defaultFilterOptions = {
 
 const INITIAL_FILTER_OPTIONS = {
   keyword: "",
-  department: "교양학부",
+  department: "",
   limit: 1000,
   page: 1,
   ...defaultFilterOptions,
