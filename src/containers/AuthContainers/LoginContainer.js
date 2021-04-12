@@ -9,7 +9,6 @@ import HelpField from "components/AuthComponents/Login/HelpField";
 import LoginForm from "components/AuthComponents/Login/LoginForm";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 import { succeedTokenCheck } from "store/modules/auth";
-import { kickOut } from "utils/kickOut";
 
 /**
  * LoginContainer
@@ -19,7 +18,7 @@ import { kickOut } from "utils/kickOut";
  */
 const LoginContainer = () => {
   const { addToast } = useToasts();
-  const { account, isLoggedIn } = useSelector((state) => state.authReducer);
+  const { account } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
 

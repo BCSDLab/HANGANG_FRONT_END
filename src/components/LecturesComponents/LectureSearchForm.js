@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { ConceptColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import { ConceptColor, FontColor } from "static/Shared/commonStyles";
 import { useDispatch } from "react-redux";
 import { requestLectures, setKeyword } from "store/modules/lectures";
 
