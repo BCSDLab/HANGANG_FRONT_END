@@ -84,10 +84,18 @@ const SearchResultLabel = styled.label`
 
 const CardGrid = styled.div`
   display: grid;
-  /* overflow-y: scroll; */
-  width: 1135px;
   grid-template-columns: 1fr 1fr;
   grid-gap: 30px 18px;
+
+  width: 1135px;
+  height: 622px;
+
+  overflow-y: scroll;
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Chrome
+  }
 `;
 
 const LecturesContainer = () => {
