@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   BorderColor,
@@ -8,6 +9,7 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import { setDefaultLectureFilter, setLectureFilter } from "store/modules/lectures";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -135,13 +137,15 @@ const labelConverter = (key) => {
   }
 };
 
-const FilterBox = ({
-  filterList,
-  filterOptions,
-  setFilterOptions,
-  setIsFilterBoxVisible,
-  setDefault,
-}) => {
+const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
+  const dispatch = useDispatch();
+  const filterOptions = useSelector((state) => state.lectureReducer);
+  const setFilter = (key, value) => {
+    if (type === "lecture") {
+      dispatch(setLectureFilter({ key, value }));
+    }
+  };
+
   const apply = () => {
     // setIsFilterBoxVisible(false);
   };
@@ -164,34 +168,10 @@ const FilterBox = ({
     }
   };
 
-  const setFilter = (key, value) => {
-    switch (key) {
-      case "sort":
-        setFilterOptions((prev) => ({ ...prev, [key]: value }));
-        break;
-      case "classification":
-      case "hashtag":
-        if (filterOptions[key].includes(value)) {
-          setFilterOptions((prev) => ({
-            ...prev,
-            [key]: [...prev[key]].filter((elem) => elem !== value),
-          }));
-        } else {
-          setFilterOptions((prev) => ({
-            ...prev,
-            [key]: [...prev[key], value],
-          }));
-        }
-        break;
-      default:
-        break;
-    }
-  };
-
   return (
     <Wrapper>
       <NotifyLabel>필터를 적용해 보세요.</NotifyLabel>
-      <Refresh onClick={() => setDefault()} />
+      <Refresh onClick={() => dispatch(setDefaultLectureFilter())} />
       <Exit onClick={() => setIsFilterBoxVisible(false)} />
       {Object.entries(filterList).map(([key, value]) => (
         <Section key={key}>

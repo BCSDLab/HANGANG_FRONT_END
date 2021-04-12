@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
-import { majorList } from "static/LecturePage/majorList";
 import {
   BorderColor,
   ConceptColor,
   FontColor,
   InnerContentWidth,
 } from "static/Shared/commonStyles";
-
 import lectureFilterList from "static/LecturePage/lectureFilterList.json";
+import { majorList } from "static/LecturePage/majorList";
 
 import LectureSearchForm from "components/LecturesComponents/LectureSearchForm";
+import { setDepartment } from "store/modules/lectures";
 import FilterBox from "components/Shared/FilterBox";
 
 const Wrapper = styled.div`
@@ -46,7 +47,6 @@ const FilterSection = styled.section`
   height: 32px;
 
   margin-top: 48px;
-  /* background-color: red; */
 
   ${FilterButton}:not(:last-child) {
     margin-right: 16px;
@@ -66,32 +66,10 @@ const FilterImage = styled.img.attrs({
 `;
 
 const LecturesContainer = () => {
-  const defaultFilterOptions = {
-    sort: "평점순",
-    classification: [],
-    hashtag: [],
-  };
+  const dispatch = useDispatch();
+  const filterOptions = useSelector((state) => state.lectureReducer);
 
-  const [filterOptions, setFilterOptions] = useState({
-    keyword: "",
-    department: "",
-    limit: 8,
-    page: 1,
-    ...defaultFilterOptions,
-  });
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
-
-  const setDefault = () => {
-    setFilterOptions((prev) => ({ ...prev, ...defaultFilterOptions }));
-  };
-
-  const clickFilterButton = (e, department) => {
-    if (filterOptions.department !== department) {
-      setFilterOptions((prev) => ({ ...prev, [e.target.name]: department }));
-    } else {
-      setFilterOptions((prev) => ({ ...prev, [e.target.name]: "" }));
-    }
-  };
 
   useEffect(() => {
     console.log(filterOptions);
@@ -106,9 +84,9 @@ const LecturesContainer = () => {
         {majorList.map(({ label, department }) => (
           <FilterButton
             key={label}
-            isChosen={filterOptions.department === department}
             name="department"
-            onClick={(e) => clickFilterButton(e, department)}
+            onClick={() => dispatch(setDepartment({ department }))}
+            isChosen={filterOptions.department === department}
           >
             {label}
           </FilterButton>
@@ -116,11 +94,9 @@ const LecturesContainer = () => {
         <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
         {isFilterBoxVisible && (
           <FilterBox
+            type="lecture"
             filterList={lectureFilterList}
-            filterOptions={filterOptions}
-            setFilterOptions={setFilterOptions}
             setIsFilterBoxVisible={setIsFilterBoxVisible}
-            setDefault={setDefault}
           />
         )}
       </FilterSection>
