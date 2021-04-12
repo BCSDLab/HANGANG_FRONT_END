@@ -102,6 +102,13 @@ const LectureCard = ({
   chooseScrap = () => {},
   ...rest
 }) => {
+  const titleSlicer = (title) => {
+    if (title.length > 26) {
+      title = title.slice(0, 26) + "...";
+    }
+    return title;
+  };
+
   return (
     <Wrapper
       onClick={() => isEditMode && chooseScrap(rest.data.id)}
@@ -111,7 +118,7 @@ const LectureCard = ({
       {isScrapped && <Bookmark />}
       <LeftSide>
         <Title>
-          {rest.data.name}
+          {titleSlicer(rest.data.name)}
           <Amount>({rest.data.review_count})</Amount>
         </Title>
         <Professor>{rest.data.professor}</Professor>
