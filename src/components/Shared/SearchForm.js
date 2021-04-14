@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { ConceptColor, FontColor } from "static/Shared/commonStyles";
+import { ConceptColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { useDispatch } from "react-redux";
 import { requestLectures, setKeyword } from "store/modules/lectures";
 
@@ -19,6 +19,7 @@ const Wrapper = styled.div`
 const Label = styled.label`
   font-size: 14px;
   color: ${ConceptColor};
+  margin-top: 1px;
   margin-left: 20px;
 `;
 
@@ -51,14 +52,19 @@ const CancelIcon = styled(SearchIcon).attrs({
   z-index: 9990;
 `;
 
-const SearchForm = styled.form`
+const Form = styled.form`
   all: unset;
 `;
 
-const Input = styled.input.attrs({
+const inputPlaceholderConverter = (type) => {
+  if (type === "lectures") return "교과명, 교수명, 과목코드 검색";
+  else return "교과명, 교수명, 키워드 검색";
+};
+
+const Input = styled.input.attrs(({ type }) => ({
   type: "search",
-  placeholder: "교과명, 교수명, 과목코드 검색",
-})`
+  placeholder: inputPlaceholderConverter(type),
+}))`
   width: 763px;
   height: 21px;
   font-size: 14px;
@@ -70,9 +76,20 @@ const Input = styled.input.attrs({
   ::-webkit-search-cancel-button {
     display: none;
   }
+
+  ::placeholder {
+    color: ${PlaceholderColor};
+  }
 `;
 
-const LectureSearchForm = () => {
+/**
+ * 강의평, 강의자료 페이지에서 사용되는 검색바
+ * props로부터 type을 전달 받으며 type은 강의평 / 강의자료를 구분하는 변수이다.
+ *
+ * @param {string} type
+ * @returns
+ */
+const SearchForm = ({ type }) => {
   const dispatch = useDispatch();
   const [term, setTerm] = useState("");
   const [isVisibleCancelButton, setIsVisibleCancelButton] = useState(false);
@@ -84,27 +101,31 @@ const LectureSearchForm = () => {
 
   const onSearch = (e) => {
     e.preventDefault();
-    dispatch(setKeyword({ keyword: term }));
-    dispatch(requestLectures());
+    if (type === "lectures") {
+      dispatch(setKeyword({ keyword: term }));
+      dispatch(requestLectures());
+    }
   };
 
   const clickCancelButton = () => {
     setTerm("");
-    dispatch(setKeyword({ keyword: "" }));
-    dispatch(requestLectures());
+    if (type === "lectures") {
+      dispatch(setKeyword({ keyword: "" }));
+      dispatch(requestLectures());
+    }
   };
 
   return (
     <Wrapper>
-      <Label>강의평가</Label>
+      <Label>{type === "lectures" ? "강의평가" : "강의자료"}</Label>
       <Delimiter />
-      <SearchForm onSubmit={(e) => onSearch(e)}>
-        <Input value={term} onChange={(e) => setTerm(e.target.value)} />
-      </SearchForm>
+      <Form onSubmit={(e) => onSearch(e)}>
+        <Input value={term} onChange={(e) => setTerm(e.target.value)} type={type} />
+      </Form>
       {isVisibleCancelButton && <CancelIcon onClick={() => clickCancelButton()} />}
       <SearchIcon />
     </Wrapper>
   );
 };
 
-export default LectureSearchForm;
+export default SearchForm;

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import LectureAPI from "api/lecture";
 import MypageAPI from "api/mypage";
 
-import LectureSearchForm from "components/LecturesComponents/LectureSearchForm";
+import SearchForm from "components/Shared/SearchForm";
 import FilterBox from "components/Shared/FilterBox";
 import LectureCard from "components/Shared/LectureCard";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
@@ -33,6 +33,7 @@ const SpinnerWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const SearchSection = styled.section`
   width: 100%;
   display: flex;
@@ -186,7 +187,7 @@ const LecturesContainer = () => {
       {isFetched && (
         <>
           <SearchSection>
-            <LectureSearchForm />
+            <SearchForm type="lectures" />
           </SearchSection>
 
           <FilterSection>
