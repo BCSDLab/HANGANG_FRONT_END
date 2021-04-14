@@ -14,6 +14,7 @@ import {
 
 import LoginPage from "pages/AuthPages/LoginPage";
 import LecturesPage from "pages/LecturesPages/LecturesPage";
+import ResourcesPage from "pages/ResourcesPages/ResourcesPage";
 import FindPwPage from "pages/AuthPages/FindPwPage";
 import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
 import SignUpPage from "pages/AuthPages/SignUpPage";
@@ -147,6 +148,7 @@ const App = () => {
       <Switch>
         <Route path="/" exact component={IndexPage} />
         <Route path="/lectures" exact component={LecturesPage} />
+        <Route path="/resources" exact component={ResourcesPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
         <Route path="/findpw" component={FindPwPage} />
