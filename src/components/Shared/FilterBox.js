@@ -98,6 +98,7 @@ const columnConverter = (type) => {
     case "criteria":
       return 5;
     case "classification":
+    case "category":
       return 4;
     case "hashtag":
       return 3;
@@ -139,6 +140,8 @@ const labelConverter = (key) => {
       return "유형";
     case "hashtag":
       return "해시태그";
+    case "category":
+      return "유형";
     default:
       return;
   }

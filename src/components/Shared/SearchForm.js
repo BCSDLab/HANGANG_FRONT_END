@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import { ConceptColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { useDispatch } from "react-redux";
@@ -89,7 +90,7 @@ const Input = styled.input.attrs(({ type }) => ({
  * @param {string} type
  * @returns
  */
-const SearchForm = ({ type }) => {
+const SearchForm = ({ type = "lectuers" }) => {
   const dispatch = useDispatch();
   const [term, setTerm] = useState("");
   const [isVisibleCancelButton, setIsVisibleCancelButton] = useState(false);
@@ -126,6 +127,10 @@ const SearchForm = ({ type }) => {
       <SearchIcon />
     </Wrapper>
   );
+};
+
+SearchForm.propTypes = {
+  type: PropTypes.string,
 };
 
 export default SearchForm;

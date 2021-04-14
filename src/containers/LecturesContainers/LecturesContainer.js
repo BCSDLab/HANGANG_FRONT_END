@@ -16,8 +16,8 @@ import {
   FontColor,
   InnerContentWidth,
 } from "static/Shared/commonStyles";
-import lectureFilterList from "static/LecturePage/lectureFilterList.json";
-import { majorList } from "static/LecturePage/majorList";
+import lectureFilterList from "static/LecturesPage/lectureFilterList.json";
+import { majorList } from "static/LecturesPage/majorList";
 import { requestFinished, requestLectures, setDepartment } from "store/modules/lectures";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
