@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import MypageAPI from "api/mypage";
 import { FontColor, MyPageSectionHeight } from "static/Shared/commonStyles";
 
-import Scrap from "../Shared/Scrap";
+import LectureCard from "../Shared/LectureCard";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const ScrapSectionWrapper = styled.div`
@@ -57,8 +57,8 @@ const CheckImg = styled.img.attrs({
 
 const ScrapGrid = styled.div`
   display: grid;
-  grid-template-columns: 555px 555px;
-  grid-gap: 30px 25px;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 30px 18px;
   width: 100%;
   margin-top: 30px;
 `;
@@ -134,7 +134,7 @@ const ScrapSection = ({ scrapped, setScrapped }) => {
       </ActionRow>
       <ScrapGrid>
         {scrapped.map((data) => (
-          <Scrap
+          <LectureCard
             key={data.id}
             data={data}
             isScrapped={true}

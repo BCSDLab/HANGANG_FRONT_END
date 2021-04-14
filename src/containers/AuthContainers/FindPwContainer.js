@@ -5,7 +5,6 @@ import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 
 import AuthAPI from "api/auth";
-import { kickOut } from "utils/kickOut";
 
 import Container from "components/AuthComponents/Shared/Container";
 import FindPwForm from "components/AuthComponents/FindPw/FindPwForm";
@@ -18,7 +17,7 @@ import FindPwForm from "components/AuthComponents/FindPw/FindPwForm";
  */
 const FindPwContainer = () => {
   const { addToast } = useToasts();
-  const { account, isVerifiedEmail } = useSelector((state) => state.authReducer);
+  const { account } = useSelector((state) => state.authReducer);
   const history = useHistory();
   const [error, setError] = useState({});
   const [infos, setInfos] = useState({

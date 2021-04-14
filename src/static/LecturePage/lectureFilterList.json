@@ -1,0 +1,98 @@
+{
+  "sort": [
+    {
+      "label": "평점순",
+      "value": "평점순"
+    },
+    {
+      "label": "평가순",
+      "value": "평가순"
+    },
+    {
+      "label": "최신순",
+      "value": "최신순"
+    }
+  ],
+  "criteria": [
+    {
+      "label": "교과명",
+      "value": "교과명"
+    },
+    {
+      "label": "교수명",
+      "value": "교수명"
+    }
+  ],
+  "classification": [
+    {
+      "label": "교양필수",
+      "value": "교필"
+    },
+    {
+      "label": "교양선택",
+      "value": "교선"
+    },
+    {
+      "label": "전공필수",
+      "value": "전필"
+    },
+    {
+      "label": "전공선택",
+      "value": "전선"
+    },
+    {
+      "label": "MSC필수",
+      "value": "MSC필수"
+    },
+    {
+      "label": "MSC선택",
+      "value": "MSC선택"
+    },
+    {
+      "label": "HRD필수",
+      "value": "HRD필수"
+    },
+    {
+      "label": "HRD선택",
+      "value": "HRD선택"
+    }
+  ],
+  "hashtag": [
+    {
+      "label": "#그저그러함",
+      "value": 1
+    },
+    {
+      "label": "#학점왤케짜",
+      "value": 2
+    },
+    {
+      "label": "#리얼수면제",
+      "value": 3
+    },
+    {
+      "label": "#수업개빡셈",
+      "value": 4
+    },
+    {
+      "label": "#배운거많음",
+      "value": 5
+    },
+    {
+      "label": "#좋은교수님",
+      "value": 6
+    },
+    {
+      "label": "#진심꿀과목",
+      "value": 7
+    },
+    {
+      "label": "#이거듣지마",
+      "value": 8
+    },
+    {
+      "label": "#조금아쉬움",
+      "value": 9
+    }
+  ]
+}

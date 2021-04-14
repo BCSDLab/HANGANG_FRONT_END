@@ -1,16 +1,18 @@
 import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+
 import {
   BorderColor,
   ConceptColor,
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import styled from "styled-components";
 
-const ScrapWrapper = styled.div`
+const Wrapper = styled.div`
   position: relative;
   display: flex;
-  width: 555px;
+  width: 557px;
   height: 133px;
   padding: 24px 0px 16px 28px;
   border-radius: 8px;
@@ -91,19 +93,26 @@ const Bookmark = styled.img.attrs({
 `;
 
 /**
- * Scrap
+ * LectureCard
  *
  * Usage : ~/my(scrapped) , ~/lectures
  */
-const Scrap = ({
+const LectureCard = ({
   isScrapped = false,
   isChosen = false,
   isEditMode = false,
   chooseScrap = () => {},
   ...rest
 }) => {
+  const titleSlicer = (title) => {
+    if (title.length > 26) {
+      title = title.slice(0, 26) + "...";
+    }
+    return title;
+  };
+
   return (
-    <ScrapWrapper
+    <Wrapper
       onClick={() => isEditMode && chooseScrap(rest.data.id)}
       isEditMode={isEditMode}
       isChosen={isChosen}
@@ -111,7 +120,7 @@ const Scrap = ({
       {isScrapped && <Bookmark />}
       <LeftSide>
         <Title>
-          {rest.data.name}
+          {titleSlicer(rest.data.name)}
           <Amount>({rest.data.review_count})</Amount>
         </Title>
         <Professor>{rest.data.professor}</Professor>
@@ -125,8 +134,24 @@ const Scrap = ({
         <Classification>{rest.data.classification}</Classification>
         <Rating>{rest.data.total_rating}</Rating>
       </RightSide>
-    </ScrapWrapper>
+    </Wrapper>
   );
 };
 
-export default Scrap;
+LectureCard.defaultProps = {
+  isScrapped: false,
+  isChosen: false,
+  isEditMode: false,
+  chooseScrap: () => {},
+  rest: {},
+};
+
+LectureCard.propTypes = {
+  isScrapped: PropTypes.bool,
+  isChosen: PropTypes.bool,
+  isEditMode: PropTypes.bool,
+  chooseScrap: PropTypes.func,
+  rest: PropTypes.object,
+};
+
+export default LectureCard;

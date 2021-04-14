@@ -1,8 +1,12 @@
 import React from "react";
-import { FontColor } from "static/Shared/commonStyles";
-import styled from "styled-components";
-import MajorInfoArray from "static/IndexPage/majorInfoArray";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
+
+import { FontColor } from "static/Shared/commonStyles";
+import MajorInfoArray from "static/IndexPage/majorInfoArray";
+
+import { setDepartment } from "store/modules/lectures";
 
 const Label = styled.label`
   color: ${FontColor};
@@ -42,19 +46,24 @@ const MajorLabel = styled.label`
 
 /**
  * MajorSearchContainer
- * 학부별 탐색 란에 해당하며, 클릭 시 lectures로 이동합니다.
- * 다만 lectures로 이동하며 해당 학부를 검색할 수 있어야 하는데,
- * 아직 강의평 페이지가 구현되지 않아 이는 추후에 개발할 예정입니다.
- * 검색할 데이터를 store에 넣고 관리할 것 같습니다.
+ * 학부별 탐색 란에 해당하며,
+ * 클릭 시 담긴 value 값과 함께 lectures로 이동합니다.
  */
 const MajorSearchContainer = () => {
+  const dispatch = useDispatch();
+
   return (
     <>
       <Label>학부별 탐색</Label>
       <Content>
-        {MajorInfoArray.map(({ src, label }) => {
+        {MajorInfoArray.map(({ src, label, value }) => {
           return (
-            <MajorCard to="/lectures" key={label} imagesrc={src}>
+            <MajorCard
+              to="/lectures"
+              key={label}
+              imagesrc={src}
+              onClick={() => dispatch(setDepartment({ department: value }))}
+            >
               <MajorLabel>{label}</MajorLabel>
             </MajorCard>
           );
