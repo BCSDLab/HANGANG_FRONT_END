@@ -12,6 +12,7 @@ import {
   ConceptColor,
   FontColor,
   InnerContentWidth,
+  PlaceholderColor,
 } from "static/Shared/commonStyles";
 
 const Wrapper = styled.div`
@@ -52,12 +53,6 @@ const FilterSection = styled.section`
   }
 `;
 
-const ResourcesSection = styled.section`
-  width: 100%;
-  height: 1000px;
-  padding: 24px 0px 98px 0px;
-`;
-
 const FilterImage = styled.img.attrs({
   src:
     "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/lecturespage/filter.png",
@@ -68,6 +63,58 @@ const FilterImage = styled.img.attrs({
   width: 24px;
   height: 24px;
   cursor: pointer;
+`;
+
+const ResourcesSection = styled.section`
+  position: relative;
+  width: 100%;
+  height: 1000px;
+  padding: 24px 0px 98px 0px;
+`;
+
+const SearchResultLabel = styled.label`
+  display: block;
+  margin-bottom: 24px;
+
+  color: ${FontColor};
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const ResourceWriteButton = styled.input.attrs({
+  type: "button",
+  value: "강의자료 작성 >",
+})`
+  all: unset;
+  position: absolute;
+  top: calc(0% + 21px);
+  right: 0;
+  width: 101px;
+  height: 28px;
+  border-radius: 18.5px;
+  border: solid 1px ${ConceptColor};
+
+  font-size: 14px;
+  /* text-align: center; */
+  padding-left: 16px;
+  color: ${PlaceholderColor};
+`;
+
+const CardGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(4, 133px);
+  grid-gap: 30px 18px;
+
+  width: 1135px;
+  height: 622px;
+
+  overflow-y: scroll;
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Chrome
+  }
 `;
 
 const ResourceContainer = () => {
@@ -104,18 +151,20 @@ const ResourceContainer = () => {
         )}
       </FilterSection>
 
-      {/* <ResourcesSection>
-        <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
+      <ResourcesSection>
+        <SearchResultLabel>{`탐색 결과 (8)`}</SearchResultLabel>
+        <ResourceWriteButton />
+        {/* <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel> */}
         <CardGrid>
-          {lectures.map((data) => (
+          {/* {lectures.map((data) => (
             <LectureCard
               data={data}
               isScrapped={scrapped.includes(data.id)}
               key={data.id}
             />
-          ))}
+          ))} */}
         </CardGrid>
-      </ResourcesSection> */}
+      </ResourcesSection>
     </Wrapper>
   );
 };
