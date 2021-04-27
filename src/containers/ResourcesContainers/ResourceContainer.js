@@ -14,6 +14,11 @@ import {
   InnerContentWidth,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import {
+  requestResources,
+  requestFinished,
+  setDepartment,
+} from "store/modules/resources";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -122,9 +127,21 @@ const ResourceContainer = () => {
   const { isLoading, ...filterOptions } = useSelector((state) => state.resourceReducer);
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
 
-  useEffect(() => {
-    console.log(isLoading);
+  useEffect(async () => {
+    if (isLoading) {
+      try {
+        // TODO: fetch resources
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(requestFinished());
+      }
+    }
   }, [isLoading]);
+
+  useEffect(() => {
+    console.log(filterOptions);
+  }, [filterOptions]);
 
   return (
     <Wrapper>
@@ -138,10 +155,10 @@ const ResourceContainer = () => {
             key={label}
             name="department"
             onClick={() => {
-              // dispatch(setDepartment({ department }));
-              // dispatch(requestLectures());
+              dispatch(setDepartment({ department }));
+              dispatch(requestResources());
             }}
-            // isChosen={filterOptions.department === department}
+            isChosen={filterOptions.department === department}
           >
             {label}
           </FilterButton>
