@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+
+import ResourceAPI from "api/resources";
 
 import SearchForm from "components/Shared/SearchForm";
 import FilterBox from "components/Shared/FilterBox";
@@ -131,6 +133,8 @@ const ResourceContainer = () => {
     if (isLoading) {
       try {
         // TODO: fetch resources
+        const { data } = await ResourceAPI.getResources(filterOptions);
+        console.log(data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -138,10 +142,6 @@ const ResourceContainer = () => {
       }
     }
   }, [isLoading]);
-
-  useEffect(() => {
-    console.log(filterOptions);
-  }, [filterOptions]);
 
   return (
     <Wrapper>
