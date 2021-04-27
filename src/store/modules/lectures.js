@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 // Actions
 const SET_DEPARTMENT = "SET_DEPARTMENT";
 const SET_KEYWORD = "SET_KEYWORD";
@@ -33,18 +34,7 @@ const INITIAL_FILTER_OPTIONS = {
 
 export default function lectureReducer(state = INITIAL_FILTER_OPTIONS, action) {
   switch (action.type) {
-    case SET_DEPARTMENT:
-      return {
-        ...state,
-        department: action.payload.department,
-      };
-    case SET_KEYWORD:
-      return {
-        ...state,
-        keyword: action.payload.keyword,
-      };
     case SET_LECTURE_FILTER:
-      // eslint-disable-next-line no-case-declarations
       let { key, value } = action.payload;
 
       switch (key) {
@@ -75,6 +65,24 @@ export default function lectureReducer(state = INITIAL_FILTER_OPTIONS, action) {
       return {
         ...state,
         ...defaultFilterOptions,
+      };
+    case SET_DEPARTMENT:
+      /**
+       * 유저가 같은 버튼을 클릭할 시 기존에 들어있던 부서 상태 값을 초기화시킨다.
+       * case : 교양 값이 있는 상태에서 교양 버튼을 누름
+       */
+      let valueToChange = action.payload.department;
+      if (state.department === valueToChange) {
+        valueToChange = "";
+      }
+      return {
+        ...state,
+        department: valueToChange,
+      };
+    case SET_KEYWORD:
+      return {
+        ...state,
+        keyword: action.payload.keyword,
       };
     case SET_LOADING_START:
       return {
