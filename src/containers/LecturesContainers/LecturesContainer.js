@@ -136,11 +136,6 @@ const LecturesContainer = () => {
         let scrappedId = [];
         data.forEach(({ id }) => scrappedId.push(id));
         setScrapped(scrappedId);
-
-        if (lectures.length === 0) {
-          const { data } = await LectureAPI.getLectures(filterOptions);
-          setLectures(data);
-        }
       }
 
       if (!isLoggedIn) {
