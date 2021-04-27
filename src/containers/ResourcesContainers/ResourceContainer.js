@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import SearchForm from "components/Shared/SearchForm";
 import FilterBox from "components/Shared/FilterBox";
@@ -119,7 +119,12 @@ const CardGrid = styled.div`
 
 const ResourceContainer = () => {
   const dispatch = useDispatch();
+  const { isLoading, ...filterOptions } = useSelector((state) => state.resourceReducer);
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
+
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
 
   return (
     <Wrapper>
