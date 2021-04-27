@@ -21,6 +21,14 @@ import {
   requestFinished,
   setDepartment,
 } from "store/modules/resources";
+import LoadingSpinner from "components/Shared/LoadingSpinner";
+
+const SpinnerWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+`;
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -128,65 +136,81 @@ const ResourceContainer = () => {
   const dispatch = useDispatch();
   const { isLoading, ...filterOptions } = useSelector((state) => state.resourceReducer);
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
 
+  const [resources, setResources] = useState([]);
+
+  /**
+   * 첫 페이지 로드 시 fetch를 위해 !isFetched 일 시 api call을 한다.
+   * 이후 필터 버튼 클릭으로 isLoading이 true가 된다면 다시 api call을 한다.
+   */
   useEffect(async () => {
-    if (isLoading) {
+    if (!isFetched || isLoading) {
       try {
-        // TODO: fetch resources
         const { data } = await ResourceAPI.getResources(filterOptions);
-        console.log(data);
+        setResources(data);
       } catch (error) {
         console.log(error);
       } finally {
         dispatch(requestFinished());
+        if (!isFetched) setIsFetched(true);
       }
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    console.log(resources);
+  }, [resources]);
+
   return (
     <Wrapper>
-      <SearchSection>
-        <SearchForm type="resources" />
-      </SearchSection>
+      {!isFetched && (
+        <SpinnerWrapper>
+          <LoadingSpinner />
+        </SpinnerWrapper>
+      )}
 
-      <FilterSection>
-        {majorList.map(({ label, department }) => (
-          <FilterButton
-            key={label}
-            name="department"
-            onClick={() => {
-              dispatch(setDepartment({ department }));
-              dispatch(requestResources());
-            }}
-            isChosen={filterOptions.department === department}
-          >
-            {label}
-          </FilterButton>
-        ))}
-        <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
-        {isFilterBoxVisible && (
-          <FilterBox
-            type="resources"
-            filterList={ResourceFilterList}
-            setIsFilterBoxVisible={setIsFilterBoxVisible}
-          />
-        )}
-      </FilterSection>
+      {isFetched && (
+        <>
+          <SearchSection>
+            <SearchForm type="resources" />
+          </SearchSection>
 
-      <ResourcesSection>
-        <SearchResultLabel>{`탐색 결과 (8)`}</SearchResultLabel>
-        <ResourceWriteButton />
-        {/* <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel> */}
-        <CardGrid>
-          {/* {lectures.map((data) => (
-            <LectureCard
-              data={data}
-              isScrapped={scrapped.includes(data.id)}
-              key={data.id}
-            />
+          <FilterSection>
+            {majorList.map(({ label, department }) => (
+              <FilterButton
+                key={label}
+                name="department"
+                onClick={() => {
+                  dispatch(setDepartment({ department }));
+                  dispatch(requestResources());
+                }}
+                isChosen={filterOptions.department === department}
+              >
+                {label}
+              </FilterButton>
+            ))}
+            <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
+            {isFilterBoxVisible && (
+              <FilterBox
+                type="resources"
+                filterList={ResourceFilterList}
+                setIsFilterBoxVisible={setIsFilterBoxVisible}
+              />
+            )}
+          </FilterSection>
+
+          <ResourcesSection>
+            <SearchResultLabel>{`탐색 결과 (${resources.length})`}</SearchResultLabel>
+            <ResourceWriteButton />
+            <CardGrid>
+              {/* 
+            TODO: connect resource card components on resources state
           ))} */}
-        </CardGrid>
-      </ResourcesSection>
+            </CardGrid>
+          </ResourcesSection>
+        </>
+      )}
     </Wrapper>
   );
 };
