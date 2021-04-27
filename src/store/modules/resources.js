@@ -1,6 +1,6 @@
 // Actions
 const SET_DEPARTMENT = "SET_DEPARTMENT";
-const SET_KEYWORD = "SET_KEYWORD";
+const SET_RESOURCE_KEYWORD = "SET_RESOURCE_KEYWORD";
 const SET_RESOURCES_FILTER = "SET_RESOURCES_FILTER";
 const SET_DEFAULT_RESOURCE_FILTER = "SET_DEFAULT_RESOURCE_FILTER";
 
@@ -9,7 +9,7 @@ const SET_LOADING_FINISHED = "SET_LOADING_FINISHED";
 
 // Action Creators
 export const setDepartment = (payload) => ({ type: SET_DEPARTMENT, payload });
-export const setKeyword = (payload) => ({ type: SET_KEYWORD, payload });
+export const setResourceKeyword = (payload) => ({ type: SET_RESOURCE_KEYWORD, payload });
 export const setResourcesFilter = (payload) => ({ type: SET_RESOURCES_FILTER, payload });
 export const setDefaultResourceFilter = () => ({ type: SET_DEFAULT_RESOURCE_FILTER });
 
@@ -88,7 +88,7 @@ export default function resourceReducer(state = FILTER_OPTIONS, action) {
         ...state,
         department: action.payload.department,
       };
-    case SET_KEYWORD:
+    case SET_RESOURCE_KEYWORD:
       return {
         ...state,
         keyword: action.payload.keyword,

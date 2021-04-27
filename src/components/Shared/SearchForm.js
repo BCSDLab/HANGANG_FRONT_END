@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { ConceptColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { useDispatch } from "react-redux";
 import { requestLectures, setKeyword } from "store/modules/lectures";
+import { requestResources, setResourceKeyword } from "store/modules/resources";
 
 const Wrapper = styled.div`
   position: relative;
@@ -105,6 +106,9 @@ const SearchForm = ({ type = "lectuers" }) => {
     if (type === "lectures") {
       dispatch(setKeyword({ keyword: term }));
       dispatch(requestLectures());
+    } else {
+      dispatch(setResourceKeyword({ keyword: term }));
+      dispatch(requestResources());
     }
   };
 
@@ -113,6 +117,9 @@ const SearchForm = ({ type = "lectuers" }) => {
     if (type === "lectures") {
       dispatch(setKeyword({ keyword: "" }));
       dispatch(requestLectures());
+    } else {
+      dispatch(setResourceKeyword({ keyword: "" }));
+      dispatch(requestResources());
     }
   };
 
