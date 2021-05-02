@@ -167,7 +167,7 @@ const pushHitIcon = async (
 //TODO: Check hits state when pushHit api revised
 const ResourceCard = ({ isHitted, ...rest }) => {
   const { isLoggedIn } = useSelector((state) => state.authReducer);
-  const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+  const token = getValueOnLocalStorage("hangangToken") || null;
   const [hits, setHits] = useState({
     amount: rest.data.hits,
     pushed: isHitted,
@@ -197,7 +197,9 @@ const ResourceCard = ({ isHitted, ...rest }) => {
         <HitWrapper>
           <HitIcon
             pushed={hits.pushed}
-            onClick={() => pushHitIcon(isLoggedIn, rest.data.id, accessToken, setHits)}
+            onClick={() =>
+              pushHitIcon(isLoggedIn, rest.data.id, token.access_token, setHits)
+            }
           />
           <HitAmount pushed={hits.pushed}>{hits.amount}</HitAmount>
         </HitWrapper>
