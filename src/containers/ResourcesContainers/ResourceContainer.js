@@ -22,6 +22,7 @@ import {
   setDepartment,
 } from "store/modules/resources";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
+import ResourceCard from "components/ResourceComponents/ResourceCard";
 
 const SpinnerWrapper = styled.div`
   width: 100%;
@@ -132,6 +133,7 @@ const CardGrid = styled.div`
   }
 `;
 
+// TODO: write resources modal
 const ResourceContainer = () => {
   const dispatch = useDispatch();
   const { isLoading, ...filterOptions } = useSelector((state) => state.resourceReducer);
@@ -157,10 +159,6 @@ const ResourceContainer = () => {
       }
     }
   }, [isLoading]);
-
-  useEffect(() => {
-    console.log(resources);
-  }, [resources]);
 
   return (
     <Wrapper>
@@ -204,9 +202,9 @@ const ResourceContainer = () => {
             <SearchResultLabel>{`탐색 결과 (${resources.length})`}</SearchResultLabel>
             <ResourceWriteButton />
             <CardGrid>
-              {/* 
-            TODO: connect resource card components on resources state
-          ))} */}
+              {resources.map((data) => (
+                <ResourceCard data={data} key={data.id} />
+              ))}
             </CardGrid>
           </ResourcesSection>
         </>
