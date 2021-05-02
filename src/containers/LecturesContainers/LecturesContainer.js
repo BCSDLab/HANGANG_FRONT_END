@@ -20,6 +20,7 @@ import lectureFilterList from "static/LecturesPage/lectureFilterList.json";
 import { majorList } from "static/LecturesPage/majorList";
 import { requestFinished, requestLectures, setDepartment } from "store/modules/lectures";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { Promise } from "core-js";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -124,26 +125,34 @@ const LecturesContainer = () => {
   /**
    * 처음 마운트 되었을 때
    *
-   * 로그인 되어있을 경우 사용자가 스크랩한 강의를 받는다.
+   * 로그인 되어있을 경우 사용자가 스크랩한 강의, 강의 목록을 동시에 받는다.
    * 스크랩한 강의가 lectures에 있을 경우 스크랩 아이콘을 추가해준다.
    */
   useEffect(async () => {
     try {
       if (isLoggedIn) {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-        const { data } = await MypageAPI.getScrapLecture(accessToken);
 
+        const promised = await Promise.all([
+          MypageAPI.getScrapLecture(accessToken),
+          LectureAPI.getLectures(filterOptions),
+        ]);
+
+        const lectures = promised[1];
+        setLectures(lectures.data);
+
+        const { data: scrapped } = promised[0];
         let scrappedId = [];
-        data.forEach(({ id }) => scrappedId.push(id));
+        scrapped.forEach(({ id }) => scrappedId.push(id));
         setScrapped(scrappedId);
       }
 
       if (!isLoggedIn) {
-        const { data } = await LectureAPI.getLectures(filterOptions);
-        setLectures(data);
+        const lectures = await LectureAPI.getLectures(filterOptions);
+        setLectures(lectures.data);
       }
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     } finally {
       dispatch(requestFinished());
       setIsFetched(true);
@@ -164,7 +173,7 @@ const LecturesContainer = () => {
         const { data } = await LectureAPI.getLectures(filterOptions);
         setLectures(data);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       } finally {
         dispatch(requestFinished());
       }
@@ -208,7 +217,6 @@ const LecturesContainer = () => {
               />
             )}
           </FilterSection>
-
           <LecturesSection>
             <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
             <CardGrid>
