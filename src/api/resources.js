@@ -1,6 +1,21 @@
 import axios from "axios";
 
+const setAxiosConfig = (accessToken = null, data = null) => {
+  let config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
+  if (data !== null) config["data"] = data;
+  return config;
+};
+
 export default {
+  pushHitResource: async (accessToken) => {
+    const response = await axios.get("/user/me", setAxiosConfig(accessToken));
+    return response;
+  },
   getResources: async (filterOptions) => {
     let query = "";
 
