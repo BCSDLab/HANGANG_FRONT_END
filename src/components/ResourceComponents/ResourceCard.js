@@ -9,6 +9,13 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import { useSelector } from "react-redux";
+
+// FIXME: Change uri when GUI Updated
+const PUSHED_THUMB_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumg_up_imsi.png";
+const NOT_PUSHED_THUMB_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up.png";
 
 const Wrapper = styled.div`
   position: relative;
@@ -58,7 +65,6 @@ const LectureInfos = styled.div`
 const LectureName = styled(Link)`
   all: unset;
   font-size: 14px;
-  font-weight: 500;
   color: ${PlaceholderColor};
   cursor: pointer;
 `;
@@ -71,7 +77,6 @@ const Delimiter = styled.div`
 `;
 
 const LectureProfessor = styled(LectureName)`
-  font-weight: normal;
   cursor: default;
 `;
 
@@ -91,40 +96,51 @@ const HitWrapper = styled.div`
   right: 15px;
 `;
 
-const HitAmount = styled.span`
+const HitAmount = styled.div`
+  height: 15px;
   margin-left: 4px;
-  font-size: 16px;
+  font-size: 17px;
   color: ${PlaceholderColor};
 `;
 
-const HitIcon = styled.img.attrs({
-  src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up.png",
+const HitIcon = styled.img.attrs(({ pushed }) => ({
+  src: pushed ? PUSHED_THUMB_URL : NOT_PUSHED_THUMB_URL,
   alt: "hit_icon",
-})`
-  width: 20px;
+}))`
+  width: 19px;
   cursor: pointer;
 `;
+
+/**
+ * Return the sliced string that maximum length is 'max'.
+ * @param string A string needed to slice.
+ * @param max A number that set maximum value to slice string.
+ */
+const sliceString = (string, max) => {
+  if (string.length > max) {
+    string = string.slice(0, max) + "...";
+  }
+  return string;
+};
 
 /**
  * ResourceCard
  * A Component used to present resources in db at ~/resources
  */
-const ResourceCard = ({ isLiked = false, ...rest }) => {
-  /**
-   * Return the sliced string that maximum length is 'max'.
-   * @param string A string needed to slice.
-   * @param max A number that set maximum value to slice string.
-   */
-  const sliceString = (string, max) => {
-    if (string.length > max) {
-      string = string.slice(0, max) + "...";
+const ResourceCard = ({ isHitted = false, ...rest }) => {
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
+
+  // TODO: Get Info of User pushed hit on Resources
+  const pushHitIcon = (isLoggedIn = false) => {
+    if (!isLoggedIn) alert("로그인이 필요한 서비스입니다.");
+    else {
+      console.log("hi z");
     }
-    return string;
   };
 
   return (
     <Wrapper>
+      {/* FIXME: Convert uri if backend api revised */}
       <Thumbnail uri="https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/sample_resource_thumbnail.png" />
       <Content>
         <Title>{sliceString(rest.data.title, 26)}</Title>
@@ -144,7 +160,8 @@ const ResourceCard = ({ isLiked = false, ...rest }) => {
             .join(", ")}
         </Category>
         <HitWrapper>
-          <HitIcon onClick={() => alert("hi")} />
+          {/* FIXME: Connect Like API if used logged in */}
+          <HitIcon pushed={isHitted} onClick={() => pushHitIcon(isLoggedIn)} />
           <HitAmount>{rest.data.hits}</HitAmount>
         </HitWrapper>
       </Content>
@@ -153,12 +170,12 @@ const ResourceCard = ({ isLiked = false, ...rest }) => {
 };
 
 ResourceCard.defaultProps = {
-  isScrapped: false,
+  isHitted: false,
   rest: {},
 };
 
 ResourceCard.propTypes = {
-  isScrapped: PropTypes.bool,
+  isHitted: PropTypes.bool,
   rest: PropTypes.object,
 };
 
