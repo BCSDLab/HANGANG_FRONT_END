@@ -133,7 +133,8 @@ const CardGrid = styled.div`
   }
 `;
 
-// TODO: write resources modal
+// TODO: Connect API that check User pushed before if api revised
+// TODO: Create resources modal
 const ResourceContainer = () => {
   const dispatch = useDispatch();
   const { isLoading, ...filterOptions } = useSelector((state) => state.resourceReducer);
@@ -203,6 +204,7 @@ const ResourceContainer = () => {
             <ResourceWriteButton />
             <CardGrid>
               {resources.map((data) => (
+                //FIXME: Change isHitted when api revised
                 <ResourceCard data={data} key={data.id} />
               ))}
             </CardGrid>

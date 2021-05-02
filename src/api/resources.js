@@ -12,11 +12,21 @@ const setAxiosConfig = (accessToken = null, data = null) => {
 };
 
 export default {
-  pushHitResource: async (accessToken) => {
-    const response = await axios.get("/user/me", setAxiosConfig(accessToken));
+  pushHitResource: async (id = undefined, accessToken = null) => {
+    const response = await axios.get(
+      `/lecture-banks/hit/push/${id}`,
+      setAxiosConfig(accessToken)
+    );
     return response;
   },
-  getResources: async (filterOptions) => {
+  checkUserHitResource: async (id = undefined, accessToken = null) => {
+    const response = await axios.get(
+      `/lecture-banks/hit/check/${id}`,
+      setAxiosConfig(accessToken)
+    );
+    return response;
+  },
+  getResources: async (filterOptions = {}) => {
     let query = "";
 
     Object.entries(filterOptions).forEach(([key, value]) => {

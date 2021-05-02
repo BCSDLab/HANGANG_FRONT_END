@@ -1,19 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Promise } from "core-js";
 
+import ResourceAPI from "api/resources";
+import { SERVICE_NEEDED_LOGIN } from "static/ErrorComments";
 import {
   BorderColor,
   ConceptColor,
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import { useSelector } from "react-redux";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-// FIXME: Change uri when GUI Updated
 const PUSHED_THUMB_URL =
-  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumg_up_imsi.png";
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up_pushed.png";
 const NOT_PUSHED_THUMB_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up.png";
 
@@ -100,7 +103,7 @@ const HitAmount = styled.div`
   height: 15px;
   margin-left: 4px;
   font-size: 17px;
-  color: ${PlaceholderColor};
+  color: ${({ pushed }) => (pushed ? `${ConceptColor}` : `${PlaceholderColor}`)};
 `;
 
 const HitIcon = styled.img.attrs(({ pushed }) => ({
@@ -124,19 +127,51 @@ const sliceString = (string, max) => {
 };
 
 /**
+ * Request "Hit API" when user pushed hit icon.
+ * If user not logged in, show alert screen and request log in.
+ * If user logged in, Request API with id of resource and token of user.
+ * @param {boolean} isLoggedIn A boolean to check user is logged in.
+ * @param {number} id A number of resource id.
+ * @param {string} accessToken A string of access_token of user token.
+ * @param {function} setHits A function to change state of hits.
+ */
+const pushHitIcon = async (
+  isLoggedIn = false,
+  id = undefined,
+  accessToken = null,
+  setHits = () => {}
+) => {
+  if (!isLoggedIn) alert(SERVICE_NEEDED_LOGIN);
+  else {
+    try {
+      await Promise.all([
+        ResourceAPI.pushHitResource(id, accessToken),
+        ResourceAPI.checkUserHitResource(id, accessToken),
+      ]);
+
+      setHits((prev) =>
+        prev.pushed
+          ? { amount: prev.amount - 1, pushed: false }
+          : { amount: prev.amount + 1, pushed: true }
+      );
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+};
+
+/**
  * ResourceCard
  * A Component used to present resources in db at ~/resources
  */
-const ResourceCard = ({ isHitted = false, ...rest }) => {
+//TODO: Check hits state when pushHit api revised
+const ResourceCard = ({ isHitted, ...rest }) => {
   const { isLoggedIn } = useSelector((state) => state.authReducer);
-
-  // TODO: Get Info of User pushed hit on Resources
-  const pushHitIcon = (isLoggedIn = false) => {
-    if (!isLoggedIn) alert("로그인이 필요한 서비스입니다.");
-    else {
-      console.log("hi z");
-    }
-  };
+  const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+  const [hits, setHits] = useState({
+    amount: rest.data.hits,
+    pushed: isHitted,
+  });
 
   return (
     <Wrapper>
@@ -160,9 +195,11 @@ const ResourceCard = ({ isHitted = false, ...rest }) => {
             .join(", ")}
         </Category>
         <HitWrapper>
-          {/* FIXME: Connect Like API if used logged in */}
-          <HitIcon pushed={isHitted} onClick={() => pushHitIcon(isLoggedIn)} />
-          <HitAmount>{rest.data.hits}</HitAmount>
+          <HitIcon
+            pushed={hits.pushed}
+            onClick={() => pushHitIcon(isLoggedIn, rest.data.id, accessToken, setHits)}
+          />
+          <HitAmount pushed={hits.pushed}>{hits.amount}</HitAmount>
         </HitWrapper>
       </Content>
     </Wrapper>
