@@ -28,7 +28,7 @@ const FILTER_OPTIONS = {
   cursor: 0,
   department: "",
   keyword: "",
-  limit: 1000,
+  limit: 10,
   order: "",
   page: 1,
   ...DEFAULT_FILTER_OPTIONS,
