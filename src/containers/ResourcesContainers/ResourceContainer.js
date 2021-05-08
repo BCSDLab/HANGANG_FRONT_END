@@ -23,6 +23,7 @@ import {
 } from "store/modules/resources";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 import ResourceCard from "components/ResourceComponents/ResourceCard";
+import ResourceWriteContainer from "./ResourceWriteContainer";
 
 const SpinnerWrapper = styled.div`
   width: 100%;
@@ -114,6 +115,7 @@ const ResourceWriteButton = styled.input.attrs({
   /* text-align: center; */
   padding-left: 16px;
   color: ${PlaceholderColor};
+  cursor: pointer;
 `;
 
 const CardGrid = styled.div`
@@ -142,6 +144,7 @@ const ResourceContainer = () => {
   const [isFetched, setIsFetched] = useState(false);
 
   const [resources, setResources] = useState([]);
+  const [isWriteFormOpened, setIsWriteFormOpened] = useState(true);
 
   /**
    * 첫 페이지 로드 시 fetch를 위해 !isFetched 일 시 api call을 한다.
@@ -201,7 +204,7 @@ const ResourceContainer = () => {
 
           <ResourcesSection>
             <SearchResultLabel>{`탐색 결과 (${resources.length})`}</SearchResultLabel>
-            <ResourceWriteButton />
+            <ResourceWriteButton onClick={() => setIsWriteFormOpened(true)} />
             <CardGrid>
               {resources.map((data) => (
                 //FIXME: Change isHitted when api revised
@@ -209,6 +212,11 @@ const ResourceContainer = () => {
               ))}
             </CardGrid>
           </ResourcesSection>
+
+          <ResourceWriteContainer
+            isWriteFormOpened={isWriteFormOpened}
+            setIsWriteFormOpened={setIsWriteFormOpened}
+          />
         </>
       )}
     </Wrapper>
