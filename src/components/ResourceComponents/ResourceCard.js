@@ -14,11 +14,7 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-
-const PUSHED_THUMB_URL =
-  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up_pushed.png";
-const NOT_PUSHED_THUMB_URL =
-  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up.png";
+import { NOT_PUSHED_THUMB_URL, PUSHED_THUMB_URL } from "static/Shared/imageUrls";
 
 const Wrapper = styled.div`
   position: relative;
