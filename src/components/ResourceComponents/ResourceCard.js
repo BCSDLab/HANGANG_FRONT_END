@@ -131,7 +131,7 @@ const sliceString = (string, max) => {
  * @param {string} accessToken A string of access_token of user token.
  * @param {function} setHits A function to change state of hits.
  */
-const pushHitIcon = async (
+const clickHitIcon = async (
   isLoggedIn = false,
   id = undefined,
   accessToken = null,
@@ -194,7 +194,7 @@ const ResourceCard = ({ isHitted, ...rest }) => {
           <HitIcon
             pushed={hits.pushed}
             onClick={() =>
-              pushHitIcon(isLoggedIn, rest.data.id, token.access_token, setHits)
+              clickHitIcon(isLoggedIn, rest.data.id, token.access_token, setHits)
             }
           />
           <HitAmount pushed={hits.pushed}>{hits.amount}</HitAmount>
