@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const setAxiosConfig = (accessToken = null, data = null) => {
+const setTokenInHeader = (accessToken = null, data = null) => {
   let config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -15,14 +15,14 @@ export default {
   pushHitResource: async (id = undefined, accessToken = null) => {
     const response = await axios.get(
       `/lecture-banks/hit/push/${id}`,
-      setAxiosConfig(accessToken)
+      setTokenInHeader(accessToken)
     );
     return response;
   },
   checkUserHitResource: async (id = undefined, accessToken = null) => {
     const response = await axios.get(
       `/lecture-banks/hit/check/${id}`,
-      setAxiosConfig(accessToken)
+      setTokenInHeader(accessToken)
     );
     return response;
   },

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const setAxiosConfig = (accessToken, data = null) => {
+const setTokenInHeader = (accessToken, data = null) => {
   let config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -12,29 +12,29 @@ const setAxiosConfig = (accessToken, data = null) => {
 
 export default {
   getAmountOfActivity: async (accessToken) => {
-    const response = await axios.get("/user/lecture", setAxiosConfig(accessToken));
+    const response = await axios.get("/user/lecture", setTokenInHeader(accessToken));
     return response;
   },
   getInfo: async (accessToken) => {
-    const response = await axios.get("/user/me", setAxiosConfig(accessToken));
+    const response = await axios.get("/user/me", setTokenInHeader(accessToken));
     return response;
   },
   getPointRecords: async (accessToken) => {
-    const response = await axios.get("/user/point", setAxiosConfig(accessToken));
+    const response = await axios.get("/user/point", setTokenInHeader(accessToken));
     return response;
   },
   getPurchasedRecords: async (accessToken) => {
-    const response = await axios.get("/user/purchase", setAxiosConfig(accessToken));
+    const response = await axios.get("/user/purchase", setTokenInHeader(accessToken));
     return response;
   },
   getScrapLecture: async (accessToken) => {
-    const response = await axios.get("/scrap/lecture", setAxiosConfig(accessToken));
+    const response = await axios.get("/scrap/lecture", setTokenInHeader(accessToken));
     return response;
   },
   deleteScrapLecture: async (accessToken, id = []) => {
     const response = await axios.delete(
       "/scrap/lecture",
-      setAxiosConfig(accessToken, { id })
+      setTokenInHeader(accessToken, { id })
     );
     return response;
   },
@@ -43,11 +43,11 @@ export default {
       major,
       nickname,
     };
-    const response = await axios.put("/user/me", body, setAxiosConfig(accessToken));
+    const response = await axios.put("/user/me", body, setTokenInHeader(accessToken));
     return response;
   },
   deleteUser: async (accessToken) => {
-    const response = await axios.delete("/user/me", setAxiosConfig(accessToken));
+    const response = await axios.delete("/user/me", setTokenInHeader(accessToken));
     return response;
   },
   checkValidNickname: async (nickname) => {
