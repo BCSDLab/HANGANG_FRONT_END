@@ -33,6 +33,9 @@ const Option = styled.div`
   font-size: 12px;
   cursor: pointer;
 
+  background-color: #fff;
+  z-index: 9999;
+
   :hover {
     background-color: ${BorderColor};
   }
