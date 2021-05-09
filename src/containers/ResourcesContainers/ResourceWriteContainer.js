@@ -54,9 +54,13 @@ const ResourceWriteContainer = ({ isWriteFormOpened, setIsWriteFormOpened }) => 
   });
 
   return (
-    <Wrapper show={isWriteFormOpened} onClick={() => setIsWriteFormOpened(false)}>
-      <Container onClick={(e) => e.stopPropagation()}>
-        <CloseButton onClick={() => setIsWriteFormOpened(false)} />
+    <Wrapper show={isWriteFormOpened}>
+      <Container>
+        <CloseButton
+          onClick={() => {
+            if (confirm("강의자료 작성을 취소하시겠습니까?")) setIsWriteFormOpened(false);
+          }}
+        />
       </Container>
     </Wrapper>
   );
