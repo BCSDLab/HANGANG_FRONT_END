@@ -9,8 +9,6 @@ import {
   UPLOAD_FILE_ICON_URL,
 } from "static/Shared/imageUrls";
 
-const labelWhenNoMaterial = "자료를 최소 1개 이상 업로드 해주세요. ( 0KB / 50MB )";
-
 const ACCEPT_FILE_TYPES = [
   "zip",
   "xls",
@@ -166,6 +164,25 @@ const getFilesFromUser = (files, setForm) => {
   }));
 };
 
+/**
+ * A Function to calculate length and size of material.
+ * @param {object} material A Object to contain material info.
+ * @returns A String to contain notify sentence with size.
+ */
+const getLabelOfMaterialsInfo = (material) => {
+  const KB = 1000;
+  const MB = 1000 * KB;
+  let size = material.reduce((acc, curr) => acc + curr.size, 0).toString();
+
+  if (material.length === 0)
+    return "자료를 최소 1개 이상 업로드 해주세요. ( 0KB / 50MB )";
+  else if (size < KB) return `총 ${material.length}개 ( ${size}B / 50MB )`;
+  else if (size < MB)
+    return `총 ${material.length}개 ( ${(size / KB).toFixed(2)}KB / 50MB )`;
+  else if (size / MB >= 1)
+    return `총 ${material.length}개 ( ${(size / MB).toFixed(2)}MB / 50MB )`;
+};
+
 const Material = ({ name, type }) => {
   return (
     <MaterialContainer>
@@ -185,7 +202,7 @@ const MaterialSection = ({ materials, setForm }) => {
 
   return (
     <Wrapper>
-      <Label>{labelWhenNoMaterial}</Label>
+      <Label>{getLabelOfMaterialsInfo(materials)}</Label>
       <AddFileIcon onClick={() => file.current.click()} />
       <FakeFileDom
         ref={file}
