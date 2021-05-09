@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const Content = styled.textarea.attrs({
   placeholder: Placeholder,
 })`
-  overflow-y: scroll;
+  overflow-y: none;
   width: 100%;
   height: 146px;
   background-color: #f5f5f5;
