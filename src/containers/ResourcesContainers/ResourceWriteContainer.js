@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { CopyRightColor } from "static/Shared/commonStyles";
+import { BorderColor, CopyRightColor, FontColor } from "static/Shared/commonStyles";
 import { CLOSE_WRITE_FORM_URL } from "static/Shared/imageUrls";
 import styled from "styled-components";
+import SemesterSection from "components/ResourceComponents/ResourceWriteComponents/SemesterSection";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -43,8 +44,32 @@ const CloseButton = styled.img.attrs({
   cursor: pointer;
 `;
 
+const Title = styled.input.attrs({
+  type: "text",
+  placeholder: "제목을 입력해 주세요.",
+})`
+  width: calc(100% - 40px); // 40px is space for "X button"
+  height: 30px;
+
+  border: none;
+  outline: none;
+
+  font-size: 20px;
+  color: ${FontColor};
+  ::placeholder {
+    color: #999999;
+  }
+`;
+
+const Delimiter = styled.div`
+  width: 100%;
+  height: 1px;
+  margin: 14px 0px 21.5px 0px;
+  background-color: ${BorderColor};
+`;
+
 const ResourceWriteContainer = ({ isWriteFormOpened, setIsWriteFormOpened }) => {
-  const form = useState({
+  const [form, setForm] = useState({
     title: "",
     semester_date: "5",
     lecture_id: false,
@@ -61,6 +86,11 @@ const ResourceWriteContainer = ({ isWriteFormOpened, setIsWriteFormOpened }) => 
             if (confirm("강의자료 작성을 취소하시겠습니까?")) setIsWriteFormOpened(false);
           }}
         />
+        <Title
+          onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+        />
+        <Delimiter />
+        <SemesterSection />
       </Container>
     </Wrapper>
   );
