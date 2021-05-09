@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { UNDER_ARROW_URL } from "static/Shared/imageUrls";
-import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
@@ -43,7 +43,7 @@ const SelectBox = styled.div.attrs({
 })`
   position: absolute;
   top: 0;
-  left: 87px;
+  left: 79px;
   width: 240px;
   height: fit-content;
 
