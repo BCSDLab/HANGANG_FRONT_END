@@ -1,4 +1,5 @@
 import axios from "axios";
+import { PlaceholderColor } from "static/Shared/commonStyles";
 
 const setTokenInHeader = (accessToken = null, data = null) => {
   let config = {
@@ -61,14 +62,15 @@ export default {
     );
     return response;
   },
+  //FIXME: Change to handle multiple files when it solve problem.
   uploadFiles: async (files = null, createFormId = -1, accessToken = null) => {
     let fixFileSingleOrMultiple = files.length > 1 ? "files" : "file";
 
-    // console.log(files, files[0], typeof files[0], Object.values(files));
-
     const form = new FormData();
-    //FIXME: Change to handle multiple files when it solve problem.
-    form.append(fixFileSingleOrMultiple, Object.values(files)[0]);
+
+    console.log(files);
+
+    for (let f of Object.values(files)) form.append(fixFileSingleOrMultiple, f);
 
     const response = await axios.post(
       `/lecture-banks/${fixFileSingleOrMultiple}/upload/${createFormId}`,
@@ -81,6 +83,27 @@ export default {
     const response = await axios.post(
       `/lecture-banks/file/cancel_upload/${id}`,
       null,
+      setTokenInHeader(accessToken)
+    );
+    return response;
+  },
+  postResourceWrite: async (
+    { category, content, id, lecture_id, semester_date, title },
+    accessToken = null
+  ) => {
+    let body = {
+      category,
+      content,
+      id,
+      lecture_id,
+      semester_date,
+      title,
+      point_price: 10,
+    };
+
+    const response = await axios.post(
+      `/lecture-banks/write`,
+      body,
       setTokenInHeader(accessToken)
     );
     return response;

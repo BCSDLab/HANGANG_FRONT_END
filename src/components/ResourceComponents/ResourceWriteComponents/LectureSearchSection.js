@@ -60,8 +60,6 @@ const SearchBar = styled.input.attrs({
   }
 `;
 
-const AdditionalInfo = styled.span``;
-
 const SearchIcon = styled.img.attrs({
   src: SEARCH_ICON_URL,
   alt: "search",
@@ -105,7 +103,11 @@ const LectureSearchSection = ({ setForm }) => {
       <Label>과목명 검색</Label>
       <SearchBox>
         {/* FIXME: Change value contains code, professor */}
-        <SearchBar onChange={(e) => handleSearchBar(e)} value={term.name} />
+        <SearchBar
+          onClick={() => setIsSearchBoxVisible(true)}
+          onChange={(e) => handleSearchBar(e)}
+          value={term.name}
+        />
         <SearchIcon />
       </SearchBox>
 

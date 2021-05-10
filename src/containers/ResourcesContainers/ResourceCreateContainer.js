@@ -92,31 +92,76 @@ const SubmitButton = styled.input.attrs({
   height: 36px;
   border: none;
   border-radius: 24px;
-  background-color: ${ConceptColor};
+  background-color: ${({ isValid }) => (isValid ? `${ConceptColor}` : "#bddcff")};
 
   font-size: 14px;
   color: #fff;
+
+  cursor: ${({ isValid }) => (isValid ? "pointer" : "default")};
 `;
 
+/**
+ * A function to check validation of form.
+ * It it is valid, return true.
+ */
+const checkValidation = (form) => {
+  if (
+    form.title.length !== 0 &&
+    form.semester_date !== "" &&
+    form.lecture_id !== -1 &&
+    form.id !== -1 &&
+    form.category.length !== 0 &&
+    form.content !== "" &&
+    form.materials.length !== 0
+  )
+    return true;
+  else return false;
+};
+
+/**
+ * A function to submit write form if it is valid.
+ * @param {object} form A object that user created for creating resource.
+ * @param {function} setIsFetched A function to update component when resources updated.
+ * @param {function} setIsCreateFormOpened A function to close write form when resources submitted.
+ * @returns
+ */
+const submitWriteForm = async (form, setIsFetched, setIsCreateFormOpened) => {
+  if (!checkValidation(form)) return;
+  try {
+    let accessToken = getValueOnLocalStorage("hangangToken").access_token;
+    const { status } = await ResourceAPI.postResourceWrite(form, accessToken);
+    if (status === 200) {
+      setIsCreateFormOpened(false);
+      alert("강의자료 작성이 성공적으로 완료되었습니다.");
+      setIsFetched(false);
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+/**
+ * Main Component to create resource.
+ */
 const ResourceCreateContainer = ({
   createFormId,
   isCreateFormOpened,
+  setIsFetched,
   setIsCreateFormOpened,
 }) => {
   const [form, setForm] = useState({
+    title: "",
+    semester_date: "5",
+    lecture_id: -1,
+    id: -1,
     category: ["기출자료"],
     content: "",
-    id: -1,
-    lecture_id: -1,
-    point_price: -1,
-    semester_date: "5",
-    title: "",
-    materials: [],
+    materials: [], //  exclude when request ~/lecture-banks/write(POST) api bcz its already added.
   });
 
   useEffect(() => {
-    console.log(form);
-  }, [form]);
+    setForm((prev) => ({ ...prev, id: createFormId }));
+  }, [createFormId]);
 
   /**
    * If user want to cancel writing, request delete itself.
@@ -150,7 +195,10 @@ const ResourceCreateContainer = ({
           materials={form.materials}
           setForm={setForm}
         />
-        <SubmitButton />
+        <SubmitButton
+          isValid={checkValidation(form)}
+          onClick={() => submitWriteForm(form, setIsFetched, setIsCreateFormOpened)}
+        />
       </Container>
     </Wrapper>
   );
@@ -159,12 +207,14 @@ const ResourceCreateContainer = ({
 ResourceCreateContainer.defaultProps = {
   createFormId: -1,
   isCreateFormOpened: false,
+  setIsFetched: () => {},
   setIsCreateFormOpened: () => {},
 };
 
 ResourceCreateContainer.propTypes = {
   createFormId: PropTypes.number,
   isCreateFormOpened: PropTypes.bool,
+  setIsFetched: PropTypes.func,
   setIsCreateFormOpened: PropTypes.func,
 };
 
