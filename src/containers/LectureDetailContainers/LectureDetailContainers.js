@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import ReviewAPI from "api/lectureReview";
 import MypageAPI from "api/mypage";
+import { kickOut } from "utils/kickOut";
 
 import LectureInfoSection from "components/LectureDetailComponents/LectureInfoSection";
 import ReviewGraphSection from "components/LectureDetailComponents/ReviewGraphSection";
@@ -44,24 +45,38 @@ const ReviewSection = styled.section`
   border: solid 1px ${BorderColor};
 `;
 
-
+/**
+ *  TODO:
+ * - 파라미터 값 가져오기
+ * @param {*} param0 
+ * @returns 
+ */
 const LectureDetailContainer = ({ match }) => {
   const dispatch = useDispatch();
   
+  // TODO: 파라미터 값 가져오기
   // const { lectureId } = match.params;
   // const { params } = this;
   // console.log({params});
   // const { id } = useParams();
-
   // console.log(lectureId);
-  const { isLoading, ...filterOptions } = useSelector((state) => state.lectureReducer);
+
+  // order
+  const { isLoading, ...orderOption } = useSelector((state) => state.lectureReducer);
   const { isLoggedIn } = useSelector((state) => state.authReducer);
 
-  const [reviews, setReviews] = useState([]);
-  const [lectureTimeTable, setLectureTimeTable] = useState([]);
-  const [scrapped, setScrapped] = useState([]);
+  const [lectureReviews, setLectureReviews] = useState([]);
+  const [lectureSemesterDates, setLectureSemesterDates] = useState([]);
+  const [lectureReviewTimeTable, setLectureReviewTimeTable] = useState([]);
   const [isFetched, setIsFetched] = useState(false);
 
+  /**
+   * 유저가 token이 없이 접근할 경우 홈으로 내보냅니다.
+   */
+  if (getValueOnLocalStorage("hangangToken") === null) {
+    kickOut(1);
+  }
+  
   /**
    * 스크랩 했으면 스크랩 표시?
    */
@@ -69,30 +84,25 @@ const LectureDetailContainer = ({ match }) => {
     try {
      
       if (isLoggedIn) {
-        console.log("로그인");
 
-        const { access_token: accessToken }   = getValueOnLocalStorage("hangangToken");
-        const { data }                        = await MypageAPI.getScrapLecture(accessToken);
-        const { dataLectrueReviews }          = await ReviewAPI.getLectureReviews(accessToken, 236);
-        const { dataLectureReviewTimetable }  = await ReviewAPI.getLectureReviewTimetable(accessToken, 236);
+        const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
-        let scrappedId = [];
-        data.forEach(({ id }) => scrappedId.push(id));
+        /**
+         * 라우터 파라미터 값을 가져올 수가 없어서 임의로 236 값 대입중입니다. 
+         * 
+         */
+        const { data } = await ReviewAPI.getLectureReviewTimetable(accessToken, 236);
+        const { semesterdata } = await ReviewAPI.getLectureSemesterDates(accessToken, 236);
+        const { lecturereviews } = await ReviewAPI.getLectureReviews(accessToken, 236);
 
-        setScrapped(scrappedId);
-        setLectureTimeTable(dataLectureReviewTimetable);
-        setReviews(dataLectrueReviews);
-
-        console.log(dataLectureReviewTimetable);
-        console.log(dataLectrueReviews);
+        
+        setLectureReviewTimeTable(data);
+        setLectureSemesterDates(semesterdata);
+        setLectureReviews(lecturereviews);
+        
 
       }
-
-      // if (!isLoggedIn) {
-        
-      // }
       
-
     } catch (error) {
       console.log(error);
     } finally {
@@ -101,20 +111,6 @@ const LectureDetailContainer = ({ match }) => {
     }
   }, [isLoggedIn]);
 
-
-  // useEffect(async () => {
-  //   if (isLoading) {
-  //     try {
-  //       const { data } = await ReviewAPI.getLectureReviews(accessToken, filterOptions);
-  //       setReviews(data);
-        
-  //     } catch (error) {
-  //       console.log(error);
-  //     } finally {
-  //       dispatch(requestFinished());
-  //     }
-  //   }
-  // }, [isLoading]);
 
   return (
     <Wrapper>
@@ -130,17 +126,28 @@ const LectureDetailContainer = ({ match }) => {
           
           <ReviewSection>
             <LectureInfoSection 
-              lectureReviewTimetable={lectureTimeTable}
+              name={lectureReviewTimeTable.name}
+              classification={lectureReviewTimeTable.classification}
+              professor={lectureReviewTimeTable.professor}
+              code={lectureReviewTimeTable.code}
+              isScrapped={lectureReviewTimeTable.is_scraped}
+              lectureSemesterDates={lectureSemesterDates}
             >
             </LectureInfoSection>
-            {lectureTimeTable}
+            
             <ReviewGraphSection
             ></ReviewGraphSection>
 
             <LectureResourceSection
             ></LectureResourceSection>
 
+            {/* {reviews.map((data) => (
+              <LectureReviewSection
+                data={data}
+              />
+            ))} */}
             <LectureReviewSection
+              lectureReviews={lectureReviews}
             ></LectureReviewSection>
           </ReviewSection>
           

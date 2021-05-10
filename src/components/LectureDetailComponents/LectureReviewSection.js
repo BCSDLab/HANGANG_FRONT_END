@@ -124,7 +124,12 @@ const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
 /**
  * TODO:
  * - nth-child 에 따른 구분선 css
+ * - 좋아요 누를시 좋아요 불 들어오록 css 수정
  * - API연동
+ *  - 강의 후기 출력
+ *  - 좋아요
+ * - 신고 기능
+ *  - 신고창 UI 
  * @param {*} param0 
  * @returns 
  */

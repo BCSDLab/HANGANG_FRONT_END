@@ -149,10 +149,10 @@ const App = () => {
       <Switch>
         <Route path="/" exact component={IndexPage} />
         <Route path="/lectures" component={LecturesPage} />
-        
+
         {/* 
-            TODO:
-            - /lectures/{id} 로 주소 변경해야함
+            FIXME:
+            - lectures/{id} 파라미터 작동 오류 (304 modified)
         */}
         <Route path="/lectures/:id?" component={LectureDetailPage} />
         <Route path="/lecture" component={LectureDetailPage} />
