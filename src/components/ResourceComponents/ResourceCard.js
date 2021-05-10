@@ -99,11 +99,11 @@ const HitAmount = styled.div`
   height: 15px;
   margin-left: 4px;
   font-size: 17px;
-  color: ${({ pushed }) => (pushed ? `${ConceptColor}` : `${PlaceholderColor}`)};
+  color: ${({ isHit }) => (isHit ? `${ConceptColor}` : `${PlaceholderColor}`)};
 `;
 
-const HitIcon = styled.img.attrs(({ pushed }) => ({
-  src: pushed ? PUSHED_THUMB_URL : NOT_PUSHED_THUMB_URL,
+const HitIcon = styled.img.attrs(({ isHit }) => ({
+  src: isHit ? PUSHED_THUMB_URL : NOT_PUSHED_THUMB_URL,
   alt: "hit_icon",
 }))`
   width: 19px;
@@ -125,30 +125,26 @@ const sliceString = (string, max) => {
 /**
  * Request "Hit API" when user pushed hit icon.
  * If user not logged in, show alert screen and request log in.
- * If user logged in, Request API with id of resource and token of user.
+ * If user logged in, Request hit API with id of resource and token of user.
  * @param {boolean} isLoggedIn A boolean to check user is logged in.
  * @param {number} id A number of resource id.
- * @param {string} accessToken A string of access_token of user token.
  * @param {function} setHits A function to change state of hits.
  */
 const clickHitIcon = async (
   isLoggedIn = false,
   id = undefined,
-  accessToken = null,
-  setHits = () => {}
+  setHitInfos = () => {}
 ) => {
   if (!isLoggedIn) alert(SERVICE_NEEDED_LOGIN);
   else {
     try {
-      await Promise.all([
-        ResourceAPI.pushHitResource(id, accessToken),
-        ResourceAPI.checkUserHitResource(id, accessToken),
-      ]);
+      const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+      await ResourceAPI.pushHitResource(id, accessToken);
 
-      setHits((prev) =>
-        prev.pushed
-          ? { amount: prev.amount - 1, pushed: false }
-          : { amount: prev.amount + 1, pushed: true }
+      setHitInfos((prev) =>
+        prev.is_hit
+          ? { is_hit: false, hits: prev.hits - 1 }
+          : { is_hit: true, hits: prev.hits + 1 }
       );
     } catch (err) {
       throw new Error(err);
@@ -160,44 +156,37 @@ const clickHitIcon = async (
  * ResourceCard
  * A Component used to present resources in db at ~/resources
  */
-//TODO: Check hits state when pushHit api revised
-const ResourceCard = ({ isHitted, ...rest }) => {
+const ResourceCard = ({ data: { is_hit, hits, ...rest } }) => {
   const { isLoggedIn } = useSelector((state) => state.authReducer);
-  const token = getValueOnLocalStorage("hangangToken") || null;
-  const [hits, setHits] = useState({
-    amount: rest.data.hits,
-    pushed: isHitted,
-  });
+  const [hitInfos, setHitInfos] = useState({ is_hit, hits });
 
   return (
     <Wrapper>
       {/* FIXME: Convert uri if backend api revised */}
       <Thumbnail uri="https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/sample_resource_thumbnail.png" />
       <Content>
-        <Title>{sliceString(rest.data.title, 26)}</Title>
-        <Nickname>{rest.data.user.nickname}</Nickname>
+        <Title>{sliceString(rest.title, 26)}</Title>
+        <Nickname>{rest.user.nickname}</Nickname>
         <LectureInfos>
-          <LectureName to={`lectures/${rest.data.lecture_id}`}>
-            {sliceString(rest.data.lecture.name, 7)}
+          <LectureName to={`lectures/${rest.lecture_id}`}>
+            {sliceString(rest.lecture.name, 7)}
           </LectureName>
           <Delimiter />
           <LectureProfessor as="span">
-            {sliceString(rest.data.lecture.professor, 10)}
+            {sliceString(rest.lecture.professor, 10)}
           </LectureProfessor>
         </LectureInfos>
         <Category>
-          {rest.data.category // e.g. 강의자료 -> 강의, 과제자료 -> 과제
+          {rest.category // e.g. 강의자료 -> 강의, 과제자료 -> 과제
             .map((elem) => elem.slice(0, 2))
             .join(", ")}
         </Category>
         <HitWrapper>
           <HitIcon
-            pushed={hits.pushed}
-            onClick={() =>
-              clickHitIcon(isLoggedIn, rest.data.id, token.access_token, setHits)
-            }
+            isHit={hitInfos.is_hit}
+            onClick={() => clickHitIcon(isLoggedIn, rest.id, setHitInfos)}
           />
-          <HitAmount pushed={hits.pushed}>{hits.amount}</HitAmount>
+          <HitAmount isHit={hitInfos.is_hit}>{hitInfos.hits}</HitAmount>
         </HitWrapper>
       </Content>
     </Wrapper>
@@ -205,13 +194,19 @@ const ResourceCard = ({ isHitted, ...rest }) => {
 };
 
 ResourceCard.defaultProps = {
-  isHitted: false,
-  rest: {},
+  data: {
+    is_hit: false,
+    hits: 0,
+    rest: {},
+  },
 };
 
 ResourceCard.propTypes = {
-  isHitted: PropTypes.bool,
-  rest: PropTypes.object,
+  data: PropTypes.shape({
+    is_hit: PropTypes.bool,
+    hits: PropTypes.number,
+    rest: PropTypes.object,
+  }),
 };
 
 export default ResourceCard;

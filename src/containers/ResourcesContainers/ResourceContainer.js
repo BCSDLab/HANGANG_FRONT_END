@@ -136,8 +136,6 @@ const CardGrid = styled.div`
   }
 `;
 
-// TODO: Connect API that check User pushed before if api revised
-// TODO: Create resources modal
 const ResourceContainer = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.authReducer);
