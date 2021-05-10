@@ -4,7 +4,7 @@
 
 ## Project Guideline
 
-[한강 프로젝트 FE 가이드라인](https://docs.google.com/document/d/1_-EnZk-9KotVCJ6cLr9_Ixjoyu4I-NGRdCHYofLaEPI/edit)
+[한강 프로젝트 FE 가이드라인](https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/2021.03.16+%E1%84%92%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A1%E1%86%BC+%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3+Guideline.pdf)
 
 ## Patch Notes
 
@@ -13,18 +13,4 @@
 - 0.0.3 (4/2/2021) : 메인 페이지 구현
 - 0.0.4 (4/5/2021) : 마이 페이지 구현
 - 0.0.5 (4/12/2021) : 강의평 페이지 구현
-
-## TODOS
-
-- [ ] TODO: README TODOS 다 지우고 가이드라인 S3에 올리고 내부 링크 생성
-- [ ] 백엔드 정렬 order 에 넣는거면 값이 지금 안들어감 + 이름 sort로 통일 가능할까요...
-- [ ] 현재 lectures/ resources 가져올 경우 limit 1000으로 모든 데이터를 요청하는데, 이를 limit 제한 걸고 무한 스크롤 형태로 매번 요청하는게 나은지, 아니면 처음에 한번 요청하는게 나은지 판단하기
-- [ ] 전공 버튼 다시 눌렀을 시 초기화
-- [x] 강의자료 페이지 첫 렌더링 이후 네비게이션 이동했다 오면 렌더링 안되는 문제 발생
-- [ ] console.log(err) => new Error("~~~")로 바꾸기
-
-## ResourceSection TODO
-
-- 🔺 좋아요 연동 => 좋아요시 따봉 파란색
-- 🔺 새로 고침 시 유저가 좋아요한 내역 받아와야 함 (Promise.all...)
-- [ ] 자료 썸네일 받아오기
+- 0.0.6 (5/10/2012) : 강의자료 페이지 구현
