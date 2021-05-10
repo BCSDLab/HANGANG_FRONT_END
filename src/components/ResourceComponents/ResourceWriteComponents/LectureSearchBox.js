@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+
+import dummyLecture from "./dummyLecture.json";
 import {
   BorderColor,
   ConceptColor,
@@ -91,8 +93,8 @@ const Delimiter = styled.div`
 
 const Professor = styled(Code)``;
 
-const LectureSearchBox = ({ term, setIsSearchBoxVisible }) => {
-  const [currCategory, setCurrCategory] = useState("교양");
+const LectureSearchBox = ({ term, setIsSearchBoxVisible, setTerm, setForm }) => {
+  const [currCategory, setCurrCategory] = useState("교양학부");
 
   React.useEffect(() => {
     console.log(term);
@@ -104,20 +106,31 @@ const LectureSearchBox = ({ term, setIsSearchBoxVisible }) => {
         {majorList.map(({ label, department }) => (
           <Category
             key={label}
-            onClick={() => setCurrCategory(label)}
-            isSelected={label === currCategory}
+            onClick={() => setCurrCategory(department)}
+            isSelected={department === currCategory}
           >
             {label}
           </Category>
         ))}
       </CategorySection>
       <LectureSection>
-        <Lecture onClick={() => setIsSearchBoxVisible(false)}>
-          <Title>사랑의 역사</Title>
-          <Code>AEB1234</Code>
-          <Delimiter />
-          <Professor>김사랑</Professor>
-        </Lecture>
+        {dummyLecture
+          .filter(({ department }) => currCategory === department)
+          .map(({ id, name, professor }) => (
+            <Lecture
+              key={id}
+              onClick={() => {
+                setForm((prev) => ({ ...prev, lecture_id: id }));
+                setTerm((prev) => ({ ...prev, name, professor }));
+                setIsSearchBoxVisible(false);
+              }}
+            >
+              <Title>{name}</Title>
+              <Code>AEB1234</Code>
+              <Delimiter />
+              <Professor>{professor}</Professor>
+            </Lecture>
+          ))}
       </LectureSection>
     </Wrapper>
   );

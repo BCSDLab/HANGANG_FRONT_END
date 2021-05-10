@@ -60,6 +60,8 @@ const SearchBar = styled.input.attrs({
   }
 `;
 
+const AdditionalInfo = styled.span``;
+
 const SearchIcon = styled.img.attrs({
   src: SEARCH_ICON_URL,
   alt: "search",
@@ -71,8 +73,13 @@ const SearchIcon = styled.img.attrs({
 `;
 
 const LectureSearchSection = ({ setForm }) => {
-  const [isSearchBoxVisible, setIsSearchBoxVisible] = useState(true);
-  const [term, setTerm] = useState("");
+  const [term, setTerm] = useState({
+    name: "",
+    // code: "AEB1234",
+    // professor: "김사랑",
+  });
+  const [isTermInfoShowed, setIsTermInfoShowed] = useState(false);
+  const [isSearchBoxVisible, setIsSearchBoxVisible] = useState(false);
 
   /**
    * A function to handle search bar event.
@@ -80,7 +87,9 @@ const LectureSearchSection = ({ setForm }) => {
    */
   const handleSearchBar = (e) => {
     if (!isSearchBoxVisible) setIsSearchBoxVisible(true);
-    setTerm(e.target.value);
+    if (isTermInfoShowed) setIsTermInfoShowed(false);
+
+    setTerm((prev) => ({ ...prev, name: e.target.value }));
   };
 
   /**
@@ -88,20 +97,26 @@ const LectureSearchSection = ({ setForm }) => {
    * If there is no term then change search box visibility to false.
    */
   useEffect(() => {
-    if (term === "") setIsSearchBoxVisible(false);
+    if (term.name === "") setIsSearchBoxVisible(false);
   }, [term]);
 
   return (
     <Wrapper>
       <Label>과목명 검색</Label>
       <SearchBox>
-        <SearchBar onChange={(e) => handleSearchBar(e)} />
+        {/* FIXME: Change value contains code, professor */}
+        <SearchBar onChange={(e) => handleSearchBar(e)} value={term.name} />
         <SearchIcon />
       </SearchBox>
 
-      <LectureSearchBox term={term} setIsSearchBoxVisible={setIsSearchBoxVisible} />
-      {/* {isSearchBoxVisible && (
-      )} */}
+      {isSearchBoxVisible && (
+        <LectureSearchBox
+          term={term}
+          setIsSearchBoxVisible={setIsSearchBoxVisible}
+          setTerm={setTerm}
+          setForm={setForm}
+        />
+      )}
     </Wrapper>
   );
 };
