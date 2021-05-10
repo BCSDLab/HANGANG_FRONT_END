@@ -153,7 +153,10 @@ const ResourceCreateContainer = ({
     title: "",
     semester_date: "5",
     lecture_id: -1,
-    id: -1,
+    term: {
+      id: -1,
+      name: "",
+    },
     category: ["기출자료"],
     content: "",
     materials: [], //  exclude when request ~/lecture-banks/write(POST) api bcz its already added.
@@ -177,7 +180,10 @@ const ResourceCreateContainer = ({
           title: "",
           semester_date: "5",
           lecture_id: -1,
-          id: -1,
+          term: {
+            id: -1,
+            name: "",
+          },
           category: ["기출자료"],
           content: "",
           materials: [],
@@ -193,13 +199,14 @@ const ResourceCreateContainer = ({
       <Container>
         <CloseButton onClick={() => cancelResourceCreate(setForm)} />
         <Title
+          value={form.title}
           onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
         />
         <Delimiter />
-        <SemesterSection setForm={setForm} />
-        <LectureSearchSection setForm={setForm} />
+        <SemesterSection semester={form.semester_date} setForm={setForm} />
+        <LectureSearchSection term={form.term} setForm={setForm} />
         <CategorySection category={form.category} setForm={setForm} />
-        <ContentSection setForm={setForm} />
+        <ContentSection content={form.content} setForm={setForm} />
         <MaterialSection
           createFormId={createFormId}
           materials={form.materials}

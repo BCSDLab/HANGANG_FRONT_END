@@ -76,13 +76,13 @@ export default {
     return response;
   },
   postResourceWrite: async (
-    { category, content, id, lecture_id, semester_date, title },
+    { category, content, term, lecture_id, semester_date, title },
     accessToken = null
   ) => {
     let body = {
       category,
       content,
-      id,
+      id: term.id,
       lecture_id,
       semester_date,
       title,

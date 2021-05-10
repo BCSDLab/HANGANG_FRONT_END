@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -34,7 +34,7 @@ const Option = styled.div`
   cursor: pointer;
 
   background-color: #fff;
-  z-index: 9999;
+  z-index: 3;
 
   :hover {
     background-color: ${BorderColor};
@@ -54,6 +54,7 @@ const SelectBox = styled.div.attrs({
   flex-direction: column;
   padding: 6px 0 0 0;
 
+  background-color: #fff;
   border: solid 1px ${BorderColor};
   border-radius: 4px;
 
@@ -114,10 +115,15 @@ const getSemesterOptionsUntilNow = (optionStartYear = 2019) => {
   return results.sort((a, b) => b.value - a.value);
 };
 
-const SemesterSection = ({ setForm }) => {
+const SemesterSection = ({ semester, setForm }) => {
   const [isOptionOpened, setIsOptionOpened] = useState(false);
   const [selectedOption, setSelectedOption] = useState("2021년 1학기");
   const options = getSemesterOptionsUntilNow();
+
+  useEffect(() => {
+    const { naming } = options.find(({ value }) => value === parseInt(semester));
+    setSelectedOption(naming);
+  }, [semester]);
 
   /**
    * A Function to trigger when user click option.
@@ -125,8 +131,7 @@ const SemesterSection = ({ setForm }) => {
    * @param {value} A String to convey semester info to Backend
    * @param {naming} A String to show current semester
    */
-  const chooseOption = ({ value, naming }) => {
-    setSelectedOption(naming);
+  const chooseOption = ({ value }) => {
     setIsOptionOpened(false);
     setForm((prev) => ({ ...prev, semester_date: value.toString() }));
   };
@@ -141,7 +146,7 @@ const SemesterSection = ({ setForm }) => {
         </SelectedBox>
         {isOptionOpened &&
           options.map(({ value, naming }) => (
-            <Option key={value} onClick={() => chooseOption({ value, naming })}>
+            <Option key={value} onClick={() => chooseOption({ value })}>
               {naming}
             </Option>
           ))}
@@ -151,10 +156,12 @@ const SemesterSection = ({ setForm }) => {
 };
 
 SemesterSection.defaultProps = {
+  semester: "",
   setForm: () => {},
 };
 
 SemesterSection.propTypes = {
+  semester: PropTypes.string,
   setForm: PropTypes.func,
 };
 

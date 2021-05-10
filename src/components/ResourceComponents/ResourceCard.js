@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Promise } from "core-js";
 
 import ResourceAPI from "api/resources";
 import { SERVICE_NEEDED_LOGIN } from "static/ErrorComments";

@@ -38,19 +38,22 @@ const Content = styled.textarea.attrs({
   }
 `;
 
-const ContentSection = ({ setForm }) => (
+const ContentSection = ({ content, setForm }) => (
   <Wrapper>
     <Content
+      value={content}
       onChange={(e) => setForm((prev) => ({ ...prev, content: e.target.value }))}
     />
   </Wrapper>
 );
 
 ContentSection.defaultProps = {
+  content: "",
   setForm: () => {},
 };
 
 ContentSection.propTypes = {
+  content: PropTypes.string,
   setForm: PropTypes.func,
 };
 

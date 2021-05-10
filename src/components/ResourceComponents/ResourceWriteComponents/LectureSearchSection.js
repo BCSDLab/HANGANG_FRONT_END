@@ -70,12 +70,7 @@ const SearchIcon = styled.img.attrs({
   width: 12px;
 `;
 
-const LectureSearchSection = ({ setForm }) => {
-  const [term, setTerm] = useState({
-    name: "",
-    // code: "AEB1234",
-    // professor: "김사랑",
-  });
+const LectureSearchSection = ({ term, setForm }) => {
   const [isTermInfoShowed, setIsTermInfoShowed] = useState(false);
   const [isSearchBoxVisible, setIsSearchBoxVisible] = useState(false);
 
@@ -87,7 +82,7 @@ const LectureSearchSection = ({ setForm }) => {
     if (!isSearchBoxVisible) setIsSearchBoxVisible(true);
     if (isTermInfoShowed) setIsTermInfoShowed(false);
 
-    setTerm((prev) => ({ ...prev, name: e.target.value }));
+    setForm((prev) => ({ ...prev, term: { ...prev.term, name: e.target.value } }));
   };
 
   /**
@@ -115,7 +110,6 @@ const LectureSearchSection = ({ setForm }) => {
         <LectureSearchBox
           term={term}
           setIsSearchBoxVisible={setIsSearchBoxVisible}
-          setTerm={setTerm}
           setForm={setForm}
         />
       )}

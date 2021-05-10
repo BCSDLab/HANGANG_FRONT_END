@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   left: 79px;
   width: 650px;
   height: 226px;
-  z-index: 9999;
+  z-index: 2;
 
   border: solid 1px ${BorderColor};
   border-radius: 4px;
@@ -94,7 +94,7 @@ const Delimiter = styled.div`
 
 const Professor = styled(Code)``;
 
-const LectureSearchBox = ({ term, setIsSearchBoxVisible, setTerm, setForm }) => {
+const LectureSearchBox = ({ term, setIsSearchBoxVisible, setForm }) => {
   const [currCategory, setCurrCategory] = useState("교양학부");
   const [lectures, setLectures] = useState([]);
   const requestLectures = async (term) => {
@@ -138,8 +138,7 @@ const LectureSearchBox = ({ term, setIsSearchBoxVisible, setTerm, setForm }) => 
               <Lecture
                 key={id}
                 onClick={() => {
-                  setForm((prev) => ({ ...prev, lecture_id: id }));
-                  setTerm((prev) => ({ ...prev, name, code, professor }));
+                  setForm((prev) => ({ ...prev, lecture_id: id, term: { id, name } }));
                   setIsSearchBoxVisible(false);
                 }}
               >
