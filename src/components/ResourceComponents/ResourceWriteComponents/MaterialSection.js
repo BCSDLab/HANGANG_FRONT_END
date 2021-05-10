@@ -123,7 +123,6 @@ const hasExtensionOnFileName = (type) => {
  */
 const convertMIMETypeToExtension = (type) => {
   let trimmedType = type.split("/")[1];
-  console.log(trimmedType);
   if (trimmedType.slice(0, 3) === "msw") trimmedType = "doc"; //  .doc / application/msword
   if (trimmedType.slice(4, 6) === "ms") trimmedType = "ppt"; //  .ppt / application/vnd.ms-powerpoint
   if (trimmedType.slice(0, 3) === "vnd") {
@@ -159,13 +158,12 @@ const getFilesFromUser = async (files, createFormId, setForm) => {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
     let { data } = await ResourceAPI.uploadFiles(files, createFormId, accessToken);
 
-    files.forEach((f) => {
+    files.forEach((f, index) => {
       let { name, size, type } = f;
       if (hasExtensionOnFileName(name.slice(-4))) name = name.slice(0, -5); // show, jpeg, cell, ...
       if (hasExtensionOnFileName(name.slice(-3))) name = name.slice(0, -4); // jpg, pdf, ...
       type = convertMIMETypeToExtension(type);
-      //FIXME: change data if multiple data api revised. maybe data[index] or something
-      trimmedFiles.push({ id: data, name, size, type });
+      trimmedFiles.push({ id: data[index], name, size, type });
     });
 
     setForm((prev) => ({
@@ -239,6 +237,7 @@ const MaterialSection = ({ createFormId, materials, setForm }) => {
       <FakeFileDom
         ref={file}
         onChange={() => getFilesFromUser(file.current.files, createFormId, setForm)}
+        // onChange={() => getFilesFromUser(file.current.files, 48, setForm)}
       />
       <MaterialWrapper>
         {materials.map((m) => (
