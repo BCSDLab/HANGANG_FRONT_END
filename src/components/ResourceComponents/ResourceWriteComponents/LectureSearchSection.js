@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+
+import LectureSearchBox from "components/ResourceComponents/ResourceWriteComponents/LectureSearchBox";
 import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { SEARCH_ICON_URL } from "static/Shared/imageUrls";
 
@@ -69,13 +71,37 @@ const SearchIcon = styled.img.attrs({
 `;
 
 const LectureSearchSection = ({ setForm }) => {
+  const [isSearchBoxVisible, setIsSearchBoxVisible] = useState(true);
+  const [term, setTerm] = useState("");
+
+  /**
+   * A function to handle search bar event.
+   * @param {object} e A object to contain event information.
+   */
+  const handleSearchBar = (e) => {
+    if (!isSearchBoxVisible) setIsSearchBoxVisible(true);
+    setTerm(e.target.value);
+  };
+
+  /**
+   * A function to check term.
+   * If there is no term then change search box visibility to false.
+   */
+  useEffect(() => {
+    if (term === "") setIsSearchBoxVisible(false);
+  }, [term]);
+
   return (
     <Wrapper>
       <Label>과목명 검색</Label>
       <SearchBox>
-        <SearchBar />
+        <SearchBar onChange={(e) => handleSearchBar(e)} />
         <SearchIcon />
       </SearchBox>
+
+      <LectureSearchBox term={term} setIsSearchBoxVisible={setIsSearchBoxVisible} />
+      {/* {isSearchBoxVisible && (
+      )} */}
     </Wrapper>
   );
 };
