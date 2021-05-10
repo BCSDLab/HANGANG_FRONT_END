@@ -96,10 +96,6 @@ const Professor = styled(Code)``;
 const LectureSearchBox = ({ term, setIsSearchBoxVisible, setTerm, setForm }) => {
   const [currCategory, setCurrCategory] = useState("교양학부");
 
-  React.useEffect(() => {
-    console.log(term);
-  }, [term]);
-
   return (
     <Wrapper>
       <CategorySection>

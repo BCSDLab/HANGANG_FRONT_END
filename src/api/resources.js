@@ -1,5 +1,4 @@
 import axios from "axios";
-import { PlaceholderColor } from "static/Shared/commonStyles";
 
 const setTokenInHeader = (accessToken = null, data = null) => {
   let config = {
@@ -65,11 +64,7 @@ export default {
   //FIXME: Change to handle multiple files when it solve problem.
   uploadFiles: async (files = null, createFormId = -1, accessToken = null) => {
     let fixFileSingleOrMultiple = files.length > 1 ? "files" : "file";
-
     const form = new FormData();
-
-    console.log(files);
-
     for (let f of Object.values(files)) form.append(fixFileSingleOrMultiple, f);
 
     const response = await axios.post(
