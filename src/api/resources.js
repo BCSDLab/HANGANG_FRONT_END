@@ -77,4 +77,12 @@ export default {
     );
     return response;
   },
+  cancelUploadFile: async (id = undefined, accessToken = null) => {
+    const response = await axios.post(
+      `/lecture-banks/file/cancel_upload/${id}`,
+      null,
+      setTokenInHeader(accessToken)
+    );
+    return response;
+  },
 };

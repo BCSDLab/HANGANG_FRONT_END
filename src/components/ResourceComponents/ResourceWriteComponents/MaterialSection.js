@@ -117,7 +117,7 @@ const hasExtensionOnFileName = (type) => {
 /**
  * A Function to convert MIME type to extension if type if MIME type.
  * e.g. application/vnd.openxmlformats-officedocument.presentationml.presentation => pptx
- * 참고 : https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types.
+ * Reference : https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
  * @param {string} type A String which has MIME type of file.
  * @returns A String to converted into extension.
  */
@@ -157,14 +157,15 @@ const getFilesFromUser = async (files, createFormId, setForm) => {
 
   try {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    await ResourceAPI.uploadFiles(files, createFormId, accessToken);
+    let { data } = await ResourceAPI.uploadFiles(files, createFormId, accessToken);
 
     files.forEach((f) => {
       let { name, size, type } = f;
       if (hasExtensionOnFileName(name.slice(-4))) name = name.slice(0, -5); // show, jpeg, cell, ...
       if (hasExtensionOnFileName(name.slice(-3))) name = name.slice(0, -4); // jpg, pdf, ...
       type = convertMIMETypeToExtension(type);
-      trimmedFiles.push({ name, size, type });
+      //FIXME: change data if multiple data api revised. maybe data[index] or something
+      trimmedFiles.push({ id: data, name, size, type });
     });
 
     setForm((prev) => ({
@@ -196,11 +197,33 @@ const getLabelOfMaterialsInfo = (material) => {
     return `총 ${material.length}개 ( ${(size / MB).toFixed(1)}MB / 50MB )`;
 };
 
-const Material = ({ name, type }) => {
+/**
+ * A Function to request remove file from waiting list.
+ * At First, check is valid to remove file to backend.
+ * And then, remove file from write form.
+ * @param {number} fId A number to store file id.
+ * @param {function} setForm A function to access file write form.
+ */
+const eraseFileFromWaitingList = async (fId, setForm) => {
+  try {
+    let accessToken = getValueOnLocalStorage("hangangToken").access_token;
+    await ResourceAPI.cancelUploadFile(fId, accessToken);
+
+    setForm((prev) => ({
+      ...prev,
+      materials: prev.materials.filter(({ id }) => id !== fId),
+    }));
+  } catch (error) {
+    alert("파일 업로드 취소 중 문제가 발생하였습니다. 관리자에게 문의하세요.");
+    throw new Error(error);
+  }
+};
+
+const Material = ({ id, name, type, setForm }) => {
   return (
     <MaterialContainer>
       <FileIcon type={type.toUpperCase()} />
-      <FileEraseIcon />
+      <FileEraseIcon onClick={() => eraseFileFromWaitingList(id, setForm)} />
       <MaterialName>{`${name.slice(0, 4)}···.${type}`}</MaterialName>
     </MaterialContainer>
   );
@@ -209,22 +232,17 @@ const Material = ({ name, type }) => {
 const MaterialSection = ({ createFormId, materials, setForm }) => {
   const file = createRef();
 
-  React.useEffect(() => {
-    console.log(materials);
-  }, [materials]);
-
   return (
     <Wrapper>
       <Label>{getLabelOfMaterialsInfo(materials)}</Label>
       <AddFileIcon onClick={() => file.current.click()} />
       <FakeFileDom
         ref={file}
-        onChange={() => getFilesFromUser(file.current.files, 46, setForm)}
-        // onChange={() => getFilesFromUser(file.current.files, createFormId, setForm)}
+        onChange={() => getFilesFromUser(file.current.files, createFormId, setForm)}
       />
       <MaterialWrapper>
-        {materials.map((m, idx) => (
-          <Material key={idx} name={m.name} type={m.type} />
+        {materials.map((m) => (
+          <Material key={m.id} id={m.id} name={m.name} type={m.type} setForm={setForm} />
         ))}
       </MaterialWrapper>
     </Wrapper>
