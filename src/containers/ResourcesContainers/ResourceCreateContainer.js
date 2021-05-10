@@ -166,12 +166,22 @@ const ResourceCreateContainer = ({
   /**
    * If user want to cancel writing, request delete itself.
    */
-  const cancelResourceCreate = async () => {
+  const cancelResourceCreate = async (setForm) => {
     if (confirm("강의자료 작성을 취소하시겠습니까?")) {
       try {
         setIsCreateFormOpened(false);
         let accessToken = getValueOnLocalStorage("hangangToken").access_token;
         await ResourceAPI.cancelResourceWrite(createFormId, accessToken);
+        // Set form as default form.
+        setForm({
+          title: "",
+          semester_date: "5",
+          lecture_id: -1,
+          id: -1,
+          category: ["기출자료"],
+          content: "",
+          materials: [],
+        });
       } catch (error) {
         throw new Error(error);
       }
@@ -181,7 +191,7 @@ const ResourceCreateContainer = ({
   return (
     <Wrapper show={isCreateFormOpened}>
       <Container>
-        <CloseButton onClick={() => cancelResourceCreate()} />
+        <CloseButton onClick={() => cancelResourceCreate(setForm)} />
         <Title
           onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
         />
