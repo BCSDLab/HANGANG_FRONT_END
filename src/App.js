@@ -14,6 +14,7 @@ import {
 
 import LoginPage from "pages/AuthPages/LoginPage";
 import LecturesPage from "pages/LecturesPages/LecturesPage";
+import LectureDetailPage from "pages/LectureDetailPages/LectureDetailPage";
 import ResourcesPage from "pages/ResourcesPages/ResourcesPage";
 import FindPwPage from "pages/AuthPages/FindPwPage";
 import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
@@ -147,7 +148,15 @@ const App = () => {
       <NavigationContainer />
       <Switch>
         <Route path="/" exact component={IndexPage} />
-        <Route path="/lectures" exact component={LecturesPage} />
+        <Route path="/lectures" component={LecturesPage} />
+        
+        {/* 
+            TODO:
+            - /lectures/{id} 로 주소 변경해야함
+        */}
+        <Route path="/lectures/:id?" component={LectureDetailPage} />
+        <Route path="/lecture" component={LectureDetailPage} />
+
         <Route path="/resources" exact component={ResourcesPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
