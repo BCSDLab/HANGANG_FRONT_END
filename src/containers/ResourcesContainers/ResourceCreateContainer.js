@@ -145,7 +145,11 @@ const ResourceCreateContainer = ({
         <LectureSearchSection setForm={setForm} />
         <CategorySection category={form.category} setForm={setForm} />
         <ContentSection setForm={setForm} />
-        <MaterialSection materials={form.materials} setForm={setForm} />
+        <MaterialSection
+          createFormId={createFormId}
+          materials={form.materials}
+          setForm={setForm}
+        />
         <SubmitButton />
       </Container>
     </Wrapper>

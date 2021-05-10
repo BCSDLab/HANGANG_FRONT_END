@@ -54,9 +54,25 @@ export default {
     );
     return response;
   },
-  cancelResourceWrite: async (id = -1, accessToken = null) => {
+  cancelResourceWrite: async (createFormId = -1, accessToken = null) => {
     const response = await axios.delete(
-      `/lecture-banks/cancel/${id}`,
+      `/lecture-banks/cancel/${createFormId}`,
+      setTokenInHeader(accessToken)
+    );
+    return response;
+  },
+  uploadFiles: async (files = null, createFormId = -1, accessToken = null) => {
+    let fixFileSingleOrMultiple = files.length > 1 ? "files" : "file";
+
+    // console.log(files, files[0], typeof files[0], Object.values(files));
+
+    const form = new FormData();
+    //FIXME: Change to handle multiple files when it solve problem.
+    form.append(fixFileSingleOrMultiple, Object.values(files)[0]);
+
+    const response = await axios.post(
+      `/lecture-banks/${fixFileSingleOrMultiple}/upload/${createFormId}`,
+      form,
       setTokenInHeader(accessToken)
     );
     return response;
