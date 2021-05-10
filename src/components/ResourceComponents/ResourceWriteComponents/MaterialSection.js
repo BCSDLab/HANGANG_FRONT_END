@@ -1,6 +1,6 @@
-import React, { createRef, useRef, useState } from "react";
+import React, { createRef } from "react";
 import styled from "styled-components";
-import PropTypes, { number } from "prop-types";
+import PropTypes from "prop-types";
 
 import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import {
@@ -178,9 +178,9 @@ const getLabelOfMaterialsInfo = (material) => {
     return "자료를 최소 1개 이상 업로드 해주세요. ( 0KB / 50MB )";
   else if (size < KB) return `총 ${material.length}개 ( ${size}B / 50MB )`;
   else if (size < MB)
-    return `총 ${material.length}개 ( ${(size / KB).toFixed(2)}KB / 50MB )`;
+    return `총 ${material.length}개 ( ${(size / KB).toFixed(1)}KB / 50MB )`;
   else if (size / MB >= 1)
-    return `총 ${material.length}개 ( ${(size / MB).toFixed(2)}MB / 50MB )`;
+    return `총 ${material.length}개 ( ${(size / MB).toFixed(1)}MB / 50MB )`;
 };
 
 const Material = ({ name, type }) => {
