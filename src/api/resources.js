@@ -46,4 +46,19 @@ export default {
     const response = await axios.get(`/lecture-banks/search?${query}`);
     return response;
   },
+  // Resource Write Form
+  getResourceCreateId: async (accessToken = null) => {
+    const response = await axios.get(
+      `/lecture-banks/write`,
+      setTokenInHeader(accessToken)
+    );
+    return response;
+  },
+  cancelResourceWrite: async (id = -1, accessToken = null) => {
+    const response = await axios.delete(
+      `/lecture-banks/cancel/${id}`,
+      setTokenInHeader(accessToken)
+    );
+    return response;
+  },
 };

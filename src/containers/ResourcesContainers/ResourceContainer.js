@@ -6,8 +6,16 @@ import ResourceAPI from "api/resources";
 
 import SearchForm from "components/Shared/SearchForm";
 import FilterBox from "components/Shared/FilterBox";
+import ResourceCard from "components/ResourceComponents/ResourceCard";
+import LoadingSpinner from "components/Shared/LoadingSpinner";
+import ResourceCreateContainer from "containers/ResourcesContainers/ResourceCreateContainer";
 
 import { majorList } from "static/LecturesPage/majorList";
+import {
+  requestResources,
+  requestFinished,
+  setDepartment,
+} from "store/modules/resources";
 import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
 import {
   BorderColor,
@@ -16,14 +24,7 @@ import {
   InnerContentWidth,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import {
-  requestResources,
-  requestFinished,
-  setDepartment,
-} from "store/modules/resources";
-import LoadingSpinner from "components/Shared/LoadingSpinner";
-import ResourceCard from "components/ResourceComponents/ResourceCard";
-import ResourceWriteContainer from "./ResourceWriteContainer";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const SpinnerWrapper = styled.div`
   width: 100%;
@@ -139,12 +140,33 @@ const CardGrid = styled.div`
 // TODO: Create resources modal
 const ResourceContainer = () => {
   const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
   const { isLoading, ...filterOptions } = useSelector((state) => state.resourceReducer);
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
 
   const [resources, setResources] = useState([]);
-  const [isWriteFormOpened, setIsWriteFormOpened] = useState(true);
+
+  const [createFormId, setCreateFormId] = useState(null);
+  const [isCreateFormOpened, setIsCreateFormOpened] = useState(false);
+
+  /**
+   * A Function to check user authentication.
+   * If user didnt logged in, show alert.
+   * else, open create form and request create form id.
+   */
+  const checkUserHasCreateAuthentication = async () => {
+    if (!isLoggedIn) return alert("강의 자료 작성을 위해서 로그인이 필요합니다.");
+
+    try {
+      setIsCreateFormOpened(true); //  Open create form
+      let accessToken = getValueOnLocalStorage("hangangToken").access_token;
+      let { data } = await ResourceAPI.getResourceCreateId(accessToken); //  Request create form id
+      setCreateFormId(data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
 
   /**
    * 첫 페이지 로드 시 fetch를 위해 !isFetched 일 시 api call을 한다.
@@ -204,7 +226,7 @@ const ResourceContainer = () => {
 
           <ResourcesSection>
             <SearchResultLabel>{`탐색 결과 (${resources.length})`}</SearchResultLabel>
-            <ResourceWriteButton onClick={() => setIsWriteFormOpened(true)} />
+            <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
             <CardGrid>
               {resources.map((data) => (
                 //FIXME: Change isHitted when api revised
@@ -213,9 +235,10 @@ const ResourceContainer = () => {
             </CardGrid>
           </ResourcesSection>
 
-          <ResourceWriteContainer
-            isWriteFormOpened={isWriteFormOpened}
-            setIsWriteFormOpened={setIsWriteFormOpened}
+          <ResourceCreateContainer
+            createFormId={createFormId}
+            isCreateFormOpened={isCreateFormOpened}
+            setIsCreateFormOpened={setIsCreateFormOpened}
           />
         </>
       )}
