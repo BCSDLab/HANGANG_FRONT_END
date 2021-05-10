@@ -19,13 +19,6 @@ export default {
     );
     return response;
   },
-  checkUserHitResource: async (id = undefined, accessToken = null) => {
-    const response = await axios.get(
-      `/lecture-banks/hit/check/${id}`,
-      setTokenInHeader(accessToken)
-    );
-    return response;
-  },
   getResources: async (filterOptions = {}) => {
     let query = "";
 
