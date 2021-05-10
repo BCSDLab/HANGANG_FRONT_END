@@ -178,13 +178,13 @@ const ResourceContainer = () => {
         const { data } = await ResourceAPI.getResources(filterOptions);
         setResources(data);
       } catch (error) {
-        console.log(error);
+        throw new Error(error);
       } finally {
         dispatch(requestFinished());
         if (!isFetched) setIsFetched(true);
       }
     }
-  }, [isLoading]);
+  }, [isFetched, isLoading]);
 
   return (
     <Wrapper>
@@ -238,6 +238,7 @@ const ResourceContainer = () => {
           <ResourceCreateContainer
             createFormId={createFormId}
             isCreateFormOpened={isCreateFormOpened}
+            setIsFetched={setIsFetched}
             setIsCreateFormOpened={setIsCreateFormOpened}
           />
         </>
