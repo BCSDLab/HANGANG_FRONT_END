@@ -26,7 +26,7 @@ const defaultFilterOptions = {
 const INITIAL_FILTER_OPTIONS = {
   keyword: "",
   department: "",
-  limit: 10,
+  limit: 50,
   page: 1,
   ...defaultFilterOptions,
   isLoading: false,

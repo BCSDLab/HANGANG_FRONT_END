@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { debounce } from "lodash";
 
-import dummyLecture from "./dummyLecture.json";
+import LectureAPI from "api/lecture";
 import {
   BorderColor,
   ConceptColor,
@@ -95,6 +96,26 @@ const Professor = styled(Code)``;
 
 const LectureSearchBox = ({ term, setIsSearchBoxVisible, setTerm, setForm }) => {
   const [currCategory, setCurrCategory] = useState("교양학부");
+  const [lectures, setLectures] = useState([]);
+  const requestLectures = async (term) => {
+    try {
+      let filterOptions = {
+        keyword: term.name,
+        limit: 50,
+        page: 1,
+      };
+      const { data } = await LectureAPI.getLectures(filterOptions);
+      setLectures(data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  const delayedApiCall = useRef(debounce((term) => requestLectures(term), 200)).current;
+
+  useEffect(async () => {
+    if (term.name !== "") await delayedApiCall(term);
+  }, [term]);
 
   return (
     <Wrapper>
@@ -110,23 +131,24 @@ const LectureSearchBox = ({ term, setIsSearchBoxVisible, setTerm, setForm }) => 
         ))}
       </CategorySection>
       <LectureSection>
-        {dummyLecture
-          .filter(({ department }) => currCategory === department)
-          .map(({ id, name, professor }) => (
-            <Lecture
-              key={id}
-              onClick={() => {
-                setForm((prev) => ({ ...prev, lecture_id: id }));
-                setTerm((prev) => ({ ...prev, name, professor }));
-                setIsSearchBoxVisible(false);
-              }}
-            >
-              <Title>{name}</Title>
-              <Code>AEB1234</Code>
-              <Delimiter />
-              <Professor>{professor}</Professor>
-            </Lecture>
-          ))}
+        {lectures.length !== 0 &&
+          lectures
+            .filter(({ department }) => currCategory === department)
+            .map(({ id, name, code, professor }) => (
+              <Lecture
+                key={id}
+                onClick={() => {
+                  setForm((prev) => ({ ...prev, lecture_id: id }));
+                  setTerm((prev) => ({ ...prev, name, code, professor }));
+                  setIsSearchBoxVisible(false);
+                }}
+              >
+                <Title>{name}</Title>
+                <Code>{code}</Code>
+                <Delimiter />
+                <Professor>{professor}</Professor>
+              </Lecture>
+            ))}
       </LectureSection>
     </Wrapper>
   );
