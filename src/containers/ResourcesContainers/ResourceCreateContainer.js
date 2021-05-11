@@ -109,7 +109,8 @@ const checkValidation = (form) => {
     form.title.length !== 0 &&
     form.semester_date !== "" &&
     form.lecture_id !== -1 &&
-    form.id !== -1 &&
+    form.term.id !== -1 &&
+    form.term.name !== "" &&
     form.category.length !== 0 &&
     form.content !== "" &&
     form.materials.length !== 0
@@ -156,6 +157,8 @@ const ResourceCreateContainer = ({
     term: {
       id: -1,
       name: "",
+      code: "",
+      professor: "",
     },
     category: ["기출자료"],
     content: "",
@@ -183,6 +186,8 @@ const ResourceCreateContainer = ({
           term: {
             id: -1,
             name: "",
+            code: "",
+            professor: "",
           },
           category: ["기출자료"],
           content: "",

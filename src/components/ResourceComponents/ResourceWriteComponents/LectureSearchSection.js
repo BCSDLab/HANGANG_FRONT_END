@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import LectureSearchBox from "components/ResourceComponents/ResourceWriteComponents/LectureSearchBox";
-import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import {
+  BorderColor,
+  CopyRightColor,
+  FontColor,
+  PlaceholderColor,
+} from "static/Shared/commonStyles";
 import { SEARCH_ICON_URL } from "static/Shared/imageUrls";
 
 const Wrapper = styled.div`
@@ -28,8 +33,10 @@ const Label = styled.label.attrs({
 const SearchBox = styled.div.attrs({
   id: "lectures",
 })`
+  display: flex;
+  align-items: center;
   position: relative;
-  width: 240px;
+  width: 650px;
   height: 30px;
 
   /* display: flex;
@@ -45,7 +52,10 @@ const SearchBar = styled.input.attrs({
   placeholder: "교과명, 교수명, 과목코드 검색",
 })`
   height: 100%;
-  width: 200px;
+
+  width: ${({ stringLength }) =>
+    stringLength === 0 ? "100%" : `${stringLength * 13}px`};
+  min-width: 80px;
 
   border: none;
   outline: none;
@@ -53,12 +63,26 @@ const SearchBar = styled.input.attrs({
 
   color: ${FontColor};
   font-size: 12px;
-  background-color: padding-block;
 
   ::placeholder {
     color: ${PlaceholderColor};
   }
 `;
+
+const Code = styled.span`
+  font-size: 12px;
+  color: ${PlaceholderColor};
+  margin-right: 0px;
+`;
+
+const Delimiter = styled.div`
+  width: 1px;
+  height: 13px;
+  margin: 0px 8px;
+  background-color: ${CopyRightColor};
+`;
+
+const Professor = styled(Code)``;
 
 const SearchIcon = styled.img.attrs({
   src: SEARCH_ICON_URL,
@@ -73,6 +97,7 @@ const SearchIcon = styled.img.attrs({
 const LectureSearchSection = ({ term, setForm }) => {
   const [isTermInfoShowed, setIsTermInfoShowed] = useState(false);
   const [isSearchBoxVisible, setIsSearchBoxVisible] = useState(false);
+  const [isCodeProfessorVisible, setIsCodeProfessorVisible] = useState(true);
 
   /**
    * A function to handle search bar event.
@@ -81,6 +106,7 @@ const LectureSearchSection = ({ term, setForm }) => {
   const handleSearchBar = (e) => {
     if (!isSearchBoxVisible) setIsSearchBoxVisible(true);
     if (isTermInfoShowed) setIsTermInfoShowed(false);
+    if (isCodeProfessorVisible) setIsCodeProfessorVisible(false);
 
     setForm((prev) => ({ ...prev, term: { ...prev.term, name: e.target.value } }));
   };
@@ -90,19 +116,29 @@ const LectureSearchSection = ({ term, setForm }) => {
    * If there is no term then change search box visibility to false.
    */
   useEffect(() => {
-    if (term.name === "") setIsSearchBoxVisible(false);
+    if (term.name === "") {
+      setIsSearchBoxVisible(false);
+      setIsCodeProfessorVisible(false);
+    }
   }, [term]);
 
   return (
     <Wrapper>
       <Label>과목명 검색</Label>
       <SearchBox>
-        {/* FIXME: Change value contains code, professor */}
         <SearchBar
           onClick={() => setIsSearchBoxVisible(true)}
           onChange={(e) => handleSearchBar(e)}
           value={term.name}
+          stringLength={term.name.length}
         />
+        {isCodeProfessorVisible && (
+          <>
+            <Code>{term.code}</Code>
+            <Delimiter />
+            <Professor>{term.professor}</Professor>
+          </>
+        )}
         <SearchIcon />
       </SearchBox>
 
@@ -111,6 +147,7 @@ const LectureSearchSection = ({ term, setForm }) => {
           term={term}
           setIsSearchBoxVisible={setIsSearchBoxVisible}
           setForm={setForm}
+          setIsCodeProfessorVisible={setIsCodeProfessorVisible}
         />
       )}
     </Wrapper>

@@ -94,7 +94,12 @@ const Delimiter = styled.div`
 
 const Professor = styled(Code)``;
 
-const LectureSearchBox = ({ term, setIsSearchBoxVisible, setForm }) => {
+const LectureSearchBox = ({
+  term,
+  setIsSearchBoxVisible,
+  setForm,
+  setIsCodeProfessorVisible,
+}) => {
   const [currCategory, setCurrCategory] = useState("교양학부");
   const [lectures, setLectures] = useState([]);
   const requestLectures = async (term) => {
@@ -138,8 +143,13 @@ const LectureSearchBox = ({ term, setIsSearchBoxVisible, setForm }) => {
               <Lecture
                 key={id}
                 onClick={() => {
-                  setForm((prev) => ({ ...prev, lecture_id: id, term: { id, name } }));
+                  setForm((prev) => ({
+                    ...prev,
+                    lecture_id: id,
+                    term: { id, name, code, professor },
+                  }));
                   setIsSearchBoxVisible(false);
+                  setIsCodeProfessorVisible(true);
                 }}
               >
                 <Title>{name}</Title>
@@ -154,11 +164,22 @@ const LectureSearchBox = ({ term, setIsSearchBoxVisible, setForm }) => {
 };
 
 LectureSearchBox.defaultProps = {
+  term: {
+    id: -1,
+    name: "",
+    code: "",
+    professor: "",
+  },
+  setIsSearchBoxVisible: () => {},
   setForm: () => {},
+  setIsCodeProfessorVisible: () => {},
 };
 
 LectureSearchBox.propTypes = {
+  term: PropTypes.object,
+  setIsSearchBoxVisible: PropTypes.func,
   setForm: PropTypes.func,
+  setIsCodeProfessorVisible: PropTypes.func,
 };
 
 export default LectureSearchBox;
