@@ -62,12 +62,14 @@ const FakeFileDom = styled.input.attrs({
 const MaterialContainer = styled.div`
   position: relative;
   width: 100px;
+  min-width: 100px;
   height: 100px;
   border-radius: 8px;
   border: 1px solid ${BorderColor};
 `;
 
 const MaterialWrapper = styled.div`
+  overflow-x: auto;
   display: flex;
   ${MaterialContainer}:not(:last-child) {
     margin-right: 8px;
@@ -163,7 +165,8 @@ const getFilesFromUser = async (files, createFormId, setForm) => {
       if (hasExtensionOnFileName(name.slice(-4))) name = name.slice(0, -5); // show, jpeg, cell, ...
       if (hasExtensionOnFileName(name.slice(-3))) name = name.slice(0, -4); // jpg, pdf, ...
       type = convertMIMETypeToExtension(type);
-      trimmedFiles.push({ id: data[index], name, size, type });
+      let id = files.length > 1 ? data[index] : data;
+      trimmedFiles.push({ id, name, size, type });
     });
 
     setForm((prev) => ({

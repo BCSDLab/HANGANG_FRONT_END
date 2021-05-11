@@ -54,7 +54,6 @@ export default {
     );
     return response;
   },
-  //FIXME: Change to handle multiple files when it solve problem.
   uploadFiles: async (files = null, createFormId = -1, accessToken = null) => {
     let fixFileSingleOrMultiple = files.length > 1 ? "files" : "file";
     const form = new FormData();
@@ -68,9 +67,8 @@ export default {
     return response;
   },
   cancelUploadFile: async (id = undefined, accessToken = null) => {
-    const response = await axios.post(
+    const response = await axios.get(
       `/lecture-banks/file/cancel_upload/${id}`,
-      null,
       setTokenInHeader(accessToken)
     );
     return response;
