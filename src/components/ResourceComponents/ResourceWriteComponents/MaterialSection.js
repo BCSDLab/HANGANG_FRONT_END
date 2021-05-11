@@ -15,6 +15,7 @@ import { getValueOnLocalStorage } from "utils/localStorageUtils";
 const ACCEPT_FILE_TYPES = [
   "zip",
   "xls",
+  "xlsx",
   "txt",
   "show",
   "ppt",
@@ -145,27 +146,39 @@ const convertMIMETypeToExtension = (type) => {
 
 /**
  * A Function to handle user-selected files
- * At First, request Backend to upload files.
- * And then iterate chosen files and get name, size, type
+ * At First, compare file size.
+ * And then request Backend to upload files.
+ * And finally, iterate chosen files and get name, size, type
  *  - name : erase file type
  *  - type : get only type (e.g. application/pdf => pdf)
- * @param {array} files An Array which contains file DOM of user-selected files.
+ * @param {array} inputFiles An array which contains file DOM of user-selected files.
+ * @param {array} currentFiles An array which contains file of write form currently.
  * @param {number} createFormId A number that has id of create form.
  * @param {function} setForm A Function of write form.
  */
-const getFilesFromUser = async (files, createFormId, setForm) => {
+const getFilesFromUser = async (inputFiles, currentFiles, createFormId, setForm) => {
+  const KB = 1000;
+  const MB = 1000 * KB;
   let trimmedFiles = [];
+
+  let currSize = currentFiles.reduce((acc, curr) => acc + curr.size, 0);
+  let inputFilesSize = Object.values(inputFiles).reduce((acc, { size }) => acc + size, 0);
+
+  if (currSize + inputFilesSize > 50 * MB) {
+    alert("총 파일 크기가 50MB를 넘을 수 없습니다.");
+    return;
+  }
 
   try {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    let { data } = await ResourceAPI.uploadFiles(files, createFormId, accessToken);
+    let { data } = await ResourceAPI.uploadFiles(inputFiles, createFormId, accessToken);
 
-    files.forEach((f, index) => {
+    inputFiles.forEach((f, index) => {
       let { name, size, type } = f;
       if (hasExtensionOnFileName(name.slice(-4))) name = name.slice(0, -5); // show, jpeg, cell, ...
       if (hasExtensionOnFileName(name.slice(-3))) name = name.slice(0, -4); // jpg, pdf, ...
       type = convertMIMETypeToExtension(type);
-      let id = files.length > 1 ? data[index] : data;
+      let id = inputFiles.length > 1 ? data[index] : data;
       trimmedFiles.push({ id, name, size, type });
     });
 
@@ -239,7 +252,9 @@ const MaterialSection = ({ createFormId, materials, setForm }) => {
       <AddFileIcon onClick={() => file.current.click()} />
       <FakeFileDom
         ref={file}
-        onChange={() => getFilesFromUser(file.current.files, createFormId, setForm)}
+        onChange={() =>
+          getFilesFromUser(file.current.files, materials, createFormId, setForm)
+        }
         // onChange={() => getFilesFromUser(file.current.files, 48, setForm)}
       />
       <MaterialWrapper>
