@@ -19,7 +19,7 @@ export default {
     );
     return response;
   },
-  getResources: async (filterOptions = {}) => {
+  getResources: async (filterOptions = {}, accessToken = null) => {
     let query = "";
 
     Object.entries(filterOptions).forEach(([key, value]) => {
@@ -36,7 +36,18 @@ export default {
     });
     query = query.slice(0, -1);
 
-    const response = await axios.get(`/lecture-banks/search?${query}`);
+    console.log(query);
+
+    let response;
+    if (accessToken === null) {
+      response = await axios.get(`/lecture-banks/search?${query}`);
+    } else {
+      response = await axios.get(
+        `/lecture-banks/search?${query}`,
+        setTokenInHeader(accessToken)
+      );
+    }
+
     return response;
   },
   // Resource Write Form

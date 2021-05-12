@@ -173,7 +173,11 @@ const ResourceContainer = () => {
   useEffect(async () => {
     if (!isFetched || isLoading) {
       try {
-        const { data } = await ResourceAPI.getResources(filterOptions);
+        let accessToken = isLoggedIn
+          ? getValueOnLocalStorage("hangangToken").access_token
+          : null;
+
+        const { data } = await ResourceAPI.getResources(filterOptions, accessToken);
         setResources(data);
       } catch (error) {
         throw new Error(error);
@@ -182,7 +186,18 @@ const ResourceContainer = () => {
         if (!isFetched) setIsFetched(true);
       }
     }
-  }, [isFetched, isLoading]);
+  }, [isFetched, isLoading, isLoggedIn]);
+
+  /**
+   * FIXME: 고쳐... 언젠가... 생각나면...
+   * case : 유저가 로그인 한 상태로 새로고침을 하게 되면
+   * isLoggedIn이 true로 변하기 전에 getResources 를 요청하게 됨
+   * 임시로 isLoggedIn이 변하면 재요청 하도록 추가했지만... 두번 페이지가 깜빡이게 됨
+   * 추후에 수정해야함
+   */
+  useEffect(() => {
+    if (isLoggedIn) setIsFetched(false);
+  }, [isLoggedIn]);
 
   return (
     <Wrapper>
