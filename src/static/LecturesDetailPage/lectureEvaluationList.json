@@ -1,0 +1,107 @@
+{
+    "sort": [
+        {
+          "label": "좋아요순",
+          "value": "좋아요순"
+        },
+        {
+          "label": "최신순",
+          "value": "최신순"
+        }
+      ],
+    "difficulty":[
+        {
+            "value": 1,
+            "label": "하"
+        },
+        {
+            "value": 2,
+            "label": "중"
+        },
+        {
+            "value": 3,
+            "label": "상"
+        }
+    ],
+    "attendance":[
+        {
+            "value": 1,
+            "label": "하"
+        },
+        {
+            "value": 2,
+            "label": "중"
+        },
+        {
+            "value": 3,
+            "label": "상"
+        }
+    ],
+    "assignment":[
+        {
+            "value": 1,
+            "label": "하"
+        },
+        {
+            "value": 2,
+            "label": "중"
+        },
+        {
+            "value": 3,
+            "label": "상"
+        }
+    ],
+    "gradePortion":[
+        {
+            "value": 1,
+            "label": "후하게주심"
+        },
+        {
+            "value": 2,
+            "label": "적당히주심"
+        },
+        {
+            "value": 3,
+            "label": "아쉽게주심이"
+        }
+    ],
+    "hashtag": [
+    {
+      "label": "#그저그러함",
+      "value": 1
+    },
+    {
+      "label": "#학점왤케짜",
+      "value": 2
+    },
+    {
+      "label": "#리얼수면제",
+      "value": 3
+    },
+    {
+      "label": "#수업개빡셈",
+      "value": 4
+    },
+    {
+      "label": "#배운거많음",
+      "value": 5
+    },
+    {
+      "label": "#좋은교수님",
+      "value": 6
+    },
+    {
+      "label": "#진심꿀과목",
+      "value": 7
+    },
+    {
+      "label": "#이거듣지마",
+      "value": 8
+    },
+    {
+      "label": "#조금아쉬움",
+      "value": 9
+    }
+  ]
+    
+}

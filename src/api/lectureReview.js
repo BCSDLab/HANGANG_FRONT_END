@@ -1,5 +1,15 @@
 import axios from "axios";
 
+const axiosConfig = (accessToken, data = null) => {
+    let config = {
+        headers: {
+        Authorization: `Bearer ${accessToken}`,
+        },
+    };
+    if (data !== null) config["data"] = data;
+    return config;
+};
+
 export default {
     /**
      * lectureId를 이용해 강의 정보 가져오기
@@ -7,46 +17,20 @@ export default {
      * @param {*} lectureId 
      * @returns 
      */
-    getLectureReviewTimetable: async (accessToken, lectureId) => {
-        let config = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        };
-        const response = await axios.get(`/reviews/timetable/lecture?lectureId=${lectureId}`, config);
+    getLectureInfo: async (accessToken, lectureId) => {
+        const response = await axios.get(`/lectures/${lectureId}`, axiosConfig(accessToken));
         return response;
     },
     /**
      * lectureId를 이용해 강의평 리스트 가져오기
      * TODO:
-     * - 순서는 어떻게 처리 할지?
+     * - 순서는 어떻게 처리 할건지?
      * @param {*} accessToken 
      * @param {*} lectureId 
      * @returns 
      */
     getLectureReviews: async (accessToken, lectureId) => {
-        let config = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        };
-        // let query = "";
-
-        // Object.entries(orderOptions).forEach(([key, value]) => {
-        // if (typeof value === "string" && value.length === 0) return;
-        // if (typeof value === "object") {
-        //     if (value.length === 0) return;
-        //     else {
-        //     query += `${key}=${value.join(",")}&`;
-        //     return;
-        //     }
-        // }
-
-        // query += `${key}=${value}&`;
-        // });
-        // query = query.slice(0, -1);
-
-        const response = await axios.get(`/reviews/lectures/${lectureId}?limit=10&page=1`, config);
+        const response = await axios.get(`/reviews/lectures/${lectureId}?limit=10&page=1`, axiosConfig(accessToken));
         return response;
     },
     /**
@@ -55,13 +39,8 @@ export default {
      * @param {*} lectureId 
      * @returns 
      */
-    getLectureInfo: async (accessToken, lectureId) => {
-        let config = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        };
-        const response = await axios.get(`/class/lectures/${lectureId}`, config);
+    getLectureClassInfo: async (accessToken, lectureId) => {
+        const response = await axios.get(`/class/lectures/${lectureId}`, axiosConfig(accessToken));
         return response;
     },
     /**
@@ -71,12 +50,27 @@ export default {
      * @returns 
      */
     getLectureSemesterDates: async (accessToken, lectureId) => {
-        let config = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        };
-        const response = await axios.get(`semesterdates/lectures/${lectureId}`, config);
+        const response = await axios.get(`/semesterdates/lectures/${lectureId}`, axiosConfig(accessToken));
+        return response;
+    },
+    /**
+     * 강의 평점분포
+     * @param {*} accessToken 
+     * @param {*} lectureId 
+     * @returns 
+     */
+    getEvaluationRating: async (accessToken, lectureId) => {
+        const response = await axios.get(`/evaluation/rating/${lectureId}`, axiosConfig(accessToken));
+        return response;
+    },
+    /**
+     * 강의 종합평가 보기
+     * @param {*} accessToken 
+     * @param {*} lectureId 
+     * @returns 
+     */
+    getEvaluationTotal: async (accessToken, lectureId) => {
+        const response = await axios.get(`/evaluation/total/${lectureId}`, axiosConfig(accessToken));
         return response;
     },
     

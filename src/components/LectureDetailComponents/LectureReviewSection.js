@@ -138,10 +138,9 @@ const LectureReviewSection = ({
   chooseScrap = () => {},
   ...rest
 }) => {
-
   return (
     <Section>
-      <InfoLabel>개인 평가(10)</InfoLabel>
+      <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
       {/* 반복 */}
       {/* {reviews.map((data) => ( */}
         {/* <LectureCard
