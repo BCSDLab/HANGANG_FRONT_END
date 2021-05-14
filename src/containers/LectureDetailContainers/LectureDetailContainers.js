@@ -17,13 +17,14 @@ import {
   BorderColor,
   InnerContentWidth,
 } from "static/Shared/commonStyles";
-import { requestFinished, } from "store/modules/lectures";
+import lectureEvaluationList from "static/LecturesDetailPage/lectureEvaluationList.json";
+import { requestFinished } from "store/modules/lectures";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import lecture from "api/lecture";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
-  height: 833px;
-  margin: 90px auto 98px auto;
+  margin: 40px auto 98px auto;
 `;
 
 const GridSection = styled.div`
@@ -51,9 +52,18 @@ const ReviewSection = styled.section`
  * @param {*} param0 
  * @returns 
  */
-const LectureDetailContainer = ({ match }) => {
+const LectureDetailContainer = () => {
   const dispatch = useDispatch();
-  
+  const { isLoading, ...orderOption } = useSelector((state) => state.lectureReducer);
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
+
+  const [lectureReviews, setLectureReviews] = useState([]);
+  const [lectureInfo, setLectureInfo] = useState({});
+  const [lectureEvaluationTotal, setLectureEvaluationTotal] = useState({});
+  const [isFetched, setIsFetched] = useState(false);
+
+
+
   // TODO: 파라미터 값 가져오기
   // const { lectureId } = match.params;
   // const { params } = this;
@@ -61,22 +71,7 @@ const LectureDetailContainer = ({ match }) => {
   // const { id } = useParams();
   // console.log(lectureId);
 
-  // order
-  const { isLoading, ...orderOption } = useSelector((state) => state.lectureReducer);
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
 
-  const [lectureReviews, setLectureReviews] = useState([]);
-  const [lectureSemesterDates, setLectureSemesterDates] = useState([]);
-  const [lectureReviewTimeTable, setLectureReviewTimeTable] = useState([]);
-  const [isFetched, setIsFetched] = useState(false);
-
-  /**
-   * 유저가 token이 없이 접근할 경우 홈으로 내보냅니다.
-   */
-  if (getValueOnLocalStorage("hangangToken") === null) {
-    kickOut(1);
-  }
-  
   /**
    * 스크랩 했으면 스크랩 표시?
    */
@@ -84,25 +79,30 @@ const LectureDetailContainer = ({ match }) => {
     try {
      
       if (isLoggedIn) {
-
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
         /**
-         * 라우터 파라미터 값을 가져올 수가 없어서 임의로 236 값 대입중입니다. 
-         * 
+         * 라우터 파라미터 값을 가져올 수가 없어서 임의로 236 값 대입중
          */
-        const { data } = await ReviewAPI.getLectureReviewTimetable(accessToken, 236);
-        const { semesterdata } = await ReviewAPI.getLectureSemesterDates(accessToken, 236);
-        const { lecturereviews } = await ReviewAPI.getLectureReviews(accessToken, 236);
+        const [ lectureInfo,
+                lectureReviews, 
+                lectureEvaluationTotal 
+              ] = await Promise.all([
+                  ReviewAPI.getLectureInfo(accessToken, 236)
+                , ReviewAPI.getLectureReviews(accessToken, 236)
+                , ReviewAPI.getEvaluationTotal(accessToken, 236)
+              ]);
+              
+        setLectureInfo(lectureInfo.data);
+        setLectureReviews(lectureReviews.data);
+        setLectureEvaluationTotal(lectureEvaluationTotal.data);
 
-        
-        setLectureReviewTimeTable(data);
-        setLectureSemesterDates(semesterdata);
-        setLectureReviews(lecturereviews);
-        
-
+        console.log(lectureInfo, lectureReviews, lectureEvaluationTotal);
       }
-      
+      if(!isLoggedIn){
+        setIsFetched(false);
+      }
+    
     } catch (error) {
       console.log(error);
     } finally {
@@ -111,10 +111,35 @@ const LectureDetailContainer = ({ match }) => {
     }
   }, [isLoggedIn]);
 
+  // 순서 바꾸면 다시로딩?
+  // useEffect(async () => {
+  //   if (isLoading) {
+  //     try {
+  //       const [ lectureInfo,
+  //               lectureReviews, 
+  //               lectureEvaluationTotal 
+  //             ] = await Promise.all([
+  //                 ReviewAPI.getLectureInfo(accessToken, 236)
+  //               , ReviewAPI.getLectureReviews(accessToken, 236)
+  //               , ReviewAPI.getEvaluationTotal(accessToken, 236)
+  //             ]);
+              
+  //       setLectureInfo(lectureInfo.data);
+  //       console.log(lectureInfo.data);
+  //       setLectureReviews(lectureReviews.data);
+  //       setLectureEvaluationTotal(lectureEvaluationTotal.data);
+        
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       dispatch(requestFinished());
+  //     }
+  //   }
+  // }, [isLoading]);
 
   return (
+
     <Wrapper>
-      
       {!isFetched && (
         <SpinnerWrapper>
           <LoadingSpinner />
@@ -123,30 +148,30 @@ const LectureDetailContainer = ({ match }) => {
       <GridSection>
       {isFetched && (
         <>
-          
           <ReviewSection>
             <LectureInfoSection 
-              name={lectureReviewTimeTable.name}
-              classification={lectureReviewTimeTable.classification}
-              professor={lectureReviewTimeTable.professor}
-              code={lectureReviewTimeTable.code}
-              isScrapped={lectureReviewTimeTable.is_scraped}
-              lectureSemesterDates={lectureSemesterDates}
+              name={lectureInfo.name}
+              classification={lectureInfo.classification}
+              professor={lectureInfo.professor}
+              code={lectureInfo.code}
+              isScrapped={lectureInfo.is_scraped}
+              lectureSemesterDates={lectureInfo.semester_data}
             >
             </LectureInfoSection>
             
             <ReviewGraphSection
+              rating={lectureInfo.total_rating}
+              count={lectureInfo.review_count}
+              hashtags={lectureInfo.top3_hash_tag}
+              evaluationList={lectureEvaluationList}
+              evaluationTotal={lectureEvaluationTotal}
             ></ReviewGraphSection>
 
             <LectureResourceSection
             ></LectureResourceSection>
 
-            {/* {reviews.map((data) => (
-              <LectureReviewSection
-                data={data}
-              />
-            ))} */}
             <LectureReviewSection
+              lectureReviewCount={lectureInfo.review_count}
               lectureReviews={lectureReviews}
             ></LectureReviewSection>
           </ReviewSection>

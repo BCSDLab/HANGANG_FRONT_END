@@ -70,8 +70,6 @@ const Bookmark = styled.img.attrs({
 const LectureInfoSection = ({
   ...rest
 }) => {
-  console.log(rest);
-
   return (
     <Section>
       <Title>{`기본 정보`}</Title>
@@ -86,9 +84,7 @@ const LectureInfoSection = ({
 
         <SubLabel>
           {`개설학기 `} 
-          { rest.lectureSemesterDates && rest.lectureSemesterDates.join(" ")}
-          { !rest.lectureSemesterDates && `없음`}
-
+          { rest.lectureSemesterDates ? rest.lectureSemesterDates.join(" ") : `없음`}
           <Bookmark></Bookmark>
         </SubLabel>
       </Wrapper>
