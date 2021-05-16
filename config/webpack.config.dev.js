@@ -10,6 +10,7 @@ const config = {
   entry: ENTRY,
   output: {
     path: OUTPUT,
+    publicPath: "/",
     filename: "bundle.js",
   },
   mode: MODE,

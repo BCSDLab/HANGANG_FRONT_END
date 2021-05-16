@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useToasts } from "react-toast-notifications";
 import styled from "styled-components";
@@ -23,6 +23,7 @@ import IndexPage from "pages/IndexPage";
 import NavigationContainer from "containers/Shared/NavigationContainer";
 import FooterContainer from "containers/Shared/FooterContainer";
 import MyPage from "pages/MyPage";
+import ResourceDetailPage from "pages/ResourceDetailPage";
 
 const Main = styled.main`
   height: 100%;
@@ -147,14 +148,16 @@ const App = () => {
       <NavigationContainer />
       <Switch>
         <Route path="/" exact component={IndexPage} />
-        <Route path="/lectures" exact component={LecturesPage} />
-        <Route path="/resources" exact component={ResourcesPage} />
+        <Route path="/lectures" component={LecturesPage} />
+        <Route path="/resources" component={ResourcesPage} />
+        <Route path="/resource" component={ResourceDetailPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
         <Route path="/findpw" component={FindPwPage} />
         <Route path="/signupauth" component={SignUpAuthPage} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/my" component={MyPage} />
+        <Redirect from="*" to="/" />
       </Switch>
       <FooterContainer />
     </Main>
