@@ -1,7 +1,10 @@
 import React from "react";
 // import { useParams } from "react-router-dom";
-import { BorderColor } from "static/Shared/commonStyles";
 import styled from "styled-components";
+
+import SampleResourceResponse from "static/ResourceDetailPage/sampleResourceResponse.json";
+import { BorderColor } from "static/Shared/commonStyles";
+import AttachmentsContainer from "./AttachmentsContainer";
 import LectureInfoContainer from "./LectureInfoContainer";
 
 const Wrapper = styled.div`
@@ -25,11 +28,14 @@ const Content = styled.div`
 
 const ResourceDetailContainer = () => {
   // let { resourceId } = useParams();
+  const isPurchased = true;
+  const { comments, uploadFiles, ...rest } = SampleResourceResponse;
+
   return (
     <Wrapper>
-      {/* <span>{resourceId}</span> */}
       <Content>
-        <LectureInfoContainer />
+        <LectureInfoContainer isPurchased={isPurchased} lectureInfo={rest} />
+        <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />
       </Content>
     </Wrapper>
   );

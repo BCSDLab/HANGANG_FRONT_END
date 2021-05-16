@@ -1,0 +1,47 @@
+{
+  "id": 163,
+  "user_id": 18,
+  "lecture_id": 2,
+  "category": ["기타자료"],
+  "title": "제목수정테스트ㅋㅋㅋㅋ",
+  "content": "내용수정테스트ㅋㅋㅋㅋ",
+  "comments": [
+    {
+      "id": 10,
+      "lecture_bank_id": 163,
+      "user_id": 19,
+      "nickname": "정수현",
+      "comments": "댓글을 수정할테야 ",
+      "created_at": "2021-05-14T18:42:02.000+00:00",
+      "updated_at": "2021-05-14T18:47:28.000+00:00"
+    }
+  ],
+  "point_price": 100,
+  "semester_date": "2021년 1학기",
+  "uploadFiles": [
+    {
+      "id": 343,
+      "lecture_bank_id": 163,
+      "url": "https://static.hangang.in/2021/05/13/c1de9aa9-bed6-4a86-98c5-4ffaaf752b8f-1620914363179.show",
+      "fileName": "한쇼한쇼.show",
+      "ext": "show"
+    }
+  ],
+  "hits": 2,
+  "created_at": "2021-05-13T14:36:05.000+00:00",
+  "updated_at": "2021-05-13T14:36:05.000+00:00",
+  "is_deleted": false,
+  "is_hit": false,
+  "thumbnail": "https://static.hangang.in/2021/05/13/c361d3cc-38b7-45e1-8d1a-5c81775a8411-1620904836470.png",
+  "user": {
+    "nickname": "BCSD LAB"
+  },
+  "lecture": {
+    "is_scraped": false,
+    "code": "HRD140",
+    "name": "HRD개론",
+    "department": "HRD학과",
+    "professor": "박민주",
+    "classification": "HRD필수"
+  }
+}

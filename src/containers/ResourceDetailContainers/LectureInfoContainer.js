@@ -1,5 +1,5 @@
 import React from "react";
-import { MorePath } from "static/ResourceDetailPage.js/imgPath";
+import { MorePath } from "static/ResourceDetailPage/imgPath";
 import {
   BorderColor,
   ConceptColor,
