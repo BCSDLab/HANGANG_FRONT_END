@@ -6,6 +6,7 @@ import SampleResourceResponse from "static/ResourceDetailPage/sampleResourceResp
 import { BorderColor } from "static/Shared/commonStyles";
 import AttachmentsContainer from "./AttachmentsContainer";
 import LectureInfoContainer from "./LectureInfoContainer";
+import CommentsContainer from "./CommentsContainer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -36,6 +37,7 @@ const ResourceDetailContainer = () => {
       <Content>
         <LectureInfoContainer isPurchased={isPurchased} lectureInfo={rest} />
         <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />
+        <CommentsContainer comments={comments} />
       </Content>
     </Wrapper>
   );
