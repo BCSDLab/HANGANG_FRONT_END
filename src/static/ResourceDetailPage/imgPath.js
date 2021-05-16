@@ -3,6 +3,9 @@ const baseURL =
 
 export const MorePath = baseURL + "/more.png";
 
+export const notPushedThumb = baseURL + "/not_pushed.png";
+export const pushedThumb = baseURL + "/pushed.png";
+
 export const notPurchasedIconPath = (ext) => {
   return baseURL + "/extensions/" + `${ext.toUpperCase()}.png`;
 };

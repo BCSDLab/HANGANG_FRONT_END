@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { MorePath } from "static/ResourceDetailPage/imgPath";
+import { MorePath, notPushedThumb, pushedThumb } from "static/ResourceDetailPage/imgPath";
 import {
   BorderColor,
   ConceptColor,
@@ -18,7 +18,7 @@ const Delimiter = styled.div`
 `;
 
 const Title = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   font-size: 18px;
   font-weight: 500;
   color: ${FontColor};
@@ -37,12 +37,37 @@ const CreatedAt = styled(Writer)`
 
 const More = styled.img.attrs({
   src: MorePath,
-  alt: "",
+  alt: "more",
 })`
   position: absolute;
   top: 27px;
   right: 27px;
   width: 24px;
+`;
+
+const HitWrapper = styled.div`
+  position: absolute;
+  top: 83px;
+  right: 27px;
+
+  display: flex;
+  align-items: center;
+  height: 24px;
+  display: flex;
+`;
+
+const HitIcon = styled.img.attrs(({ isHit }) => ({
+  src: isHit ? pushedThumb : notPushedThumb,
+  alt: "hit",
+}))`
+  margin-top: 2px;
+  width: 24px;
+`;
+
+const HitAmount = styled.span`
+  margin: 8px 0 0 6px;
+  font-size: 16px;
+  color: ${PlaceholderColor};
 `;
 
 const ResourceInfoSection = styled.section`
@@ -150,13 +175,17 @@ const convertLectureInfoSemester = (semester) => {
 };
 
 const LectureInfoContainer = ({ isPurchased, lectureInfo }) => {
-  //   console.log(lectureInfo);
+  console.log(lectureInfo);
   return (
     <>
       <Title>{lectureInfo.title}</Title>
       <Writer>{lectureInfo.user.nickname}</Writer>
       <CreatedAt>{convertCreatedAt(lectureInfo.created_at)}</CreatedAt>
       <More />
+      <HitWrapper>
+        <HitIcon isHit={lectureInfo.is_hit} />
+        <HitAmount>{lectureInfo.hits}</HitAmount>
+      </HitWrapper>
       <Delimiter />
       <ResourceInfoSection>
         <Thumbnail thumbnailURL={lectureInfo.thumbnail} />
