@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import {
   notPurchasedIconPath,
@@ -165,6 +166,16 @@ const AttachmentsContainer = ({ isPurchased, uploadFiles }) => {
       <MoveRightButtonComponent />
     </Wrapper>
   );
+};
+
+AttachmentsContainer.defaultProps = {
+  isPurchased: false,
+  uploadFiles: [],
+};
+
+AttachmentsContainer.propTypes = {
+  isPurchased: PropTypes.bool,
+  uploadFiles: PropTypes.array,
 };
 
 export default AttachmentsContainer;

@@ -1,4 +1,7 @@
 import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+
 import { MorePath } from "static/ResourceDetailPage/imgPath";
 import {
   BorderColor,
@@ -6,7 +9,6 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import styled from "styled-components";
 
 const Delimiter = styled.div`
   width: 100%;
@@ -135,36 +137,51 @@ const PurchaseButton = styled.input.attrs({
   color: #fff;
 `;
 
-const LectureInfoContainer = () => {
+const convertCreatedAt = (createdAt) => {
+  let createdInfo = createdAt.split("T")[0].split("-");
+  return `작성일 ${createdInfo[0]}-${createdInfo[1]}-${createdInfo[2]}`;
+};
+
+const convertLectureInfoSemester = (semester) => {
+  let dateData = semester.split("년 ");
+  return `개설학기 ${dateData[0]}-${dateData[1]}`;
+};
+
+const LectureInfoContainer = ({ isPurchased, lectureInfo }) => {
+  //   console.log(lectureInfo);
   return (
     <>
-      <Title>디논 레전드 필기 풉니다.</Title>
-      <Writer>무야호</Writer>
-      <CreatedAt>작성일 2020-11-03</CreatedAt>
+      <Title>{lectureInfo.title}</Title>
+      <Writer>{lectureInfo.user.nickname}</Writer>
+      <CreatedAt>{convertCreatedAt(lectureInfo.created_at)}</CreatedAt>
       <More />
       <Delimiter />
       <ResourceInfoSection>
-        <Thumbnail
-          thumbnailURL={
-            "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/sample_thumbnail.png"
-          }
-        />
+        <Thumbnail thumbnailURL={lectureInfo.thumbnail} />
         <InfoWrapper>
           <TopPart>
-            <ResourceTitle>문명과 역사</ResourceTitle>
-            <ResourceCode>AEB1234</ResourceCode>
-            <ResourceType>필기자료</ResourceType>
+            <ResourceTitle>{lectureInfo.lecture.name}</ResourceTitle>
+            <ResourceCode>{lectureInfo.lecture.code}</ResourceCode>
+            <ResourceType>{lectureInfo.category[0]}</ResourceType>
           </TopPart>
-          <Professor>김유진</Professor>
-          <Semester>개설학기 2020-1, 2019-2, 2019-1</Semester>
-          <Content>
-            문명과 역사 필기본인데 한글파일입니다. 개인적인 공유는 자제해주시기 바랍니다.
-          </Content>
+          <Professor>{lectureInfo.lecture.professor}</Professor>
+          <Semester>{convertLectureInfoSemester(lectureInfo.semester_date)}</Semester>
+          <Content>{lectureInfo.content}</Content>
           <PurchaseButton />
         </InfoWrapper>
       </ResourceInfoSection>
     </>
   );
+};
+
+LectureInfoContainer.defaultProps = {
+  isPurchased: false,
+  lectureInfo: {},
+};
+
+LectureInfoContainer.propTypes = {
+  isPurchased: PropTypes.bool,
+  lectureInfo: PropTypes.object,
 };
 
 export default LectureInfoContainer;
