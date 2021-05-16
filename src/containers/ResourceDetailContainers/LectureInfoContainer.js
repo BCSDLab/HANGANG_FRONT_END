@@ -131,10 +131,12 @@ const PurchaseButton = styled.input.attrs({
   border-radius: 24px;
   border: none;
 
-  background-color: ${ConceptColor};
+  background-color: ${({ isPurchased }) => (isPurchased ? "#bddcff" : `${ConceptColor}`)};
   font-size: 14px;
   font-weight: 500;
   color: #fff;
+
+  cursor: ${({ isPurchased }) => (isPurchased ? "default" : "pointer")};
 `;
 
 const convertCreatedAt = (createdAt) => {
@@ -167,7 +169,7 @@ const LectureInfoContainer = ({ isPurchased, lectureInfo }) => {
           <Professor>{lectureInfo.lecture.professor}</Professor>
           <Semester>{convertLectureInfoSemester(lectureInfo.semester_date)}</Semester>
           <Content>{lectureInfo.content}</Content>
-          <PurchaseButton />
+          <PurchaseButton isPurchased={isPurchased} />
         </InfoWrapper>
       </ResourceInfoSection>
     </>
