@@ -157,7 +157,7 @@ const App = () => {
         <Route path="/signupauth" component={SignUpAuthPage} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/my" component={MyPage} />
-        <Redirect from="*" to="/" />
+        {/* <Redirect from="*" to="/" /> */}
       </Switch>
       <FooterContainer />
     </Main>

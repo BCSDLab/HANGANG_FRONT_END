@@ -51,19 +51,21 @@ const StyledLink = styled(Link)`
   cursor: pointer;
 `;
 
+/**
+ * A function to convert path to number.
+ * resourcePathRegex is a regex expression to handle dynamic route of ~/resource/{id}
+ * It prevent not allowed url such as "~/resource" or "~/resource/"
+ * @param {string} current A string of current url
+ * @returns A numbers to handle navigation underline.
+ */
 const currentConverter = (current) => {
-  switch (current) {
-    case "/":
-      return 0;
-    case "/lectures":
-      return 1;
-    case "/resources":
-      return 2;
-    case "/timetables":
-      return 3;
-    default:
-      return -1;
-  }
+  let resourcePathRegex = /(\/resource\/)[0-9]+/g;
+
+  if (current.includes("/lectures")) return 1;
+  else if (current.includes("/resources") || current.match(resourcePathRegex)) return 2;
+  else if (current.includes("/timetables")) return 3;
+  else if (current.includes("/")) return 0;
+  else return -1;
 };
 
 const NavigationUnderline = styled.div`
