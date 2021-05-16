@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import ResourceDetailContainer from "containers/ResourceDetailContainers/ResourceDetailContainer";
+import ResourceDetailContainer from "containers/ResourceDetailContainers";
 
 /**
  * If user access with ~/resource, push user to home.
