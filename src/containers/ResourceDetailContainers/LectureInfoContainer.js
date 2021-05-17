@@ -12,10 +12,13 @@ import {
 } from "static/Shared/commonStyles";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  clickHitIcon,
   closeAdditionalModal,
   openAdditionalModal,
   openReportModal,
 } from "store/modules/resourceDetail";
+import lectureDetailAPI from "api/lectureDetail";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const Delimiter = styled.div`
   width: 100%;
@@ -71,6 +74,7 @@ const HitIcon = styled.img.attrs(({ isHit }) => ({
 }))`
   margin-top: 2px;
   width: 24px;
+  cursor: pointer;
 `;
 
 const HitAmount = styled.span`
@@ -229,7 +233,25 @@ const AdditionalModal = () => {
 };
 
 const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchased }) => {
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    console.log(lectureInfo);
+  }, [lectureInfo]);
+
+  const clickThumb = async () => {
+    try {
+      if (!isLoggedIn) alert("로그인 시 이용할 수 있는 서비스입니다.");
+      else {
+        const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+        let { data } = await lectureDetailAPI.postHit(lectureInfo.id, accessToken);
+        if (data.httpStatus === "OK") dispatch(clickHitIcon());
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
 
   return (
     <>
@@ -239,7 +261,7 @@ const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchase
       <More onClick={() => dispatch(openAdditionalModal())} />
       {isAdditionalModalOpened && <AdditionalModal />}
       <HitWrapper>
-        <HitIcon isHit={lectureInfo.is_hit} />
+        <HitIcon isHit={lectureInfo.is_hit} onClick={() => clickThumb(dispatch)} />
         <HitAmount>{lectureInfo.hits}</HitAmount>
       </HitWrapper>
       <Delimiter />

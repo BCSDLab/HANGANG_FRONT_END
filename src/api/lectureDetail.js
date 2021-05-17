@@ -20,4 +20,13 @@ export default {
     }
     return response;
   },
+  postHit: async (id, accessToken = null) => {
+    console.log(id, accessToken);
+    const response = await axios.post(
+      `/lecture-banks/hit/${id}`,
+      null,
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
 };
