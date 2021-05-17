@@ -65,9 +65,9 @@ const AttachmentWrapper = styled.div`
   width: 100%;
   overflow-x: hidden;
   margin-top: 10px;
-  /* ${Attachment}:not(:last-child) {
+  > div:not(:last-child) {
     margin-right: 10px;
-  } */
+  }
 `;
 
 const RightImg = styled.img.attrs({
