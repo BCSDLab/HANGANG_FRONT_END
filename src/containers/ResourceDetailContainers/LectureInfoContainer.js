@@ -228,9 +228,8 @@ const AdditionalModal = () => {
   );
 };
 
-const LectureInfoContainer = ({ isPurchased, lectureInfo }) => {
+const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchased }) => {
   const dispatch = useDispatch();
-  const { isAdditionalModalOpened } = useSelector((state) => state.resourceDetailReducer);
 
   return (
     <>

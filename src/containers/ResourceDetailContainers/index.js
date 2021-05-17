@@ -1,15 +1,19 @@
-import React from "react";
-// import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import LectureDetailAPI from "api/lectureDetail";
 
+import { closeAdditionalModal, setLectureInfo } from "store/modules/resourceDetail";
 import SampleResourceResponse from "static/ResourceDetailPage/sampleResourceResponse.json";
 import { BorderColor } from "static/Shared/commonStyles";
+
 import AttachmentsContainer from "./AttachmentsContainer";
 import LectureInfoContainer from "./LectureInfoContainer";
 import CommentsContainer from "./CommentsContainer";
 import ReportModalContainer from "./ReportModalContianer";
-import { useDispatch, useSelector } from "react-redux";
-import { closeAdditionalModal } from "store/modules/resourceDetail";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import LoadingSpinner from "components/Shared/LoadingSpinner";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -31,12 +35,38 @@ const Content = styled.div`
 `;
 
 const ResourceDetailContainer = () => {
-  // let { resourceId } = useParams();
-  const isPurchased = true;
-  const { comments, uploadFiles, ...rest } = SampleResourceResponse;
-
+  let { resourceId } = useParams();
   const dispatch = useDispatch();
-  const { isAdditionalModalOpened } = useSelector((state) => state.resourceDetailReducer);
+  const history = useHistory();
+  const {
+    isAdditionalModalOpened,
+    isPurchased,
+    comments, //
+    uploadFiles,
+    ...rest
+  } = useSelector((state) => state.resourceDetailReducer);
+
+  const [isFetched, setIsFetched] = useState(false);
+
+  useEffect(async () => {
+    try {
+      let { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+      const { data } = await LectureDetailAPI.getLectureDetailInfo(
+        resourceId,
+        accessToken
+      );
+      dispatch(setLectureInfo(data));
+    } catch (error) {
+      if (error.response.data.code === 30) {
+        alert("존재하지 않는 게시물입니다.");
+      } else {
+        alert("확인되지 않은 오류입니다. 관리자에게 문의하세요.");
+      }
+      history.push("/resources");
+    } finally {
+      setIsFetched(true);
+    }
+  }, []);
 
   const closeAdditionalModalEventTriggered = () => {
     if (isAdditionalModalOpened) dispatch(closeAdditionalModal());
@@ -45,11 +75,18 @@ const ResourceDetailContainer = () => {
   return (
     <>
       <Wrapper onClick={() => closeAdditionalModalEventTriggered()}>
-        <Content>
-          <LectureInfoContainer isPurchased={isPurchased} lectureInfo={rest} />
-          <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />
-          <CommentsContainer comments={comments} />
-        </Content>
+        {!isFetched && <LoadingSpinner />}
+        {isFetched && (
+          <Content>
+            <LectureInfoContainer
+              lectureInfo={rest}
+              isAdditionalModalOpened={isAdditionalModalOpened}
+              isPurchased={isPurchased}
+            />
+            <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />
+            <CommentsContainer comments={comments} />
+          </Content>
+        )}
       </Wrapper>
       <ReportModalContainer />
     </>
