@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -7,6 +7,7 @@ import { BorderColor } from "static/Shared/commonStyles";
 import AttachmentsContainer from "./AttachmentsContainer";
 import LectureInfoContainer from "./LectureInfoContainer";
 import CommentsContainer from "./CommentsContainer";
+import ReportModalContainer from "./ReportModalContianer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -33,13 +34,16 @@ const ResourceDetailContainer = () => {
   const { comments, uploadFiles, ...rest } = SampleResourceResponse;
 
   return (
-    <Wrapper>
-      <Content>
-        <LectureInfoContainer isPurchased={isPurchased} lectureInfo={rest} />
-        <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />
-        <CommentsContainer comments={comments} />
-      </Content>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <Content>
+          <LectureInfoContainer isPurchased={isPurchased} lectureInfo={rest} />
+          <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />
+          <CommentsContainer comments={comments} />
+        </Content>
+      </Wrapper>
+      <ReportModalContainer />
+    </>
   );
 };
 
