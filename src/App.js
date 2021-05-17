@@ -148,15 +148,8 @@ const App = () => {
       <NavigationContainer />
       <Switch>
         <Route path="/" exact component={IndexPage} />
-        <Route path="/lectures" component={LecturesPage} />
-
-        {/* 
-            FIXME:
-            - lectures/{id} 파라미터 작동 오류 (304 modified)
-        */}
+        <Route path="/lectures" exact component={LecturesPage} />
         <Route path="/lectures/:id?" component={LectureDetailPage} />
-        <Route path="/lecture" component={LectureDetailPage} />
-
         <Route path="/resources" exact component={ResourcesPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
