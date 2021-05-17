@@ -1,7 +1,14 @@
 import React from "react";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+
 import { closeReportModalButton } from "static/ResourceDetailPage/imgPath";
 import { BorderColor, FontColor } from "static/Shared/commonStyles";
-import styled from "styled-components";
+import { closeReportModal } from "store/modules/resourceDetail";
+
+const showAlertMessage = (content) => `신고 사유 : ${content}
+
+정말 신고하시겠습니까?`;
 
 const CloseButton = styled.img.attrs({
   src: closeReportModalButton,
@@ -61,19 +68,33 @@ const Wrapper = styled.div`
   z-index: 9999;
 `;
 
+const handleReportClick = (e, dispatch) => {
+  if (confirm(showAlertMessage(e.target.innerText))) {
+    //TODO: call report api
+    dispatch(closeReportModal());
+  }
+};
+
 const ReportModalContainer = () => {
+  const dispatch = useDispatch();
+  const { isReportModalOpened } = useSelector((state) => state.resourceDetailReducer);
+
   return (
-    <Wrapper>
-      <ReportBox>
-        <Title>신고 사유 선택</Title>
-        <CloseButton />
-        <ReportContent>욕설/비하</ReportContent>
-        <ReportContent>유출/사칭/저작권 위배</ReportContent>
-        <ReportContent>허위/부적절한 정보</ReportContent>
-        <ReportContent>광고/도배</ReportContent>
-        <ReportContent>음란물</ReportContent>
-      </ReportBox>
-    </Wrapper>
+    isReportModalOpened && (
+      <Wrapper onClick={() => dispatch(closeReportModal())}>
+        <ReportBox onClick={(e) => e.stopPropagation()}>
+          <Title>신고 사유 선택</Title>
+          <CloseButton onClick={() => dispatch(closeReportModal())} />
+          <div onClick={(e) => handleReportClick(e, dispatch)}>
+            <ReportContent>욕설/비하</ReportContent>
+            <ReportContent>유출/사칭/저작권 위배</ReportContent>
+            <ReportContent>허위/부적절한 정보</ReportContent>
+            <ReportContent>광고/도배</ReportContent>
+            <ReportContent>음란물</ReportContent>
+          </div>
+        </ReportBox>
+      </Wrapper>
+    )
   );
 };
 
