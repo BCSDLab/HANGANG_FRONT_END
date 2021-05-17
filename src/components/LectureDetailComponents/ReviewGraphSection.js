@@ -32,7 +32,8 @@ const SubInfoLabel = styled.p`
   font-weight: 500;
 `;
 const SubLabel = styled.label`
-  margin: 4px 8px 71px 0;
+  float: left;
+  margin: 3px 8px 0 0;
 
   font-size: 14px;
   color: #999999;
@@ -52,7 +53,7 @@ const GraphSection = styled.div`
   width: 704px;
   height: 146px;
   margin: 24px 0 32px;
-  padding: 12px 16px 0;
+  padding: 16px 16px 0;
   background-color: #fafafa;
 `;
 
@@ -80,8 +81,12 @@ const EvaluationTable = styled.table`
     line-height: normal;
     letter-spacing: normal;
     color: ${FontColor};
-
   }
+`;
+const EvaluationInfo = styled.div`
+  display: grid;
+
+
 `;
 
 const HashTagWrapper = styled.div`
@@ -93,7 +98,6 @@ const HashTag = styled.span`
   color: ${PlaceholderColor};
   margin-right: 7px;
 `;
-
 
 
 const difficultyLabelConverter = (key) => {
@@ -112,18 +116,19 @@ const difficultyLabelConverter = (key) => {
 /**
  * TODO:
  * - 그래프 라이브러리 사용
+ * - 테이블 -> grid 사용으로 변경 
  * @param {*} param0 
  * @returns 
  */
 const LectureGraphSection = ({evaluationList, evaluationTotal, ...rest}) => {
   console.log("LectureGraphSection => ", evaluationList, evaluationTotal, rest);
-  // console.log(evaluationTotal.assignment_amount);
   console.log(evaluationList.attendance[evaluationTotal.assignment_amount]);
   return (
     <Section>
         <InfoLabel>종합 평가</InfoLabel>
         <GraphSection>
-            <SubLabel>평점</SubLabel><SubInfoLabel>{rest.rating}</SubInfoLabel>
+            <SubLabel>평점</SubLabel>
+            <SubInfoLabel>{rest.rating}</SubInfoLabel>
             <SubSubLabel>전체 평가 수 {rest.count}명</SubSubLabel>
         </GraphSection>
         <EvaluationWrapper>

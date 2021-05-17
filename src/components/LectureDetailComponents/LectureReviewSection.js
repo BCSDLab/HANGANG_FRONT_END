@@ -134,8 +134,6 @@ const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
  * @returns 
  */
 const LectureReviewSection = ({  
-  isLiked = true,
-  chooseScrap = () => {},
   ...rest
 }) => {
   return (
