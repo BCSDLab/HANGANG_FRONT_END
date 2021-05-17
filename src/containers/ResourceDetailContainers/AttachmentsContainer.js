@@ -2,11 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import {
-  notPurchasedIconPath,
-  purchasedIconPath,
-} from "static/ResourceDetailPage/imgPath";
-import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import Attachment from "components/ResourceDetailComponents/Attachment";
+import { PlaceholderColor } from "static/Shared/commonStyles";
 
 const sampleAttachments = [
   {
@@ -62,43 +59,15 @@ const Label = styled.label`
   color: ${PlaceholderColor};
 `;
 
-const Attachment = styled.div`
-  position: relative;
-  min-width: 90px;
-  height: 90px;
-  border-radius: 8px;
-  border: 1px solid ${BorderColor};
-
-  cursor: ${({ isPurchased }) => (isPurchased ? "pointer" : "default")};
-`;
-
-const File = styled.img.attrs(({ ext, isPurchased }) => ({
-  src: isPurchased ? purchasedIconPath(ext) : notPurchasedIconPath(ext),
-  alt: "file",
-}))`
-  position: absolute;
-  top: 7px;
-  left: 7px;
-  width: 24px;
-`;
-
-const Name = styled.span`
-  position: absolute;
-  right: 7px;
-  bottom: 7px;
-  font-size: 12px;
-  color: ${({ isPurchased }) => (isPurchased ? `${FontColor}` : `${PlaceholderColor}`)};
-`;
-
 const AttachmentWrapper = styled.div`
   position: relative;
   display: flex;
   width: 100%;
   overflow-x: hidden;
   margin-top: 10px;
-  ${Attachment}:not(:last-child) {
+  /* ${Attachment}:not(:last-child) {
     margin-right: 10px;
-  }
+  } */
 `;
 
 const RightImg = styled.img.attrs({
@@ -149,17 +118,12 @@ const MoveRightButtonComponent = () => (
 );
 
 const AttachmentsContainer = ({ isPurchased, uploadFiles }) => {
-  //   console.log(uploadFiles);
-
   return (
     <Wrapper>
       <Label>첨부파일 (12.3MB)</Label>
       <AttachmentWrapper>
         {uploadFiles.map(({ id, fileName, ext }) => (
-          <Attachment key={id} isPurchased={isPurchased}>
-            <File ext={ext} isPurchased={isPurchased} />
-            <Name isPurchased={isPurchased}>{`${fileName.slice(0, 3)}···.${ext}`}</Name>
-          </Attachment>
+          <Attachment key={id} fileName={fileName} ext={ext} isPurchased={isPurchased} />
         ))}
       </AttachmentWrapper>
       <MoveLeftButtonComponent />
