@@ -38,8 +38,6 @@ export default function resourceReducer(state = FILTER_OPTIONS, action) {
 
       switch (key) {
         case "order":
-          // TODO: 현재 백엔드 API에서 sort, criteria 받지 못하고 있음. 추후에 주석 지우고 수정할 것
-          // case "criteria":
           return {
             ...state,
             [key]: value,

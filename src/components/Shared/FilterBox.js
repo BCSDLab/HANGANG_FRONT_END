@@ -100,7 +100,6 @@ const Label = styled.label`
 const columnConverter = (type) => {
   switch (type) {
     case "sort":
-    case "criteria":
       return 5;
     case "order":
     case "classification":
@@ -141,8 +140,6 @@ const labelConverter = (key) => {
     case "sort":
     case "order":
       return "정렬";
-    case "criteria":
-      return "기준";
     case "classification":
       return "유형";
     case "hashtag":
@@ -202,7 +199,6 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
     switch (key) {
       case "order":
       case "sort":
-      case "criteria":
         if (filterOptions[key] === value) {
           return true;
         }
