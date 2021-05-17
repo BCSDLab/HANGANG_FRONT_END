@@ -5,10 +5,13 @@ import PropTypes from "prop-types";
 import Attachment from "components/ResourceDetailComponents/Attachment";
 import { PlaceholderColor } from "static/Shared/commonStyles";
 
-const Wrapper = styled.section`
+const AttachmentSection = styled.section`
   position: relative;
   width: 100%;
   margin-top: 32px;
+`;
+
+const Wrapper = styled.div`
   overflow-x: hidden;
 `;
 
@@ -44,8 +47,8 @@ const LeftImg = styled(RightImg)`
 
 const MoveRightButton = styled.div`
   position: absolute;
-  top: calc(50% + 70px);
-  right: 8px;
+  top: calc(50% + -13px);
+  right: -18px;
   z-index: 2;
 
   display: flex;
@@ -62,7 +65,7 @@ const MoveRightButton = styled.div`
 `;
 
 const MoveLeftButton = styled(MoveRightButton)`
-  left: 8px;
+  left: -24px;
 `;
 
 const MoveLeftButtonComponent = ({ move }) => (
@@ -96,12 +99,12 @@ const AttachmentsContainer = ({ isPurchased, uploadFiles }) => {
 
   useEffect(() => {
     attachmentWrapperRef.current.style.transform = `translateX(${
-      2 * widthOffset * slidingDistance
+      widthOffset * slidingDistance
     }px)`;
   }, [widthOffset]);
 
   return (
-    <>
+    <AttachmentSection>
       <Wrapper>
         <Label>첨부파일 (12.3MB)</Label>
         <AttachmentWrapper ref={attachmentWrapperRef} fileAmountOnRow={fileAmountOnRow}>
@@ -119,7 +122,7 @@ const AttachmentsContainer = ({ isPurchased, uploadFiles }) => {
       {widthOffset !== -hiddenFiles && hiddenFiles > 0 && (
         <MoveRightButtonComponent move={move} />
       )}
-    </>
+    </AttachmentSection>
   );
 };
 
