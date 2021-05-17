@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -8,6 +8,8 @@ import AttachmentsContainer from "./AttachmentsContainer";
 import LectureInfoContainer from "./LectureInfoContainer";
 import CommentsContainer from "./CommentsContainer";
 import ReportModalContainer from "./ReportModalContianer";
+import { useDispatch, useSelector } from "react-redux";
+import { closeAdditionalModal } from "store/modules/resourceDetail";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -33,9 +35,16 @@ const ResourceDetailContainer = () => {
   const isPurchased = true;
   const { comments, uploadFiles, ...rest } = SampleResourceResponse;
 
+  const dispatch = useDispatch();
+  const { isAdditionalModalOpened } = useSelector((state) => state.resourceDetailReducer);
+
+  const closeAdditionalModalEventTriggered = () => {
+    if (isAdditionalModalOpened) dispatch(closeAdditionalModal());
+  };
+
   return (
     <>
-      <Wrapper>
+      <Wrapper onClick={() => closeAdditionalModalEventTriggered()}>
         <Content>
           <LectureInfoContainer isPurchased={isPurchased} lectureInfo={rest} />
           <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />

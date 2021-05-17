@@ -6,9 +6,16 @@ import { MorePath, notPushedThumb, pushedThumb } from "static/ResourceDetailPage
 import {
   BorderColor,
   ConceptColor,
+  CopyRightColor,
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  closeAdditionalModal,
+  openAdditionalModal,
+  openReportModal,
+} from "store/modules/resourceDetail";
 
 const Delimiter = styled.div`
   width: 100%;
@@ -43,6 +50,8 @@ const More = styled.img.attrs({
   top: 27px;
   right: 27px;
   width: 24px;
+
+  cursor: pointer;
 `;
 
 const HitWrapper = styled.div`
@@ -164,6 +173,34 @@ const PurchaseButton = styled.input.attrs({
   cursor: ${({ isPurchased }) => (isPurchased ? "default" : "pointer")};
 `;
 
+const ModalWrapper = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 24px;
+  width: 103px;
+  height: 111px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 23px 16px;
+  border-radius: 8px;
+  border: 1px solid ${CopyRightColor};
+  background-color: #fff;
+
+  z-index: 1;
+`;
+
+const Report = styled.span`
+  font-size: 14px;
+  font-weight: 500;
+  color: ${FontColor};
+  cursor: pointer;
+`;
+
+const Scrap = styled(Report)``;
+
 const convertCreatedAt = (createdAt) => {
   let createdInfo = createdAt.split("T")[0].split("-");
   return `작성일 ${createdInfo[0]}-${createdInfo[1]}-${createdInfo[2]}`;
@@ -174,14 +211,34 @@ const convertLectureInfoSemester = (semester) => {
   return `개설학기 ${dateData[0]}-${dateData[1]}`;
 };
 
+const AdditionalModal = () => {
+  const dispatch = useDispatch();
+  return (
+    <ModalWrapper>
+      <Report
+        onClick={() => {
+          dispatch(closeAdditionalModal());
+          dispatch(openReportModal());
+        }}
+      >
+        신고
+      </Report>
+      <Scrap>스크랩 취소</Scrap>
+    </ModalWrapper>
+  );
+};
+
 const LectureInfoContainer = ({ isPurchased, lectureInfo }) => {
-  console.log(lectureInfo);
+  const dispatch = useDispatch();
+  const { isAdditionalModalOpened } = useSelector((state) => state.resourceDetailReducer);
+
   return (
     <>
       <Title>{lectureInfo.title}</Title>
       <Writer>{lectureInfo.user.nickname}</Writer>
       <CreatedAt>{convertCreatedAt(lectureInfo.created_at)}</CreatedAt>
-      <More />
+      <More onClick={() => dispatch(openAdditionalModal())} />
+      {isAdditionalModalOpened && <AdditionalModal />}
       <HitWrapper>
         <HitIcon isHit={lectureInfo.is_hit} />
         <HitAmount>{lectureInfo.hits}</HitAmount>
