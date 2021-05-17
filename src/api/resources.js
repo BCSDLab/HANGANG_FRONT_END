@@ -40,10 +40,10 @@ export default {
 
     let response;
     if (accessToken === null) {
-      response = await axios.get(`/lecture-banks/search?${query}`);
+      response = await axios.get(`/lecture-banks?${query}`);
     } else {
       response = await axios.get(
-        `/lecture-banks/search?${query}`,
+        `/lecture-banks?${query}`,
         setTokenInHeader(accessToken)
       );
     }

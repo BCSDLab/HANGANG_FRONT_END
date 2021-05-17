@@ -25,10 +25,9 @@ const DEFAULT_FILTER_OPTIONS = {
 };
 
 const FILTER_OPTIONS = {
-  cursor: 0,
   department: "",
   keyword: "",
-  limit: 50,
+  limit: 10,
   order: "id",
   page: 1,
   ...DEFAULT_FILTER_OPTIONS,
