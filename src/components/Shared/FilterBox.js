@@ -28,7 +28,7 @@ const Wrapper = styled.div`
   top: 40px;
   right: 0;
   width: 383px;
-  height: 609px;
+  height: 538px;
   border-radius: 16px;
   background-color: #fff;
   border: solid 1px ${CopyRightColor};

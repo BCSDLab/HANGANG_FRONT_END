@@ -115,11 +115,8 @@ const LecturesContainer = () => {
   const dispatch = useDispatch();
   const { isLoading, ...filterOptions } = useSelector((state) => state.lectureReducer);
   const { isLoggedIn } = useSelector((state) => state.authReducer);
-
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
-
   const [lectures, setLectures] = useState([]);
-  const [scrapped, setScrapped] = useState([]);
   const [isFetched, setIsFetched] = useState(false);
 
   /**
@@ -132,24 +129,11 @@ const LecturesContainer = () => {
     try {
       if (isLoggedIn) {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-
-        const promised = await Promise.all([
-          MypageAPI.getScrapLecture(accessToken),
-          LectureAPI.getLectures(filterOptions),
-        ]);
-
-        const lectures = promised[1];
-        setLectures(lectures.data);
-
-        const { data: scrapped } = promised[0];
-        let scrappedId = [];
-        scrapped.forEach(({ id }) => scrappedId.push(id));
-        setScrapped(scrappedId);
-      }
-
-      if (!isLoggedIn) {
-        const lectures = await LectureAPI.getLectures(filterOptions);
-        setLectures(lectures.data);
+        const { data } = await LectureAPI.getLectures(filterOptions, accessToken);
+        setLectures(data);
+      } else {
+        const { data } = await LectureAPI.getLectures(filterOptions);
+        setLectures(data);
       }
     } catch (error) {
       throw new Error(error);
@@ -170,8 +154,14 @@ const LecturesContainer = () => {
   useEffect(async () => {
     if (isLoading) {
       try {
-        const { data } = await LectureAPI.getLectures(filterOptions);
-        setLectures(data);
+        if (isLoggedIn) {
+          const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+          const { data } = await LectureAPI.getLectures(filterOptions, accessToken);
+          setLectures(data);
+        } else {
+          const { data } = await LectureAPI.getLectures(filterOptions);
+          setLectures(data);
+        }
       } catch (error) {
         throw new Error(error);
       } finally {
@@ -221,11 +211,7 @@ const LecturesContainer = () => {
             <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
             <CardGrid>
               {lectures.map((data) => (
-                <LectureCard
-                  data={data}
-                  isScrapped={scrapped.includes(data.id)}
-                  key={data.id}
-                />
+                <LectureCard data={data} isScrapped={data.is_scraped} key={data.id} />
               ))}
             </CardGrid>
           </LecturesSection>

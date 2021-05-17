@@ -1,5 +1,16 @@
 import axios from "axios";
 
+const setTokenInHeader = (accessToken = null, data = null) => {
+  let config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
+  if (data !== null) config["data"] = data;
+  return config;
+};
+
 export default {
   viewLecturesOnIndexPage: async (department) => {
     const response = await axios.get(
@@ -14,7 +25,7 @@ export default {
    * @param {object} filterOptions
    * @returns query
    */
-  getLectures: async (filterOptions) => {
+  getLectures: async (filterOptions = {}, accessToken = null) => {
     let query = "";
 
     Object.entries(filterOptions).forEach(([key, value]) => {
@@ -31,7 +42,13 @@ export default {
     });
     query = query.slice(0, -1);
 
-    const response = await axios.get(`/lectures?${query}`);
+    let response;
+    if (accessToken === null) {
+      response = await axios.get(`/lectures?${query}`);
+    } else {
+      response = await axios.get(`/lectures?${query}`, setTokenInHeader(accessToken));
+    }
+
     return response;
   },
 };
