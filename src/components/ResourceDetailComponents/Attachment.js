@@ -36,10 +36,15 @@ const Name = styled.span`
   color: ${({ isPurchased }) => (isPurchased ? `${FontColor}` : `${PlaceholderColor}`)};
 `;
 
+const convertName = (name, ext) => {
+  if (name.length <= 7) return name.slice(0, 3) + "." + ext;
+  else return name.slice(0, 3) + "···." + ext;
+};
+
 const Attachment = ({ fileName = "", ext = "", isPurchased = false }) => (
   <Wrapper>
     <File ext={ext} isPurchased={isPurchased} />
-    <Name isPurchased={isPurchased}>{`${fileName.slice(0, 3)}···.${ext}`}</Name>
+    <Name isPurchased={isPurchased}>{convertName(fileName, ext)}</Name>
   </Wrapper>
 );
 

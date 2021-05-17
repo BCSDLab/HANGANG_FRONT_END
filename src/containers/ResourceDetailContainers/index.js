@@ -5,7 +5,6 @@ import styled from "styled-components";
 import LectureDetailAPI from "api/lectureDetail";
 
 import { closeAdditionalModal, setLectureInfo } from "store/modules/resourceDetail";
-import SampleResourceResponse from "static/ResourceDetailPage/sampleResourceResponse.json";
 import { BorderColor } from "static/Shared/commonStyles";
 
 import AttachmentsContainer from "./AttachmentsContainer";
@@ -14,6 +13,49 @@ import CommentsContainer from "./CommentsContainer";
 import ReportModalContainer from "./ReportModalContianer";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
+
+const sampleAttachments = [
+  {
+    id: 1,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+  {
+    id: 2,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+  {
+    id: 3,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+  {
+    id: 4,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+  {
+    id: 5,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+  {
+    id: 6,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+  {
+    id: 7,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+  {
+    id: 8,
+    fileName: "김이정.hwp",
+    ext: "hwp",
+  },
+];
 
 const Wrapper = styled.div`
   width: 100%;
@@ -48,8 +90,6 @@ const ResourceDetailContainer = () => {
 
   const [isFetched, setIsFetched] = useState(false);
 
-  console.log("hi");
-
   useEffect(async () => {
     try {
       let token = getValueOnLocalStorage("hangangToken");
@@ -82,7 +122,11 @@ const ResourceDetailContainer = () => {
               isAdditionalModalOpened={isAdditionalModalOpened}
               isPurchased={isPurchased}
             />
-            <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} />
+            <AttachmentsContainer
+              isPurchased={isPurchased}
+              uploadFiles={sampleAttachments}
+            />
+            {/* <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} /> */}
             <CommentsContainer comments={comments} />
           </Content>
         )}
