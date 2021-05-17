@@ -134,6 +134,7 @@ const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
  * @returns 
  */
 const LectureReviewSection = ({  
+  isLiked = true,
   ...rest
 }) => {
   return (
@@ -209,12 +210,10 @@ const LectureReviewSection = ({
 
 LectureReviewSection.defaultProps = {
   isLiked: false,
-  chooseScrap: () => {},
   rest: {},
 };
 LectureReviewSection.propTypes = {
   isLiked: PropTypes.bool,
-  chooseScrap: PropTypes.func,
   rest: PropTypes.object,
 };
 export default LectureReviewSection;
