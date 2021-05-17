@@ -1,22 +1,12 @@
 {
-  "sort": [
+  "order": [
     {
       "label": "최신순",
-      "value": "최신순"
+      "value": "id"
     },
     {
       "label": "좋아요순",
-      "value": "좋아요순"
-    }
-  ],
-  "criteria": [
-    {
-      "label": "교과명",
-      "value": "교과명"
-    },
-    {
-      "label": "교수명",
-      "value": "교수명"
+      "value": "hits"
     }
   ],
   "category": [

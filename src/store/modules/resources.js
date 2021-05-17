@@ -18,9 +18,7 @@ export const requestResources = () => ({ type: SET_LOADING_START });
 export const requestFinished = () => ({ type: SET_LOADING_FINISHED });
 
 const DEFAULT_FILTER_OPTIONS = {
-  // TODO: 현재 백엔드 API에서 sort, criteria 받지 못하고 있음. 추후에 주석 지우고 수정할 것
-  // sort:"최신순",
-  // criteria:"",
+  order: "id",
   category: [],
 };
 
@@ -28,7 +26,6 @@ const FILTER_OPTIONS = {
   department: "",
   keyword: "",
   limit: 10,
-  order: "id",
   page: 1,
   ...DEFAULT_FILTER_OPTIONS,
   isLoading: false,
@@ -40,15 +37,12 @@ export default function resourceReducer(state = FILTER_OPTIONS, action) {
       let { key, value } = action.payload;
 
       switch (key) {
-        case "sort":
+        case "order":
           // TODO: 현재 백엔드 API에서 sort, criteria 받지 못하고 있음. 추후에 주석 지우고 수정할 것
           // case "criteria":
-          //   return {
-          //     ...state,
-          //     [key]: value,
-          //   };
           return {
             ...state,
+            [key]: value,
           };
         case "category":
           if (state[key].includes(value)) {

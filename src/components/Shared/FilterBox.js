@@ -102,6 +102,7 @@ const columnConverter = (type) => {
     case "sort":
     case "criteria":
       return 5;
+    case "order":
     case "classification":
     case "category":
       return 4;
@@ -122,7 +123,7 @@ const FilterButton = styled.input.attrs({
   type: "button",
   alt: "filter",
 })`
-  padding: 6px 0px;
+  padding: 8px 0px;
   border: none;
   border-radius: 20px;
 
@@ -138,6 +139,7 @@ const FilterButton = styled.input.attrs({
 const labelConverter = (key) => {
   switch (key) {
     case "sort":
+    case "order":
       return "정렬";
     case "criteria":
       return "기준";
@@ -198,6 +200,7 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
    */
   const isChoiced = (key, value) => {
     switch (key) {
+      case "order":
       case "sort":
       case "criteria":
         if (filterOptions[key] === value) {
