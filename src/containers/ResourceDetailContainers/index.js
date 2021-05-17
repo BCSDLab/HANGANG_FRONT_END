@@ -48,13 +48,12 @@ const ResourceDetailContainer = () => {
 
   const [isFetched, setIsFetched] = useState(false);
 
+  console.log("hi");
+
   useEffect(async () => {
     try {
-      let { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-      const { data } = await LectureDetailAPI.getLectureDetailInfo(
-        resourceId,
-        accessToken
-      );
+      let token = getValueOnLocalStorage("hangangToken");
+      const { data } = await LectureDetailAPI.getLectureDetailInfo(resourceId, token);
       dispatch(setLectureInfo(data));
     } catch (error) {
       if (error.response.data.code === 30) {

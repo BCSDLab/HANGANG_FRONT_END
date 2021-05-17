@@ -11,12 +11,12 @@ const axiosConfig = (accessToken, data = null) => {
 };
 
 export default {
-  getLectureDetailInfo: async (id, accessToken = null) => {
+  getLectureDetailInfo: async (id, token = null) => {
     let response;
-    if (accessToken === null) {
+    if (token === null) {
       response = await axios.get(`/lecture-banks/${id}`);
     } else {
-      response = await axios.get(`/lecture-banks/${id}`, axiosConfig(accessToken));
+      response = await axios.get(`/lecture-banks/${id}`, axiosConfig(token.access_token));
     }
     return response;
   },
