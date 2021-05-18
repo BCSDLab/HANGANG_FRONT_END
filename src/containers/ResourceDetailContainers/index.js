@@ -69,7 +69,7 @@ const Content = styled.div`
   position: relative;
   width: 752px;
   height: calc(100% - 80px);
-  /* max-height: 1274px; */
+  max-height: 1274px;
   padding: 27px 27px 16px;
   border-radius: 8px;
   border: 1px solid ${BorderColor};

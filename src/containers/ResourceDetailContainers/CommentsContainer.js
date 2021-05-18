@@ -36,8 +36,14 @@ const CommentWriteInput = styled.textarea.attrs({
 `;
 
 const CommentWrapper = styled.div`
-  min-height: 200px;
+  height: calc(100vh - 860px);
   overflow-y: auto;
+
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Chrome
+  }
   > div:not(:last-child) {
     border-bottom: 1px solid ${BorderColor};
   }
@@ -54,6 +60,14 @@ const CommentsContainer = ({ comments }) => {
       <CountComment>{`댓글 (${comments.length})`}</CountComment>
       <CommentWriteInput />
       <CommentWrapper>
+        <Comment />
+        <Comment />
+        <Comment />
+        <Comment />
+        <Comment />
+        <Comment />
+        <Comment />
+        <Comment />
         <Comment />
         <Comment />
       </CommentWrapper>
