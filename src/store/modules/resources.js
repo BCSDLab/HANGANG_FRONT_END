@@ -8,6 +8,8 @@ const SET_DEFAULT_RESOURCE_FILTER = "SET_DEFAULT_RESOURCE_FILTER";
 const SET_LOADING_START = "SET_LOADING_START";
 const SET_LOADING_FINISHED = "SET_LOADING_FINISHED";
 
+const SET_RESOURCES = "SET_RESOURCES";
+
 // Action Creators
 export const setDepartment = (payload) => ({ type: SET_DEPARTMENT, payload });
 export const setResourceKeyword = (payload) => ({ type: SET_RESOURCE_KEYWORD, payload });
@@ -16,6 +18,8 @@ export const setDefaultResourceFilter = () => ({ type: SET_DEFAULT_RESOURCE_FILT
 
 export const requestResources = () => ({ type: SET_LOADING_START });
 export const requestFinished = () => ({ type: SET_LOADING_FINISHED });
+
+export const setResources = (payload) => ({ type: SET_RESOURCES, payload });
 
 const DEFAULT_FILTER_OPTIONS = {
   order: "id",
@@ -31,7 +35,13 @@ const FILTER_OPTIONS = {
   isLoading: false,
 };
 
-export default function resourceReducer(state = FILTER_OPTIONS, action) {
+const STATE = {
+  ...FILTER_OPTIONS,
+  resources: [],
+  resource_amount: 0,
+};
+
+export default function resourceReducer(state = STATE, action) {
   switch (action.type) {
     case SET_RESOURCES_FILTER:
       let { key, value } = action.payload;
@@ -91,6 +101,13 @@ export default function resourceReducer(state = FILTER_OPTIONS, action) {
       return {
         ...state,
         isLoading: false,
+      };
+    case SET_RESOURCES:
+      console.log(action.payload);
+      return {
+        ...state,
+        resources: action.payload.result,
+        resource_amount: action.payload.count,
       };
     default:
       return state;

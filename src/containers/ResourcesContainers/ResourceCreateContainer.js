@@ -8,7 +8,7 @@ import SemesterSection from "components/ResourceComponents/ResourceWriteComponen
 import LectureSearchSection from "components/ResourceComponents/ResourceWriteComponents/LectureSearchSection";
 import CategorySection from "components/ResourceComponents/ResourceWriteComponents/CategorySection";
 import ContentSection from "components/ResourceComponents/ResourceWriteComponents/ContentSection";
-import MaterialSection from "components/ResourceComponents/ResourceWriteComponents/MaterialSection";
+import FileSection from "components/ResourceComponents/ResourceWriteComponents/FileSection";
 
 import {
   BorderColor,
@@ -18,6 +18,8 @@ import {
 } from "static/Shared/commonStyles";
 import { CLOSE_WRITE_FORM_URL } from "static/Shared/imageUrls";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { setDefaultForm, setForm } from "store/modules/resourceCreateModule";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -106,14 +108,14 @@ const SubmitButton = styled.input.attrs({
  */
 const checkValidation = (form) => {
   if (
-    form.title.length !== 0 &&
-    form.semester_date !== "" &&
-    form.lecture_id !== -1 &&
-    form.term.id !== -1 &&
-    form.term.name !== "" &&
     form.category.length !== 0 &&
     form.content !== "" &&
-    form.materials.length !== 0
+    form.files.length !== 0 &&
+    form.lecture_id !== -1 &&
+    form.semester_date !== "" &&
+    form.title.length !== 0 &&
+    form.term.id !== -1 &&
+    form.term.name !== ""
   )
     return true;
   else return false;
@@ -130,8 +132,8 @@ const submitWriteForm = async (form, setIsFetched, setIsCreateFormOpened) => {
   if (!checkValidation(form)) return;
   try {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    const { status } = await ResourceAPI.postResourceWrite(form, accessToken);
-    if (status === 200) {
+    const { data } = await ResourceAPI.requestWriteResource(form, accessToken);
+    if (data.httpStatus === "CREATED") {
       setIsCreateFormOpened(false);
       alert("강의자료 작성이 성공적으로 완료되었습니다.");
       setIsFetched(false);
@@ -145,29 +147,12 @@ const submitWriteForm = async (form, setIsFetched, setIsCreateFormOpened) => {
  * Main Component to create resource.
  */
 const ResourceCreateContainer = ({
-  createFormId,
   isCreateFormOpened,
   setIsFetched,
   setIsCreateFormOpened,
 }) => {
-  const [form, setForm] = useState({
-    title: "",
-    semester_date: "5",
-    lecture_id: -1,
-    term: {
-      id: -1,
-      name: "",
-      code: "",
-      professor: "",
-    },
-    category: ["기출자료"],
-    content: "",
-    materials: [], //  exclude when request ~/lecture-banks/write(POST) api bcz its already added.
-  });
-
-  useEffect(() => {
-    setForm((prev) => ({ ...prev, id: createFormId }));
-  }, [createFormId]);
+  const dispatch = useDispatch();
+  const form = useSelector((state) => state.resourceCreateReducer);
 
   React.useEffect(() => {
     console.log(form);
@@ -176,45 +161,27 @@ const ResourceCreateContainer = ({
   /**
    * If user want to cancel writing, request delete itself.
    */
-  const cancelResourceCreate = (setForm) => {
+  const cancelResourceCreate = () => {
     if (confirm("강의자료 작성을 취소하시겠습니까?")) {
       setIsCreateFormOpened(false);
-      // Set form as default form.
-      setForm({
-        title: "",
-        semester_date: "5",
-        lecture_id: -1,
-        term: {
-          id: -1,
-          name: "",
-          code: "",
-          professor: "",
-        },
-        category: ["기출자료"],
-        content: "",
-        materials: [],
-      });
+      dispatch(setDefaultForm());
     }
   };
 
   return (
     <Wrapper show={isCreateFormOpened}>
       <Container>
-        <CloseButton onClick={() => cancelResourceCreate(setForm)} />
+        <CloseButton onClick={() => cancelResourceCreate()} />
         <Title
           value={form.title}
-          onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+          onChange={(e) => dispatch(setForm("title", e.target.value))}
         />
         <Delimiter />
-        <SemesterSection semester={form.semester_date} setForm={setForm} />
-        <LectureSearchSection term={form.term} setForm={setForm} />
-        <CategorySection category={form.category} setForm={setForm} />
-        <ContentSection content={form.content} setForm={setForm} />
-        <MaterialSection
-          createFormId={createFormId}
-          materials={form.materials}
-          setForm={setForm}
-        />
+        <SemesterSection semester={form.semester_id} />
+        <LectureSearchSection term={form.term} />
+        <CategorySection category={form.category} />
+        <ContentSection content={form.content} />
+        <FileSection fileInfos={form.file_infos} />
         <SubmitButton
           isValid={checkValidation(form)}
           onClick={() => submitWriteForm(form, setIsFetched, setIsCreateFormOpened)}
@@ -225,14 +192,12 @@ const ResourceCreateContainer = ({
 };
 
 ResourceCreateContainer.defaultProps = {
-  createFormId: -1,
   isCreateFormOpened: false,
   setIsFetched: () => {},
   setIsCreateFormOpened: () => {},
 };
 
 ResourceCreateContainer.propTypes = {
-  createFormId: PropTypes.number,
   isCreateFormOpened: PropTypes.bool,
   setIsFetched: PropTypes.func,
   setIsCreateFormOpened: PropTypes.func,

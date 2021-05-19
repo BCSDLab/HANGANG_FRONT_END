@@ -48,13 +48,12 @@ export default {
 
     return response;
   },
-  uploadFiles: async (files = null, createFormId = -1, accessToken = null) => {
-    let fixFileSingleOrMultiple = files.length > 1 ? "files" : "file";
+  uploadFiles: async (files = null, accessToken = null) => {
     const form = new FormData();
-    for (let f of Object.values(files)) form.append(fixFileSingleOrMultiple, f);
+    for (let f of Object.values(files)) form.append("files", f);
 
     const response = await axios.post(
-      `/lecture-banks/${fixFileSingleOrMultiple}/upload/${createFormId}`,
+      `/lecture-banks/files`,
       form,
       setTokenInHeader(accessToken)
     );
@@ -68,22 +67,21 @@ export default {
     );
     return response;
   },
-  postResourceWrite: async (
-    { category, content, term, lecture_id, semester_date, title },
+  requestWriteResource: async (
+    { category, content, files, lecture_id, semester_id, title },
     accessToken = null
   ) => {
     let body = {
       category,
       content,
-      id: term.id,
+      files,
       lecture_id,
-      semester_date,
+      semester_id,
       title,
-      point_price: 10,
     };
 
     const response = await axios.post(
-      `/lecture-banks/write`,
+      `/lecture-banks`,
       body,
       setTokenInHeader(accessToken)
     );

@@ -15,6 +15,7 @@ import {
   requestResources,
   requestFinished,
   setDepartment,
+  setResources,
 } from "store/modules/resources";
 import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
 import {
@@ -139,13 +140,12 @@ const CardGrid = styled.div`
 const ResourceContainer = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.authReducer);
-  const { isLoading, ...filterOptions } = useSelector((state) => state.resourceReducer);
+  const { isLoading, resources, resource_amount, ...filterOptions } = useSelector(
+    (state) => state.resourceReducer
+  );
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
 
-  const [resources, setResources] = useState([]);
-
-  const [createFormId, setCreateFormId] = useState(null);
   const [isCreateFormOpened, setIsCreateFormOpened] = useState(false);
 
   /**
@@ -170,7 +170,7 @@ const ResourceContainer = () => {
           : null;
 
         const { data } = await ResourceAPI.getResources(filterOptions, accessToken);
-        setResources(data);
+        dispatch(setResources(data));
       } catch (error) {
         throw new Error(error);
       } finally {
@@ -230,10 +230,10 @@ const ResourceContainer = () => {
           </FilterSection>
 
           <ResourcesSection>
-            <SearchResultLabel>{`탐색 결과 (${resources.count})`}</SearchResultLabel>
+            <SearchResultLabel>{`탐색 결과 (${resource_amount})`}</SearchResultLabel>
             <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
             <CardGrid>
-              {resources.result.map((data) => (
+              {resources.map((data) => (
                 //FIXME: Change isHitted when api revised
                 <ResourceCard data={data} key={data.id} />
               ))}
@@ -241,7 +241,6 @@ const ResourceContainer = () => {
           </ResourcesSection>
 
           <ResourceCreateContainer
-            createFormId={createFormId}
             isCreateFormOpened={isCreateFormOpened}
             setIsFetched={setIsFetched}
             setIsCreateFormOpened={setIsCreateFormOpened}
