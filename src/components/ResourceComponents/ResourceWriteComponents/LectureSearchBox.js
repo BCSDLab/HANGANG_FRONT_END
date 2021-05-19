@@ -12,6 +12,8 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import { majorList } from "static/LecturesPage/majorList";
+import { useDispatch } from "react-redux";
+import { setLectureIdWithTerm } from "store/modules/resourceCreateModule";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -94,12 +96,8 @@ const Delimiter = styled.div`
 
 const Professor = styled(Code)``;
 
-const LectureSearchBox = ({
-  term,
-  setIsSearchBoxVisible,
-  setForm,
-  setIsCodeProfessorVisible,
-}) => {
+const LectureSearchBox = ({ term, setIsSearchBoxVisible, setIsCodeProfessorVisible }) => {
+  const dispatch = useDispatch();
   const [currCategory, setCurrCategory] = useState("교양학부");
   const [lectures, setLectures] = useState([]);
   const requestLectures = async (term) => {
@@ -143,11 +141,7 @@ const LectureSearchBox = ({
               <Lecture
                 key={id}
                 onClick={() => {
-                  setForm((prev) => ({
-                    ...prev,
-                    lecture_id: id,
-                    term: { id, name, code, professor },
-                  }));
+                  dispatch(setLectureIdWithTerm(id, { id, name, code, professor }));
                   setIsSearchBoxVisible(false);
                   setIsCodeProfessorVisible(true);
                 }}

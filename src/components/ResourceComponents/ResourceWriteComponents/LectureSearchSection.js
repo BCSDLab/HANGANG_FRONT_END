@@ -10,6 +10,8 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import { SEARCH_ICON_URL } from "static/Shared/imageUrls";
+import { setForm } from "store/modules/resourceCreateModule";
+import { useDispatch } from "react-redux";
 
 const Wrapper = styled.div`
   position: relative;
@@ -94,7 +96,8 @@ const SearchIcon = styled.img.attrs({
   width: 12px;
 `;
 
-const LectureSearchSection = ({ term, setForm }) => {
+const LectureSearchSection = ({ term }) => {
+  const dispatch = useDispatch();
   const [isTermInfoShowed, setIsTermInfoShowed] = useState(false);
   const [isSearchBoxVisible, setIsSearchBoxVisible] = useState(false);
   const [isCodeProfessorVisible, setIsCodeProfessorVisible] = useState(true);
@@ -108,7 +111,7 @@ const LectureSearchSection = ({ term, setForm }) => {
     if (isTermInfoShowed) setIsTermInfoShowed(false);
     if (isCodeProfessorVisible) setIsCodeProfessorVisible(false);
 
-    setForm((prev) => ({ ...prev, term: { ...prev.term, name: e.target.value } }));
+    dispatch(setForm("term", { ...term, name: e.target.value }));
   };
 
   /**
@@ -155,11 +158,16 @@ const LectureSearchSection = ({ term, setForm }) => {
 };
 
 LectureSearchSection.defaultProps = {
-  setForm: () => {},
+  term: {
+    id: -1,
+    name: "",
+    code: "",
+    professor: "",
+  },
 };
 
 LectureSearchSection.propTypes = {
-  setForm: PropTypes.func,
+  term: PropTypes.object,
 };
 
 export default LectureSearchSection;
