@@ -4,6 +4,8 @@ import styled from "styled-components";
 
 import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { UNDER_ARROW_URL } from "static/Shared/imageUrls";
+import { useDispatch } from "react-redux";
+import { setForm } from "store/modules/resourceCreateModule";
 
 const Wrapper = styled.div`
   position: relative;
@@ -115,13 +117,14 @@ const getSemesterOptionsUntilNow = (optionStartYear = 2019) => {
   return results.sort((a, b) => b.value - a.value);
 };
 
-const SemesterSection = ({ semester, setForm }) => {
+const SemesterSection = ({ semester }) => {
+  const dispatch = useDispatch();
   const [isOptionOpened, setIsOptionOpened] = useState(false);
   const [selectedOption, setSelectedOption] = useState("2021년 1학기");
   const options = getSemesterOptionsUntilNow();
 
   useEffect(() => {
-    const { naming } = options.find(({ value }) => value === parseInt(semester));
+    const { naming } = options.find(({ value }) => value === semester);
     setSelectedOption(naming);
   }, [semester]);
 
@@ -133,7 +136,7 @@ const SemesterSection = ({ semester, setForm }) => {
    */
   const chooseOption = ({ value }) => {
     setIsOptionOpened(false);
-    setForm((prev) => ({ ...prev, semester_date: value.toString() }));
+    dispatch(setForm("semester_id", value));
   };
 
   return (
@@ -156,13 +159,11 @@ const SemesterSection = ({ semester, setForm }) => {
 };
 
 SemesterSection.defaultProps = {
-  semester: "",
-  setForm: () => {},
+  semester: 5,
 };
 
 SemesterSection.propTypes = {
-  semester: PropTypes.string,
-  setForm: PropTypes.func,
+  semester: PropTypes.number,
 };
 
 export default SemesterSection;
