@@ -165,14 +165,12 @@ LectureSearchBox.defaultProps = {
     professor: "",
   },
   setIsSearchBoxVisible: () => {},
-  setForm: () => {},
   setIsCodeProfessorVisible: () => {},
 };
 
 LectureSearchBox.propTypes = {
   term: PropTypes.object,
   setIsSearchBoxVisible: PropTypes.func,
-  setForm: PropTypes.func,
   setIsCodeProfessorVisible: PropTypes.func,
 };
 

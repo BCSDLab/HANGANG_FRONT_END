@@ -149,7 +149,6 @@ const LectureSearchSection = ({ term }) => {
         <LectureSearchBox
           term={term}
           setIsSearchBoxVisible={setIsSearchBoxVisible}
-          setForm={setForm}
           setIsCodeProfessorVisible={setIsCodeProfessorVisible}
         />
       )}
