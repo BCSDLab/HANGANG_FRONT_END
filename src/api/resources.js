@@ -48,21 +48,6 @@ export default {
 
     return response;
   },
-  // Resource Write Form
-  getResourceCreateId: async (accessToken = null) => {
-    const response = await axios.get(
-      `/lecture-banks/write`,
-      setTokenInHeader(accessToken)
-    );
-    return response;
-  },
-  cancelResourceWrite: async (createFormId = -1, accessToken = null) => {
-    const response = await axios.delete(
-      `/lecture-banks/cancel/${createFormId}`,
-      setTokenInHeader(accessToken)
-    );
-    return response;
-  },
   uploadFiles: async (files = null, createFormId = -1, accessToken = null) => {
     let fixFileSingleOrMultiple = files.length > 1 ? "files" : "file";
     const form = new FormData();
@@ -75,6 +60,7 @@ export default {
     );
     return response;
   },
+  // deprecated
   cancelUploadFile: async (id = undefined, accessToken = null) => {
     const response = await axios.get(
       `/lecture-banks/file/cancel_upload/${id}`,

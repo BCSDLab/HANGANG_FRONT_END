@@ -169,33 +169,31 @@ const ResourceCreateContainer = ({
     setForm((prev) => ({ ...prev, id: createFormId }));
   }, [createFormId]);
 
+  React.useEffect(() => {
+    console.log(form);
+  }, [form]);
+
   /**
    * If user want to cancel writing, request delete itself.
    */
-  const cancelResourceCreate = async (setForm) => {
+  const cancelResourceCreate = (setForm) => {
     if (confirm("강의자료 작성을 취소하시겠습니까?")) {
-      try {
-        setIsCreateFormOpened(false);
-        let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-        await ResourceAPI.cancelResourceWrite(createFormId, accessToken);
-        // Set form as default form.
-        setForm({
-          title: "",
-          semester_date: "5",
-          lecture_id: -1,
-          term: {
-            id: -1,
-            name: "",
-            code: "",
-            professor: "",
-          },
-          category: ["기출자료"],
-          content: "",
-          materials: [],
-        });
-      } catch (error) {
-        throw new Error(error);
-      }
+      setIsCreateFormOpened(false);
+      // Set form as default form.
+      setForm({
+        title: "",
+        semester_date: "5",
+        lecture_id: -1,
+        term: {
+          id: -1,
+          name: "",
+          code: "",
+          professor: "",
+        },
+        category: ["기출자료"],
+        content: "",
+        materials: [],
+      });
     }
   };
 

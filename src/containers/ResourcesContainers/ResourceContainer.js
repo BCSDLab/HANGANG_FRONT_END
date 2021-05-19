@@ -153,17 +153,9 @@ const ResourceContainer = () => {
    * If user didnt logged in, show alert.
    * else, open create form and request create form id.
    */
-  const checkUserHasCreateAuthentication = async () => {
+  const checkUserHasCreateAuthentication = () => {
     if (!isLoggedIn) return alert("강의 자료 작성을 위해서 로그인이 필요합니다.");
-
-    try {
-      setIsCreateFormOpened(true); //  Open create form
-      let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-      let { data } = await ResourceAPI.getResourceCreateId(accessToken); //  Request create form id
-      setCreateFormId(data);
-    } catch (error) {
-      throw new Error(error);
-    }
+    else setIsCreateFormOpened(true); //  Open create form
   };
 
   /**
