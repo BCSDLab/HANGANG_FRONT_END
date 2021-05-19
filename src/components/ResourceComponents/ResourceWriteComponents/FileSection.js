@@ -11,6 +11,8 @@ import {
   UPLOAD_FILE_ICON_URL,
 } from "static/Shared/imageUrls";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { useDispatch } from "react-redux";
+import { eraseFile, setFiles, setForm } from "store/modules/resourceCreateModule";
 
 const ACCEPT_FILE_TYPES = [
   "zip",
@@ -153,10 +155,9 @@ const convertMIMETypeToExtension = (type) => {
  *  - type : get only type (e.g. application/pdf => pdf)
  * @param {array} inputFiles An array which contains file DOM of user-selected files.
  * @param {array} currentFiles An array which contains file of write form currently.
- * @param {number} createFormId A number that has id of create form.
- * @param {function} setForm A Function of write form.
+ * @param {function} dispatch A Function to request form to write.
  */
-const getFilesFromUser = async (inputFiles, currentFiles, createFormId, setForm) => {
+const getFilesFromUser = async (inputFiles, currentFiles, dispatch) => {
   const KB = 1000;
   const MB = 1000 * KB;
   let trimmedFiles = [];
@@ -171,21 +172,18 @@ const getFilesFromUser = async (inputFiles, currentFiles, createFormId, setForm)
 
   try {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    let { data } = await ResourceAPI.uploadFiles(inputFiles, createFormId, accessToken);
+    let { data: fileUrl } = await ResourceAPI.uploadFiles(inputFiles, accessToken);
 
     inputFiles.forEach((f, index) => {
       let { name, size, type } = f;
       if (hasExtensionOnFileName(name.slice(-4))) name = name.slice(0, -5); // show, jpeg, cell, ...
       if (hasExtensionOnFileName(name.slice(-3))) name = name.slice(0, -4); // jpg, pdf, ...
       type = convertMIMETypeToExtension(type);
-      let id = inputFiles.length > 1 ? data[index] : data;
+      let id = fileUrl[index].split("-")[5].split(".")[0];
       trimmedFiles.push({ id, name, size, type });
     });
 
-    setForm((prev) => ({
-      ...prev,
-      materials: [...prev.materials, ...trimmedFiles],
-    }));
+    dispatch(setFiles({ fileUrl, trimmedFiles }));
   } catch (error) {
     alert("파일 업로드 중 문제가 발생하였습니다. 관리자에게 문의하세요.");
     throw new Error(error);
@@ -211,71 +209,49 @@ const getLabelOfMaterialsInfo = (material) => {
     return `총 ${material.length}개 ( ${(size / MB).toFixed(1)}MB / 50MB )`;
 };
 
-/**
- * A Function to request remove file from waiting list.
- * At First, check is valid to remove file to backend.
- * And then, remove file from write form.
- * @param {number} fId A number to store file id.
- * @param {function} setForm A function to access file write form.
- */
-const eraseFileFromWaitingList = async (fId, setForm) => {
-  try {
-    let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    await ResourceAPI.cancelUploadFile(fId, accessToken);
-
-    setForm((prev) => ({
-      ...prev,
-      materials: prev.materials.filter(({ id }) => id !== fId),
-    }));
-  } catch (error) {
-    alert("파일 업로드 취소 중 문제가 발생하였습니다. 관리자에게 문의하세요.");
-    throw new Error(error);
-  }
-};
-
-const Material = ({ id, name, type, setForm }) => {
+const Material = ({ id, name, type, dispatch }) => {
   return (
     <MaterialContainer>
       <FileIcon type={type.toUpperCase()} />
-      <FileEraseIcon onClick={() => eraseFileFromWaitingList(id, setForm)} />
+      <FileEraseIcon onClick={() => dispatch(eraseFile(id))} />
       <MaterialName>{`${name.slice(0, 4)}···.${type}`}</MaterialName>
     </MaterialContainer>
   );
 };
 
-const MaterialSection = ({ createFormId, materials, setForm }) => {
-  const file = createRef();
+const FileSection = ({ fileInfos }) => {
+  const dispatch = useDispatch();
+  const fileRef = createRef();
 
   return (
     <Wrapper>
-      <Label>{getLabelOfMaterialsInfo(materials)}</Label>
-      <AddFileIcon onClick={() => file.current.click()} />
+      <Label>{getLabelOfMaterialsInfo(fileInfos)}</Label>
+      <AddFileIcon onClick={() => fileRef.current.click()} />
       <FakeFileDom
-        ref={file}
-        onChange={() =>
-          getFilesFromUser(file.current.files, materials, createFormId, setForm)
-        }
-        // onChange={() => getFilesFromUser(file.current.files, 48, setForm)}
+        ref={fileRef}
+        onChange={() => getFilesFromUser(fileRef.current.files, fileInfos, dispatch)}
       />
       <MaterialWrapper>
-        {materials.map((m) => (
-          <Material key={m.id} id={m.id} name={m.name} type={m.type} setForm={setForm} />
+        {fileInfos.map((m) => (
+          <Material
+            key={m.id}
+            id={m.id}
+            name={m.name}
+            type={m.type}
+            dispatch={dispatch}
+          />
         ))}
       </MaterialWrapper>
     </Wrapper>
   );
 };
 
-MaterialSection.defaultProps = {
-  createFormId: -1,
-  materials: [],
-  setForm: () => {},
+FileSection.defaultProps = {
+  fileInfos: [],
 };
 
-MaterialSection.propTypes = {
-  createFormId: PropTypes.number,
-  materials: PropTypes.array,
-  setForm: PropTypes.func,
+FileSection.propTypes = {
+  files: PropTypes.array,
 };
 
-export default MaterialSection;
+export default FileSection;
