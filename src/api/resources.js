@@ -36,8 +36,6 @@ export default {
     });
     query = query.slice(0, -1);
 
-    console.log(query);
-
     let response;
     if (accessToken === null) {
       response = await axios.get(`/lecture-banks?${query}`);

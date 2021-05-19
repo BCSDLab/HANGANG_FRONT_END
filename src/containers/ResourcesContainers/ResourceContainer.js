@@ -238,10 +238,10 @@ const ResourceContainer = () => {
           </FilterSection>
 
           <ResourcesSection>
-            <SearchResultLabel>{`탐색 결과 (${resources.length})`}</SearchResultLabel>
+            <SearchResultLabel>{`탐색 결과 (${resources.count})`}</SearchResultLabel>
             <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
             <CardGrid>
-              {resources.map((data) => (
+              {resources.result.map((data) => (
                 //FIXME: Change isHitted when api revised
                 <ResourceCard data={data} key={data.id} />
               ))}
