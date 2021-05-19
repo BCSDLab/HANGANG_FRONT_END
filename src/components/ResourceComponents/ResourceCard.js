@@ -138,13 +138,14 @@ const clickHitIcon = async (
   else {
     try {
       const accessToken = getValueOnLocalStorage("hangangToken").access_token;
-      await ResourceAPI.pushHitResource(id, accessToken);
-
-      setHitInfos((prev) =>
-        prev.is_hit
-          ? { is_hit: false, hits: prev.hits - 1 }
-          : { is_hit: true, hits: prev.hits + 1 }
-      );
+      const { data } = await ResourceAPI.requestHit(id, accessToken);
+      if (data.httpStatus === "OK") {
+        setHitInfos((prev) =>
+          prev.is_hit
+            ? { is_hit: false, hits: prev.hits - 1 }
+            : { is_hit: true, hits: prev.hits + 1 }
+        );
+      }
     } catch (err) {
       throw new Error(err);
     }
@@ -161,8 +162,7 @@ const ResourceCard = ({ data: { is_hit, hits, ...rest } }) => {
 
   return (
     <Wrapper>
-      {/* FIXME: Convert uri if backend api revised */}
-      <Thumbnail uri="https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/sample_resource_thumbnail.png" />
+      <Thumbnail uri={rest.thumbnail} />
       <Content>
         <Title>{sliceString(rest.title, 26)}</Title>
         <Nickname>{rest.user.nickname}</Nickname>

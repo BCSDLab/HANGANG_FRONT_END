@@ -12,9 +12,10 @@ const setTokenInHeader = (accessToken = null, data = null) => {
 };
 
 export default {
-  pushHitResource: async (id = undefined, accessToken = null) => {
-    const response = await axios.get(
-      `/lecture-banks/hit/push/${id}`,
+  requestHit: async (id = undefined, accessToken = null) => {
+    const response = await axios.post(
+      `/lecture-banks/hit/${id}`,
+      null,
       setTokenInHeader(accessToken)
     );
     return response;

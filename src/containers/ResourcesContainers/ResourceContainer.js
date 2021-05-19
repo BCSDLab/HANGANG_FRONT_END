@@ -234,7 +234,6 @@ const ResourceContainer = () => {
             <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
             <CardGrid>
               {resources.map((data) => (
-                //FIXME: Change isHitted when api revised
                 <ResourceCard data={data} key={data.id} />
               ))}
             </CardGrid>
