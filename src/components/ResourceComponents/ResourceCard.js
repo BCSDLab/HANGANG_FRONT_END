@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
   border-radius: 8px;
   border: solid 1px ${BorderColor};
   background-color: "#fff";
+  cursor: pointer;
 `;
 const Thumbnail = styled.div`
   width: 131px;
@@ -157,11 +158,12 @@ const clickHitIcon = async (
  * A Component used to present resources in db at ~/resources
  */
 const ResourceCard = ({ data: { is_hit, hits, ...rest } }) => {
+  const history = useHistory();
   const { isLoggedIn } = useSelector((state) => state.authReducer);
   const [hitInfos, setHitInfos] = useState({ is_hit, hits });
 
   return (
-    <Wrapper>
+    <Wrapper onClick={() => history.push(`/resource/${rest.id}`)}>
       <Thumbnail uri={rest.thumbnail} />
       <Content>
         <Title>{sliceString(rest.title, 26)}</Title>
