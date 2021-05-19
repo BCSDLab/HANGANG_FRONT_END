@@ -179,7 +179,7 @@ const getFilesFromUser = async (inputFiles, currentFiles, dispatch) => {
       if (hasExtensionOnFileName(name.slice(-4))) name = name.slice(0, -5); // show, jpeg, cell, ...
       if (hasExtensionOnFileName(name.slice(-3))) name = name.slice(0, -4); // jpg, pdf, ...
       type = convertMIMETypeToExtension(type);
-      let id = fileUrl[index].split("-")[5].split(".")[0];
+      let id = fileUrl[index];
       trimmedFiles.push({ id, name, size, type });
     });
 

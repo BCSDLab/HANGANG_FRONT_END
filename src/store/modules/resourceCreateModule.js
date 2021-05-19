@@ -71,12 +71,9 @@ export default function resourceCreateReducer(state = STATE, action) {
         file_infos: [...state.file_infos, ...action.trimmedFiles],
       };
     case ERASE_FILE:
-      let targetFile = state.files.find(
-        (elem) => elem.split("-")[5].split(".")[0] === action.fileId
-      );
       return {
         ...state,
-        files: state.files.filter((file) => file !== targetFile),
+        files: state.files.filter((file) => file !== action.fileId),
         file_infos: state.file_infos.filter((file) => file.id !== action.fileId),
       };
     default:
