@@ -9,6 +9,8 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
+import { useDispatch } from "react-redux";
+import { setForm } from "store/modules/resourceCreateModule";
 
 const Wrapper = styled.div`
   position: relative;
@@ -56,31 +58,32 @@ const CategoryWrapper = styled.div`
   }
 `;
 
-const CategorySection = ({ category, setForm }) => (
-  <Wrapper>
-    <Label>자료유형</Label>
-    <CategoryWrapper>
-      {ResourceFilterList.category.map(({ label, value }) => (
-        <Category
-          key={label}
-          selected={category[0] === value}
-          onClick={() => setForm((prev) => ({ ...prev, category: [value] }))}
-        >
-          {label}
-        </Category>
-      ))}
-    </CategoryWrapper>
-  </Wrapper>
-);
+const CategorySection = ({ category }) => {
+  const dispatch = useDispatch();
+  return (
+    <Wrapper>
+      <Label>자료유형</Label>
+      <CategoryWrapper>
+        {ResourceFilterList.category.map(({ label, value }) => (
+          <Category
+            key={label}
+            selected={category[0] === value}
+            onClick={() => dispatch(setForm("category", [value]))}
+          >
+            {label}
+          </Category>
+        ))}
+      </CategoryWrapper>
+    </Wrapper>
+  );
+};
 
 CategorySection.defaultProps = {
   category: ["기출자료"],
-  setForm: () => {},
 };
 
 CategorySection.propTypes = {
   category: PropTypes.arrayOf(PropTypes.string),
-  setForm: PropTypes.func,
 };
 
 export default CategorySection;
