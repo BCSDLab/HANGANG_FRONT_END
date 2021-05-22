@@ -42,7 +42,7 @@ const App = () => {
    * 성공할 경우 로그인 처리,
    * 실패할 경우 로그인 페이지로 이동시키며
    * local storage에 있는 token을 지웁니다.
-   * 참고 : https://app.diagrams.net/#G1fdPJc3IfiFc6l8OMxSJ2rOJisJsp0k8i
+   * 참고 : https://drive.google.com/file/d/1fdPJc3IfiFc6l8OMxSJ2rOJisJsp0k8i/view?usp=sharing
    * @param {string} token
    */
   const refreshAccessToken = async (token) => {

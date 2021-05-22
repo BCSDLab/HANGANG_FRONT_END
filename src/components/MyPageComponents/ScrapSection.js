@@ -104,7 +104,7 @@ const ScrapSection = ({ scrapped, setScrapped }) => {
         alert("자료를 선택해주세요.");
       } else {
         try {
-          let accessToken = getValueOnLocalStorage("hangangToken").accessToken;
+          let accessToken = getValueOnLocalStorage("hangangToken").access_token;
 
           await MypageAPI.deleteScrapLecture(accessToken, selectedScrap);
           setScrapped((prev) => prev.filter((elem) => !selectedScrap.includes(elem.id)));

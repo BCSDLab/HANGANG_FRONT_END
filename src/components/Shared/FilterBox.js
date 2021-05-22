@@ -14,7 +14,12 @@ import {
   requestLectures,
   setDefaultLectureFilter,
   setLectureFilter,
-} from "store/modules/lectures";
+} from "store/modules/lecturesModule";
+import {
+  requestResources,
+  setResourcesFilter,
+  setDefaultResourceFilter,
+} from "store/modules/resourcesModule";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -23,7 +28,7 @@ const Wrapper = styled.div`
   top: 40px;
   right: 0;
   width: 383px;
-  height: 609px;
+  height: 538px;
   border-radius: 16px;
   background-color: #fff;
   border: solid 1px ${CopyRightColor};
@@ -95,8 +100,8 @@ const Label = styled.label`
 const columnConverter = (type) => {
   switch (type) {
     case "sort":
-    case "criteria":
       return 5;
+    case "order":
     case "classification":
     case "category":
       return 4;
@@ -117,7 +122,7 @@ const FilterButton = styled.input.attrs({
   type: "button",
   alt: "filter",
 })`
-  padding: 6px 0px;
+  padding: 8px 0px;
   border: none;
   border-radius: 20px;
 
@@ -133,9 +138,8 @@ const FilterButton = styled.input.attrs({
 const labelConverter = (key) => {
   switch (key) {
     case "sort":
+    case "order":
       return "정렬";
-    case "criteria":
-      return "기준";
     case "classification":
       return "유형";
     case "hashtag":
@@ -155,15 +159,32 @@ const labelConverter = (key) => {
  */
 const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
   const dispatch = useDispatch();
-  const filterOptions = useSelector((state) => state.lectureReducer);
+  const filterOptions = useSelector((state) =>
+    type === "lecture" ? state.lectureReducer : state.resourceReducer
+  );
+
   const setFilter = (key, value) => {
     if (type === "lecture") {
       dispatch(setLectureFilter({ key, value }));
+    } else {
+      dispatch(setResourcesFilter({ key, value }));
     }
   };
 
-  const apply = () => {
-    dispatch(requestLectures());
+  const refreshFilter = (type) => {
+    if (type === "lecture") {
+      dispatch(setDefaultLectureFilter());
+    } else {
+      dispatch(setDefaultResourceFilter());
+    }
+  };
+
+  const apply = (type) => {
+    if (type === "lecture") {
+      dispatch(requestLectures());
+    } else {
+      dispatch(requestResources());
+    }
   };
 
   /**
@@ -176,6 +197,7 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
    */
   const isChoiced = (key, value) => {
     switch (key) {
+      case "order":
       case "sort":
         if (filterOptions[key] === value) {
           return true;
@@ -183,6 +205,7 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
         return false;
       case "classification":
       case "hashtag":
+      case "category":
         if (filterOptions[key].includes(value)) {
           return true;
         }
@@ -195,7 +218,7 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
   return (
     <Wrapper>
       <NotifyLabel>필터를 적용해 보세요.</NotifyLabel>
-      <Refresh onClick={() => dispatch(setDefaultLectureFilter())} />
+      <Refresh onClick={() => refreshFilter(type)} />
       <Exit onClick={() => setIsFilterBoxVisible(false)} />
       {Object.entries(filterList).map(([key, value]) => (
         <Section key={key}>
@@ -212,7 +235,7 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
           </Buttons>
         </Section>
       ))}
-      <ApplyButton onClick={() => apply()} />
+      <ApplyButton onClick={() => apply(type)} />
     </Wrapper>
   );
 };
