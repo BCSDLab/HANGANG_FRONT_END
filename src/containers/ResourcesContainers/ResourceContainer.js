@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { debounce } from "lodash";
 
 import ResourceAPI from "api/resources";
 
@@ -14,11 +15,11 @@ import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { majorList } from "static/LecturesPage/majorList";
 import {
   requestResources,
-  requestFinished,
+  requestResourcesFinished,
   setDepartment,
   setResources,
-  setNextPage,
-} from "store/modules/resources";
+  setResourcesNextPage,
+} from "store/modules/resourcesModule";
 import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
 import {
   BorderColor,
@@ -132,6 +133,7 @@ const ResourceContainer = () => {
   const dispatch = useDispatch();
   const {
     isLoading,
+    isFetchedOnFirstResourcesMount,
     resources,
     resource_amount,
     page,
@@ -157,7 +159,6 @@ const ResourceContainer = () => {
    * 1. 유저 token 체크가 끝나 로그인 여부가 파악되고, 아직 resource를 fetch 하지 않았을 때
    * 2. 필터를 클릭할 때마다 isLoading을 true로 만들며, 이 때 fetchResources를 실행한다.
    */
-  const [isFetched, setIsFetched] = useState(false);
 
   const fetchResources = async (options) => {
     try {
@@ -170,15 +171,15 @@ const ResourceContainer = () => {
     } catch (error) {
       throw new Error(error);
     } finally {
-      dispatch(requestFinished());
-      if (!isFetched) setIsFetched(true);
+      dispatch(requestResourcesFinished());
     }
   };
 
   useEffect(() => {
-    if ((isCheckedToken && !isFetched) || isLoading)
+    console.log(isFetchedOnFirstResourcesMount);
+    if ((isCheckedToken && !isFetchedOnFirstResourcesMount) || isLoading)
       fetchResources({ page, ...filterOptions });
-  }, [isCheckedToken, isFetched, isLoading]);
+  }, [isCheckedToken, isFetchedOnFirstResourcesMount, isLoading]);
 
   /**
    * 강의자료 페이지에서 제일 마지막 요소에 도달할 경우
@@ -187,25 +188,25 @@ const ResourceContainer = () => {
    * @param {object} entries IntersectionObserverEntry를 받는다. 하단 링크를 참조한다.
    * https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry
    */
-  let fetchMore = (entries) => {
+  const fetchMore = debounce((entries) => {
     const target = entries[0];
     if (target.isIntersecting && page < max_page) {
       fetchResources({ page: page + 1, ...filterOptions });
-      dispatch(setNextPage());
+      dispatch(setResourcesNextPage());
     }
-  };
+  }, 500);
 
   const { targetRef } = useInfiniteScroll(fetchMore, { threshold: 0.8 });
 
   return (
     <Wrapper>
-      {!isFetched && (
+      {!isFetchedOnFirstResourcesMount && (
         <SpinnerWrapper>
           <LoadingSpinner />
         </SpinnerWrapper>
       )}
 
-      {isFetched && (
+      {isFetchedOnFirstResourcesMount && (
         <>
           <SearchSection>
             <SearchForm type="resources" />
@@ -237,7 +238,7 @@ const ResourceContainer = () => {
           <ResourcesSection>
             <SearchResultLabel>{`탐색 결과 (${resource_amount})`}</SearchResultLabel>
             <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
-            <CardGrid ref={targetRef}>
+            <CardGrid>
               {resources.map((data) => (
                 <ResourceCard data={data} key={data.id} />
               ))}
@@ -246,9 +247,10 @@ const ResourceContainer = () => {
 
           <ResourceCreateContainer
             isCreateFormOpened={isCreateFormOpened}
-            setIsFetched={setIsFetched}
             setIsCreateFormOpened={setIsCreateFormOpened}
           />
+
+          <div id="resource" ref={targetRef} />
         </>
       )}
     </Wrapper>

@@ -29,14 +29,11 @@ export default function useInfiniteScroll(fetchMore, observerParams) {
   useEffect(() => {
     if (!targetRef.current) return;
 
-    let itemWrapper = targetRef.current.children;
-    let lastItem = itemWrapper[itemWrapper.length - 1];
-
     let observer = new IntersectionObserver(fetchMore, params);
-    observer.observe(lastItem);
+    observer.observe(targetRef.current);
 
     return () => {
-      observer.unobserve(lastItem);
+      if (targetRef.current) observer.unobserve(targetRef.current);
     };
   });
 
