@@ -16,7 +16,7 @@ import { majorList } from "static/LecturesPage/majorList";
 import {
   requestResources,
   requestResourcesFinished,
-  setDepartment,
+  setDepartmentOnResources,
   setResources,
   setResourcesNextPage,
 } from "store/modules/resourcesModule";
@@ -129,6 +129,10 @@ const CardGrid = styled.div`
   width: 1152px;
 `;
 
+const FakeDiv = styled.div`
+  display: none;
+`;
+
 const ResourceContainer = () => {
   const dispatch = useDispatch();
   const {
@@ -217,7 +221,7 @@ const ResourceContainer = () => {
                 key={label}
                 name="department"
                 onClick={() => {
-                  dispatch(setDepartment({ department }));
+                  dispatch(setDepartmentOnResources({ department }));
                   dispatch(requestResources());
                 }}
                 isChosen={filterOptions.department === department}
@@ -250,7 +254,7 @@ const ResourceContainer = () => {
             setIsCreateFormOpened={setIsCreateFormOpened}
           />
 
-          <div id="resource" ref={targetRef} />
+          <FakeDiv ref={targetRef} />
         </>
       )}
     </Wrapper>

@@ -21,7 +21,7 @@ import { majorList } from "static/LecturesPage/majorList";
 import {
   requestLecturesFinished,
   requestLectures,
-  setDepartment,
+  setDepartmentOnLectures,
   setLectures,
   setLecturesNextPage,
 } from "store/modules/lecturesModule";
@@ -107,6 +107,10 @@ const CardGrid = styled.div`
   width: 1135px;
 `;
 
+const FakeDiv = styled.div`
+  display: none;
+`;
+
 const LecturesContainer = () => {
   const dispatch = useDispatch();
   const {
@@ -173,7 +177,7 @@ const LecturesContainer = () => {
                 key={label}
                 name="department"
                 onClick={() => {
-                  dispatch(setDepartment({ department }));
+                  dispatch(setDepartmentOnLectures({ department }));
                   dispatch(requestLectures());
                 }}
                 isChosen={filterOptions.department === department}
@@ -200,7 +204,7 @@ const LecturesContainer = () => {
             </CardGrid>
           </LecturesSection>
 
-          <div id="lecture" ref={targetRef} />
+          <FakeDiv ref={targetRef} />
         </>
       )}
     </Wrapper>

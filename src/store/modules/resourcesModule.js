@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 // Actions
-const SET_DEPARTMENT = "SET_DEPARTMENT";
 const SET_RESOURCE_KEYWORD = "SET_RESOURCE_KEYWORD";
+const SET_DEPARTMENT_ON_RESOURCES = "SET_DEPARTMENT_ON_RESOURCES";
 const SET_RESOURCES_FILTER = "SET_RESOURCES_FILTER";
 const SET_DEFAULT_RESOURCE_FILTER = "SET_DEFAULT_RESOURCE_FILTER";
 
@@ -12,8 +12,11 @@ const SET_RESOURCES = "SET_RESOURCES";
 const SET_RESOURCES_NEXT_PAGE = "SET_RESOURCES_NEXT_PAGE";
 
 // Action Creators
-export const setDepartment = (payload) => ({ type: SET_DEPARTMENT, payload });
 export const setResourceKeyword = (payload) => ({ type: SET_RESOURCE_KEYWORD, payload });
+export const setDepartmentOnResources = (payload) => ({
+  type: SET_DEPARTMENT_ON_RESOURCES,
+  payload,
+});
 export const setResourcesFilter = (payload) => ({ type: SET_RESOURCES_FILTER, payload });
 export const setDefaultResourceFilter = () => ({ type: SET_DEFAULT_RESOURCE_FILTER });
 
@@ -77,7 +80,7 @@ export default function resourceReducer(state = STATE, action) {
         ...state,
         ...DEFAULT_FILTER_OPTIONS,
       };
-    case SET_DEPARTMENT:
+    case SET_DEPARTMENT_ON_RESOURCES:
       /**
        * 유저가 같은 버튼을 클릭할 시 기존에 들어있던 부서 상태 값을 초기화시킨다.
        * case : 교양 값이 있는 상태에서 교양 버튼을 누름

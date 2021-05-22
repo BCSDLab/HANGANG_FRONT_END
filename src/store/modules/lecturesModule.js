@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 // Actions
-const SET_DEPARTMENT = "SET_DEPARTMENT";
 const SET_KEYWORD = "SET_KEYWORD";
+const SET_DEPARTMENT_ON_LECTURES = "SET_DEPARTMENT_ON_LECTURES";
 const SET_LECTURE_FILTER = "SET_LECTURE_FILTER";
 const SET_DEFAULT_LECTURE_FILTER = "SET_DEFAULT_LECTURE_FILTER";
 
@@ -12,8 +12,11 @@ const SET_LECTURES = "SET_LECTURES";
 const SET_LECTURES_NEXT_PAGE = "SET_LECTURES_NEXT_PAGE";
 
 // Action Creators
-export const setDepartment = (payload) => ({ type: SET_DEPARTMENT, payload });
 export const setKeyword = (payload) => ({ type: SET_KEYWORD, payload });
+export const setDepartmentOnLectures = (payload) => ({
+  type: SET_DEPARTMENT_ON_LECTURES,
+  payload,
+});
 export const setLectureFilter = (payload) => ({ type: SET_LECTURE_FILTER, payload });
 export const setDefaultLectureFilter = () => ({ type: SET_DEFAULT_LECTURE_FILTER });
 
@@ -80,7 +83,7 @@ export default function lectureReducer(state = STATE, action) {
         ...state,
         ...DEFAULT_FILTER_OPTIONS,
       };
-    case SET_DEPARTMENT:
+    case SET_DEPARTMENT_ON_LECTURES:
       /**
        * 유저가 같은 버튼을 클릭할 시 기존에 들어있던 부서 상태 값을 초기화시킨다.
        * case : 교양 값이 있는 상태에서 교양 버튼을 누름

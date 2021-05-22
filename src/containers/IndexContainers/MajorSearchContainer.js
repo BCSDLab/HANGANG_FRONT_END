@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { FontColor } from "static/Shared/commonStyles";
 import MajorInfoArray from "static/IndexPage/majorInfoArray";
 
-import { setDepartment } from "store/modules/lecturesModule";
+import { setDepartmentOnLectures } from "store/modules/lecturesModule";
 
 const Label = styled.label`
   color: ${FontColor};
@@ -62,7 +62,7 @@ const MajorSearchContainer = () => {
               to="/lectures"
               key={label}
               imagesrc={src}
-              onClick={() => dispatch(setDepartment({ department: value }))}
+              onClick={() => dispatch(setDepartmentOnLectures({ department: value }))}
             >
               <MajorLabel>{label}</MajorLabel>
             </MajorCard>
