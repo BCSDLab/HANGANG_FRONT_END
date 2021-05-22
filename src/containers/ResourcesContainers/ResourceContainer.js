@@ -30,17 +30,16 @@ import {
 } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const SpinnerWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-`;
-
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
-  height: 1084px;
   margin: 90px auto 98px auto;
+`;
+
+const SpinnerWrapper = styled.div`
+  width: 100%;
+  height: 1084px;
+  display: flex;
+  align-items: center;
 `;
 
 const SearchSection = styled.section`

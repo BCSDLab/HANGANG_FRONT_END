@@ -30,13 +30,13 @@ import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
-  height: 1084px;
+
   margin: 90px auto 98px auto;
 `;
 
 const SpinnerWrapper = styled.div`
   width: 100%;
-  height: 100%;
+  height: 1084px;
   display: flex;
   align-items: center;
 `;
