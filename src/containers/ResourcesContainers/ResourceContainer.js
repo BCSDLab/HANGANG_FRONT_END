@@ -39,6 +39,7 @@ const SpinnerWrapper = styled.div`
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
+  height: 1084px;
   margin: 90px auto 98px auto;
 `;
 

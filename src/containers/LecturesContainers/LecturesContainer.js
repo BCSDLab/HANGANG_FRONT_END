@@ -30,6 +30,7 @@ import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
+  height: 1084px;
   margin: 90px auto 98px auto;
 `;
 
