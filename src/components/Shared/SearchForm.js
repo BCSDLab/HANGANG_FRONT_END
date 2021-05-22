@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 
 import { ConceptColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { useDispatch } from "react-redux";
-import { requestLectures, setKeyword } from "store/modules/lectures";
-import { requestResources, setResourceKeyword } from "store/modules/resources";
+import { requestLectures, setKeyword } from "store/modules/lecturesModule";
+import { requestResources, setResourceKeyword } from "store/modules/resourcesModule";
 
 const Wrapper = styled.div`
   position: relative;

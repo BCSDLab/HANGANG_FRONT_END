@@ -14,12 +14,12 @@ import {
   requestLectures,
   setDefaultLectureFilter,
   setLectureFilter,
-} from "store/modules/lectures";
+} from "store/modules/lecturesModule";
 import {
   requestResources,
   setResourcesFilter,
   setDefaultResourceFilter,
-} from "store/modules/resources";
+} from "store/modules/resourcesModule";
 
 const Wrapper = styled.div`
   position: absolute;

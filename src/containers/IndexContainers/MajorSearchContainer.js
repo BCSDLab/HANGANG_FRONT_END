@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { FontColor } from "static/Shared/commonStyles";
 import MajorInfoArray from "static/IndexPage/majorInfoArray";
 
-import { setDepartment } from "store/modules/lectures";
+import { setDepartment } from "store/modules/lecturesModule";
 
 const Label = styled.label`
   color: ${FontColor};
