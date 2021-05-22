@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import LectureDetailAPI from "api/lectureDetail";
 
-import { closeAdditionalModal, setLectureInfo } from "store/modules/resourceDetail";
+import { closeAdditionalModal, setLectureInfo } from "store/modules/resourceDetailModule";
 import { BorderColor } from "static/Shared/commonStyles";
 
 import AttachmentsContainer from "./AttachmentsContainer";

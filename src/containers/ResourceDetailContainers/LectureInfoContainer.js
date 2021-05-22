@@ -16,7 +16,7 @@ import {
   closeAdditionalModal,
   openAdditionalModal,
   openReportModal,
-} from "store/modules/resourceDetail";
+} from "store/modules/resourceDetailModule";
 import lectureDetailAPI from "api/lectureDetail";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 

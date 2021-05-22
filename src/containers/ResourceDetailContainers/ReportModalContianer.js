@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { closeReportModalButton } from "static/ResourceDetailPage/imgPath";
 import { BorderColor, FontColor } from "static/Shared/commonStyles";
-import { closeReportModal } from "store/modules/resourceDetail";
+import { closeReportModal } from "store/modules/resourceDetailModule";
 
 const showAlertMessage = (content) => `신고 사유 : ${content}
 
