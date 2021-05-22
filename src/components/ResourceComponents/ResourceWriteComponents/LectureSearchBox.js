@@ -135,7 +135,7 @@ const LectureSearchBox = ({ term, setIsSearchBoxVisible, setIsCodeProfessorVisib
       </CategorySection>
       <LectureSection>
         {lectures.length !== 0 &&
-          lectures
+          lectures.result
             .filter(({ department }) => currCategory === department)
             .map(({ id, name, code, professor }) => (
               <Lecture
