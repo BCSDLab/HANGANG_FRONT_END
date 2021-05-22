@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
@@ -20,6 +20,7 @@ import { CLOSE_WRITE_FORM_URL } from "static/Shared/imageUrls";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { setDefaultForm, setForm } from "store/modules/resourceCreateModule";
+import { requestResources } from "store/modules/resourcesModule";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -174,7 +175,10 @@ const ResourceCreateContainer = ({ isCreateFormOpened, setIsCreateFormOpened }) 
         <FileSection fileInfos={form.file_infos} />
         <SubmitButton
           isValid={checkValidation(form)}
-          onClick={() => submitWriteForm(form, setIsCreateFormOpened)}
+          onClick={() => {
+            submitWriteForm(form, setIsCreateFormOpened);
+            dispatch(requestResources());
+          }}
         />
       </Container>
     </Wrapper>
