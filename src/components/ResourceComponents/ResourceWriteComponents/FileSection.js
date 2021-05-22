@@ -12,7 +12,7 @@ import {
 } from "static/Shared/imageUrls";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { useDispatch } from "react-redux";
-import { eraseFile, setFiles, setForm } from "store/modules/resourceCreateModule";
+import { eraseFile, setFiles } from "store/modules/resourceCreateModule";
 
 const ACCEPT_FILE_TYPES = [
   "zip",
