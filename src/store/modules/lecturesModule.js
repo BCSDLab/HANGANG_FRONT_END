@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 // Actions
-const SET_KEYWORD = "SET_KEYWORD";
+const SET_KEYWORD_ON_LECTURES = "SET_KEYWORD_ON_LECTURES";
 const SET_DEPARTMENT_ON_LECTURES = "SET_DEPARTMENT_ON_LECTURES";
 const SET_LECTURE_FILTER = "SET_LECTURE_FILTER";
 const SET_DEFAULT_LECTURE_FILTER = "SET_DEFAULT_LECTURE_FILTER";
@@ -12,7 +12,10 @@ const SET_LECTURES = "SET_LECTURES";
 const SET_LECTURES_NEXT_PAGE = "SET_LECTURES_NEXT_PAGE";
 
 // Action Creators
-export const setKeyword = (payload) => ({ type: SET_KEYWORD, payload });
+export const setKeywordOnLectures = (payload) => ({
+  type: SET_KEYWORD_ON_LECTURES,
+  payload,
+});
 export const setDepartmentOnLectures = (payload) => ({
   type: SET_DEPARTMENT_ON_LECTURES,
   payload,
@@ -95,8 +98,10 @@ export default function lectureReducer(state = STATE, action) {
       return {
         ...state,
         department: valueToChange,
+        page: 1,
+        lectures: [],
       };
-    case SET_KEYWORD:
+    case SET_KEYWORD_ON_LECTURES:
       return {
         ...state,
         keyword: action.payload.keyword,
@@ -105,6 +110,8 @@ export default function lectureReducer(state = STATE, action) {
       return {
         ...state,
         isLoading: true,
+        page: 1,
+        lectures: [],
       };
     case SET_LECTURES_LOADING_FINISHED:
       return {

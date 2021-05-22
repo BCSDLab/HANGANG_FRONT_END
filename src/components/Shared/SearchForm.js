@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 
 import { ConceptColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { useDispatch } from "react-redux";
-import { requestLectures, setKeyword } from "store/modules/lecturesModule";
-import { requestResources, setResourceKeyword } from "store/modules/resourcesModule";
+import { requestLectures, setKeywordOnLectures } from "store/modules/lecturesModule";
+import { requestResources, setKeywordOnResources } from "store/modules/resourcesModule";
 
 const Wrapper = styled.div`
   position: relative;
@@ -104,10 +104,10 @@ const SearchForm = ({ type = "lectuers" }) => {
   const onSearch = (e) => {
     e.preventDefault();
     if (type === "lectures") {
-      dispatch(setKeyword({ keyword: term }));
+      dispatch(setKeywordOnLectures({ keyword: term }));
       dispatch(requestLectures());
     } else {
-      dispatch(setResourceKeyword({ keyword: term }));
+      dispatch(setKeywordOnResources({ keyword: term }));
       dispatch(requestResources());
     }
   };
@@ -115,10 +115,10 @@ const SearchForm = ({ type = "lectuers" }) => {
   const clickCancelButton = () => {
     setTerm("");
     if (type === "lectures") {
-      dispatch(setKeyword({ keyword: "" }));
+      dispatch(setKeywordOnLectures({ keyword: "" }));
       dispatch(requestLectures());
     } else {
-      dispatch(setResourceKeyword({ keyword: "" }));
+      dispatch(setKeywordOnResources({ keyword: "" }));
       dispatch(requestResources());
     }
   };

@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 // Actions
-const SET_RESOURCE_KEYWORD = "SET_RESOURCE_KEYWORD";
+const SET_KEYWORD_ON_RESOURCES = "SET_KEYWORD_ON_RESOURCES";
 const SET_DEPARTMENT_ON_RESOURCES = "SET_DEPARTMENT_ON_RESOURCES";
 const SET_RESOURCES_FILTER = "SET_RESOURCES_FILTER";
 const SET_DEFAULT_RESOURCE_FILTER = "SET_DEFAULT_RESOURCE_FILTER";
@@ -12,7 +12,10 @@ const SET_RESOURCES = "SET_RESOURCES";
 const SET_RESOURCES_NEXT_PAGE = "SET_RESOURCES_NEXT_PAGE";
 
 // Action Creators
-export const setResourceKeyword = (payload) => ({ type: SET_RESOURCE_KEYWORD, payload });
+export const setKeywordOnResources = (payload) => ({
+  type: SET_KEYWORD_ON_RESOURCES,
+  payload,
+});
 export const setDepartmentOnResources = (payload) => ({
   type: SET_DEPARTMENT_ON_RESOURCES,
   payload,
@@ -92,8 +95,10 @@ export default function resourceReducer(state = STATE, action) {
       return {
         ...state,
         department: valueToChange,
+        page: 1,
+        resources: [],
       };
-    case SET_RESOURCE_KEYWORD:
+    case SET_KEYWORD_ON_RESOURCES:
       return {
         ...state,
         keyword: action.payload.keyword,
@@ -102,6 +107,8 @@ export default function resourceReducer(state = STATE, action) {
       return {
         ...state,
         isLoading: true,
+        page: 1,
+        resources: [],
       };
     case SET_RESOURCES_LOADING_FINISHED:
       return {
