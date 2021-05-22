@@ -196,7 +196,12 @@ const LecturesContainer = () => {
             <SearchResultLabel>{`탐색 결과 (${lecture_amount})`}</SearchResultLabel>
             <CardGrid>
               {lectures.map((data) => (
-                <LectureCard data={data} isScrapped={data.is_scraped} key={data.id} />
+                <LectureCard
+                  data={data}
+                  isScrapped={data.is_scraped}
+                  key={data.id}
+                  isEditMode={false}
+                />
               ))}
             </CardGrid>
           </LecturesSection>

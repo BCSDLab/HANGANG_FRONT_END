@@ -1,6 +1,7 @@
 import React from "react";
-import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import {
   BorderColor,
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
   border-radius: 8px;
   border: solid 1px ${BorderColor};
   background-color: ${({ isChosen }) => (isChosen ? `${BorderColor}` : "#fff")};
-  cursor: ${({ isEditMode }) => (isEditMode ? "pointer" : "default")};
+  cursor: pointer;
 `;
 
 const LeftSide = styled.div`
@@ -104,6 +105,7 @@ const LectureCard = ({
   chooseScrap = () => {},
   ...rest
 }) => {
+  const history = useHistory();
   const titleSlicer = (title) => {
     if (title.length > 26) {
       title = title.slice(0, 26) + "...";
@@ -113,7 +115,13 @@ const LectureCard = ({
 
   return (
     <Wrapper
-      onClick={() => isEditMode && chooseScrap(rest.data.id)}
+      onClick={() => {
+        if (isEditMode) {
+          chooseScrap(rest.data.id);
+        } else {
+          history.push(`/lecture/${rest.data.id}`);
+        }
+      }}
       isEditMode={isEditMode}
       isChosen={isChosen}
     >
