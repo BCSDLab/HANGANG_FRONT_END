@@ -124,11 +124,10 @@ const checkValidation = (form) => {
 /**
  * A function to submit write form if it is valid.
  * @param {object} form A object that user created for creating resource.
- * @param {function} setIsFetched A function to update component when resources updated.
  * @param {function} setIsCreateFormOpened A function to close write form when resources submitted.
  * @returns
  */
-const submitWriteForm = async (form, setIsFetched, setIsCreateFormOpened) => {
+const submitWriteForm = async (form, setIsCreateFormOpened) => {
   if (!checkValidation(form)) return;
   try {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
@@ -136,7 +135,6 @@ const submitWriteForm = async (form, setIsFetched, setIsCreateFormOpened) => {
     if (data.httpStatus === "CREATED") {
       setIsCreateFormOpened(false);
       alert("강의자료 작성이 성공적으로 완료되었습니다.");
-      setIsFetched(false);
     }
   } catch (error) {
     throw new Error(error);
@@ -146,11 +144,7 @@ const submitWriteForm = async (form, setIsFetched, setIsCreateFormOpened) => {
 /**
  * Main Component to create resource.
  */
-const ResourceCreateContainer = ({
-  isCreateFormOpened,
-  setIsFetched,
-  setIsCreateFormOpened,
-}) => {
+const ResourceCreateContainer = ({ isCreateFormOpened, setIsCreateFormOpened }) => {
   const dispatch = useDispatch();
   const form = useSelector((state) => state.resourceCreateReducer);
 
@@ -180,7 +174,7 @@ const ResourceCreateContainer = ({
         <FileSection fileInfos={form.file_infos} />
         <SubmitButton
           isValid={checkValidation(form)}
-          onClick={() => submitWriteForm(form, setIsFetched, setIsCreateFormOpened)}
+          onClick={() => submitWriteForm(form, setIsCreateFormOpened)}
         />
       </Container>
     </Wrapper>
@@ -189,13 +183,11 @@ const ResourceCreateContainer = ({
 
 ResourceCreateContainer.defaultProps = {
   isCreateFormOpened: false,
-  setIsFetched: () => {},
   setIsCreateFormOpened: () => {},
 };
 
 ResourceCreateContainer.propTypes = {
   isCreateFormOpened: PropTypes.bool,
-  setIsFetched: PropTypes.func,
   setIsCreateFormOpened: PropTypes.func,
 };
 
