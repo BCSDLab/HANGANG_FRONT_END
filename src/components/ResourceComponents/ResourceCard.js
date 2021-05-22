@@ -33,7 +33,8 @@ const Thumbnail = styled.div`
   /* background */
   background-image: url(${({ uri }) => uri});
   background-repeat: no-repeat;
-  background-size: 131px 100%;
+  background-size: 65px;
+  background-position: center;
 `;
 
 const Content = styled.div`

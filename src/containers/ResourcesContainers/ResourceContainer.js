@@ -10,12 +10,14 @@ import ResourceCard from "components/ResourceComponents/ResourceCard";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 import ResourceCreateContainer from "containers/ResourcesContainers/ResourceCreateContainer";
 
+import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { majorList } from "static/LecturesPage/majorList";
 import {
   requestResources,
   requestFinished,
   setDepartment,
   setResources,
+  setNextPage,
 } from "store/modules/resources";
 import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
 import {
@@ -36,7 +38,6 @@ const SpinnerWrapper = styled.div`
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
-  height: 833px;
   margin: 90px auto 98px auto;
 `;
 
@@ -87,7 +88,6 @@ const FilterImage = styled.img.attrs({
 const ResourcesSection = styled.section`
   position: relative;
   width: 100%;
-  height: 1000px;
   padding: 24px 0px 98px 0px;
 `;
 
@@ -114,7 +114,6 @@ const ResourceWriteButton = styled.input.attrs({
   border: solid 1px ${ConceptColor};
 
   font-size: 14px;
-  /* text-align: center; */
   padding-left: 16px;
   color: ${PlaceholderColor};
   cursor: pointer;
@@ -126,70 +125,77 @@ const CardGrid = styled.div`
   grid-template-rows: repeat(4, 133px);
   grid-gap: 30px 18px;
 
-  width: 1135px;
-  height: 622px;
-
-  overflow-y: scroll;
-  -ms-overflow-style: none; // IE and Edge
-  scrollbar-width: none; // Firefox
-  ::-webkit-scrollbar {
-    display: none; // Chrome
-  }
+  width: 1152px;
 `;
 
 const ResourceContainer = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
-  const { isLoading, resources, resource_amount, ...filterOptions } = useSelector(
-    (state) => state.resourceReducer
-  );
+  const {
+    isLoading,
+    resources,
+    resource_amount,
+    page,
+    max_page,
+    ...filterOptions
+  } = useSelector((state) => state.resourceReducer);
+
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
-  const [isFetched, setIsFetched] = useState(false);
-
-  const [isCreateFormOpened, setIsCreateFormOpened] = useState(false);
-
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   /**
    * A Function to check user authentication.
    * If user didnt logged in, show alert.
    * else, open create form and request create form id.
    */
+  const [isCreateFormOpened, setIsCreateFormOpened] = useState(false);
   const checkUserHasCreateAuthentication = () => {
     if (!isLoggedIn) return alert("강의 자료 작성을 위해서 로그인이 필요합니다.");
-    else setIsCreateFormOpened(true); //  Open create form
+    else setIsCreateFormOpened(true);
   };
 
   /**
-   * 첫 페이지 로드 시 fetch를 위해 !isFetched 일 시 api call을 한다.
-   * 이후 필터 버튼 클릭으로 isLoading이 true가 된다면 다시 api call을 한다.
+   * 특정한 상황에서 resources를 fetch 합니다.
+   * 1. 유저 token 체크가 끝나 로그인 여부가 파악되고, 아직 resource를 fetch 하지 않았을 때
+   * 2. 필터를 클릭할 때마다 isLoading을 true로 만들며, 이 때 fetchResources를 실행한다.
    */
-  useEffect(async () => {
-    if (!isFetched || isLoading) {
-      try {
-        let accessToken = isLoggedIn
-          ? getValueOnLocalStorage("hangangToken").access_token
-          : null;
+  const [isFetched, setIsFetched] = useState(false);
 
-        const { data } = await ResourceAPI.getResources(filterOptions, accessToken);
-        dispatch(setResources(data));
-      } catch (error) {
-        throw new Error(error);
-      } finally {
-        dispatch(requestFinished());
-        if (!isFetched) setIsFetched(true);
-      }
+  const fetchResources = async (options) => {
+    try {
+      let accessToken = isLoggedIn
+        ? getValueOnLocalStorage("hangangToken").access_token
+        : null;
+
+      const { data } = await ResourceAPI.getResources(options, accessToken);
+      dispatch(setResources(data));
+    } catch (error) {
+      throw new Error(error);
+    } finally {
+      dispatch(requestFinished());
+      if (!isFetched) setIsFetched(true);
     }
-  }, [isFetched, isLoading, isLoggedIn]);
+  };
+
+  useEffect(() => {
+    if ((isCheckedToken && !isFetched) || isLoading)
+      fetchResources({ page, ...filterOptions });
+  }, [isCheckedToken, isFetched, isLoading]);
 
   /**
-   * FIXME: 고쳐... 언젠가... 생각나면...
-   * case : 유저가 로그인 한 상태로 새로고침을 하게 되면
-   * isLoggedIn이 true로 변하기 전에 getResources 를 요청하게 됨
-   * 임시로 isLoggedIn이 변하면 재요청 하도록 추가했지만... 두번 페이지가 깜빡이게 됨
-   * 추후에 수정해야함
+   * 강의자료 페이지에서 제일 마지막 요소에 도달할 경우
+   * 다음 페이지에 item 들을 요청한다.
+   * 만약 현재 페이지가 max_page일 경우 요청하지 않는다.
+   * @param {object} entries IntersectionObserverEntry를 받는다. 하단 링크를 참조한다.
+   * https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry
    */
-  useEffect(() => {
-    if (isLoggedIn) setIsFetched(false);
-  }, [isLoggedIn]);
+  let fetchMore = (entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && page < max_page) {
+      fetchResources({ page: page + 1, ...filterOptions });
+      dispatch(setNextPage());
+    }
+  };
+
+  const { targetRef } = useInfiniteScroll(fetchMore, { threshold: 0.8 });
 
   return (
     <Wrapper>
@@ -204,7 +210,6 @@ const ResourceContainer = () => {
           <SearchSection>
             <SearchForm type="resources" />
           </SearchSection>
-
           <FilterSection>
             {majorList.map(({ label, department }) => (
               <FilterButton
@@ -232,7 +237,7 @@ const ResourceContainer = () => {
           <ResourcesSection>
             <SearchResultLabel>{`탐색 결과 (${resource_amount})`}</SearchResultLabel>
             <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
-            <CardGrid>
+            <CardGrid ref={targetRef}>
               {resources.map((data) => (
                 <ResourceCard data={data} key={data.id} />
               ))}

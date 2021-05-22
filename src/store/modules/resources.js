@@ -9,6 +9,7 @@ const SET_LOADING_START = "SET_LOADING_START";
 const SET_LOADING_FINISHED = "SET_LOADING_FINISHED";
 
 const SET_RESOURCES = "SET_RESOURCES";
+const SET_NEXT_PAGE = "SET_NEXT_PAGE";
 
 // Action Creators
 export const setDepartment = (payload) => ({ type: SET_DEPARTMENT, payload });
@@ -20,6 +21,7 @@ export const requestResources = () => ({ type: SET_LOADING_START });
 export const requestFinished = () => ({ type: SET_LOADING_FINISHED });
 
 export const setResources = (payload) => ({ type: SET_RESOURCES, payload });
+export const setNextPage = () => ({ type: SET_NEXT_PAGE });
 
 const DEFAULT_FILTER_OPTIONS = {
   order: "id",
@@ -103,12 +105,18 @@ export default function resourceReducer(state = STATE, action) {
         isLoading: false,
       };
     case SET_RESOURCES:
-      console.log(action.payload);
       return {
         ...state,
-        resources: action.payload.result,
+        resources: [...state.resources, ...action.payload.result],
         resource_amount: action.payload.count,
+        max_page: Math.ceil(action.payload.count / state.limit),
       };
+    case SET_NEXT_PAGE:
+      return {
+        ...state,
+        page: state.page !== state.max_page ? state.page + 1 : state.page,
+      };
+
     default:
       return state;
   }

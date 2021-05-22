@@ -154,10 +154,6 @@ const ResourceCreateContainer = ({
   const dispatch = useDispatch();
   const form = useSelector((state) => state.resourceCreateReducer);
 
-  React.useEffect(() => {
-    console.log(form);
-  }, [form]);
-
   /**
    * If user want to cancel writing, request delete itself.
    */
