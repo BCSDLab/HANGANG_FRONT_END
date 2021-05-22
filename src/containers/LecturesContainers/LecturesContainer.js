@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { debounce } from "lodash";
 
 import LectureAPI from "api/lecture";
-import MypageAPI from "api/mypage";
 
 import SearchForm from "components/Shared/SearchForm";
 import FilterBox from "components/Shared/FilterBox";
@@ -18,18 +18,25 @@ import {
 } from "static/Shared/commonStyles";
 import lectureFilterList from "static/LecturesPage/lectureFilterList.json";
 import { majorList } from "static/LecturesPage/majorList";
-import { requestFinished, requestLectures, setDepartment } from "store/modules/lectures";
+import {
+  requestLecturesFinished,
+  requestLectures,
+  setDepartmentOnLectures,
+  setLectures,
+  setLecturesNextPage,
+} from "store/modules/lecturesModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
-  height: 833px;
+
   margin: 90px auto 98px auto;
 `;
 
 const SpinnerWrapper = styled.div`
   width: 100%;
-  height: 100%;
+  height: 1084px;
   display: flex;
   align-items: center;
 `;
@@ -80,7 +87,6 @@ const FilterImage = styled.img.attrs({
 
 const LecturesSection = styled.section`
   width: 100%;
-  height: 1000px;
   padding: 24px 0px 98px 0px;
 `;
 
@@ -100,91 +106,64 @@ const CardGrid = styled.div`
   grid-gap: 30px 18px;
 
   width: 1135px;
-  height: 622px;
-
-  overflow-y: scroll;
-  -ms-overflow-style: none; // IE and Edge
-  scrollbar-width: none; // Firefox
-  ::-webkit-scrollbar {
-    display: none; // Chrome
-  }
 `;
+
+const FakeDiv = styled.div``;
 
 const LecturesContainer = () => {
   const dispatch = useDispatch();
-  const { isLoading, ...filterOptions } = useSelector((state) => state.lectureReducer);
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
+  const {
+    isLoading,
+    isFetchedOnFirstLecturesMount,
+    lectures,
+    lecture_amount,
+    page,
+    max_page,
+    ...filterOptions
+  } = useSelector((state) => state.lectureReducer);
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
 
-  const [lectures, setLectures] = useState([]);
-  const [scrapped, setScrapped] = useState([]);
-  const [isFetched, setIsFetched] = useState(false);
-
-  /**
-   * 처음 마운트 되었을 때
-   *
-   * 로그인 되어있을 경우 사용자가 스크랩한 강의를 받는다.
-   * 스크랩한 강의가 lectures에 있을 경우 스크랩 아이콘을 추가해준다.
-   */
-  useEffect(async () => {
+  const fetchLectures = async (options) => {
     try {
-      if (isLoggedIn) {
-        const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-        const { data } = await MypageAPI.getScrapLecture(accessToken);
+      let accessToken = isLoggedIn
+        ? getValueOnLocalStorage("hangangToken").access_token
+        : null;
 
-        let scrappedId = [];
-        data.forEach(({ id }) => scrappedId.push(id));
-        setScrapped(scrappedId);
-
-        if (lectures.length === 0) {
-          const { data } = await LectureAPI.getLectures(filterOptions);
-          setLectures(data);
-        }
-      }
-
-      if (!isLoggedIn) {
-        const { data } = await LectureAPI.getLectures(filterOptions);
-        setLectures(data);
-      }
+      const { data } = await LectureAPI.getLectures(options, accessToken);
+      dispatch(setLectures(data));
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     } finally {
-      dispatch(requestFinished());
-      setIsFetched(true);
+      dispatch(requestLecturesFinished());
     }
-  }, [isLoggedIn]);
+  };
 
-  /**
-   * 첫 요청 이후 isLoading 이 true가 될 경우 API를 재요청한다.
-   *
-   * isLoading = true가 될 경우는 다음과 같다.
-   * 1. 전공을 눌렀을 때
-   * 2. 검색창에 검색했을 때
-   * 3. 필터 창에 적용 버튼을 눌렀을 때
-   */
-  useEffect(async () => {
-    if (isLoading) {
-      try {
-        const { data } = await LectureAPI.getLectures(filterOptions);
-        setLectures(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        dispatch(requestFinished());
-      }
+  useEffect(() => {
+    if ((isCheckedToken && !isFetchedOnFirstLecturesMount) || isLoading)
+      fetchLectures({ page, ...filterOptions });
+  }, [isCheckedToken, isFetchedOnFirstLecturesMount, isLoading]);
+
+  const fetchMore = debounce((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && page < max_page) {
+      fetchLectures({ page: page + 1, ...filterOptions });
+      dispatch(setLecturesNextPage());
     }
-  }, [isLoading]);
+  }, 500);
+
+  const { targetRef } = useInfiniteScroll(fetchMore, { threshold: 0.8 });
 
   return (
     <Wrapper>
-      {!isFetched && (
+      {!isFetchedOnFirstLecturesMount && (
         <SpinnerWrapper>
           <LoadingSpinner />
         </SpinnerWrapper>
       )}
 
-      {isFetched && (
+      {isFetchedOnFirstLecturesMount && (
         <>
           <SearchSection>
             <SearchForm type="lectures" />
@@ -196,7 +175,7 @@ const LecturesContainer = () => {
                 key={label}
                 name="department"
                 onClick={() => {
-                  dispatch(setDepartment({ department }));
+                  dispatch(setDepartmentOnLectures({ department }));
                   dispatch(requestLectures());
                 }}
                 isChosen={filterOptions.department === department}
@@ -215,17 +194,20 @@ const LecturesContainer = () => {
           </FilterSection>
 
           <LecturesSection>
-            <SearchResultLabel>{`탐색 결과 (${lectures.length})`}</SearchResultLabel>
+            <SearchResultLabel>{`탐색 결과 (${lecture_amount})`}</SearchResultLabel>
             <CardGrid>
               {lectures.map((data) => (
                 <LectureCard
                   data={data}
-                  isScrapped={scrapped.includes(data.id)}
+                  isScrapped={data.is_scraped}
                   key={data.id}
+                  isEditMode={false}
                 />
               ))}
             </CardGrid>
           </LecturesSection>
+
+          <FakeDiv ref={targetRef} />
         </>
       )}
     </Wrapper>
