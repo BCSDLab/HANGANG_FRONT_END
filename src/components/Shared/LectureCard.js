@@ -132,7 +132,7 @@ const LectureCard = ({
       </LeftSide>
       <RightSide>
         <Classification>{rest.data.classification}</Classification>
-        <Rating>{rest.data.total_rating}</Rating>
+        <Rating>{rest.data.total_rating.toFixed(1)}</Rating>
       </RightSide>
     </Wrapper>
   );
