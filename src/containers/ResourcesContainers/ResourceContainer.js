@@ -129,9 +129,7 @@ const CardGrid = styled.div`
   width: 1152px;
 `;
 
-const FakeDiv = styled.div`
-  display: none;
-`;
+const FakeDiv = styled.div``;
 
 const ResourceContainer = () => {
   const dispatch = useDispatch();
@@ -180,7 +178,6 @@ const ResourceContainer = () => {
   };
 
   useEffect(() => {
-    console.log(isFetchedOnFirstResourcesMount);
     if ((isCheckedToken && !isFetchedOnFirstResourcesMount) || isLoading)
       fetchResources({ page, ...filterOptions });
   }, [isCheckedToken, isFetchedOnFirstResourcesMount, isLoading]);

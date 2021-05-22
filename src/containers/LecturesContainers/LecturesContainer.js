@@ -107,9 +107,7 @@ const CardGrid = styled.div`
   width: 1135px;
 `;
 
-const FakeDiv = styled.div`
-  display: none;
-`;
+const FakeDiv = styled.div``;
 
 const LecturesContainer = () => {
   const dispatch = useDispatch();
@@ -149,7 +147,6 @@ const LecturesContainer = () => {
   const fetchMore = debounce((entries) => {
     const target = entries[0];
     if (target.isIntersecting && page < max_page) {
-      console.log("hi");
       fetchLectures({ page: page + 1, ...filterOptions });
       dispatch(setLecturesNextPage());
     }
