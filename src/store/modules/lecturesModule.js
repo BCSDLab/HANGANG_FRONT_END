@@ -5,8 +5,11 @@ const SET_KEYWORD = "SET_KEYWORD";
 const SET_LECTURE_FILTER = "SET_LECTURE_FILTER";
 const SET_DEFAULT_LECTURE_FILTER = "SET_DEFAULT_LECTURE_FILTER";
 
-const SET_LOADING_START = "SET_LOADING_START";
-const SET_LOADING_FINISHED = "SET_LOADING_FINISHED";
+const SET_LECTURES_LOADING_START = "SET_LECTURES_LOADING_START";
+const SET_LECTURES_LOADING_FINISHED = "SET_LECTURES_LOADING_FINISHED";
+
+const SET_LECTURES = "SET_LECTURES";
+const SET_LECTURES_NEXT_PAGE = "SET_LECTURES_NEXT_PAGE";
 
 // Action Creators
 export const setDepartment = (payload) => ({ type: SET_DEPARTMENT, payload });
@@ -14,25 +17,36 @@ export const setKeyword = (payload) => ({ type: SET_KEYWORD, payload });
 export const setLectureFilter = (payload) => ({ type: SET_LECTURE_FILTER, payload });
 export const setDefaultLectureFilter = () => ({ type: SET_DEFAULT_LECTURE_FILTER });
 
-export const requestLectures = () => ({ type: SET_LOADING_START });
-export const requestFinished = () => ({ type: SET_LOADING_FINISHED });
+export const requestLectures = () => ({ type: SET_LECTURES_LOADING_START });
+export const requestLecturesFinished = () => ({ type: SET_LECTURES_LOADING_FINISHED });
 
-const defaultFilterOptions = {
+export const setLectures = (payload) => ({ type: SET_LECTURES, payload });
+export const setLecturesNextPage = () => ({ type: SET_LECTURES_NEXT_PAGE });
+
+const DEFAULT_FILTER_OPTIONS = {
   sort: "평점순",
   classification: [],
   hashtag: [],
 };
 
-const INITIAL_FILTER_OPTIONS = {
+const INITIAL_OPTIONS = {
   keyword: "",
   department: "",
-  limit: 50,
+  limit: 10,
   page: 1,
-  ...defaultFilterOptions,
+  ...DEFAULT_FILTER_OPTIONS,
   isLoading: false,
+  isFetchedOnFirstLecturesMount: false,
 };
 
-export default function lectureReducer(state = INITIAL_FILTER_OPTIONS, action) {
+const STATE = {
+  ...INITIAL_OPTIONS,
+  lectures: [],
+  lecture_amount: 0,
+  max_page: 0,
+};
+
+export default function lectureReducer(state = STATE, action) {
   switch (action.type) {
     case SET_LECTURE_FILTER:
       let { key, value } = action.payload;
@@ -64,7 +78,7 @@ export default function lectureReducer(state = INITIAL_FILTER_OPTIONS, action) {
     case SET_DEFAULT_LECTURE_FILTER:
       return {
         ...state,
-        ...defaultFilterOptions,
+        ...DEFAULT_FILTER_OPTIONS,
       };
     case SET_DEPARTMENT:
       /**
@@ -84,15 +98,28 @@ export default function lectureReducer(state = INITIAL_FILTER_OPTIONS, action) {
         ...state,
         keyword: action.payload.keyword,
       };
-    case SET_LOADING_START:
+    case SET_LECTURES_LOADING_START:
       return {
         ...state,
         isLoading: true,
       };
-    case SET_LOADING_FINISHED:
+    case SET_LECTURES_LOADING_FINISHED:
       return {
         ...state,
         isLoading: false,
+        isFetchedOnFirstLecturesMount: true,
+      };
+    case SET_LECTURES:
+      return {
+        ...state,
+        lectures: [...state.lectures, ...action.payload.result],
+        lecture_amount: action.payload.count,
+        max_page: Math.ceil(action.payload.count / state.limit),
+      };
+    case SET_LECTURES_NEXT_PAGE:
+      return {
+        ...state,
+        page: state.page !== state.max_page ? state.page + 1 : state.page,
       };
     default:
       return state;
