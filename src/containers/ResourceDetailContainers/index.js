@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import ResourceDetailAPI from "api/resourceDetail";
 
+import ResourceDetailAPI from "api/resourceDetail";
 import { closeAdditionalModal, setLectureInfo } from "store/modules/resourceDetailModule";
 import { BorderColor } from "static/Shared/commonStyles";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 import AttachmentsContainer from "./AttachmentsContainer";
-import LectureInfoContainer from "./ResourceInfoContainer";
+import ResourceInfoContainer from "./ResourceInfoContainer";
 import CommentsContainer from "./CommentsContainer";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 
 const sampleAttachments = [
@@ -120,8 +120,9 @@ const ResourceDetailContainer = () => {
         {!isFetched && <LoadingSpinner />}
         {isFetched && (
           <Content>
-            <LectureInfoContainer
-              lectureInfo={rest}
+            <ResourceInfoContainer
+              resourceInfo={rest}
+              contentId={resourceId}
               isAdditionalModalOpened={isAdditionalModalOpened}
               isPurchased={isPurchased}
             />
