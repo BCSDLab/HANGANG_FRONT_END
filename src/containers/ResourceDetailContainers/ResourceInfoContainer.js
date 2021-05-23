@@ -13,13 +13,18 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import { showAlertModal, showReportModal } from "store/modules/modalModule";
+import {
+  showAlertModal,
+  showConfirmModal,
+  showReportModal,
+} from "store/modules/modalModule";
 import {
   clickHitIcon,
   closeAdditionalModal,
   openAdditionalModal,
 } from "store/modules/resourceDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { useHistory } from "react-router-dom";
 
 const Delimiter = styled.div`
   width: 100%;
@@ -218,12 +223,14 @@ const convertresourceInfoSemester = (semester) => {
 
 const AdditionalModal = ({ contentId, isScrapped, isLoggedIn, isCheckedToken }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
 
   const handleReportClick = () => {
     if (!isAuthenticated) {
       const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
-      dispatch(showAlertModal({ title, content }));
+      const onConfirm = () => history.push("/login");
+      dispatch(showConfirmModal({ title, content, onConfirm }));
     } else {
       dispatch(closeAdditionalModal());
       dispatch(showReportModal({ contentId }));
@@ -246,12 +253,14 @@ const ResourceInfoContainer = ({
 }) => {
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const clickThumb = async () => {
     try {
       if (!isLoggedIn && isCheckedToken) {
         const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
-        dispatch(showAlertModal({ title, content }));
+        const onConfirm = () => history.push("/login");
+        dispatch(showConfirmModal({ title, content, onConfirm }));
       } else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
         let { data } = await lectureDetailAPI.postHit(resourceInfo.id, accessToken);
