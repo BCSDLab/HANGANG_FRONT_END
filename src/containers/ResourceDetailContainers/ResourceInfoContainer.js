@@ -1,10 +1,11 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
 import lectureDetailAPI from "api/resourceDetail";
-import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE.json";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { MorePath, notPushedThumb, pushedThumb } from "static/ResourceDetailPage/imgPath";
 import {
   BorderColor,
@@ -22,9 +23,9 @@ import {
   clickHitIcon,
   closeAdditionalModal,
   openAdditionalModal,
+  purchaseResource,
 } from "store/modules/resourceDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { useHistory } from "react-router-dom";
 
 const Delimiter = styled.div`
   width: 100%;
@@ -271,6 +272,36 @@ const ResourceInfoContainer = ({
     }
   };
 
+  const buyResource = async () => {
+    const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+    try {
+      const { data } = await lectureDetailAPI.purchaseResource(
+        resourceInfo.id,
+        accessToken
+      );
+      if (data.httpStatus === "OK") {
+        dispatch(purchaseResource());
+        dispatch(showAlertModal({ content: "구매에 성공하였습니다." }));
+      }
+    } catch (error) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
+      dispatch(showAlertModal({ title, content }));
+    }
+  };
+
+  const onPurchaseButtonClick = () => {
+    if (!isLoggedIn && isCheckedToken) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
+      const onConfirm = () => history.push("/login");
+      dispatch(showConfirmModal({ title, content, onConfirm }));
+    } else {
+      if (!isPurchased) {
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["confirmBuyingResource"];
+        dispatch(showConfirmModal({ title, content, onConfirm: buyResource }));
+      }
+    }
+  };
+
   return (
     <>
       <Title>{resourceInfo.title}</Title>
@@ -301,7 +332,7 @@ const ResourceInfoContainer = ({
           <Professor>{resourceInfo.lecture.professor}</Professor>
           <Semester>{convertresourceInfoSemester(resourceInfo.semester_date)}</Semester>
           <Content>{resourceInfo.content}</Content>
-          <PurchaseButton isPurchased={isPurchased} />
+          <PurchaseButton isPurchased={isPurchased} onClick={onPurchaseButtonClick} />
         </InfoWrapper>
       </ResourceInfoSection>
     </>

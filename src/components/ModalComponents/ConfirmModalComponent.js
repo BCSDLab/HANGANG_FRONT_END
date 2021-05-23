@@ -22,9 +22,9 @@ const Wrapper = styled.aside`
 const ConfirmModalBox = styled.div`
   position: fixed;
   top: 40px;
-  left: calc(50% - 160px);
-  width: 320px;
-  height: 112px;
+  left: calc(50% - 162px);
+  width: 324px;
+  height: 185px;
   background-color: #fff;
   border-radius: 8px;
   padding: 24px;
@@ -34,15 +34,17 @@ const ConfirmModalBox = styled.div`
 
 const Title = styled.div`
   width: 100%;
+  margin-bottom: 12px;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 12px;
+  line-height: 1.3;
   color: ${FontColor};
 `;
 
 const Content = styled.div`
-  font-size: 14px;
   color: ${FontColor};
+  font-size: 14px;
+  line-height: 1.3;
   white-space: pre-wrap;
 `;
 
@@ -79,8 +81,8 @@ const ConfirmModalComponent = () => {
           <Close onClick={() => dispatch(hideConfirmModal())}>닫기</Close>
           <Confirm
             onClick={() => {
-              dispatch(hideConfirmModal());
               onConfirm();
+              dispatch(hideConfirmModal());
             }}
           >
             확인

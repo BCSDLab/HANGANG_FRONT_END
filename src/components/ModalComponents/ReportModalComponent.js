@@ -11,7 +11,7 @@ import {
   showConfirmModal,
 } from "store/modules/modalModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE.json";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const CloseButton = styled.img.attrs({
   src: closeReportModalButton,

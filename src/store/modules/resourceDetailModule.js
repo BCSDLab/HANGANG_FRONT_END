@@ -1,12 +1,14 @@
 // Actions
 const SET_RESOURCE_INFO = "SET_RESOURCE_INFO";
 const CLICK_HIT_ICON = "CLICK_HIT_ICON";
+const PURCHASE_RESOURCE = "PURCHASE_RESOURCE";
 const OPEN_ADDITIONAL_MODAL = "OPEN_ADDITIONAL_MODAL";
 const CLOSE_ADDITIONAL_MODAL = "CLOSE_ADDITIONAL_MODAL";
 
 // Action Creators
 export const setResourceInfo = (payload) => ({ type: SET_RESOURCE_INFO, payload });
 export const clickHitIcon = () => ({ type: CLICK_HIT_ICON });
+export const purchaseResource = () => ({ type: PURCHASE_RESOURCE });
 export const openAdditionalModal = () => ({ type: OPEN_ADDITIONAL_MODAL });
 export const closeAdditionalModal = () => ({ type: CLOSE_ADDITIONAL_MODAL });
 
@@ -30,6 +32,11 @@ export default function resourceDetailReducer(state = STATE, action) {
         ...state,
         hits: state.is_hit ? state.hits - 1 : state.hits + 1,
         is_hit: !state.is_hit,
+      };
+    case PURCHASE_RESOURCE:
+      return {
+        ...state,
+        is_purchase: true,
       };
     case OPEN_ADDITIONAL_MODAL:
       return {
