@@ -1,13 +1,15 @@
 import React from "react";
-import AlertModalContainer from "./ModalContainers/AlertModalContainer";
-import ReportModalContainer from "./ModalContainers/ReportModalContainer";
+import AlertModalComponent from "components/ModalComponents/AlertModalComponent";
+import ConfirmModalComponent from "components/ModalComponents/ConfirmModalComponent";
+import ReportModalComponent from "components/ModalComponents/ReportModalComponent";
 
 const ModalProvider = ({ children }) => {
   return (
     <>
       {children}
-      <AlertModalContainer />
-      <ReportModalContainer />
+      <AlertModalComponent />
+      <ConfirmModalComponent />
+      <ReportModalComponent />
     </>
   );
 };
