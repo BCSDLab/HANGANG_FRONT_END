@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import ResourceDetailAPI from "api/resourceDetail";
-import { closeAdditionalModal, setLectureInfo } from "store/modules/resourceDetailModule";
+import {
+  closeAdditionalModal,
+  setResourceInfo,
+} from "store/modules/resourceDetailModule";
 import { BorderColor } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
@@ -81,7 +84,8 @@ const ResourceDetailContainer = () => {
   const history = useHistory();
   const {
     isAdditionalModalOpened,
-    isPurchased,
+    is_purchase,
+    is_scrap,
     comments, //
     uploadFiles,
     ...rest
@@ -96,7 +100,8 @@ const ResourceDetailContainer = () => {
     try {
       let token = getValueOnLocalStorage("hangangToken");
       const { data } = await ResourceDetailAPI.getResourceDetailInfo(resourceId, token);
-      dispatch(setLectureInfo(data));
+      console.log(data);
+      dispatch(setResourceInfo(data));
     } catch (error) {
       if (error.response.data.code === 30) {
         alert("존재하지 않는 게시물입니다.");
@@ -124,10 +129,11 @@ const ResourceDetailContainer = () => {
               resourceInfo={rest}
               contentId={resourceId}
               isAdditionalModalOpened={isAdditionalModalOpened}
-              isPurchased={isPurchased}
+              isPurchased={is_purchase}
+              isScrapped={is_scrap}
             />
             <AttachmentsContainer
-              isPurchased={isPurchased}
+              isPurchased={is_purchase}
               uploadFiles={sampleAttachments}
             />
             {/* <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} /> */}

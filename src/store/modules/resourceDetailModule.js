@@ -1,11 +1,11 @@
 // Actions
-const SET_LECTURE_INFO = "SET_LECTURE_INFO";
+const SET_RESOURCE_INFO = "SET_RESOURCE_INFO";
 const CLICK_HIT_ICON = "CLICK_HIT_ICON";
 const OPEN_ADDITIONAL_MODAL = "OPEN_ADDITIONAL_MODAL";
 const CLOSE_ADDITIONAL_MODAL = "CLOSE_ADDITIONAL_MODAL";
 
 // Action Creators
-export const setLectureInfo = (payload) => ({ type: SET_LECTURE_INFO, payload });
+export const setResourceInfo = (payload) => ({ type: SET_RESOURCE_INFO, payload });
 export const clickHitIcon = () => ({ type: CLICK_HIT_ICON });
 export const openAdditionalModal = () => ({ type: OPEN_ADDITIONAL_MODAL });
 export const closeAdditionalModal = () => ({ type: CLOSE_ADDITIONAL_MODAL });
@@ -14,18 +14,13 @@ const MODAL_STATE = {
   isAdditionalModalOpened: false,
 };
 
-const PURCHASE_STATE = {
-  isPurchased: false,
-};
-
 const STATE = {
   ...MODAL_STATE,
-  ...PURCHASE_STATE,
 };
 
 export default function resourceDetailReducer(state = STATE, action) {
   switch (action.type) {
-    case SET_LECTURE_INFO:
+    case SET_RESOURCE_INFO:
       return {
         ...state,
         ...action.payload,

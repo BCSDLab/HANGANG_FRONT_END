@@ -11,7 +11,7 @@ import {
   showConfirmModal,
 } from "store/modules/modalModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import ALERT_MESSAGE_ON_REPORT_TYPE from "static/ResourceDetailPage/ALERT_MESSAGE_ON_REPORT_TYPE.json";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE.json";
 
 const CloseButton = styled.img.attrs({
   src: closeReportModalButton,
@@ -89,7 +89,7 @@ const requestReport = async (contentId, reportId, dispatch) => {
       );
     }
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_REPORT_TYPE[error.response.data.code];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
     dispatch(showAlertModal({ title, content }));
   }
 };

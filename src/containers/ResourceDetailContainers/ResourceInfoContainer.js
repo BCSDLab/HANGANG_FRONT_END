@@ -1,7 +1,10 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
+import lectureDetailAPI from "api/resourceDetail";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE.json";
 import { MorePath, notPushedThumb, pushedThumb } from "static/ResourceDetailPage/imgPath";
 import {
   BorderColor,
@@ -10,15 +13,13 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import { useDispatch, useSelector } from "react-redux";
+import { showAlertModal, showReportModal } from "store/modules/modalModule";
 import {
   clickHitIcon,
   closeAdditionalModal,
   openAdditionalModal,
 } from "store/modules/resourceDetailModule";
-import lectureDetailAPI from "api/resourceDetail";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { showReportModal } from "store/modules/modalModule";
 
 const Delimiter = styled.div`
   width: 100%;
@@ -215,19 +216,23 @@ const convertresourceInfoSemester = (semester) => {
   return `개설학기 ${dateData[0]}-${dateData[1]}`;
 };
 
-const AdditionalModal = ({ contentId }) => {
+const AdditionalModal = ({ contentId, isScrapped, isLoggedIn, isCheckedToken }) => {
   const dispatch = useDispatch();
+  const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
+
+  const handleReportClick = () => {
+    if (!isAuthenticated) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
+      dispatch(showAlertModal({ title, content }));
+    } else {
+      dispatch(closeAdditionalModal());
+      dispatch(showReportModal({ contentId }));
+    }
+  };
   return (
     <ModalWrapper>
-      <Report
-        onClick={() => {
-          dispatch(closeAdditionalModal());
-          dispatch(showReportModal({ contentId }));
-        }}
-      >
-        신고
-      </Report>
-      <Scrap>스크랩 취소</Scrap>
+      <Report onClick={() => handleReportClick()}>신고</Report>
+      <Scrap>{isScrapped ? "스크랩 취소" : "스크랩"}</Scrap>
     </ModalWrapper>
   );
 };
@@ -237,14 +242,17 @@ const ResourceInfoContainer = ({
   contentId,
   isAdditionalModalOpened,
   isPurchased,
+  isScrapped,
 }) => {
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
 
   const clickThumb = async () => {
     try {
-      if (!isLoggedIn) alert("로그인 시 이용할 수 있는 서비스입니다.");
-      else {
+      if (!isLoggedIn && isCheckedToken) {
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
+        dispatch(showAlertModal({ title, content }));
+      } else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
         let { data } = await lectureDetailAPI.postHit(resourceInfo.id, accessToken);
         if (data.httpStatus === "OK") dispatch(clickHitIcon());
@@ -260,7 +268,14 @@ const ResourceInfoContainer = ({
       <Writer>{resourceInfo.user.nickname}</Writer>
       <CreatedAt>{convertCreatedAt(resourceInfo.created_at)}</CreatedAt>
       <More onClick={() => dispatch(openAdditionalModal())} />
-      {isAdditionalModalOpened && <AdditionalModal contentId={contentId} />}
+      {isAdditionalModalOpened && (
+        <AdditionalModal
+          contentId={contentId}
+          isScrapped={isScrapped}
+          isLoggedIn={isLoggedIn}
+          isCheckedToken={isCheckedToken}
+        />
+      )}
       <HitWrapper>
         <HitIcon isHit={resourceInfo.is_hit} onClick={() => clickThumb(dispatch)} />
         <HitAmount>{resourceInfo.hits}</HitAmount>
