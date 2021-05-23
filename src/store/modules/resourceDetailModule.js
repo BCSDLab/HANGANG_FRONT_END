@@ -1,21 +1,16 @@
 // Actions
 const SET_LECTURE_INFO = "SET_LECTURE_INFO";
 const CLICK_HIT_ICON = "CLICK_HIT_ICON";
-const OPEN_REPORT_MODAL = "OPEN_REPORT_MODAL";
-const CLOSE_REPORT_MODAL = "CLOSE_REPORT_MODAL";
 const OPEN_ADDITIONAL_MODAL = "OPEN_ADDITIONAL_MODAL";
 const CLOSE_ADDITIONAL_MODAL = "CLOSE_ADDITIONAL_MODAL";
 
 // Action Creators
 export const setLectureInfo = (payload) => ({ type: SET_LECTURE_INFO, payload });
 export const clickHitIcon = () => ({ type: CLICK_HIT_ICON });
-export const openReportModal = () => ({ type: OPEN_REPORT_MODAL });
-export const closeReportModal = () => ({ type: CLOSE_REPORT_MODAL });
 export const openAdditionalModal = () => ({ type: OPEN_ADDITIONAL_MODAL });
 export const closeAdditionalModal = () => ({ type: CLOSE_ADDITIONAL_MODAL });
 
 const MODAL_STATE = {
-  isReportModalOpened: false,
   isAdditionalModalOpened: false,
 };
 
@@ -40,16 +35,6 @@ export default function resourceDetailReducer(state = STATE, action) {
         ...state,
         hits: state.is_hit ? state.hits - 1 : state.hits + 1,
         is_hit: !state.is_hit,
-      };
-    case OPEN_REPORT_MODAL:
-      return {
-        ...state,
-        isReportModalOpened: true,
-      };
-    case CLOSE_REPORT_MODAL:
-      return {
-        ...state,
-        isReportModalOpened: false,
       };
     case OPEN_ADDITIONAL_MODAL:
       return {

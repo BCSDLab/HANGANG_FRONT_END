@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { closeReportModalButton } from "static/ResourceDetailPage/imgPath";
 import { BorderColor, FontColor } from "static/Shared/commonStyles";
-import { closeReportModal } from "store/modules/resourceDetailModule";
+import { hideReportModal } from "store/modules/modalModule";
 
 const showAlertMessage = (content) => `신고 사유 : ${content}
 
@@ -71,20 +71,20 @@ const Wrapper = styled.aside`
 const handleReportClick = (e, dispatch) => {
   if (confirm(showAlertMessage(e.target.innerText))) {
     //TODO: call report api
-    dispatch(closeReportModal());
+    dispatch(hideReportModal());
   }
 };
 
 const ReportModalContainer = () => {
   const dispatch = useDispatch();
-  const { isReportModalOpened } = useSelector((state) => state.resourceDetailReducer);
+  const { isReportModalShowing } = useSelector((state) => state.modalReducer);
 
   return (
-    isReportModalOpened && (
-      <Wrapper onClick={() => dispatch(closeReportModal())}>
+    isReportModalShowing && (
+      <Wrapper onClick={() => dispatch(hideReportModal())}>
         <ReportBox onClick={(e) => e.stopPropagation()}>
           <Title>신고 사유 선택</Title>
-          <CloseButton onClick={() => dispatch(closeReportModal())} />
+          <CloseButton onClick={() => dispatch(hideReportModal())} />
           <div onClick={(e) => handleReportClick(e, dispatch)}>
             <ReportContent>욕설/비하</ReportContent>
             <ReportContent>유출/사칭/저작권 위배</ReportContent>

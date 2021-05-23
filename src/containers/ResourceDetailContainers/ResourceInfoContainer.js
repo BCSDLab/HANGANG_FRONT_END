@@ -15,10 +15,10 @@ import {
   clickHitIcon,
   closeAdditionalModal,
   openAdditionalModal,
-  openReportModal,
 } from "store/modules/resourceDetailModule";
 import lectureDetailAPI from "api/resourceDetail";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { showReportModal } from "store/modules/modalModule";
 
 const Delimiter = styled.div`
   width: 100%;
@@ -222,7 +222,7 @@ const AdditionalModal = () => {
       <Report
         onClick={() => {
           dispatch(closeAdditionalModal());
-          dispatch(openReportModal());
+          dispatch(showReportModal());
         }}
       >
         신고
