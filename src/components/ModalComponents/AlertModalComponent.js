@@ -9,7 +9,7 @@ const Wrapper = styled.aside`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   z-index: 9999;
 `;
@@ -17,7 +17,7 @@ const Wrapper = styled.aside`
 const AlertModalBox = styled.div`
   position: fixed;
   top: 40px;
-  left: calc(50% - 144px);
+  left: calc(50% - 148px);
   width: 295px;
   height: 147px;
   background-color: #fff;
@@ -53,7 +53,7 @@ const Confirm = styled.span`
   cursor: pointer;
 `;
 
-const AlertModalContainer = () => {
+const AlertModalComponent = () => {
   const dispatch = useDispatch();
   const { isAlertModalShowing, alertModalTitle, alertModalContent } = useSelector(
     (state) => state.modalReducer
@@ -72,4 +72,4 @@ const AlertModalContainer = () => {
   );
 };
 
-export default AlertModalContainer;
+export default AlertModalComponent;
