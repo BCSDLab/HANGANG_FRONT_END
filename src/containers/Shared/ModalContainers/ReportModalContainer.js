@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { closeReportModalButton } from "static/ResourceDetailPage/imgPath";
 import { BorderColor, FontColor } from "static/Shared/commonStyles";
-import { hideReportModal } from "store/modules/modalModule";
+import { hideReportModal, showAlertModal } from "store/modules/modalModule";
 
 const showAlertMessage = (content) => `신고 사유 : ${content}
 
@@ -72,6 +72,9 @@ const handleReportClick = (e, dispatch) => {
   if (confirm(showAlertMessage(e.target.innerText))) {
     //TODO: call report api
     dispatch(hideReportModal());
+    const title = "신고해주셔서 감사합니다.";
+    const content = `회원님의 의견은 한강 서비스를 \n안전하게 유지하기 위해 사용하겠습니다.`;
+    dispatch(showAlertModal({ title, content }));
   }
 };
 
