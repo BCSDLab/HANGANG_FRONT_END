@@ -36,4 +36,20 @@ export default {
     );
     return response;
   },
+  postScrap: async (scrap_id, accessToken = null) => {
+    const response = await axios.post(
+      `/lecture-banks/report/${scrap_id}`,
+      null,
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
+  purchaseResource: async (resource_id, accessToken = null) => {
+    const response = await axios.post(
+      `/lecture-banks/purchase/${resource_id}`,
+      null,
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
 };
