@@ -104,6 +104,7 @@ const handleReportClick = (contentId, reportId, dispatch) => {
   dispatch(hideReportModal());
   dispatch(
     showConfirmModal({
+      title: "",
       content: "정말로 신고하시겠습니까?",
       onConfirm: () => requestReport(contentId, reportId, dispatch),
     })

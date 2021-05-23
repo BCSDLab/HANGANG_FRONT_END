@@ -23,6 +23,7 @@ const INITIAL_ALERT_MODAL_STATE = {
 
 const INITIAL_CONFIRM_MODAL_STATE = {
   isConfirmModalShowing: false,
+  confirmModalTitle: "",
   confirmModalContent: "",
   onConfirm: () => {},
 };
@@ -57,6 +58,7 @@ export default function modalReducer(state = STATE, action) {
       return {
         ...state,
         isConfirmModalShowing: true,
+        confirmModalTitle: action.payload.title,
         confirmModalContent: action.payload.content,
         onConfirm: action.payload.onConfirm,
       };

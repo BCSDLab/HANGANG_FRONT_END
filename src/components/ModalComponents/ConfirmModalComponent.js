@@ -32,6 +32,14 @@ const ConfirmModalBox = styled.div`
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
 `;
 
+const Title = styled.div`
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: ${FontColor};
+`;
+
 const Content = styled.div`
   font-size: 14px;
   color: ${FontColor};
@@ -55,14 +63,18 @@ const Confirm = styled(Close)`
 
 const ConfirmModalComponent = () => {
   const dispatch = useDispatch();
-  const { isConfirmModalShowing, confirmModalContent, onConfirm } = useSelector(
-    (state) => state.modalReducer
-  );
+  const {
+    isConfirmModalShowing,
+    confirmModalTitle,
+    confirmModalContent,
+    onConfirm,
+  } = useSelector((state) => state.modalReducer);
 
   return (
     isConfirmModalShowing && (
       <Wrapper>
         <ConfirmModalBox>
+          {confirmModalTitle !== "" && <Title>{confirmModalTitle}</Title>}
           <Content>{confirmModalContent}</Content>
           <Close onClick={() => dispatch(hideConfirmModal())}>닫기</Close>
           <Confirm
