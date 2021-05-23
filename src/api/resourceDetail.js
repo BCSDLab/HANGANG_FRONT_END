@@ -52,4 +52,11 @@ export default {
     );
     return response;
   },
+  requestAttachmentUri: async (attachment_id, accessToken = null) => {
+    const response = await axios.get(
+      `/lecture-banks/file/download/${attachment_id}`,
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
 };

@@ -132,11 +132,7 @@ const ResourceDetailContainer = () => {
               isPurchased={is_purchase}
               isScrapped={is_scrap}
             />
-            <AttachmentsContainer
-              isPurchased={is_purchase}
-              uploadFiles={sampleAttachments}
-            />
-            {/* <AttachmentsContainer isPurchased={isPurchased} uploadFiles={uploadFiles} /> */}
+            <AttachmentsContainer isPurchased={is_purchase} uploadFiles={uploadFiles} />
             <CommentsContainer comments={comments} />
           </Content>
         )}

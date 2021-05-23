@@ -111,6 +111,7 @@ const AttachmentsContainer = ({ isPurchased, uploadFiles }) => {
           {uploadFiles.map(({ id, fileName, ext }) => (
             <Attachment
               key={id}
+              id={id}
               fileName={fileName}
               ext={ext}
               isPurchased={isPurchased}
