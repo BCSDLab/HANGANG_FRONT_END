@@ -210,19 +210,19 @@ const convertCreatedAt = (createdAt) => {
   return `작성일 ${createdInfo[0]}-${createdInfo[1]}-${createdInfo[2]}`;
 };
 
-const convertLectureInfoSemester = (semester) => {
+const convertresourceInfoSemester = (semester) => {
   let dateData = semester.split("년 ");
   return `개설학기 ${dateData[0]}-${dateData[1]}`;
 };
 
-const AdditionalModal = () => {
+const AdditionalModal = ({ contentId }) => {
   const dispatch = useDispatch();
   return (
     <ModalWrapper>
       <Report
         onClick={() => {
           dispatch(closeAdditionalModal());
-          dispatch(showReportModal());
+          dispatch(showReportModal({ contentId }));
         }}
       >
         신고
@@ -232,7 +232,12 @@ const AdditionalModal = () => {
   );
 };
 
-const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchased }) => {
+const ResourceInfoContainer = ({
+  resourceInfo,
+  contentId,
+  isAdditionalModalOpened,
+  isPurchased,
+}) => {
   const { isLoggedIn } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
 
@@ -241,7 +246,7 @@ const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchase
       if (!isLoggedIn) alert("로그인 시 이용할 수 있는 서비스입니다.");
       else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-        let { data } = await lectureDetailAPI.postHit(lectureInfo.id, accessToken);
+        let { data } = await lectureDetailAPI.postHit(resourceInfo.id, accessToken);
         if (data.httpStatus === "OK") dispatch(clickHitIcon());
       }
     } catch (error) {
@@ -251,27 +256,27 @@ const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchase
 
   return (
     <>
-      <Title>{lectureInfo.title}</Title>
-      <Writer>{lectureInfo.user.nickname}</Writer>
-      <CreatedAt>{convertCreatedAt(lectureInfo.created_at)}</CreatedAt>
+      <Title>{resourceInfo.title}</Title>
+      <Writer>{resourceInfo.user.nickname}</Writer>
+      <CreatedAt>{convertCreatedAt(resourceInfo.created_at)}</CreatedAt>
       <More onClick={() => dispatch(openAdditionalModal())} />
-      {isAdditionalModalOpened && <AdditionalModal />}
+      {isAdditionalModalOpened && <AdditionalModal contentId={contentId} />}
       <HitWrapper>
-        <HitIcon isHit={lectureInfo.is_hit} onClick={() => clickThumb(dispatch)} />
-        <HitAmount>{lectureInfo.hits}</HitAmount>
+        <HitIcon isHit={resourceInfo.is_hit} onClick={() => clickThumb(dispatch)} />
+        <HitAmount>{resourceInfo.hits}</HitAmount>
       </HitWrapper>
       <Delimiter />
       <ResourceInfoSection>
-        <Thumbnail thumbnailURL={lectureInfo.thumbnail} />
+        <Thumbnail thumbnailURL={resourceInfo.thumbnail} />
         <InfoWrapper>
           <TopPart>
-            <ResourceTitle>{lectureInfo.lecture.name}</ResourceTitle>
-            <ResourceCode>{lectureInfo.lecture.code}</ResourceCode>
-            <ResourceType>{lectureInfo.category[0]}</ResourceType>
+            <ResourceTitle>{resourceInfo.lecture.name}</ResourceTitle>
+            <ResourceCode>{resourceInfo.lecture.code}</ResourceCode>
+            <ResourceType>{resourceInfo.category[0]}</ResourceType>
           </TopPart>
-          <Professor>{lectureInfo.lecture.professor}</Professor>
-          <Semester>{convertLectureInfoSemester(lectureInfo.semester_date)}</Semester>
-          <Content>{lectureInfo.content}</Content>
+          <Professor>{resourceInfo.lecture.professor}</Professor>
+          <Semester>{convertresourceInfoSemester(resourceInfo.semester_date)}</Semester>
+          <Content>{resourceInfo.content}</Content>
           <PurchaseButton isPurchased={isPurchased} />
         </InfoWrapper>
       </ResourceInfoSection>
@@ -279,14 +284,14 @@ const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchase
   );
 };
 
-LectureInfoContainer.defaultProps = {
+ResourceInfoContainer.defaultProps = {
   isPurchased: false,
-  lectureInfo: {},
+  resourceInfo: {},
 };
 
-LectureInfoContainer.propTypes = {
+ResourceInfoContainer.propTypes = {
   isPurchased: PropTypes.bool,
-  lectureInfo: PropTypes.object,
+  resourceInfo: PropTypes.object,
 };
 
-export default LectureInfoContainer;
+export default ResourceInfoContainer;
