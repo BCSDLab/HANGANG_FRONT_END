@@ -87,11 +87,12 @@ const ResourceDetailContainer = () => {
     ...rest
   } = useSelector((state) => state.resourceDetailReducer);
 
+  /**
+   * 첫 마운트 시 강의 자료 세부 정보를 요청합니다.
+   * 만약 존재하지 않는 id로 접근할 시 ~/resources로 내보냅니다.
+   */
   const [isFetched, setIsFetched] = useState(false);
-
-  // const fetch;
-
-  useEffect(async () => {
+  const fetchResourceDetailInfo = async () => {
     try {
       let token = getValueOnLocalStorage("hangangToken");
       const { data } = await ResourceDetailAPI.getResourceDetailInfo(resourceId, token);
@@ -106,7 +107,8 @@ const ResourceDetailContainer = () => {
     } finally {
       setIsFetched(true);
     }
-  }, []);
+  };
+  useEffect(() => fetchResourceDetailInfo(), []);
 
   const closeAdditionalModalEventTriggered = () => {
     if (isAdditionalModalOpened) dispatch(closeAdditionalModal());
