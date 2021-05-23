@@ -57,7 +57,7 @@ const ReportBox = styled.div`
   }
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.aside`
   position: absolute;
   top: 0;
   left: 0;

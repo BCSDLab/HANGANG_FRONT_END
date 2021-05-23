@@ -6,14 +6,17 @@ import store from "store";
 import App from "App";
 import GlobalStyle from "GlobalStyle";
 import { BrowserRouter } from "react-router-dom";
+import ModalProvider from "containers/Shared/ModalProvider";
 
 ReactDom.render(
   <Provider store={store}>
     <ToastProvider>
-      <GlobalStyle />
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ModalProvider>
+        <GlobalStyle />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ModalProvider>
     </ToastProvider>
   </Provider>,
   document.getElementById("root")
