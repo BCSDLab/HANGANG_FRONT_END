@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import LectureDetailAPI from "api/lectureDetail";
+import ResourceDetailAPI from "api/resourceDetail";
 
 import { closeAdditionalModal, setLectureInfo } from "store/modules/resourceDetailModule";
 import { BorderColor } from "static/Shared/commonStyles";
 
 import AttachmentsContainer from "./AttachmentsContainer";
-import LectureInfoContainer from "./LectureInfoContainer";
+import LectureInfoContainer from "./ResourceInfoContainer";
 import CommentsContainer from "./CommentsContainer";
-import ReportModalContainer from "./ReportModalContianer";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 
@@ -90,10 +89,12 @@ const ResourceDetailContainer = () => {
 
   const [isFetched, setIsFetched] = useState(false);
 
+  // const fetch;
+
   useEffect(async () => {
     try {
       let token = getValueOnLocalStorage("hangangToken");
-      const { data } = await LectureDetailAPI.getLectureDetailInfo(resourceId, token);
+      const { data } = await ResourceDetailAPI.getResourceDetailInfo(resourceId, token);
       dispatch(setLectureInfo(data));
     } catch (error) {
       if (error.response.data.code === 30) {
@@ -131,7 +132,7 @@ const ResourceDetailContainer = () => {
           </Content>
         )}
       </Wrapper>
-      <ReportModalContainer />
+      {/* <ReportModalContainer /> */}
     </>
   );
 };

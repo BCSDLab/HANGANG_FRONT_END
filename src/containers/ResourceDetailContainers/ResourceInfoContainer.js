@@ -17,7 +17,7 @@ import {
   openAdditionalModal,
   openReportModal,
 } from "store/modules/resourceDetailModule";
-import lectureDetailAPI from "api/lectureDetail";
+import lectureDetailAPI from "api/resourceDetail";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const Delimiter = styled.div`
@@ -235,10 +235,6 @@ const AdditionalModal = () => {
 const LectureInfoContainer = ({ lectureInfo, isAdditionalModalOpened, isPurchased }) => {
   const { isLoggedIn } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
-
-  React.useEffect(() => {
-    console.log(lectureInfo);
-  }, [lectureInfo]);
 
   const clickThumb = async () => {
     try {

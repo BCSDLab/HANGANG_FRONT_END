@@ -53,8 +53,6 @@ const CommentWrapper = styled.div`
 // - CommentWrapper 높이 정해야함... 지금 매우 이상
 // - CommentWriteInput 가변적으로 높이 받을 수 있도록 추후 수정
 const CommentsContainer = ({ comments }) => {
-  //   console.log(comments);
-
   return (
     <Wrapper>
       <CountComment>{`댓글 (${comments.length})`}</CountComment>

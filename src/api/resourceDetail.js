@@ -11,7 +11,7 @@ const axiosConfig = (accessToken, data = null) => {
 };
 
 export default {
-  getLectureDetailInfo: async (id, token = null) => {
+  getResourceDetailInfo: async (id, token = null) => {
     let response;
     if (token === null) {
       response = await axios.get(`/lecture-banks/${id}`);
