@@ -20,6 +20,12 @@ export default {
     }
     return response;
   },
+  getCommentsOnResource: async (id, limit, page) => {
+    const response = await axios.get(
+      `/lecture-banks/${id}/comments?limit=${limit}&page=${page}`
+    );
+    return response;
+  },
   postHit: async (id, accessToken = null) => {
     const response = await axios.post(
       `/lecture-banks/hit/${id}`,

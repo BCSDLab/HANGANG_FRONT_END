@@ -15,11 +15,12 @@ import AttachmentsContainer from "./AttachmentsContainer";
 import ResourceInfoContainer from "./ResourceInfoContainer";
 import CommentsContainer from "./CommentsContainer";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
+import { Promise } from "core-js";
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 1330px;
+  /* min-height: 1330px; */
 
   display: flex;
   justify-content: center;
@@ -47,6 +48,8 @@ const ResourceDetailContainer = () => {
     is_purchase,
     user_scrap_id,
     comments, //
+    limit,
+    page,
     uploadFiles,
     ...rest
   } = useSelector((state) => state.resourceDetailReducer);
@@ -59,9 +62,11 @@ const ResourceDetailContainer = () => {
   const fetchResourceDetailInfo = async () => {
     try {
       let token = getValueOnLocalStorage("hangangToken");
-      const { data } = await ResourceDetailAPI.getResourceDetailInfo(resourceId, token);
-      console.log(data);
-      dispatch(setResourceInfo(data));
+      const fetchedData = await Promise.all([
+        ResourceDetailAPI.getResourceDetailInfo(resourceId, token),
+        ResourceDetailAPI.getCommentsOnResource(resourceId, limit, page),
+      ]);
+      dispatch(setResourceInfo(fetchedData));
     } catch (error) {
       if (error.response.data.code === 30) {
         alert("존재하지 않는 게시물입니다.");
@@ -93,6 +98,7 @@ const ResourceDetailContainer = () => {
               isScrapped={user_scrap_id !== 0}
             />
             <AttachmentsContainer isPurchased={is_purchase} uploadFiles={uploadFiles} />
+            <CommentsContainer comments={comments} />
           </Content>
         )}
       </Wrapper>
