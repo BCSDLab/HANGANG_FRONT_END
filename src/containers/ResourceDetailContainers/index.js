@@ -45,7 +45,7 @@ const ResourceDetailContainer = () => {
   const {
     isAdditionalModalOpened,
     is_purchase,
-    is_scrap,
+    user_scrap_id,
     comments, //
     uploadFiles,
     ...rest
@@ -90,10 +90,9 @@ const ResourceDetailContainer = () => {
               contentId={resourceId}
               isAdditionalModalOpened={isAdditionalModalOpened}
               isPurchased={is_purchase}
-              isScrapped={is_scrap}
+              isScrapped={user_scrap_id !== 0}
             />
             <AttachmentsContainer isPurchased={is_purchase} uploadFiles={uploadFiles} />
-            <CommentsContainer comments={comments} />
           </Content>
         )}
       </Wrapper>

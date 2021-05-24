@@ -36,12 +36,20 @@ export default {
     );
     return response;
   },
-  postScrap: async (scrap_id, accessToken = null) => {
+  scrapResource: async (scrap_id, accessToken = null) => {
     const response = await axios.post(
-      `/lecture-banks/report/${scrap_id}`,
+      `/lecture-banks/scrap/${scrap_id}`,
       null,
       axiosConfig(accessToken)
     );
+    return response;
+  },
+  unscrapResource: async (scrap_id, accessToken = null) => {
+    const data = [scrap_id];
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.delete(`/lecture-banks/scrap`, { data, headers });
     return response;
   },
   purchaseResource: async (resource_id, accessToken = null) => {
