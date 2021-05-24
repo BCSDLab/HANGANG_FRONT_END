@@ -148,9 +148,9 @@ const App = () => {
       <NavigationContainer />
       <Switch>
         <Route path="/" exact component={IndexPage} />
-        <Route path="/lectures" exact component={LecturesPage} />
-        <Route path="/lectures/:id?" component={LectureDetailPage} />
-        <Route path="/resources" exact component={ResourcesPage} />
+        <Route path="/lectures" component={LecturesPage} />
+        <Route path="/lecture" component={LectureDetailPage} />
+        <Route path="/resources" component={ResourcesPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
         <Route path="/findpw" component={FindPwPage} />
