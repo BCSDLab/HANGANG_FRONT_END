@@ -34,9 +34,17 @@ export default {
     );
     return response;
   },
-  postReport: async (content_id, report_id, accessToken = null) => {
+  reportResource: async (content_id, report_id, accessToken = null) => {
     const response = await axios.post(
       `/lecture-banks/report`,
+      { content_id, report_id },
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
+  reportComment: async (content_id, report_id, accessToken = null) => {
+    const response = await axios.post(
+      `/lecture-banks/report/comment`,
       { content_id, report_id },
       axiosConfig(accessToken)
     );

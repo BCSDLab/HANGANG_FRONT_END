@@ -31,6 +31,7 @@ const INITIAL_CONFIRM_MODAL_STATE = {
 const INITIAL_REPORT_MODAL_STATE = {
   isReportModalShowing: false,
   contentId: null,
+  reportType: "",
 };
 
 const STATE = {
@@ -72,6 +73,7 @@ export default function modalReducer(state = STATE, action) {
         ...state,
         isReportModalShowing: true,
         contentId: action.payload.contentId,
+        reportType: action.payload.reportType,
       };
     case HIDE_REPORT_MODAL:
       return {

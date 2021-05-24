@@ -77,13 +77,19 @@ const Wrapper = styled.aside`
  * @param {number} reportId 사용자가 고른 항목의 Id입니다.
  * @param {function} dispatch 사용자가 확인을 누를 시 dispatch 하기 위한 함수입니다.
  */
-const requestReport = async (contentId, reportId, dispatch) => {
+const requestReport = async (contentId, reportId, reportType, dispatch) => {
   const reportTitleOnSuccess = "신고해주셔서 감사합니다.";
   const reportContentOnSuccess = `회원님의 의견은 한강 서비스를 \n안전하게 유지하기 위해 사용하겠습니다.`;
   try {
     const accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    const { data } = await ResourceDetailAPI.postReport(contentId, reportId, accessToken);
-    if (data.httpStatus === "OK") {
+    let data;
+
+    if (reportType === "comment") {
+      data = await ResourceDetailAPI.reportComment(contentId, reportId, accessToken);
+    } else {
+      data = await ResourceDetailAPI.reportResource(contentId, reportId, accessToken);
+    }
+    if (data.data.httpStatus === "OK") {
       dispatch(
         showAlertModal({ title: reportTitleOnSuccess, content: reportContentOnSuccess })
       );
@@ -100,20 +106,22 @@ const requestReport = async (contentId, reportId, dispatch) => {
  * @param {number} reportId 사용자가 고른 항목의 Id입니다.
  * @param {function} dispatch 사용자가 확인을 누를 시 dispatch 하기 위한 함수입니다.
  */
-const handleReportClick = (contentId, reportId, dispatch) => {
+const handleReportClick = (contentId, reportId, reportType, dispatch) => {
   dispatch(hideReportModal());
   dispatch(
     showConfirmModal({
       title: "",
       content: "정말로 신고하시겠습니까?",
-      onConfirm: () => requestReport(contentId, reportId, dispatch),
+      onConfirm: () => requestReport(contentId, reportId, reportType, dispatch),
     })
   );
 };
 
 const ReportModalComponent = () => {
   const dispatch = useDispatch();
-  const { isReportModalShowing, contentId } = useSelector((state) => state.modalReducer);
+  const { isReportModalShowing, contentId, reportType } = useSelector(
+    (state) => state.modalReducer
+  );
 
   return (
     isReportModalShowing && (
@@ -124,7 +132,7 @@ const ReportModalComponent = () => {
           {REPORT_OPTIONS.map(({ label, reportId }) => (
             <ReportContent
               key={label}
-              onClick={() => handleReportClick(contentId, reportId, dispatch)}
+              onClick={() => handleReportClick(contentId, reportId, reportType, dispatch)}
             >
               {label}
             </ReportContent>

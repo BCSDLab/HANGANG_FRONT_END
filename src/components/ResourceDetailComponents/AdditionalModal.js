@@ -53,7 +53,7 @@ function AdditionalModal({
 
   const handleReportClick = () => {
     if (!isAuthenticated) triggerWhenNotLoggedIn(dispatch, history);
-    else dispatch(showReportModal({ contentId }));
+    else dispatch(showReportModal({ contentId, type: "resource" }));
   };
 
   const handleScrapClick = () => {
