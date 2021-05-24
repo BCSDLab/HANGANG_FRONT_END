@@ -50,7 +50,7 @@ const Content = styled.div`
 
 const Close = styled.span`
   position: absolute;
-  bottom: 14px;
+  bottom: 24px;
   right: 100px;
   font-size: 14px;
   font-weight: 500;
