@@ -16,52 +16,11 @@ import ResourceInfoContainer from "./ResourceInfoContainer";
 import CommentsContainer from "./CommentsContainer";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 
-const sampleAttachments = [
-  {
-    id: 1,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-  {
-    id: 2,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-  {
-    id: 3,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-  {
-    id: 4,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-  {
-    id: 5,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-  {
-    id: 6,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-  {
-    id: 7,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-  {
-    id: 8,
-    fileName: "김이정.hwp",
-    ext: "hwp",
-  },
-];
-
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
+  min-height: 1330px;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -70,7 +29,8 @@ const Wrapper = styled.div`
 const Content = styled.div`
   position: relative;
   width: 752px;
-  height: calc(100% - 80px);
+  /* height: calc(100% - 80px); */
+  min-height: 972px;
   max-height: 1274px;
   padding: 27px 27px 16px;
   border-radius: 8px;
@@ -137,7 +97,6 @@ const ResourceDetailContainer = () => {
           </Content>
         )}
       </Wrapper>
-      {/* <ReportModalContainer /> */}
     </>
   );
 };

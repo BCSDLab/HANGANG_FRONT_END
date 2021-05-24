@@ -15,3 +15,7 @@ export const UPLOAD_FILE_ICON_URL = (type) =>
   `https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/extension/${type}.png`;
 export const FILE_ERASE_BUTTON_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/file_erase_button.png";
+
+// Resource Detail Page
+export const COMMENT_ICON_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/ResourceDetailPage/write_comment.png";
