@@ -1,61 +1,40 @@
 import React from "react";
-import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
-import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Content, Date, Report, Wrapper, Writer } from "./styles/Comment.style";
 
-const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
-  /* min-height: 76px; */
-  padding: 16px 0px;
-`;
+Comment.propTypes = {
+  id: PropTypes.number,
+  nickname: PropTypes.string,
+  elapsedMinutes: PropTypes.number,
+  comments: PropTypes.string,
+};
 
-const Writer = styled.span`
-  font-size: 12px;
-  color: ${FontColor};
-`;
+function Comment({ id = 0, nickname = "", elapsedMinutes = 0, comments = "" }) {
+  return (
+    <Wrapper>
+      <Writer>{nickname}</Writer>
+      <Date>{getDateTextOnElapsedMinutes(elapsedMinutes)}</Date>
+      <Content>{comments}</Content>
+      <Report>신고</Report>
+    </Wrapper>
+  );
+}
 
-const Date = styled.span`
-  margin-left: 8px;
-  font-size: 12px;
-  color: ${PlaceholderColor};
-`;
+const MINUTE_BY_ONE_YEAR = 525600;
+const MINUTE_BY_ONE_MONTH = 43800;
+const MINUTE_BY_ONE_DAY = 1440;
+const MINUTE_BY_ONE_HOUR = 60;
 
-const Content = styled.span`
-  display: block;
-  width: 649px;
-  margin-top: 13px;
-  font-size: 12px;
-  line-height: 1.5em;
-  color: ${FontColor};
-`;
-
-const Report = styled.button`
-  all: unset;
-  position: absolute;
-  bottom: 16px;
-  right: 0;
-  font-size: 12px;
-  color: ${PlaceholderColor};
-  cursor: pointer;
-`;
-
-const Comment = () => (
-  <Wrapper>
-    <Writer>도미는이유정</Writer>
-    <Date>4일전</Date>
-    <Content>
-      댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는
-      649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대
-      넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의
-      최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는
-      649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대
-      넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의
-      최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는
-      649입니다.댓글의 최대 넓이는 649입니다.댓글의 최대 넓이는 649입니다. 댓글의 최대
-      넓이는 649입니다.
-    </Content>
-    <Report>신고</Report>
-  </Wrapper>
-);
+const getDateTextOnElapsedMinutes = (elapsedMinutes) => {
+  if (elapsedMinutes >= MINUTE_BY_ONE_YEAR)
+    return `${Math.round(elapsedMinutes / MINUTE_BY_ONE_YEAR)}년전`;
+  else if (elapsedMinutes >= MINUTE_BY_ONE_MONTH)
+    return `${Math.round(elapsedMinutes / MINUTE_BY_ONE_MONTH)}달전`;
+  else if (elapsedMinutes >= MINUTE_BY_ONE_DAY)
+    return `${Math.round(elapsedMinutes / MINUTE_BY_ONE_DAY)}일전`;
+  else if (elapsedMinutes >= MINUTE_BY_ONE_HOUR)
+    return `${Math.round(elapsedMinutes / MINUTE_BY_ONE_HOUR)}시간전`;
+  else return `${elapsedMinutes}분전`;
+};
 
 export default Comment;

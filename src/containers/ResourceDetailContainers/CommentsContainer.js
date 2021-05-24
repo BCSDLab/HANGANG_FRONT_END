@@ -108,7 +108,15 @@ const CommentsContainer = ({ comments }) => {
       </WriteSectionWrapper>
       <CommentWrapper>
         {console.log(comments)}
-        <Comment />
+        {comments.map((props) => (
+          <Comment
+            key={props.id}
+            id={props.id}
+            nickname={props.nickname}
+            elapsedMinutes={props.elapsedMinutes}
+            comments={props.comments}
+          />
+        ))}
       </CommentWrapper>
     </Wrapper>
   );
