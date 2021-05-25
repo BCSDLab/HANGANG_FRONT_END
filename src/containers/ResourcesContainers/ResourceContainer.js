@@ -25,7 +25,6 @@ import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import {
   CardGrid,
-  FakeDiv,
   FilterButton,
   FilterImage,
   FilterSection,
@@ -103,7 +102,7 @@ const ResourceContainer = () => {
     }
   }, 500);
 
-  const { targetRef } = useInfiniteScroll(fetchMore, { threshold: 0.8 });
+  const { targetRef } = useInfiniteScroll(fetchMore);
 
   return (
     <Wrapper>
@@ -145,7 +144,7 @@ const ResourceContainer = () => {
           <ResourcesSection>
             <SearchResultLabel>{`탐색 결과 (${resource_amount})`}</SearchResultLabel>
             <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
-            <CardGrid>
+            <CardGrid ref={targetRef}>
               {resources.map((data) => (
                 <ResourceCard data={data} key={data.id} />
               ))}
@@ -156,8 +155,6 @@ const ResourceContainer = () => {
             isCreateFormOpened={isCreateFormOpened}
             setIsCreateFormOpened={setIsCreateFormOpened}
           />
-
-          <FakeDiv ref={targetRef} />
         </>
       )}
     </Wrapper>

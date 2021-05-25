@@ -10,7 +10,7 @@ import {
 } from "static/ResourceDetailPage/imgPath";
 import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { showAlertModal, showConfirmModal } from "store/modules/modalModule";
+import { showAlertModal } from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const Wrapper = styled.div`
