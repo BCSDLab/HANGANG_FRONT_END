@@ -43,13 +43,13 @@ const ResourceDetailContainer = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {
+    id,
     isAdditionalModalOpened,
     is_purchase,
     user_scrap_id,
     comments, //
     comment_amount,
     limit,
-    page,
     uploadFiles,
     ...rest
   } = useSelector((state) => state.resourceDetailReducer);
@@ -63,7 +63,7 @@ const ResourceDetailContainer = () => {
       let token = getValueOnLocalStorage("hangangToken");
       const fetchedData = await Promise.all([
         ResourceDetailAPI.getResourceDetailInfo(resourceId, token),
-        ResourceDetailAPI.getCommentsOnResource(resourceId, limit, page),
+        ResourceDetailAPI.getCommentsOnResource(resourceId, limit, 1),
       ]);
       dispatch(setResourceInfo(fetchedData));
     } catch (error) {
@@ -77,7 +77,11 @@ const ResourceDetailContainer = () => {
       setIsFetched(true);
     }
   };
-  useEffect(() => fetchResourceDetailInfo(), []);
+
+  useEffect(() => {
+    if (id !== parseInt(resourceId)) fetchResourceDetailInfo();
+    else setIsFetched(true);
+  }, []);
 
   const closeAdditionalModalEventTriggered = () => {
     if (isAdditionalModalOpened) dispatch(closeAdditionalModal());

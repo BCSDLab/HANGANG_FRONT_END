@@ -18,7 +18,9 @@ import { triggerWhenNotLoggedIn } from "utils/reportUtils";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
-import { addNewComment } from "store/modules/resourceDetailModule";
+import { addCommentOnNextPage, addNewComment } from "store/modules/resourceDetailModule";
+import useInfiniteScroll from "hooks/useInfiniteScroll";
+import debounce from "lodash.debounce";
 
 CommentsContainer.propTypes = {
   comments: PropTypes.array,
@@ -31,6 +33,9 @@ function CommentsContainer({ comments, amount }) {
   const [comment, setComment] = useState("");
   const { isLoggedIn, isCheckedToken, nickname } = useSelector(
     (state) => state.authReducer
+  );
+  const { limit, pageOnComment, maxPageOnComment } = useSelector(
+    (state) => state.resourceDetailReducer
   );
   const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
   const dispatch = useDispatch();
@@ -61,6 +66,30 @@ function CommentsContainer({ comments, amount }) {
     }
   };
 
+  /**
+   * 스크린이 댓글 중 마지막 3번째 댓글을 보이게 되면 fetchMore를 호출합니다.
+   * fetchMore는 현재 페이지와 최대 페이지를 비교하여, 최대 페이지를 넘어가지 않았다면
+   * 새로운 페이지의 댓글을 호출합니다.
+   */
+  const fetchCommentOnNextPage = async () => {
+    try {
+      const {
+        data: { comments },
+        status,
+      } = await ResourceDetailAPI.getComment(resourceId, limit, pageOnComment + 1);
+      if (status === 200) dispatch(addCommentOnNextPage({ comments }));
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+  const fetchMore = debounce((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && pageOnComment < maxPageOnComment) {
+      fetchCommentOnNextPage();
+    }
+  }, 200);
+  const { targetRef } = useInfiniteScroll(fetchMore, 5);
+
   // JSX
   return (
     <Wrapper>
@@ -76,7 +105,7 @@ function CommentsContainer({ comments, amount }) {
           </>
         )}
       </WriteSectionWrapper>
-      <CommentWrapper>
+      <CommentWrapper ref={targetRef}>
         {comments.map((props) => (
           <Comment
             key={props.id}

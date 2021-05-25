@@ -89,4 +89,10 @@ export default {
     );
     return response;
   },
+  getComment: async (contentId, limit, page) => {
+    const response = await axios.get(
+      `/lecture-banks/${contentId}/comments?limit=${limit}&page=${page}`
+    );
+    return response;
+  },
 };

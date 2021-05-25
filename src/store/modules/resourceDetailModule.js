@@ -9,6 +9,7 @@ const UNSCRAP_RESOURCE = "UNSCRAP_RESOURCE";
 const OPEN_ADDITIONAL_MODAL = "OPEN_ADDITIONAL_MODAL";
 const CLOSE_ADDITIONAL_MODAL = "CLOSE_ADDITIONAL_MODAL";
 const ADD_NEW_COMMENT = "ADD_NEW_COMMENT";
+const ADD_COMMENT_ON_NEXT_PAGE = "ADD_COMMENT_ON_NEXT_PAGE";
 
 // Action Creators
 export const setResourceInfo = (payload) => ({ type: SET_RESOURCE_INFO, payload });
@@ -19,14 +20,19 @@ export const unscrapResource = (payload) => ({ type: UNSCRAP_RESOURCE, payload }
 export const openAdditionalModal = () => ({ type: OPEN_ADDITIONAL_MODAL });
 export const closeAdditionalModal = () => ({ type: CLOSE_ADDITIONAL_MODAL });
 export const addNewComment = (payload) => ({ type: ADD_NEW_COMMENT, payload });
+export const addCommentOnNextPage = (payload) => ({
+  type: ADD_COMMENT_ON_NEXT_PAGE,
+  payload,
+});
 
 const MODAL_STATE = {
   isAdditionalModalOpened: false,
 };
 
 const COMMENT_STATE = {
-  limit: 10,
-  page: 1,
+  limit: 20,
+  pageOnComment: 1,
+  maxPageOnComment: 1,
 };
 
 const STATE = {
@@ -43,6 +49,7 @@ export default function resourceDetailReducer(state = STATE, action) {
         ...action.payload[0].data,
         comments: convertedComments,
         comment_amount: action.payload[1].data.count,
+        maxPageOnComment: Math.ceil(action.payload[1].data.count / state.limit),
       };
     case CLICK_HIT_ICON:
       return {
@@ -80,6 +87,14 @@ export default function resourceDetailReducer(state = STATE, action) {
       return {
         ...state,
         comments: [{ id, comments, elapsedMinutes, nickname }, ...state.comments],
+        comment_amount: ++state.comment_amount,
+      };
+    case ADD_COMMENT_ON_NEXT_PAGE:
+      let convertedNewComment = getElapsedMinute(action.payload.comments);
+      return {
+        ...state,
+        comments: [...state.comments, ...convertedNewComment],
+        pageOnComment: ++state.pageOnComment,
       };
     default:
       return state;
