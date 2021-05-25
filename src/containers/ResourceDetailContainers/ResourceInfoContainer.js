@@ -73,10 +73,7 @@ function ResourceInfoContainer({
   const buyResource = async () => {
     const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
     try {
-      const { data } = await lectureDetailAPI.purchaseResource(
-        resourceInfo.id,
-        accessToken
-      );
+      const { data } = await lectureDetailAPI.purchaseResource(contentId, accessToken);
       if (data.httpStatus === "OK") {
         dispatch(purchaseResource());
         dispatch(showAlertModal({ content: "구매에 성공하였습니다." }));
