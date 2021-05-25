@@ -32,8 +32,8 @@ export const ReportContent = styled.div`
 `;
 
 export const ReportBox = styled.div`
-  position: absolute;
-  top: calc(45% - 200px);
+  position: fixed;
+  top: 40px;
   left: calc(50% - 198px);
   width: 400px;
   height: 332px;
