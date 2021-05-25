@@ -19,14 +19,19 @@ import {
 } from "./styles/ReportModalComponent.style";
 
 const ReportModalComponent = () => {
+  const [screenHeight, setScreenHeight] = React.useState();
   const dispatch = useDispatch();
   const { isReportModalShowing, contentId, reportType } = useSelector(
     (state) => state.modalReducer
   );
 
+  React.useEffect(() =>
+    setScreenHeight(document.getElementsByTagName("main")[0].clientHeight)
+  );
+
   return (
     isReportModalShowing && (
-      <Wrapper onClick={() => dispatch(hideReportModal())}>
+      <Wrapper screenHeight={screenHeight} onClick={() => dispatch(hideReportModal())}>
         <ReportBox onClick={(e) => e.stopPropagation()}>
           <Title>신고 사유 선택</Title>
           <CloseButton onClick={() => dispatch(hideReportModal())} />

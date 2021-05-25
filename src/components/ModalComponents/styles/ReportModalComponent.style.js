@@ -54,7 +54,7 @@ export const Wrapper = styled.aside`
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100vh + 302px);
+  height: ${({ screenHeight }) => screenHeight}px;
 
   background-color: rgba(0, 0, 0, 0.2);
   z-index: 9999;
