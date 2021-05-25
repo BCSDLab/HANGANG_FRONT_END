@@ -74,28 +74,30 @@ export const ResourceInfoSection = styled.section`
   width: 100%;
   height: 337px;
   display: flex;
-  justify-content: space-between;
 `;
 
 export const Thumbnail = styled.div`
   width: 337px;
   height: 100%;
+  margin-right: 24px;
 
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid ${BorderColor};
+  background-color: #fff;
 
   //background
   background-image: url(${({ thumbnailURL }) => thumbnailURL});
   background-position: center;
-  background-size: cover;
   background-repeat: no-repeat;
-  background-color: rgba(34, 34, 34, 0.1);
-  background-blend-mode: saturation;
+  background-size: 109px auto;
 `;
 
 export const InfoWrapper = styled.div`
   position: relative;
-  width: 343px;
+  width: 334px;
   height: 100%;
 `;
 
