@@ -47,6 +47,7 @@ const getDateTextOnElapsedMinutes = (elapsedMinutes) => {
     return `${Math.round(elapsedMinutes / MINUTE_BY_ONE_DAY)}일전`;
   else if (elapsedMinutes >= MINUTE_BY_ONE_HOUR)
     return `${Math.round(elapsedMinutes / MINUTE_BY_ONE_HOUR)}시간전`;
+  else if (elapsedMinutes === 0) return `방금`;
   else return `${elapsedMinutes}분전`;
 };
 
