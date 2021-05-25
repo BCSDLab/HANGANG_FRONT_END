@@ -1,10 +1,8 @@
 import React from "react";
-import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
 import ResourceDetailAPI from "api/resourceDetail";
-import { closeReportModalButton } from "static/ResourceDetailPage/imgPath";
-import { BorderColor, FontColor } from "static/Shared/commonStyles";
+
 import {
   hideReportModal,
   showAlertModal,
@@ -12,64 +10,39 @@ import {
 } from "store/modules/modalModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import {
+  CloseButton,
+  ReportBox,
+  ReportContent,
+  Title,
+  Wrapper,
+} from "./styles/ReportModalComponent.style";
 
-const CloseButton = styled.img.attrs({
-  src: closeReportModalButton,
-  alt: "close",
-})`
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  width: 24px;
-  cursor: pointer;
-`;
+const ReportModalComponent = () => {
+  const dispatch = useDispatch();
+  const { isReportModalShowing, contentId, reportType } = useSelector(
+    (state) => state.modalReducer
+  );
 
-const Title = styled.h2`
-  margin: 4px 0 10.5px 0;
-  font-size: 18px;
-  font-weight: 500;
-  color: ${FontColor};
-`;
-
-const ReportContent = styled.div`
-  width: 100%;
-  height: 52px;
-  padding: 15.5px 0;
-  display: flex;
-  align-items: center;
-  color: ${FontColor};
-  font-size: 14px;
-  cursor: pointer;
-`;
-
-const ReportBox = styled.div`
-  position: absolute;
-  top: calc(45% - 200px);
-  left: calc(50% - 198px);
-  width: 400px;
-  height: 332px;
-
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
-  border: 1px solid ${BorderColor};
-  background-color: #fff;
-
-  ${ReportContent}:not(:last-child) {
-    border-bottom: 1px solid ${BorderColor};
-  }
-`;
-
-const Wrapper = styled.aside`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100vh + 302px);
-
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-`;
+  return (
+    isReportModalShowing && (
+      <Wrapper onClick={() => dispatch(hideReportModal())}>
+        <ReportBox onClick={(e) => e.stopPropagation()}>
+          <Title>신고 사유 선택</Title>
+          <CloseButton onClick={() => dispatch(hideReportModal())} />
+          {REPORT_OPTIONS.map(({ label, reportId }) => (
+            <ReportContent
+              key={label}
+              onClick={() => handleReportClick(contentId, reportId, reportType, dispatch)}
+            >
+              {label}
+            </ReportContent>
+          ))}
+        </ReportBox>
+      </Wrapper>
+    )
+  );
+};
 
 /**
  * 사용자가 확인을 누를 시 요청하는 함수입니다.
@@ -114,32 +87,6 @@ const handleReportClick = (contentId, reportId, reportType, dispatch) => {
       content: "정말로 신고하시겠습니까?",
       onConfirm: () => requestReport(contentId, reportId, reportType, dispatch),
     })
-  );
-};
-
-const ReportModalComponent = () => {
-  const dispatch = useDispatch();
-  const { isReportModalShowing, contentId, reportType } = useSelector(
-    (state) => state.modalReducer
-  );
-
-  return (
-    isReportModalShowing && (
-      <Wrapper onClick={() => dispatch(hideReportModal())}>
-        <ReportBox onClick={(e) => e.stopPropagation()}>
-          <Title>신고 사유 선택</Title>
-          <CloseButton onClick={() => dispatch(hideReportModal())} />
-          {REPORT_OPTIONS.map(({ label, reportId }) => (
-            <ReportContent
-              key={label}
-              onClick={() => handleReportClick(contentId, reportId, reportType, dispatch)}
-            >
-              {label}
-            </ReportContent>
-          ))}
-        </ReportBox>
-      </Wrapper>
-    )
   );
 };
 
