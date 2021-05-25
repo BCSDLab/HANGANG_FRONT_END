@@ -57,7 +57,7 @@ export default function resourceDetailReducer(state = STATE, action) {
     case SCRAP_RESOURCE:
       return {
         ...state,
-        user_scrap_id: 16,
+        user_scrap_id: action.payload.user_scrap_id,
       };
     case UNSCRAP_RESOURCE:
       return {
@@ -75,7 +75,6 @@ export default function resourceDetailReducer(state = STATE, action) {
         isAdditionalModalOpened: false,
       };
     case ADD_NEW_COMMENT:
-      console.log(action.payload);
       const { id, comments, elapsedMinutes, nickname } = action.payload;
       return {
         ...state,

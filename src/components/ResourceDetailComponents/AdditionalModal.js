@@ -27,9 +27,16 @@ function AdditionalModal({
   const { user_scrap_id } = useSelector((state) => state.resourceDetailReducer);
   const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
 
+  /**
+   * 로그인 여부를 체크하고,
+   * 로그인이 되어있다면 scrap 또는 unscrap을 요청합니다.
+   */
   const handleScrapClick = () => {
     if (!isAuthenticated) triggerWhenNotLoggedIn(dispatch, history);
-    else requestScrap(isScrapped, user_scrap_id, contentId, dispatch);
+    else {
+      if (!isScrapped) requestScrap(contentId, dispatch);
+      else requestUnscrap(user_scrap_id, dispatch);
+    }
   };
 
   return (
@@ -48,26 +55,26 @@ function AdditionalModal({
   );
 }
 
-const requestScrap = async (isScrapped, user_scrap_id, contentId, dispatch) => {
+const requestScrap = async (contentId, dispatch) => {
   try {
     const accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    let data;
-    let prevScrappedInfo = isScrapped;
-    if (isScrapped)
-      data = await ResourceDetailAPI.unscrapResource(
-        parseInt(user_scrap_id),
-        accessToken
-      );
-    else data = await ResourceDetailAPI.scrapResource(contentId, accessToken);
-
-    if (data.data.httpStatus === "OK") {
-      if (!prevScrappedInfo) dispatch(scrapResource({ contentId }));
-      else dispatch(unscrapResource());
-    }
-    console.log(isScrapped);
-    console.dir(data);
+    const { data, status } = await ResourceDetailAPI.scrapResource(
+      contentId,
+      accessToken
+    );
+    if (status === 200) dispatch(scrapResource({ user_scrap_id: data }));
   } catch (error) {
-    console.dir(error);
+    throw new Error(error);
+  }
+};
+
+const requestUnscrap = async (userScrapId, dispatch) => {
+  try {
+    const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+    const { data } = await ResourceDetailAPI.unscrapResource(userScrapId, accessToken);
+    if (data.httpStatus === "OK") dispatch(unscrapResource());
+  } catch (error) {
+    throw new Error(error);
   }
 };
 
