@@ -18,6 +18,7 @@ import { triggerWhenNotLoggedIn } from "utils/reportUtils";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
+import { addNewComment } from "store/modules/resourceDetailModule";
 
 CommentsContainer.propTypes = {
   comments: PropTypes.array,
@@ -25,13 +26,42 @@ CommentsContainer.propTypes = {
 
 // TODO: CommentWrapper 높이 정해야함... 지금 매우 이상
 function CommentsContainer({ comments }) {
+  // state
   let { resourceId } = useParams();
   const [comment, setComment] = useState("");
-  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const { isLoggedIn, isCheckedToken, nickname } = useSelector(
+    (state) => state.authReducer
+  );
   const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
   const dispatch = useDispatch();
   const history = useHistory();
 
+  // function
+  const createCommentIfLoggedIn = () => {
+    if (!isAuthenticated) triggerWhenNotLoggedIn(history, dispatch);
+    else requestCreateComment();
+  };
+
+  const requestCreateComment = async () => {
+    try {
+      let accessToken = getValueOnLocalStorage("hangangToken").access_token;
+      const { data } = await ResourceDetailAPI.createComment(
+        resourceId,
+        comment,
+        accessToken
+      );
+
+      dispatch(
+        addNewComment({ id: data, comments: comment, elapsedMinutes: 0, nickname })
+      );
+      setComment("");
+    } catch (error) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
+      dispatch(showAlertModal({ title, content }));
+    }
+  };
+
+  // JSX
   return (
     <Wrapper>
       <CountComment>{`댓글 (${comments.length})`}</CountComment>
@@ -41,23 +71,12 @@ function CommentsContainer({ comments }) {
           <>
             <CommentLetterCounter>{`${comment.length}/300자`}</CommentLetterCounter>
             {comment.length <= 300 && (
-              <CommentIcon
-                onClick={() =>
-                  createCommentIfLoggedIn(
-                    isAuthenticated,
-                    resourceId,
-                    comment,
-                    history,
-                    dispatch
-                  )
-                }
-              />
+              <CommentIcon onClick={() => createCommentIfLoggedIn()} />
             )}
           </>
         )}
       </WriteSectionWrapper>
       <CommentWrapper>
-        {console.log(comments)}
         {comments.map((props) => (
           <Comment
             key={props.id}
@@ -71,27 +90,5 @@ function CommentsContainer({ comments }) {
     </Wrapper>
   );
 }
-
-const createCommentIfLoggedIn = (
-  isAuthenticated,
-  resourceId,
-  comment,
-  history,
-  dispatch
-) => {
-  if (!isAuthenticated) triggerWhenNotLoggedIn(history, dispatch);
-  else requestCreateComment(resourceId, comment, dispatch);
-};
-
-const requestCreateComment = async (resourceId, comment, dispatch) => {
-  try {
-    let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    const data = await ResourceDetailAPI.createComment(resourceId, comment, accessToken);
-    console.dir(data);
-  } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
-    dispatch(showAlertModal({ title, content }));
-  }
-};
 
 export default CommentsContainer;

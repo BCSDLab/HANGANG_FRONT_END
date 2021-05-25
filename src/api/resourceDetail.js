@@ -81,4 +81,12 @@ export default {
     );
     return response;
   },
+  createComment: async (content_id, commentContent, accessToken = null) => {
+    const response = await axios.post(
+      `/lecture-banks/${content_id}/comment`,
+      { comments: commentContent },
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
 };

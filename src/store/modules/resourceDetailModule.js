@@ -8,6 +8,7 @@ const SCRAP_RESOURCE = "SCRAP_RESOURCE";
 const UNSCRAP_RESOURCE = "UNSCRAP_RESOURCE";
 const OPEN_ADDITIONAL_MODAL = "OPEN_ADDITIONAL_MODAL";
 const CLOSE_ADDITIONAL_MODAL = "CLOSE_ADDITIONAL_MODAL";
+const ADD_NEW_COMMENT = "ADD_NEW_COMMENT";
 
 // Action Creators
 export const setResourceInfo = (payload) => ({ type: SET_RESOURCE_INFO, payload });
@@ -17,13 +18,20 @@ export const scrapResource = (payload) => ({ type: SCRAP_RESOURCE, payload });
 export const unscrapResource = (payload) => ({ type: UNSCRAP_RESOURCE, payload });
 export const openAdditionalModal = () => ({ type: OPEN_ADDITIONAL_MODAL });
 export const closeAdditionalModal = () => ({ type: CLOSE_ADDITIONAL_MODAL });
+export const addNewComment = (payload) => ({ type: ADD_NEW_COMMENT, payload });
 
 const MODAL_STATE = {
   isAdditionalModalOpened: false,
 };
 
+const COMMENT_STATE = {
+  limit: 10,
+  page: 1,
+};
+
 const STATE = {
   ...MODAL_STATE,
+  ...COMMENT_STATE,
 };
 
 export default function resourceDetailReducer(state = STATE, action) {
@@ -65,6 +73,13 @@ export default function resourceDetailReducer(state = STATE, action) {
       return {
         ...state,
         isAdditionalModalOpened: false,
+      };
+    case ADD_NEW_COMMENT:
+      console.log(action.payload);
+      const { id, comments, elapsedMinutes, nickname } = action.payload;
+      return {
+        ...state,
+        comments: [{ id, comments, elapsedMinutes, nickname }, ...state.comments],
       };
     default:
       return state;
@@ -120,6 +135,8 @@ const getElapsedMinute = (comments) => {
     ...comment,
     elapsedMinutes: calculateElapsedMinutesOnFetchedData(nowYmdhms, comment.updated_at),
   }));
+
+  convertedComments.sort((a, b) => a.elapsedMinutes - b.elapsedMinutes);
 
   return convertedComments;
 };
