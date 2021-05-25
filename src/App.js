@@ -26,7 +26,7 @@ import MyPage from "pages/MyPage";
 import ResourceDetailPage from "pages/ResourceDetailPage";
 
 const Main = styled.main`
-  height: 100%;
+  height: fit-content;
   min-height: 1080px;
   min-width: 1135px;
 `;

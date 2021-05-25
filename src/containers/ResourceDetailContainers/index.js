@@ -20,7 +20,8 @@ import { Promise } from "core-js";
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  /* min-height: 1330px; */
+  margin: 40px 0px;
+  min-height: 1000px;
 
   display: flex;
   justify-content: center;
@@ -30,9 +31,7 @@ const Wrapper = styled.div`
 const Content = styled.div`
   position: relative;
   width: 752px;
-  /* height: calc(100% - 80px); */
   min-height: 972px;
-  max-height: 1274px;
   padding: 27px 27px 16px;
   border-radius: 8px;
   border: 1px solid ${BorderColor};
@@ -48,12 +47,12 @@ const ResourceDetailContainer = () => {
     is_purchase,
     user_scrap_id,
     comments, //
+    comment_amount,
     limit,
     page,
     uploadFiles,
     ...rest
   } = useSelector((state) => state.resourceDetailReducer);
-
   /**
    * 첫 마운트 시 강의 자료 세부 정보를 요청합니다.
    * 만약 존재하지 않는 id로 접근할 시 ~/resources로 내보냅니다.
@@ -98,7 +97,7 @@ const ResourceDetailContainer = () => {
               isScrapped={user_scrap_id !== 0}
             />
             <AttachmentsContainer isPurchased={is_purchase} uploadFiles={uploadFiles} />
-            <CommentsContainer comments={comments} />
+            <CommentsContainer comments={comments} amount={comment_amount} />
           </Content>
         )}
       </Wrapper>
