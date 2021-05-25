@@ -21,6 +21,7 @@ export const WriteSectionWrapper = styled.form`
 
 export const CommentWriteInput = styled.textarea.attrs({
   placeholder: "댓글을 작성해주세요.",
+  maxLength: "300",
 })`
   overflow: hidden;
   resize: none;
