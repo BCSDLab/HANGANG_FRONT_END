@@ -43,7 +43,7 @@ function CommentsContainer({ comments, amount }) {
 
   // function
   const createCommentIfLoggedIn = () => {
-    if (!isAuthenticated) triggerWhenNotLoggedIn(history, dispatch);
+    if (!isAuthenticated) triggerWhenNotLoggedIn({ history, dispatch });
     else requestCreateComment();
   };
 

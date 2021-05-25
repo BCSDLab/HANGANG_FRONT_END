@@ -32,7 +32,7 @@ function AdditionalModal({
    * 로그인이 되어있다면 scrap 또는 unscrap을 요청합니다.
    */
   const handleScrapClick = () => {
-    if (!isAuthenticated) triggerWhenNotLoggedIn(dispatch, history);
+    if (!isAuthenticated) triggerWhenNotLoggedIn({ dispatch, history });
     else {
       if (!isScrapped) requestScrap(contentId, dispatch);
       else requestUnscrap(user_scrap_id, dispatch);

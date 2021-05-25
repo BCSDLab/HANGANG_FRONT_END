@@ -1,7 +1,7 @@
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showConfirmModal, showReportModal } from "store/modules/modalModule";
 
-export const triggerWhenNotLoggedIn = (history, dispatch) => {
+export const triggerWhenNotLoggedIn = ({ history, dispatch }) => {
   const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
   const onConfirm = () => history.push("/login");
   dispatch(showConfirmModal({ title, content, onConfirm }));
@@ -18,6 +18,6 @@ export const callReportModal = (
   history,
   dispatch
 ) => {
-  if (!isAuthenticated) triggerWhenNotLoggedIn(history, dispatch);
+  if (!isAuthenticated) triggerWhenNotLoggedIn({ history, dispatch });
   else dispatch(showReportModal({ contentId, reportType }));
 };
