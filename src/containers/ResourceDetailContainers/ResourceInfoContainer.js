@@ -62,7 +62,7 @@ function ResourceInfoContainer({
         dispatch(showConfirmModal({ title, content, onConfirm }));
       } else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-        let { data } = await lectureDetailAPI.postHit(resourceInfo.id, accessToken);
+        let { data } = await lectureDetailAPI.postHit(contentId, accessToken);
         if (data.httpStatus === "OK") dispatch(clickHitIcon());
       }
     } catch (error) {
