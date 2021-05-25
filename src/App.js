@@ -5,7 +5,7 @@ import { useToasts } from "react-toast-notifications";
 import styled from "styled-components";
 
 import AuthAPI from "api/auth";
-import { succeedTokenCheck } from "store/modules/auth";
+import { setUserInfo, succeedTokenCheck } from "store/modules/auth";
 import {
   getValueOnLocalStorage,
   removeValueOnLocalStorage,
@@ -50,6 +50,8 @@ const App = () => {
       const res = await AuthAPI.refreshToken(token.refresh_token);
 
       if (res.status === 200) {
+        const { data } = await AuthAPI.fetchUserInfo(res.data.refresh_token);
+        dispatch(setUserInfo(data));
         setValueOnLocalStorage("hangangToken", res.data);
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));
       }
@@ -84,6 +86,8 @@ const App = () => {
     try {
       const res = await AuthAPI.authTest(token.access_token);
       if (res.status === 200) {
+        const { data } = await AuthAPI.fetchUserInfo(token.access_token);
+        dispatch(setUserInfo(data));
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));
       }
     } catch (err) {

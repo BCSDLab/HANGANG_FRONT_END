@@ -46,4 +46,13 @@ export default {
     const response = await axios.post("/user/refresh", null, config);
     return response;
   },
+  fetchUserInfo: async (accessToken = null) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    const response = await axios.get("/user/me", config);
+    return response;
+  },
 };
