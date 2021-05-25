@@ -25,7 +25,7 @@ CommentsContainer.propTypes = {
 };
 
 // TODO: CommentWrapper 높이 정해야함... 지금 매우 이상
-function CommentsContainer({ comments }) {
+function CommentsContainer({ comments, amount }) {
   // state
   let { resourceId } = useParams();
   const [comment, setComment] = useState("");
@@ -64,7 +64,7 @@ function CommentsContainer({ comments }) {
   // JSX
   return (
     <Wrapper>
-      <CountComment>{`댓글 (${comments.length})`}</CountComment>
+      <CountComment>{`댓글 (${amount})`}</CountComment>
       <WriteSectionWrapper lineAmount={comment.split("\n").length - 1}>
         <CommentWriteInput value={comment} onChange={(e) => setComment(e.target.value)} />
         {comment !== "" && (

@@ -37,11 +37,12 @@ const STATE = {
 export default function resourceDetailReducer(state = STATE, action) {
   switch (action.type) {
     case SET_RESOURCE_INFO:
-      let convertedComments = getElapsedMinute(action.payload[1].data);
+      let convertedComments = getElapsedMinute(action.payload[1].data.comments);
       return {
         ...state,
         ...action.payload[0].data,
         comments: convertedComments,
+        comment_amount: action.payload[1].data.count,
       };
     case CLICK_HIT_ICON:
       return {
