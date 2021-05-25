@@ -5,12 +5,16 @@ import authReducer from "./modules/auth";
 import lectureReducer from "./modules/lecturesModule";
 import resourceReducer from "./modules/resourcesModule";
 import resourceCreateReducer from "./modules/resourceCreateModule";
+import resourceDetailReducer from "./modules/resourceDetailModule";
+import modalReducer from "./modules/modalModule";
 
 const rootReducer = combineReducers({
   authReducer,
   lectureReducer,
   resourceReducer,
   resourceCreateReducer,
+  resourceDetailReducer,
+  modalReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

@@ -5,6 +5,7 @@ export const EMAIL_AUTH = "EMAIL_AUTH";
 export const ACCESS_WITH_NOT_VERIFIED = "ACCESS_WITH_NOT_VERIFIED";
 export const SIGNUP = "SIGNUP";
 export const SUCCEED_TOKEN_CHECK = "SUCCEDED_TOKEN_CHECK";
+export const SET_USER_INFO = "SET_USER_INFO";
 
 // Action Creators
 export const login = (payload) => ({ type: LOGIN, payload });
@@ -13,6 +14,7 @@ export const emailAuth = (payload) => ({ type: EMAIL_AUTH, payload });
 export const accessWithNotVerified = () => ({ type: ACCESS_WITH_NOT_VERIFIED });
 export const signUp = (payload) => ({ type: SIGNUP, payload });
 export const succeedTokenCheck = (payload) => ({ type: SUCCEED_TOKEN_CHECK, payload });
+export const setUserInfo = (payload) => ({ type: SET_USER_INFO, payload });
 
 const INITIAL_STATE = {
   account: "",
@@ -58,6 +60,11 @@ export default function authReducer(state = INITIAL_STATE, action) {
         token: action.payload.token,
         isCheckedToken: true,
         isLoggedIn: action.payload.isLoggedIn,
+      };
+    case SET_USER_INFO:
+      return {
+        ...state,
+        ...action.payload,
       };
     default:
       return state;

@@ -5,7 +5,7 @@ import { useToasts } from "react-toast-notifications";
 import styled from "styled-components";
 
 import AuthAPI from "api/auth";
-import { succeedTokenCheck } from "store/modules/auth";
+import { setUserInfo, succeedTokenCheck } from "store/modules/auth";
 import {
   getValueOnLocalStorage,
   removeValueOnLocalStorage,
@@ -23,9 +23,10 @@ import IndexPage from "pages/IndexPage";
 import NavigationContainer from "containers/Shared/NavigationContainer";
 import FooterContainer from "containers/Shared/FooterContainer";
 import MyPage from "pages/MyPage";
+import ResourceDetailPage from "pages/ResourceDetailPage";
 
 const Main = styled.main`
-  height: 100%;
+  height: fit-content;
   min-height: 1080px;
   min-width: 1135px;
 `;
@@ -49,6 +50,8 @@ const App = () => {
       const res = await AuthAPI.refreshToken(token.refresh_token);
 
       if (res.status === 200) {
+        const { data } = await AuthAPI.fetchUserInfo(res.data.refresh_token);
+        dispatch(setUserInfo(data));
         setValueOnLocalStorage("hangangToken", res.data);
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));
       }
@@ -83,6 +86,8 @@ const App = () => {
     try {
       const res = await AuthAPI.authTest(token.access_token);
       if (res.status === 200) {
+        const { data } = await AuthAPI.fetchUserInfo(token.access_token);
+        dispatch(setUserInfo(data));
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));
       }
     } catch (err) {
@@ -147,14 +152,16 @@ const App = () => {
       <NavigationContainer />
       <Switch>
         <Route path="/" exact component={IndexPage} />
-        <Route path="/lectures" exact component={LecturesPage} />
-        <Route path="/resources" exact component={ResourcesPage} />
+        <Route path="/lectures" component={LecturesPage} />
+        <Route path="/resources" component={ResourcesPage} />
+        <Route path="/resource" component={ResourceDetailPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
         <Route path="/findpw" component={FindPwPage} />
         <Route path="/signupauth" component={SignUpAuthPage} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/my" component={MyPage} />
+        {/* <Redirect from="*" to="/" /> */}
       </Switch>
       <FooterContainer />
     </Main>

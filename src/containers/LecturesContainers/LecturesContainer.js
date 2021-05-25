@@ -108,8 +108,6 @@ const CardGrid = styled.div`
   width: 1135px;
 `;
 
-const FakeDiv = styled.div``;
-
 const LecturesContainer = () => {
   const dispatch = useDispatch();
   const {
@@ -153,7 +151,7 @@ const LecturesContainer = () => {
     }
   }, 500);
 
-  const { targetRef } = useInfiniteScroll(fetchMore, { threshold: 0.8 });
+  const { targetRef } = useInfiniteScroll(fetchMore);
 
   return (
     <Wrapper>
@@ -195,7 +193,7 @@ const LecturesContainer = () => {
 
           <LecturesSection>
             <SearchResultLabel>{`탐색 결과 (${lecture_amount})`}</SearchResultLabel>
-            <CardGrid>
+            <CardGrid ref={targetRef}>
               {lectures.map((data) => (
                 <LectureCard
                   data={data}
@@ -206,8 +204,6 @@ const LecturesContainer = () => {
               ))}
             </CardGrid>
           </LecturesSection>
-
-          <FakeDiv ref={targetRef} />
         </>
       )}
     </Wrapper>
