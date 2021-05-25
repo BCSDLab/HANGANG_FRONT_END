@@ -8,7 +8,7 @@ import Container from "components/AuthComponents/Shared/Container";
 import HelpField from "components/AuthComponents/Login/HelpField";
 import LoginForm from "components/AuthComponents/Login/LoginForm";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
-import { succeedTokenCheck } from "store/modules/auth";
+import { setUserInfo, succeedTokenCheck } from "store/modules/auth";
 
 /**
  * LoginContainer
@@ -55,6 +55,10 @@ const LoginContainer = () => {
     })
       .then((res) => {
         if (res.status === 200) {
+          AuthAPI.fetchUserInfo(res.data.access_token).then(({ data }) =>
+            dispatch(setUserInfo(data))
+          );
+          setValueOnLocalStorage("hangangToken", res.data);
           addToast("로그인에 성공하였습니다.", {
             appearance: "success",
             autoDismiss: true,
