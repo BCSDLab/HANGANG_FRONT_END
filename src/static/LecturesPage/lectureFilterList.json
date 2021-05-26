@@ -13,16 +13,6 @@
       "value": "최신순"
     }
   ],
-  "criteria": [
-    {
-      "label": "교과명",
-      "value": "교과명"
-    },
-    {
-      "label": "교수명",
-      "value": "교수명"
-    }
-  ],
   "classification": [
     {
       "label": "교양필수",

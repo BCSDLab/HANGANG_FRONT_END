@@ -5,7 +5,7 @@ import { useToasts } from "react-toast-notifications";
 import styled from "styled-components";
 
 import AuthAPI from "api/auth";
-import { succeedTokenCheck } from "store/modules/auth";
+import { setUserInfo, succeedTokenCheck } from "store/modules/auth";
 import {
   getValueOnLocalStorage,
   removeValueOnLocalStorage,
@@ -24,9 +24,10 @@ import IndexPage from "pages/IndexPage";
 import NavigationContainer from "containers/Shared/NavigationContainer";
 import FooterContainer from "containers/Shared/FooterContainer";
 import MyPage from "pages/MyPage";
+import ResourceDetailPage from "pages/ResourceDetailPage";
 
 const Main = styled.main`
-  height: 100%;
+  height: fit-content;
   min-height: 1080px;
   min-width: 1135px;
 `;
@@ -42,7 +43,7 @@ const App = () => {
    * 성공할 경우 로그인 처리,
    * 실패할 경우 로그인 페이지로 이동시키며
    * local storage에 있는 token을 지웁니다.
-   * 참고 : https://app.diagrams.net/#G1fdPJc3IfiFc6l8OMxSJ2rOJisJsp0k8i
+   * 참고 : https://drive.google.com/file/d/1fdPJc3IfiFc6l8OMxSJ2rOJisJsp0k8i/view?usp=sharing
    * @param {string} token
    */
   const refreshAccessToken = async (token) => {
@@ -50,6 +51,8 @@ const App = () => {
       const res = await AuthAPI.refreshToken(token.refresh_token);
 
       if (res.status === 200) {
+        const { data } = await AuthAPI.fetchUserInfo(res.data.refresh_token);
+        dispatch(setUserInfo(data));
         setValueOnLocalStorage("hangangToken", res.data);
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));
       }
@@ -84,6 +87,8 @@ const App = () => {
     try {
       const res = await AuthAPI.authTest(token.access_token);
       if (res.status === 200) {
+        const { data } = await AuthAPI.fetchUserInfo(token.access_token);
+        dispatch(setUserInfo(data));
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));
       }
     } catch (err) {
@@ -151,12 +156,14 @@ const App = () => {
         <Route path="/lectures" component={LecturesPage} />
         <Route path="/lecture" component={LectureDetailPage} />
         <Route path="/resources" component={ResourcesPage} />
+        <Route path="/resource" component={ResourceDetailPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
         <Route path="/findpw" component={FindPwPage} />
         <Route path="/signupauth" component={SignUpAuthPage} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/my" component={MyPage} />
+        {/* <Redirect from="*" to="/" /> */}
       </Switch>
       <FooterContainer />
     </Main>

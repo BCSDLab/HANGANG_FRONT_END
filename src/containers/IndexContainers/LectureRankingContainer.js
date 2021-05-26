@@ -120,7 +120,7 @@ const Rating = styled(Classification)`
  */
 const LectureRankingContainer = () => {
   const [department, setDepartment] = useState(departmentList[0]);
-  const [lectures, setLectures] = useState([]);
+  const [lectures, setLectures] = useState(null);
 
   useEffect(() => {
     LectureAPI.viewLecturesOnIndexPage(department.department).then(({ data }) =>
@@ -142,16 +142,17 @@ const LectureRankingContainer = () => {
           ))}
         </Topbar>
         <LectureList>
-          {lectures.map(({ name, professor, total_rating }, index) => (
-            <LectureRow key={index}>
-              <Ranking>{`0${index + 1}`}</Ranking>
-              <TitleProfessorWrapper>
-                <Title>{name}</Title>
-                <Professor>{professor}</Professor>
-              </TitleProfessorWrapper>
-              <Rating>{total_rating}</Rating>
-            </LectureRow>
-          ))}
+          {lectures &&
+            lectures.result.map(({ name, professor, total_rating }, index) => (
+              <LectureRow key={index}>
+                <Ranking>{`0${index + 1}`}</Ranking>
+                <TitleProfessorWrapper>
+                  <Title>{name}</Title>
+                  <Professor>{professor}</Professor>
+                </TitleProfessorWrapper>
+                <Rating>{total_rating.toFixed(1)}</Rating>
+              </LectureRow>
+            ))}
         </LectureList>
       </Content>
     </>
