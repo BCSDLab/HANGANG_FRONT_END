@@ -124,7 +124,7 @@ const LectureRankingContainer = () => {
 
   useEffect(() => {
     LectureAPI.viewLecturesOnIndexPage(department.department).then(({ data }) =>
-      setLectures(data)
+      setLectures(data.result)
     );
   }, [department]);
 

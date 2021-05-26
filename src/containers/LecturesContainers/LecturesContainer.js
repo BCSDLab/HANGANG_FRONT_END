@@ -139,13 +139,13 @@ const LecturesContainer = () => {
 
         if (lectures.length === 0) {
           const { data } = await LectureAPI.getLectures(filterOptions);
-          setLectures(data);
+          setLectures(data.result);
         }
       }
 
       if (!isLoggedIn) {
         const { data } = await LectureAPI.getLectures(filterOptions);
-        setLectures(data);
+        setLectures(data.result);
       }
     } catch (error) {
       console.log(error);
@@ -167,7 +167,7 @@ const LecturesContainer = () => {
     if (isLoading) {
       try {
         const { data } = await LectureAPI.getLectures(filterOptions);
-        setLectures(data);
+        setLectures(data.result);
       } catch (error) {
         console.log(error);
       } finally {
