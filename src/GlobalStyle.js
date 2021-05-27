@@ -5,9 +5,9 @@ const GlobalStyle = createGlobalStyle`
     ${reset}
     @font-face {
         font-family: "NotoSansCJKKR";
-        src: url("https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/fonts/NotoSansCJKkr-Regular.otf") format("otf");
-        font-style:italic;
-        font-weight:normal;
+        src: url("https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/fonts/NotoSansCJKkr-Regular.otf") format("opentype");
+        font-style: normal;
+        font-weight: normal;
     }
     *{
         box-sizing:border-box;
