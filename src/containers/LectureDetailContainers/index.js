@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import LectureDetailAPI from "api/lectureDetail";
 
-import { setLectureInfo } from "store/modules/lectureDetail";
+import { setLectureInfo } from "store/modules/lectureDetailModule";
 import { BorderColor, InnerContentWidth } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
@@ -19,7 +19,7 @@ import LoadingSpinner from "components/Shared/LoadingSpinner";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
-  margin: 40px auto 98px auto;
+  margin: 40px auto 32px auto;
 `;
 
 const Content = styled.div`
@@ -46,44 +46,46 @@ const LectureDetailContainer = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  //   const { isLoading, ...orderOption } = useSelector((state) => state.lectureReducer);
-  //   const { isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isLoading, ...orderOption } = useSelector((state) => state.lectureReducer);
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
 
   const [lectureInfo, setLectureInfo] = useState([]);
   const [lectureReviews, setLectureReviews] = useState([]);
   const [lectureEvaluationTotal, setLectureEvaluationTotal] = useState({});
   const [lectureEvaluationRating, setLectureEvaluationRating] = useState({});
+  const [lectureClassInfo, setLectureClassInfo] = useState({});
+
   const [isFetched, setIsFetched] = useState(false);
   const { ...rest } = useSelector((state) => state.lectureDetailReducer);
 
   const fetchLectureDetailInfo = async () => {
     try {
+      if (!isLoggedIn && !getValueOnLocalStorage("hangangToken")) {
+        history.push("/lectures");
+      }
+
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
       const [
         lectureInfo,
         lectureReviews,
         lectureEvaluationRating,
         lectureEvaluationTotal,
+        lectureClassInfo,
       ] = await Promise.all([
         LectureDetailAPI.getLectureInfo(accessToken, lectureId),
         LectureDetailAPI.getLectureReviews(accessToken, lectureId),
         LectureDetailAPI.getEvaluationRating(accessToken, lectureId),
         LectureDetailAPI.getEvaluationTotal(accessToken, lectureId),
+        LectureDetailAPI.getLectureClassInfo(accessToken, lectureId),
       ]);
+
       setLectureInfo(lectureInfo.data);
       setLectureReviews(lectureReviews.data);
       setLectureEvaluationRating(lectureEvaluationRating.data);
       setLectureEvaluationTotal(lectureEvaluationTotal.data);
-
-      console.log(
-        lectureInfo,
-        lectureReviews,
-        lectureEvaluationRating,
-        lectureEvaluationTotal
-      );
+      setLectureClassInfo(lectureClassInfo.data);
 
       dispatch(setLectureInfo(lectureInfo.data));
-      console.log(lectureInfo, rest);
     } catch (error) {
       console.log(error);
     } finally {
@@ -127,7 +129,10 @@ const LectureDetailContainer = () => {
                 ></LectureReviewContainer>
               </ReviewSection>
 
-              <LectureClassContainer></LectureClassContainer>
+              <LectureClassContainer
+                grade={lectureInfo.grade}
+                lectureClassInfo={lectureClassInfo}
+              ></LectureClassContainer>
             </>
           )}
         </Content>

@@ -14,7 +14,7 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { clickBookmarkIcon } from "store/modules/lectureDetail";
+import { clickBookmarkIcon } from "store/modules/lectureDetailModule";
 
 const Section = styled.section`
   width: 100%;

@@ -55,9 +55,24 @@ export default {
    * @param {*} lectureId
    * @returns
    */
-  getLectureReviews: async (accessToken, lectureId) => {
+  getLectureReviews: async (accessToken, lectureId, limit = 5) => {
     const response = await axios.get(
-      `/reviews/lectures/${lectureId}?limit=10&page=1`,
+      `/reviews/lectures/${lectureId}?limit=${limit}&page=1`,
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
+  /**
+  /**
+   *  review id를 이용해 좋아요 처리
+   * @param {*} accessToken
+   * @param {*} lectureId
+   * @returns
+   */
+  postLectureReviewLike: async (accessToken, reviewId) => {
+    const response = await axios.post(
+      `/review/recommend`,
+      { id: reviewId },
       axiosConfig(accessToken)
     );
     return response;

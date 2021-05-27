@@ -8,9 +8,12 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 
+import { classTime } from "static/LecturesDetailPage/classTime";
+
 const Section = styled.section`
   width: 368px;
-  height: 381px;
+  height: fit-content;
+  min-height: 381px;
   grid-column: 8 / 12;
   padding: 24px;
   border-radius: 8px;
@@ -65,6 +68,7 @@ const GetButton = styled.button`
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
+  cursor: pointer;
   background-color: ${ConceptColor};
   :before {
     content: "담기";
@@ -82,61 +86,59 @@ const SetButton = styled.button`
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
+  cursor: pointer;
   background-color: #ffab2e;
   :before {
     content: "빼기";
   }
 `;
 
+const getDayNo = (classTimes) => {
+  return 1 + parseInt(parseInt(classTimes.split(",")[0].replace(/\[/, "")) / 100);
+};
+
+const classStartToEnd = (classTimes) => {
+  let times = classTimes.replace(/\[/, "").replace(/\]/, "").split(",");
+  let sub =
+    classTime[1 + parseInt(times[0] % 100)][0] +
+    "~" +
+    classTime[1 + parseInt(times[times.length - 1] % 100)][0];
+  return sub;
+};
 /**
  * TODO:
  * - API 연동 정보로 학점 표시
  * - 분반표시
- * - 담기 빼기 UI 구현
+ *
  * @param {*} param0
  * @returns
  */
-const LectureClassContainer = ({ lectureInfo }) => {
+const LectureClassContainer = ({ grade, lectureClassInfo }) => {
+  console.log(lectureClassInfo);
   return (
     <Section>
       <InfoLabel>{`시간표 정보`}</InfoLabel>
-      {/* {reviews.map((data) => (
-          <LectureCard
-            data={data}
-            isScrapped={scrapped.includes(data.id)}
-            key={data.id}
-          />
-        ))} */}
+
       <Wrapper>
         <SubInfoLabel>
           <SubLabel>{`학점`}</SubLabel>
-          <SubLabelContent>{`3학점`}</SubLabelContent>
+          <SubLabelContent>{`${grade}학점`}</SubLabelContent>
         </SubInfoLabel>
         <SubInfoLabel>
           <SubLabel>{`시간`}</SubLabel>
           <SubLabelContent>{`분반과 시간을 확인하세요.`}</SubLabelContent>
         </SubInfoLabel>
 
-        <ClassContent>
-          <SubLabelContent>{`월 1A~3B (01)`}</SubLabelContent>
-          <GetButton></GetButton>
-        </ClassContent>
-        <ClassContent>
-          <SubLabelContent>{`월 1A~3B (01)`}</SubLabelContent>
-          <SetButton></SetButton>
-        </ClassContent>
-        <ClassContent>
-          <SubLabelContent>{`월 1A~3B (01)`}</SubLabelContent>
-          <GetButton></GetButton>
-        </ClassContent>
-        <ClassContent>
-          <SubLabelContent>{`월 1A~3B (01)`}</SubLabelContent>
-          <GetButton></GetButton>
-        </ClassContent>
-        <ClassContent>
-          <SubLabelContent>{`월 1A~3B (01)`}</SubLabelContent>
-          <GetButton></GetButton>
-        </ClassContent>
+        {lectureClassInfo.map((data) => (
+          <ClassContent>
+            <SubLabelContent>
+              {`${classTime[0][getDayNo(data.classTime)]} `}
+              {classStartToEnd(data.classTime)}
+              {` (${data.classNumber})`}
+            </SubLabelContent>
+            {!data.selectedTableId ? <SetButton></SetButton> : <GetButton></GetButton>}
+          </ClassContent>
+        ))}
       </Wrapper>
     </Section>
   );
