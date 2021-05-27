@@ -1,13 +1,10 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import LectureDetailAPI from "api/lectureDetail";
-
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
+
 const Section = styled.section`
   width: 100%;
   margin-bottom: 32px;
@@ -136,31 +133,34 @@ const difficultyLabelConverter = (key) => {
       return;
   }
 };
+const gradePortionLabelConverter = (key) => {
+  switch (key) {
+    case 1:
+      return "후하게주심";
+    case 2:
+      return "적당히주심";
+    case 3:
+      return "아쉽게주심";
+    default:
+      return;
+  }
+};
 
 const getPercentage = (count, sum) => {
-  return count == 0 ? 1 : (count / sum) * 100;
+  return count === 0 ? 1 : (count / sum) * 100;
 };
 
 /**
- *
+ * 강의평 평점 그래프
  * @param {*} param0
  * @returns
  */
 const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) => {
-  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
-  const dispatch = useDispatch();
-  const history = useHistory();
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
-  var cnt = 0.0,
-    sum = 0,
-    idx = 0;
-  console.log(evaluationRating);
-  evaluationRating.forEach((el, idx) => {
-    sum += el;
-  });
+  var sum = evaluationRating.reduce(reducer),
+    cnt = 1.0;
 
-  console.log(sum);
-  console.log("LectureGraphContainer => ", evaluationRating, evaluationTotal, rest);
   return (
     <Section>
       <InfoLabel>종합 평가</InfoLabel>
@@ -170,19 +170,15 @@ const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) =
         <SubSubLabel>전체 평가 수 {rest.count}명</SubSubLabel>
         <GraphSection>
           <Graph>
-            {evaluationRating.map(({ id }) => (
-              <li key={id}>
+            {evaluationRating.map((rating, idx) => (
+              <li key={idx}>
                 <div>
                   <span
                     style={{
-                      height: getPercentage(evaluationRating[idx++], sum) + "%",
+                      height: getPercentage(rating, sum) + "%",
                     }}
                   ></span>
-                  {(cnt += 0.5) % 1.0 == 0 ? (
-                    <label>{parseFloat(cnt).toFixed(1)}</label>
-                  ) : (
-                    ""
-                  )}
+                  {idx % 2 === 1 ? <label>{parseFloat(cnt++).toFixed(1)}</label> : ""}
                 </div>
               </li>
             ))}
@@ -207,7 +203,7 @@ const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) =
           </SubLabelContent>
           <SubLabel>성적비율</SubLabel>
           <SubLabelContent>
-            {difficultyLabelConverter(evaluationTotal.grade_portion)}
+            {gradePortionLabelConverter(evaluationTotal.grade_portion)}
           </SubLabelContent>
         </EvaluationInfo>
 
