@@ -64,8 +64,9 @@ export const HitIcon = styled.img.attrs(({ isHit }) => ({
   cursor: pointer;
 `;
 
-export const HitAmount = styled.span`
-  margin: 8px 0 0 6px;
+export const HitAmount = styled.div`
+  margin-top: 4px;
+  margin-left: 6px;
   font-size: 16px;
   color: ${PlaceholderColor};
 `;
