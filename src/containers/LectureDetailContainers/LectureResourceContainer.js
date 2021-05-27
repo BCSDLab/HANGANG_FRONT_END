@@ -1,13 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 
-import { FontColor, InnerContentWidth } from "static/Shared/commonStyles";
+import {
+  FontColor,
+  InnerContentWidth,
+  PlaceholderColor,
+} from "static/Shared/commonStyles";
 
 const Section = styled.section`
-  width: ${InnerContentWidth};
+  width: 100%;
+  height: 120px;
 `;
-const Wrapper = styled.section`
-  padding: 40px;
+const ResourceWrapper = styled.section`
+  height: 100%;
 `;
 
 const InfoLabel = styled.label`
@@ -18,38 +23,20 @@ const InfoLabel = styled.label`
   font-size: 20px;
   font-weight: 500;
 `;
-const SubInfoLabel = styled.p`
-  display: contents;
 
-  margin: 0 10px 24px 0;
-  color: ${FontColor};
-  font-size: 20px;
-  font-weight: 500;
+const SubWarningLabel = styled.p`
+  margin-top: 50px;
+  text-align: center;
+  font-size: 12px;
+  line-height: normal;
+  letter-spacing: normal;
+  color: ${PlaceholderColor};
 `;
 const SubLabel = styled.label`
   margin: 4px 8px 71px 0;
 
   font-size: 14px;
   color: #999999;
-`;
-const SubSubLabel = styled.label`
-  display: flex;
-  width: 56px;
-  text-align: right;
-  justify-content: flex-end;
-  margin: 4px 0 60px 175px;
-  font-size: 11px;
-  line-height: normal;
-  color: #999999;
-  float: right;
-`;
-
-const GraphSection = styled.div`
-  width: 704px;
-  height: 146px;
-  margin: 24px 0 32px;
-  padding: 12px 16px 0;
-  background-color: #fafafa;
 `;
 
 /**
@@ -65,6 +52,9 @@ const LectureResourceContainer = ({ lectureInfo }) => {
   return (
     <Section>
       <InfoLabel>강의자료 추천</InfoLabel>
+      <ResourceWrapper>
+        <SubWarningLabel>등록된 강의자료 추천 정보가 없습니다.</SubWarningLabel>
+      </ResourceWrapper>
     </Section>
   );
 };

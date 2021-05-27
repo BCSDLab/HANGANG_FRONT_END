@@ -1,8 +1,15 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { BorderColor, FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import LectureDetailAPI from "api/lectureDetail";
+
+import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import { clickLikeIcon } from "store/modules/lectureDetailModule";
+
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const Section = styled.section`
   width: 100%;
@@ -73,7 +80,8 @@ const StarIcon = styled.img.attrs({
 `;
 
 const ReviewWrapper = styled.div`
-  height: calc(100vh - 800px);
+  height: auto;
+
   overflow-y: auto;
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
@@ -91,7 +99,7 @@ const ContentReportSection = styled.div``;
 const ReportButton = styled.a`
   float: right;
   margin: 4px 0 0 0;
-  font-family: NotoSansCJKKR;
+
   font-size: 12px;
   text-align: right;
   color: ${PlaceholderColor};
@@ -128,157 +136,92 @@ const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
 /**
  * TODO:
  * - 좋아요 누를시 좋아요 불 들어오록 css 수정
- *  - 강의 후기 출력
  *  - 좋아요 순 백엔드 확인해야함
+ * - 무한스크롤
  * - 후기 평점 표시 array 고민중
+ *
  * - 신고 기능
  *  - 신고창 UI
  * @param {*} param0
  * @returns
  */
-const LectureReviewContainer = ({ isLiked = true, lectureReviews, ...rest }) => {
+const LectureReviewContainer = ({ lectureReviews, ...rest }) => {
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   console.log(lectureReviews);
-  {
-    lectureReviews.result.map(
-      ({
-        lecture_id,
-        id,
-        assignment,
-        rating,
-        is_liked,
-        isLiked,
-        likes,
-        semester_date,
-        comment,
-      }) =>
-        console.log(
-          lecture_id,
-          id,
-          assignment,
-          assignment.map(({ id, name }) => console.log(name + " ")),
-          rating,
-          is_liked,
-          isLiked,
-          likes,
-          semester_date,
-          comment
-        )
-    );
-  }
+  const clickLike = async () => {
+    try {
+      console.log(this.props.id, this.props.isLiked);
+      if (!isLoggedIn && isCheckedToken) {
+        const onConfirm = () => history.push("/login");
+      } else {
+        const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+        if (!is_liked) {
+          let { data } = await LectureDetailAPI.postLectureReviewLike(accessToken, id);
+          if (data.httpStatus === "OK") {
+            dispatch(clickLikeIcon());
+            is_liked = true;
+          }
+        }
+      }
+    } catch (error) {
+      if (error.response.data.code) {
+        alert(error.response.data.errorMessage);
+      }
+      throw new Error(error);
+    }
+  };
 
   return (
     <Section>
       <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
 
       <ReviewWrapper>
-        {lectureReviews.result.map(
-          ({
-            lecture_id,
-            id,
-            assignment,
-            rating,
-            is_liked,
-            likes,
-            semester_date,
-            comment,
-          }) => (
-            <ReviewSection key={id}>
-              <ReviewTitleSection>
-                <ReviewWriterInfo>{semester_date} 수강자</ReviewWriterInfo>
-                <ReviewStarSection>
-                  {/* {[new Array(rating)].map((num, idx) => {
-                    <StarIcon></StarIcon>;
-                  })} */}
+        {lectureReviews.result.map((props) => (
+          <ReviewSection key={props.id}>
+            <ReviewTitleSection>
+              <ReviewWriterInfo>{props.semester_date} 수강자</ReviewWriterInfo>
+              <ReviewStarSection>
+                {/* {{ ...Array(props.rating) }.map((num, idx) => (
                   <StarIcon></StarIcon>
-                  <StarIcon></StarIcon>
-                  <StarIcon></StarIcon>
-                  <StarIcon></StarIcon>
-                </ReviewStarSection>
-              </ReviewTitleSection>
+                ))} */}
 
-              <SubLabelGrey>과제정보</SubLabelGrey>
-              <SubLabel>{assignment.map(({ id, name }) => name + " ")}</SubLabel>
-              <ReviewContent>{comment}</ReviewContent>
+                <StarIcon></StarIcon>
+                <StarIcon></StarIcon>
+                <StarIcon></StarIcon>
+                <StarIcon></StarIcon>
+              </ReviewStarSection>
+            </ReviewTitleSection>
 
-              <ContentReportSection>
-                <ThumbUpSection>
-                  {is_liked ? <ThumbUpPushedIcon /> : <ThumbUpIcon />}
-                  <SubLabelGrey>{likes}</SubLabelGrey>
-                </ThumbUpSection>
-                <ReportButton>신고</ReportButton>
-              </ContentReportSection>
-            </ReviewSection>
-          )
-        )}
+            <SubLabelGrey>과제정보</SubLabelGrey>
+            <SubLabel>{props.assignment.map(({ id, name }) => name + " ")}</SubLabel>
+            <ReviewContent>{props.comment}</ReviewContent>
 
-        <ReviewSection>
-          <ReviewTitleSection>
-            <ReviewWriterInfo>2020년 1학기 수강자</ReviewWriterInfo>
-            <ReviewStarSection>
-              <StarIcon></StarIcon>
-              <StarIcon></StarIcon>
-              <StarIcon></StarIcon>
-            </ReviewStarSection>
-          </ReviewTitleSection>
-
-          <SubLabelGrey>과제정보</SubLabelGrey>
-          <SubLabel>팀플, 레포트, 퀴즈, 토론</SubLabel>
-          <ReviewContent>
-            성적은 후하게 주십니다. 그렇지만 출첵이 너무 빡세구요,,,,, 시험 난이도도 좀
-            어려웠어요.. 과제량은 보통입니다. 배울거 많은 대신 졸려요,, 이 점 염두해두시길
-            바랍니다. 그리고 한강 강의자료로 공부했는데 도움이 많이 되었습니다... 개꿀!
-          </ReviewContent>
-
-          <ContentReportSection>
-            <ThumbUpSection>
-              <ThumbUpIcon />
-              <SubLabelGrey>42</SubLabelGrey>
-            </ThumbUpSection>
-            <ReportButton>신고</ReportButton>
-          </ContentReportSection>
-        </ReviewSection>
-
-        <ReviewSection>
-          <ReviewTitleSection>
-            <ReviewWriterInfo>2020년 1학기 수강자</ReviewWriterInfo>
-            <ReviewStarSection>
-              <StarIcon></StarIcon>
-              <StarIcon></StarIcon>
-              <StarIcon></StarIcon>
-            </ReviewStarSection>
-          </ReviewTitleSection>
-
-          <SubLabelGrey>과제정보</SubLabelGrey>
-          <SubLabel>팀플, 레포트, 퀴즈, 토론</SubLabel>
-          <ReviewContent>
-            성적은 후하게 주십니다. 그렇지만 출첵이 너무 빡세구요,w,,,, 시험 난이도도 좀
-            어려웠어요.. 과제량은 보통입니다. 배울거 많은 대신 졸려요,, 이 점 염두해두시길
-            바랍니다. 그리고 한강 강의자료로 공부했는데 도움이 많이 되었습니다... 개꿀!
-            성적은 후하게 주십니다. 그렇지만 출첵이 너무 빡세구요,,,,, 시험 난이도도 좀
-            어려웠어요.. 과제량은 보통입니다. 배울거 많은 대신 졸려요,, 이 점 염두해두시길
-            바랍니다. 그리고 한강 강의자료로 공부했는데 도움이 많이 되었습니다... 개꿀!
-          </ReviewContent>
-
-          <ContentReportSection>
-            <ThumbUpSection>
-              {isLiked ? <ThumbUpPushedIcon /> : <ThumbUpIcon />}
-              <SubLabelGrey>42</SubLabelGrey>
-            </ThumbUpSection>
-            <ReportButton>신고</ReportButton>
-          </ContentReportSection>
-        </ReviewSection>
+            <ContentReportSection>
+              <ThumbUpSection
+                id={props.id}
+                isLiked={props.is_liked}
+                onClick={() => clickLike(dispatch)}
+              >
+                {props.is_liked ? <ThumbUpPushedIcon /> : <ThumbUpIcon />}
+                <SubLabelGrey>{props.likes}</SubLabelGrey>
+              </ThumbUpSection>
+              <ReportButton>신고</ReportButton>
+            </ContentReportSection>
+          </ReviewSection>
+        ))}
       </ReviewWrapper>
     </Section>
   );
 };
 
 LectureReviewContainer.defaultProps = {
-  isLiked: false,
   lectureReviews: {},
   rest: {},
 };
 LectureReviewContainer.propTypes = {
-  isLiked: PropTypes.bool,
   lectureReviews: PropTypes.object,
   rest: PropTypes.object,
 };
