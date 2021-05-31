@@ -28,6 +28,7 @@ const defaultFilterOptions = {
 const REVIEW_STATE = {
   limit: 5,
   page: 1,
+  maxPage: 1,
 };
 
 const STATE = {
@@ -48,6 +49,7 @@ export default function lectureDetailReducer(state = STATE, action) {
         lectureEvaluationRating: action.payload[2].data,
         lectureEvaluationTotal: action.payload[3].data,
         lectureClassInfo: action.payload[4].data,
+        maxPage: Math.ceil(action.payload[1].data.count / state.limit),
       };
 
     case CLICK_SCRAP_ICON:
