@@ -1,5 +1,10 @@
 import axios from "axios";
-
+/**
+ * accessToken
+ * @param {*} accessToken
+ * @param {*} data
+ * @returns
+ */
 const axiosConfig = (accessToken, data = null) => {
   let config = {
     headers: {
@@ -49,15 +54,22 @@ export default {
   },
   /**
    * lectureId를 이용해 강의평 리스트 가져오기
-   * TODO:
-   * - 순서는 어떻게 처리 할건지?
-   * @param {*} accessToken
-   * @param {*} lectureId
+   * @param {*} accessToken 토큰
+   * @param {*} lectureId 강의 아이디
+   * @param {*} limit   조회 강의평 개수
+   * @param {*} sort    강의평 조회 순서
+   * @param {*} page    강의평 페이지
    * @returns
    */
-  getLectureReviews: async (accessToken, lectureId, limit = 5) => {
+  getLectureReviews: async (
+    accessToken,
+    lectureId,
+    limit = 10,
+    sort = "좋아요순",
+    page = 1
+  ) => {
     const response = await axios.get(
-      `/reviews/lectures/${lectureId}?limit=${limit}&page=1`,
+      `/reviews/lectures/${lectureId}?limit=${limit}&page=${page}&sort=${sort}`,
       axiosConfig(accessToken)
     );
     return response;
@@ -73,6 +85,21 @@ export default {
     const response = await axios.post(
       `/review/recommend`,
       { id: reviewId },
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
+  /**
+  /**
+   *  review id와 report Id를 이용해 강의 후기 신고
+   * @param {*} accessToken
+   * @param {*} lectureId
+   * @returns
+   */
+  reportLectureReview: async (accessToken, reviewId, reportId) => {
+    const response = await axios.post(
+      `/review/report`,
+      { content_id: reviewId, report_id: reportId },
       axiosConfig(accessToken)
     );
     return response;

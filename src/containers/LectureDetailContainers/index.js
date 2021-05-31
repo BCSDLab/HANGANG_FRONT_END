@@ -49,14 +49,16 @@ const LectureDetailContainer = () => {
   const { isLoading, ...orderOption } = useSelector((state) => state.lectureReducer);
   const { isLoggedIn } = useSelector((state) => state.authReducer);
 
-  const [lectureInfo, setLectureInfo] = useState([]);
-  const [lectureReviews, setLectureReviews] = useState([]);
-  const [lectureEvaluationTotal, setLectureEvaluationTotal] = useState({});
-  const [lectureEvaluationRating, setLectureEvaluationRating] = useState({});
-  const [lectureClassInfo, setLectureClassInfo] = useState({});
-
   const [isFetched, setIsFetched] = useState(false);
-  const { ...rest } = useSelector((state) => state.lectureDetailReducer);
+  const {
+    lectureReviews,
+    lectureEvaluationRating,
+    lectureEvaluationTotal,
+    lectureClassInfo,
+    limit,
+    sort,
+    ...rest
+  } = useSelector((state) => state.lectureDetailReducer);
 
   const fetchLectureDetailInfo = async () => {
     try {
@@ -65,27 +67,16 @@ const LectureDetailContainer = () => {
       }
 
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-      const [
-        lectureInfo,
-        lectureReviews,
-        lectureEvaluationRating,
-        lectureEvaluationTotal,
-        lectureClassInfo,
-      ] = await Promise.all([
+
+      const lectureInfo = await Promise.all([
         LectureDetailAPI.getLectureInfo(accessToken, lectureId),
-        LectureDetailAPI.getLectureReviews(accessToken, lectureId),
+        LectureDetailAPI.getLectureReviews(accessToken, lectureId, limit, sort),
         LectureDetailAPI.getEvaluationRating(accessToken, lectureId),
         LectureDetailAPI.getEvaluationTotal(accessToken, lectureId),
         LectureDetailAPI.getLectureClassInfo(accessToken, lectureId),
       ]);
 
-      setLectureInfo(lectureInfo.data);
-      setLectureReviews(lectureReviews.data);
-      setLectureEvaluationRating(lectureEvaluationRating.data);
-      setLectureEvaluationTotal(lectureEvaluationTotal.data);
-      setLectureClassInfo(lectureClassInfo.data);
-
-      dispatch(setLectureInfo(lectureInfo.data));
+      dispatch(setLectureInfo(lectureInfo));
     } catch (error) {
       console.log(error);
     } finally {
@@ -107,16 +98,12 @@ const LectureDetailContainer = () => {
           {isFetched && (
             <>
               <ReviewSection>
-                <LectureInfoContainer
-                  lectureInfo={lectureInfo}
-                  isScrapped={lectureInfo.is_scraped}
-                  lectureId={lectureId}
-                ></LectureInfoContainer>
+                <LectureInfoContainer lectureInfo={rest}></LectureInfoContainer>
 
                 <LectureGraphContainer
-                  rating={lectureInfo.total_rating}
-                  count={lectureInfo.review_count}
-                  hashtags={lectureInfo.top3_hash_tag}
+                  rating={rest.total_rating}
+                  count={rest.review_count}
+                  hashtags={rest.top3_hash_tag}
                   evaluationRating={lectureEvaluationRating}
                   evaluationTotal={lectureEvaluationTotal}
                 ></LectureGraphContainer>
@@ -124,13 +111,17 @@ const LectureDetailContainer = () => {
                 <LectureResourceContainer></LectureResourceContainer>
 
                 <LectureReviewContainer
-                  lectureReviewCount={lectureInfo.review_count}
+                  lectureReviewCount={lectureReviews.count}
                   lectureReviews={lectureReviews}
+                  lectureId={rest.id}
+                  page={rest.page}
+                  limit={limit}
+                  sort={sort}
                 ></LectureReviewContainer>
               </ReviewSection>
 
               <LectureClassContainer
-                grade={lectureInfo.grade}
+                grade={rest.grade}
                 lectureClassInfo={lectureClassInfo}
               ></LectureClassContainer>
             </>

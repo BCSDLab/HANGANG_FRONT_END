@@ -6,15 +6,9 @@ import PropTypes from "prop-types";
 
 import LectureDetailAPI from "api/lectureDetail";
 
-import {
-  BorderColor,
-  InnerContentWidth,
-  FontColor,
-  ConceptColor,
-  PlaceholderColor,
-} from "static/Shared/commonStyles";
+import { clickScrapIcon, unclickScrapIcon } from "store/modules/lectureDetailModule";
+import { FontColor, ConceptColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { clickBookmarkIcon } from "store/modules/lectureDetailModule";
 
 const Section = styled.section`
   width: 100%;
@@ -60,50 +54,55 @@ const Professor = styled(Title)`
   font-weight: normal;
 `;
 
-const Bookmark = styled.img.attrs((props) => ({
+const Bookmark = styled.img.attrs(({ isScrapped }) => ({
   alt: "스크랩",
-  src: props.isScrapped
-    ? "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/mypage/bookmark.png"
+  src: isScrapped
+    ? "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/bookmarked.png"
     : "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/bookmark.png",
 }))`
   float: right;
-  width: 24px;
+  width: 14px;
 
   cursor: pointer;
 `;
 
+LectureInfoContainer.propTypes = {
+  lectureInfo: PropTypes.object,
+};
+
 /**
- * TODO:
- * - 북마크 버튼 클릭해서 스크랩 기능 성공시 버튼 아이콘 스크랩된 상태의 아이콘으로 바꾸기
  * @param {*} param0
  * @returns
  */
-const LectureInfoContainer = ({ lectureInfo, lectureId, isScrapped = false }) => {
+function LectureInfoContainer({ lectureInfo = {} }) {
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const bookmarkLecture = async () => {
+  const clickBookmark = async () => {
     try {
       if (!isLoggedIn && isCheckedToken) {
-        const onConfirm = () => history.push("/login");
+        history.push("/login");
       } else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-        if (isScrapped) {
+
+        if (lectureInfo.is_scraped) {
           let { data } = await LectureDetailAPI.deleteLectureScrap(
             accessToken,
-            lectureId
+            lectureInfo.id
           );
-
-          if (data.httpStatus === "OK") dispatch(clickBookmarkIcon());
-          isScrapped = false;
+          if (data.httpStatus === "OK") dispatch(unclickScrapIcon());
         } else {
-          let { data } = await LectureDetailAPI.postLectureScrap(accessToken, lectureId);
-          if (data.httpStatus === "OK") dispatch(clickBookmarkIcon());
-          isScrapped = true;
+          let { data } = await LectureDetailAPI.postLectureScrap(
+            accessToken,
+            lectureInfo.id
+          );
+          console.log(data, lectureInfo.id);
+          if (data.httpStatus === "OK") dispatch(clickScrapIcon());
         }
       }
     } catch (error) {
+      console.dir(error);
       if (error.response.data.code) {
         alert(error.response.data.errorMessage);
       }
@@ -125,23 +124,21 @@ const LectureInfoContainer = ({ lectureInfo, lectureId, isScrapped = false }) =>
 
         <SubLabel>
           {`개설학기 `}
-          {lectureInfo.semester_data ? lectureInfo.semester_data.join(" ") : `없음`}
+          {lectureInfo.semester_data
+            ? semesterNum(lectureInfo.semester_data.join(","))
+            : `없음`}
+
           <Bookmark
-            isScrapped={isScrapped}
-            onClick={() => bookmarkLecture(dispatch)}
+            isScrapped={lectureInfo.is_scraped}
+            onClick={() => clickBookmark(dispatch)}
           ></Bookmark>
         </SubLabel>
       </Wrapper>
     </Section>
   );
-};
+}
 
-LectureInfoContainer.defaultProps = {
-  lectureInfo: {},
+const semesterNum = (semester) => {
+  return semester.replace("년 ", "-").replace("학기", "");
 };
-
-LectureInfoContainer.propTypes = {
-  lectureInfo: PropTypes.object,
-};
-
 export default LectureInfoContainer;
