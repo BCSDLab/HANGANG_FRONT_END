@@ -20,7 +20,9 @@ const Section = styled.section`
   border: solid 1px ${BorderColor};
 `;
 
-const Wrapper = styled.section``;
+const Wrapper = styled.section`
+  min-height: 320px;
+`;
 
 const InfoLabel = styled.div`
   display: block;
@@ -33,6 +35,20 @@ const InfoLabel = styled.div`
 
 const SubInfoLabel = styled.p`
   margin-bottom: 16px;
+`;
+
+const SubWarningWrapper = styled.div`
+  display: flex;
+  height: 327px;
+  justify-content: center;
+  align-items: center;
+`;
+const SubWarningLabel = styled.p`
+  text-align: center;
+  font-size: 12px;
+  line-height: normal;
+  letter-spacing: normal;
+  color: ${PlaceholderColor};
 `;
 
 const SubLabel = styled.label`
@@ -94,16 +110,15 @@ const SetButton = styled.button`
 `;
 
 const getDayNo = (classTimes) => {
-  return 1 + parseInt(parseInt(classTimes.split(",")[0].replace(/\[/, "")) / 100);
+  return 2 + parseInt(parseInt(classTimes.split(",")[0].replace(/\[/, "")) / 100);
 };
 
 const classStartToEnd = (classTimes) => {
-  let times = classTimes.replace(/\[/, "").replace(/\]/, "").split(",");
-  let sub =
-    classTime[1 + parseInt(times[0] % 100)][0] +
-    "~" +
-    classTime[1 + parseInt(times[times.length - 1] % 100)][0];
-  return sub;
+  let times = classTimes.replace(/\[/, "").replace(/\]/, "").split(","),
+    start = 1 + parseInt(times[0] % 100),
+    end = 1 + parseInt(times[times.length - 1] % 100);
+
+  return classTime[start][0] + "~" + classTime[end][0];
 };
 /**
  * TODO:
@@ -114,12 +129,18 @@ const classStartToEnd = (classTimes) => {
  * @returns
  */
 const LectureClassContainer = ({ grade, lectureClassInfo }) => {
-  console.log(lectureClassInfo);
+  // console.log(lectureClassInfo);
   return (
     <Section>
       <InfoLabel>{`시간표 정보`}</InfoLabel>
 
       <Wrapper>
+        {!lectureClassInfo && (
+          <SubWarningWrapper>
+            <SubWarningLabel>등록된 시간표 정보가 없습니다.</SubWarningLabel>
+          </SubWarningWrapper>
+        )}
+
         <SubInfoLabel>
           <SubLabel>{`학점`}</SubLabel>
           <SubLabelContent>{`${grade}학점`}</SubLabelContent>
@@ -130,7 +151,7 @@ const LectureClassContainer = ({ grade, lectureClassInfo }) => {
         </SubInfoLabel>
 
         {lectureClassInfo.map((data) => (
-          <ClassContent>
+          <ClassContent key={data.id}>
             <SubLabelContent>
               {`${classTime[0][getDayNo(data.classTime)]} `}
               {classStartToEnd(data.classTime)}
