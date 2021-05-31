@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import ResourceDetailAPI from "api/resourceDetail";
+import LectureDetailAPI from "api/lectureDetail";
 
 import {
   hideReportModal,
@@ -61,8 +62,9 @@ const requestReport = async (contentId, reportId, reportType, dispatch) => {
   try {
     const accessToken = getValueOnLocalStorage("hangangToken").access_token;
     let data;
-
-    if (reportType === "comment") {
+    if (reportType === "review") {
+      data = await LectureDetailAPI.reportLectureReview(accessToken, contentId, reportId);
+    } else if (reportType === "comment") {
       data = await ResourceDetailAPI.reportComment(contentId, reportId, accessToken);
     } else {
       data = await ResourceDetailAPI.reportResource(contentId, reportId, accessToken);

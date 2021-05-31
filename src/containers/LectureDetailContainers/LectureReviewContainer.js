@@ -6,10 +6,13 @@ import PropTypes from "prop-types";
 
 import LectureDetailAPI from "api/lectureDetail";
 
+import { addNextPageReviews, clickLikeIcon } from "store/modules/lectureDetailModule";
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
-import { clickLikeIcon } from "store/modules/lectureDetailModule";
 
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import useInfiniteScroll from "hooks/useInfiniteScroll";
+import debounce from "lodash.debounce";
+import { callReportModal } from "utils/reportUtils";
 
 const Section = styled.section`
   width: 100%;
@@ -18,6 +21,11 @@ const Wrapper = styled.section`
   padding: 40px;
 `;
 
+const ReviewInfoSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 const InfoLabel = styled.label`
   display: block;
   margin: 32px 4px 24px 0;
@@ -31,6 +39,14 @@ const SubInfoLabel = styled.p`
   color: ${FontColor};
   font-size: 20px;
   font-weight: 500;
+`;
+const SubWarningLabel = styled.p`
+  margin: 50px 0;
+  text-align: center;
+  font-size: 12px;
+  line-height: normal;
+  letter-spacing: normal;
+  color: ${PlaceholderColor};
 `;
 const SubLabelGrey = styled.label`
   margin: 4px 4px 8px 0;
@@ -51,6 +67,7 @@ const SubLabel = styled.label`
 
 const ReviewSection = styled.div`
   border-bottom: 1px solid #eeeeee;
+  margin-bottom: 10px;
   :last-child {
     border: none;
   }
@@ -58,7 +75,7 @@ const ReviewSection = styled.div`
 
 const ReviewTitleSection = styled.div`
   display: block;
-  margin: 24px 0 4px 0;
+  margin: 0 0 4px 0;
 `;
 const ReviewWriterInfo = styled.label`
   display: inline-felx;
@@ -72,7 +89,16 @@ const ReviewStarSection = styled.div`
 const StarIcon = styled.img.attrs({
   src:
     "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/star.png",
-  alt: "stars",
+  alt: "star",
+})`
+  width: 16px;
+  height: 16px;
+  z-index: 9990;
+`;
+const HalfStarIcon = styled.img.attrs({
+  src:
+    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/half-star.png",
+  alt: "half-star",
 })`
   width: 16px;
   height: 16px;
@@ -111,16 +137,18 @@ const ThumbUpSection = styled.div`
   justify-content: flex-start;
   cursor: pointer;
 `;
-const ThumbUpIcon = styled.img.attrs({
-  src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up.png",
+const ThumbUpIcon = styled.img.attrs(({ isLiked }) => ({
+  src: isLiked
+    ? "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up_pushed.png"
+    : "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up.png",
   alt: "thumb up",
-})`
+}))`
   width: 16px;
   height: 16px;
   margin-right: 4px;
   z-index: 9990;
 `;
+
 const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
   src:
     "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up_pushed.png",
@@ -132,38 +160,61 @@ const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
 
   z-index: 9990;
 `;
+const FilterPickSection = styled.div`
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+const FilterPickLabel = styled.label`
+  margin: 0 2px 0 0;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+  color: ${FontColor};
+`;
+const LowArrowIcon = styled.img.attrs({
+  src:
+    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/arrow-low.png",
+  alt: "arrow low",
+})`
+  width: 9px;
+  height: 5px;
+  margin-left: 4px;
+`;
 
 /**
  * TODO:
- * - 좋아요 누를시 좋아요 불 들어오록 css 수정
+ * - 좋아요 누를시 좋아요 불 들어오록 dispatch 수정
  *  - 좋아요 순 백엔드 확인해야함
  * - 무한스크롤
- * - 후기 평점 표시 array 고민중
  *
  * - 신고 기능
  *  - 신고창 UI
  * @param {*} param0
  * @returns
  */
-const LectureReviewContainer = ({ lectureReviews, ...rest }) => {
+const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
   const dispatch = useDispatch();
   const history = useHistory();
+  const { limit, page, maxPageOnComment } = useSelector(
+    (state) => state.lectureDetailReducer
+  );
 
-  console.log(lectureReviews);
-  const clickLike = async () => {
+  const clickLike = async (id) => {
+    console.log(id);
     try {
-      console.log(this.props.id, this.props.isLiked);
       if (!isLoggedIn && isCheckedToken) {
-        const onConfirm = () => history.push("/login");
+        history.push("/login");
       } else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-        if (!is_liked) {
-          let { data } = await LectureDetailAPI.postLectureReviewLike(accessToken, id);
-          if (data.httpStatus === "OK") {
-            dispatch(clickLikeIcon());
-            is_liked = true;
-          }
+        let { data } = await LectureDetailAPI.postLectureReviewLike(accessToken, id);
+        if (data.httpStatus === "OK") {
+          dispatch(clickLikeIcon());
         }
       }
     } catch (error) {
@@ -174,44 +225,86 @@ const LectureReviewContainer = ({ lectureReviews, ...rest }) => {
     }
   };
 
+  /**
+   * 스크린이 댓글 중 마지막 3번째 댓글을 보이게 되면 fetchMore를 호출합니다.
+   * fetchMore는 현재 페이지와 최대 페이지를 비교하여, 최대 페이지를 넘어가지 않았다면
+   * 새로운 페이지의 댓글을 호출합니다.
+   */
+  const getMoreReviews = async () => {
+    try {
+      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+      let { data } = await ResourceDetailAPI.getComment(
+        accessToken,
+        lectureId,
+        limit,
+        page + 1
+      );
+      if (data.httpStatus === "OK") {
+        dispatch(addNextPageReviews({ lectureReviews }));
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+  const fetchMore = debounce((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && page < maxPageOnComment) {
+      getMoreReviews();
+    }
+  }, 200);
+  const { targetRef } = useInfiniteScroll(fetchMore, 5);
+
   return (
     <Section>
-      <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
+      <ReviewInfoSection>
+        <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
+        <FilterPickSection onClick={() => clickFilter(props.id, props.is_liked)}>
+          <FilterPickLabel>{rest.sort}</FilterPickLabel>
+          <LowArrowIcon></LowArrowIcon>
+        </FilterPickSection>
+      </ReviewInfoSection>
 
-      <ReviewWrapper>
+      <ReviewWrapper ref={targetRef}>
         {lectureReviews.result.map((props) => (
           <ReviewSection key={props.id}>
             <ReviewTitleSection>
               <ReviewWriterInfo>{props.semester_date} 수강자</ReviewWriterInfo>
               <ReviewStarSection>
-                {/* {{ ...Array(props.rating) }.map((num, idx) => (
-                  <StarIcon></StarIcon>
-                ))} */}
-
-                <StarIcon></StarIcon>
-                <StarIcon></StarIcon>
-                <StarIcon></StarIcon>
-                <StarIcon></StarIcon>
+                {[...Array(parseInt(props.rating))].map((num, idx) => {
+                  return <StarIcon key={idx}></StarIcon>;
+                })}
+                {props.rating - parseInt(props.rating) === 0 && (
+                  <HalfStarIcon></HalfStarIcon>
+                )}
               </ReviewStarSection>
             </ReviewTitleSection>
 
             <SubLabelGrey>과제정보</SubLabelGrey>
-            <SubLabel>{props.assignment.map(({ id, name }) => name + " ")}</SubLabel>
+            <SubLabel>{props.assignment.map((name) => name.name).join(" ")}</SubLabel>
             <ReviewContent>{props.comment}</ReviewContent>
 
             <ContentReportSection>
               <ThumbUpSection
                 id={props.id}
                 isLiked={props.is_liked}
-                onClick={() => clickLike(dispatch)}
+                onClick={() => clickLike(props.id, props.is_liked)}
               >
-                {props.is_liked ? <ThumbUpPushedIcon /> : <ThumbUpIcon />}
+                <ThumbUpIcon isLiked={props.is_liked} />
                 <SubLabelGrey>{props.likes}</SubLabelGrey>
               </ThumbUpSection>
-              <ReportButton>신고</ReportButton>
+              <ReportButton
+                onClick={() =>
+                  callReportModal("review", props.id, isAuthenticated, history, dispatch)
+                }
+              >
+                신고
+              </ReportButton>
             </ContentReportSection>
           </ReviewSection>
         ))}
+        {lectureReviews.count === 0 && (
+          <SubWarningLabel>등록된 개인 평가 정보가 없습니다.</SubWarningLabel>
+        )}
       </ReviewWrapper>
     </Section>
   );
