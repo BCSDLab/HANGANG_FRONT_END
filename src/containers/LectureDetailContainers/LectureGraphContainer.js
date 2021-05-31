@@ -142,7 +142,7 @@ const gradePortionLabelConverter = (key) => {
     case 3:
       return "아쉽게주심";
     default:
-      return;
+      return "";
   }
 };
 
@@ -156,10 +156,8 @@ const getPercentage = (count, sum) => {
  * @returns
  */
 const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) => {
-  const reducer = (accumulator, currentValue) => accumulator + currentValue;
-
-  var sum = evaluationRating.reduce(reducer),
-    cnt = 1.0;
+  const sum = evaluationRating.reduce((acc, curr) => acc + curr);
+  let cnt = 1.0;
 
   return (
     <Section>
@@ -215,36 +213,6 @@ const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) =
       </EvaluationWrapper>
     </Section>
   );
-};
-
-LectureGraphContainer.defaultProps = {
-  evaluationTotal: [],
-  evaluationTotal: {
-    assignment_amount: 0,
-    attendance_frequency: 0,
-    difficulty: 0,
-    grade_portion: 0,
-  },
-  rest: {
-    count: 0,
-    rating: 0,
-    hashtags: [{}],
-  },
-};
-
-LectureGraphContainer.propTypes = {
-  evaluationTotal: PropTypes.array,
-  evaluationTotal: PropTypes.object.isRequired,
-  rest: PropTypes.shape({
-    count: PropTypes.number,
-    rating: PropTypes.number,
-    hashtags: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number,
-        tag: PropTypes.string,
-      })
-    ),
-  }),
 };
 
 export default LectureGraphContainer;
