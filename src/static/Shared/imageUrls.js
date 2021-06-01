@@ -19,3 +19,7 @@ export const FILE_ERASE_BUTTON_URL =
 // Resource Detail Page
 export const COMMENT_ICON_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/ResourceDetailPage/write_comment.png";
+
+// Timetable Page
+export const RIGHT_BUTTON_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/right_button.png";
