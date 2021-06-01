@@ -12,18 +12,20 @@ import {
   setValueOnLocalStorage,
 } from "utils/localStorageUtils";
 
-import LoginPage from "pages/AuthPages/LoginPage";
-import LecturesPage from "pages/LecturesPages/LecturesPage";
-import ResourcesPage from "pages/ResourcesPages/ResourcesPage";
-import FindPwPage from "pages/AuthPages/FindPwPage";
-import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
-import SignUpPage from "pages/AuthPages/SignUpPage";
-import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
-import IndexPage from "pages/IndexPage";
 import NavigationContainer from "containers/Shared/NavigationContainer";
 import FooterContainer from "containers/Shared/FooterContainer";
-import MyPage from "pages/MyPage";
+
+import IndexPage from "pages/IndexPage";
+import LecturesPage from "pages/LecturesPages/LecturesPage";
+import ResourcesPage from "pages/ResourcesPages/ResourcesPage";
 import ResourceDetailPage from "pages/ResourceDetailPage";
+import TimetablePage from "pages/TimeTablePage";
+import LoginPage from "pages/AuthPages/LoginPage";
+import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
+import FindPwPage from "pages/AuthPages/FindPwPage";
+import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
+import SignUpPage from "pages/AuthPages/SignUpPage";
+import MyPage from "pages/MyPage";
 
 const Main = styled.main`
   height: fit-content;
@@ -155,6 +157,7 @@ const App = () => {
         <Route path="/lectures" component={LecturesPage} />
         <Route path="/resources" component={ResourcesPage} />
         <Route path="/resource" component={ResourceDetailPage} />
+        <Route path="/timetable" component={TimetablePage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
         <Route path="/findpw" component={FindPwPage} />
