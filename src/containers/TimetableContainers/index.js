@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import ChangingSemesterBar from "components/TimetableComponents/ChangingSemesterBar";
+import LectureAddContainer from "containers/TimetableContainers/LectureAddContainer";
 
 const Background = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const Background = styled.div`
   background-color: #f7f7f7;
 `;
 
-const SearchBoxTimetableWrapper = styled.div`
+const MainContentsWrapper = styled.div`
   width: 1135px;
 `;
 
@@ -22,7 +23,9 @@ const TimetableContainer = () => {
   return (
     <Background>
       <ChangingSemesterBar />
-      <SearchBoxTimetableWrapper></SearchBoxTimetableWrapper>
+      <MainContentsWrapper>
+        <LectureAddContainer />
+      </MainContentsWrapper>
     </Background>
   );
 };

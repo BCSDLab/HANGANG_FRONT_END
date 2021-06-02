@@ -23,3 +23,7 @@ export const COMMENT_ICON_URL =
 // Timetable Page
 export const RIGHT_BUTTON_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/right_button.png";
+export const PREV_BUTTON =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/search_bar_left_button.png";
+export const SEARCH_BUTTON =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/search.png";
