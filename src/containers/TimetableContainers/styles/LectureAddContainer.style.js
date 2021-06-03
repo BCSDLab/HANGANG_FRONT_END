@@ -2,10 +2,17 @@ import styled from "styled-components";
 import {
   BorderColor,
   ConceptColor,
+  CopyRightColor,
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import { PREV_BUTTON, SEARCH_BUTTON } from "static/Shared/imageUrls";
+import {
+  ADJUSTMENT_URL,
+  PREV_BUTTON_URL,
+  REFRESH_URL,
+  SEARCH_BUTTON_URL,
+  X_URL,
+} from "static/Shared/imageUrls";
 
 export const LectureAddBox = styled.div`
   position: relative;
@@ -53,7 +60,7 @@ export const SearchBarSection = styled.form`
   align-items: center;
   width: 528px;
   margin: 0 auto;
-  padding: 17px 0;
+  padding: 17px 0 20px;
 `;
 
 export const SearchBar = styled.input.attrs({
@@ -78,7 +85,7 @@ export const SearchBar = styled.input.attrs({
 `;
 
 export const PrevButton = styled.img.attrs({
-  src: PREV_BUTTON,
+  src: PREV_BUTTON_URL,
   alt: "prev",
 })`
   width: 24px;
@@ -87,7 +94,7 @@ export const PrevButton = styled.img.attrs({
 `;
 
 export const SearchButton = styled.img.attrs({
-  src: SEARCH_BUTTON,
+  src: SEARCH_BUTTON_URL,
   alt: "search",
 })`
   position: absolute;
@@ -95,4 +102,103 @@ export const SearchButton = styled.img.attrs({
   right: 6px;
   width: 24px;
   cursor: pointer;
+`;
+
+export const FilterSection = styled.section`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 65px 0 20px;
+  border-bottom: 1px solid ${BorderColor};
+`;
+
+export const MajorFilterButton = styled.button`
+  all: unset;
+  box-sizing: border-box;
+  padding: 8px 7px 15px 7px;
+  border-bottom: ${({ isTarget }) =>
+    isTarget ? "2px solid #ffab2e" : "2px solid transparent"};
+
+  color: ${({ isTarget }) => (isTarget ? `${ConceptColor}` : `${PlaceholderColor}`)};
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+`;
+
+export const AdjustmentButton = styled.img.attrs({
+  src: ADJUSTMENT_URL,
+  alt: "adjustment",
+})`
+  position: absolute;
+  top: 3px;
+  right: 19px;
+  width: 24px;
+  cursor: pointer;
+`;
+
+export const ClassificationFilter = styled.div`
+  position: absolute;
+  top: 180px;
+  right: 16px;
+  width: 383px;
+  height: 190px;
+  border: 1px solid ${CopyRightColor};
+  border-radius: 16px;
+  padding: 20px;
+  background-color: #fff;
+  z-index: 9998;
+`;
+
+export const Label = styled.label`
+  display: block;
+  font-size: 12px;
+  color: ${PlaceholderColor};
+`;
+
+export const FilterLabel = styled(Label)`
+  font-size: 16px;
+  color: ${FontColor};
+  margin: 26px 0 20px 0;
+`;
+
+export const ButtonGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 8px 8px;
+`;
+
+export const FilterButton = styled.input.attrs({
+  type: "button",
+})`
+  padding: 8px 0px;
+  border: none;
+  border-radius: 20px;
+
+  background-color: ${({ isChoiced }) =>
+    isChoiced ? `${ConceptColor}` : `${BorderColor}`};
+  color: ${({ isChoiced }) => (isChoiced ? `#fff` : `${FontColor}`)};
+  font-size: 14px;
+  font-weight: ${({ isChoiced }) => (isChoiced ? "500" : "normal")};
+
+  cursor: pointer;
+  outline: none;
+`;
+
+export const RefreshButton = styled.img.attrs({
+  src: REFRESH_URL,
+  alt: "refresh",
+})`
+  position: absolute;
+  top: 20px;
+  right: 52px;
+  width: 24px;
+  cursor: pointer;
+`;
+
+export const XButton = styled(RefreshButton).attrs({
+  src: X_URL,
+  alt: "x",
+})`
+  right: 20px;
 `;
