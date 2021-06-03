@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TimetableAPI from "api/timetable";
@@ -11,8 +11,10 @@ import {
 } from "store/modules/timetableModule";
 import {
   AdjustmentButton,
+  BoxWrapper,
   ButtonGrid,
   ClassificationFilter,
+  DirectlyAddBox,
   DirectlyAddButton,
   FilterButton,
   FilterLabel,
@@ -22,7 +24,9 @@ import {
   LectureSection,
   MajorFilterButton,
   PrevButton,
+  RecentlySearchedBox,
   RefreshButton,
+  SearchAddBox,
   SearchAddButton,
   SearchBar,
   SearchBarSection,
@@ -36,6 +40,7 @@ import Lecture from "components/TimetableComponents/Lecture";
 const LectureAddContainer = () => {
   const dispatch = useDispatch();
   const { lectureList, ...rest } = useSelector((state) => state.timetableReducer);
+  const boxWrapperRef = useRef();
   const [current, setCurrent] = useState("검색추가");
   const [isClassificationFilterVisible, setIsClassificationFilterVisible] = useState(
     false
@@ -52,8 +57,12 @@ const LectureAddContainer = () => {
   }, [rest.classification, rest.department, rest.keyword]);
 
   useEffect(() => {
-    console.log(lectureList);
-  });
+    if (current === "직접추가") {
+      boxWrapperRef.current.style.transform = "translateX(-50%)";
+    } else {
+      boxWrapperRef.current.style.transform = "translateX(0)";
+    }
+  }, [current]);
 
   return (
     <LectureAddBox>
@@ -63,47 +72,51 @@ const LectureAddContainer = () => {
       </div>
       <UnderBar current={current} />
       <WhiteBackground>
-        {/* SEARCH BAR SECTION */}
-        {current !== "직접추가" && (
-          <SearchBarSection onSubmit={searchLectureOnWord}>
-            {current === "검색" && <PrevButton onClick={() => setCurrent("검색추가")} />}
-            <SearchBar current={current} onClick={() => setCurrent("검색")} />
-            <SearchButton />
-          </SearchBarSection>
-        )}
+        <BoxWrapper ref={boxWrapperRef}>
+          <SearchAddBox>
+            {/* SEARCH BAR SECTION */}
+            <SearchBarSection onSubmit={searchLectureOnWord}>
+              {current === "검색" && (
+                <PrevButton onClick={() => setCurrent("검색추가")} />
+              )}
+              <SearchBar current={current} onClick={() => setCurrent("검색")} />
+              <SearchButton />
+            </SearchBarSection>
 
-        {/* FILTER SECTION */}
-        {current === "검색추가" && (
-          <FilterSection>
-            {MAJOR_LIST.map(({ label, department: value }) => (
-              <MajorFilterButton
-                key={label}
-                value={label}
-                isTarget={rest.department === value}
-                onClick={() => dispatch(setFilterOption({ key: "department", value }))}
-              >
-                {label}
-              </MajorFilterButton>
-            ))}
-            <AdjustmentButton
-              onClick={() => setIsClassificationFilterVisible((prev) => !prev)}
-            />
-          </FilterSection>
-        )}
+            {/* FILTER SECTION */}
+            <FilterSection>
+              {MAJOR_LIST.map(({ label, department: value }) => (
+                <MajorFilterButton
+                  key={label}
+                  value={label}
+                  isTarget={rest.department === value}
+                  onClick={() => dispatch(setFilterOption({ key: "department", value }))}
+                >
+                  {label}
+                </MajorFilterButton>
+              ))}
+              <AdjustmentButton
+                onClick={() => setIsClassificationFilterVisible((prev) => !prev)}
+              />
+            </FilterSection>
 
-        {/* LECTURES SECTION */}
+            {/* LECTURES SECTION */}
 
-        {current === "검색추가" && (
-          <LectureSection>
-            {lectureList.map((lectureInfo) => (
-              <Lecture infos={lectureInfo} key={lectureInfo.id} />
-            ))}
-          </LectureSection>
-        )}
+            <LectureSection>
+              {lectureList.map((lectureInfo) => (
+                <Lecture infos={lectureInfo} key={lectureInfo.id} />
+              ))}
+            </LectureSection>
+          </SearchAddBox>
+
+          <DirectlyAddBox>
+            <span>hihi</span>
+          </DirectlyAddBox>
+        </BoxWrapper>
       </WhiteBackground>
 
       {/* MORE FILTER SECTION */}
-      {current === "검색추가" && isClassificationFilterVisible && (
+      {isClassificationFilterVisible && (
         <ClassificationFilter>
           <Label>필터를 적용해 보세요.</Label>
           <RefreshButton onClick={() => dispatch(setDefaultFilterOption())} />

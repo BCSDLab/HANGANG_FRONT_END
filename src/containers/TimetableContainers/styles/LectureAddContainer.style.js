@@ -17,6 +17,27 @@ import {
 export const LectureAddBox = styled.div`
   position: relative;
   margin-top: 33px;
+`;
+
+export const WhiteBackground = styled.div`
+  overflow-x: hidden;
+  width: 560px;
+  height: 977px;
+  background-color: #fff;
+`;
+
+export const BoxWrapper = styled.div`
+  width: fit-content;
+  display: flex;
+  transform: translateX(0);
+  transition: transform 0.75s ease-in-out;
+`;
+
+export const SearchAddBox = styled.div`
+  width: 560px;
+`;
+
+export const DirectlyAddBox = styled.div`
   width: 560px;
 `;
 
@@ -46,12 +67,6 @@ export const UnderBar = styled.div`
   width: 119px;
   height: 2px;
   background-color: ${ConceptColor};
-`;
-
-export const WhiteBackground = styled.div`
-  width: 560px;
-  height: 977px;
-  background-color: #fff;
 `;
 
 export const SearchBarSection = styled.form`
