@@ -12,10 +12,9 @@ export const setLectureList = (payload) => ({ type: SET_LECTURE_LIST, payload })
 // State
 const DEFAULT_SEARCH_LECTURE_OPTION = {
   classification: [], //  유형
-  criteria: "",
   department: "", //  학과
   keyword: "", //  검색어
-  limit: 10,
+  limit: 20,
   page: 1,
   semesterDateId: 5,
 };
@@ -63,6 +62,7 @@ export default function timetableReducer(state = STATE, action) {
     case SET_LECTURE_LIST:
       return {
         ...state,
+        lectureList: action.payload,
       };
     default:
       return state;

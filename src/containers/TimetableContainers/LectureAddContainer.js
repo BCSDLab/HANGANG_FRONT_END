@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import TimetableAPI from "api/timetable";
 import { CLASSIFICATION_LIST } from "static/Shared/CLASSIFICATION_LIST";
 import { MAJOR_LIST } from "static/Shared/MAJOR_LIST";
+import {
+  setDefaultFilterOption,
+  setFilterOption,
+  setLectureList,
+} from "store/modules/timetableModule";
 import {
   AdjustmentButton,
   ButtonGrid,
@@ -24,20 +32,26 @@ import {
 } from "./styles/LectureAddContainer.style";
 
 const LectureAddContainer = () => {
+  const dispatch = useDispatch();
+  const { lectureList, ...rest } = useSelector((state) => state.timetableReducer);
   const [current, setCurrent] = useState("검색추가");
-  const [word, setWord] = useState("");
-  const [filter, setFilter] = useState({
-    major: "교양",
-    classification: [],
-  });
   const [isClassificationFilterVisible, setIsClassificationFilterVisible] = useState(
-    true
+    false
   );
 
   const searchLectureOnWord = (e) => {
     e.preventDefault();
-    console.log(word);
+    dispatch(setFilterOption({ key: "keyword", value: e.target[0].value }));
+    setCurrent("검색추가");
   };
+
+  useEffect(() => {
+    setLecturesOnState(rest, dispatch);
+  }, [rest.classification, rest.department, rest.keyword]);
+
+  useEffect(() => {
+    console.log(lectureList);
+  });
 
   return (
     <LectureAddBox>
@@ -51,26 +65,20 @@ const LectureAddContainer = () => {
         {current !== "직접추가" && (
           <SearchBarSection onSubmit={searchLectureOnWord}>
             {current === "검색" && <PrevButton onClick={() => setCurrent("검색추가")} />}
-            <SearchBar
-              current={current}
-              onClick={() => setCurrent("검색")}
-              onChange={(e) => setWord(e.target.value)}
-              value={word}
-            />
+            <SearchBar current={current} onClick={() => setCurrent("검색")} />
             <SearchButton />
           </SearchBarSection>
         )}
 
         {/* FILTER SECTION */}
         {current === "검색추가" && (
-          <FilterSection
-            onClick={(e) => setFilter((prev) => ({ ...prev, major: e.target.value }))}
-          >
-            {MAJOR_LIST.map(({ label }) => (
+          <FilterSection>
+            {MAJOR_LIST.map(({ label, department: value }) => (
               <MajorFilterButton
                 key={label}
                 value={label}
-                isTarget={filter.major === label}
+                isTarget={rest.department === value}
+                onClick={() => dispatch(setFilterOption({ key: "department", value }))}
               >
                 {label}
               </MajorFilterButton>
@@ -83,19 +91,21 @@ const LectureAddContainer = () => {
       </WhiteBackground>
 
       {/* MORE FILTER SECTION */}
-      {isClassificationFilterVisible && (
+      {current === "검색추가" && isClassificationFilterVisible && (
         <ClassificationFilter>
           <Label>필터를 적용해 보세요.</Label>
-          <RefreshButton />
+          <RefreshButton onClick={() => dispatch(setDefaultFilterOption())} />
           <XButton onClick={() => setIsClassificationFilterVisible(false)} />
           <FilterLabel>유형</FilterLabel>
           <ButtonGrid>
-            {CLASSIFICATION_LIST.map(({ label }) => (
+            {CLASSIFICATION_LIST.map(({ label, value }) => (
               <FilterButton
                 key={label}
                 value={label}
-                // isChoiced={isChoiced(key, filterValue)}
-                // onClick={() => setFilter(key, filterValue)}
+                isChoiced={rest.classification.includes(value)}
+                onClick={() =>
+                  dispatch(setFilterOption({ key: "classification", value }))
+                }
               />
             ))}
           </ButtonGrid>
@@ -103,6 +113,15 @@ const LectureAddContainer = () => {
       )}
     </LectureAddBox>
   );
+};
+
+const setLecturesOnState = async (options, dispatch) => {
+  try {
+    const { data } = await TimetableAPI.fetchLectures(options);
+    dispatch(setLectureList(data));
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 export default LectureAddContainer;
