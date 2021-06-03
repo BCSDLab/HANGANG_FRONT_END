@@ -96,7 +96,10 @@ const Lecture = ({ infos }) => {
         {infos.professor} ({infos.classNumber})
       </SubTitle>
       <OtherLabels>
-        {infos.grades}학년 {infos.classification} {infos.class_time}
+        {infos.grades}학점 &nbsp;
+        {infos.target.length === 2 ? "전체" : `${infos.target[2]}학년`} &nbsp;
+        {infos.classification} &nbsp;
+        {infos.class_time}
       </OtherLabels>
       <Rating>{infos.rating.toFixed(1)}</Rating>
       {isHovered && (
