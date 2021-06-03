@@ -10,7 +10,6 @@ const Background = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 1000px;
   padding: 66px 0px;
   background-color: #f7f7f7;
 `;

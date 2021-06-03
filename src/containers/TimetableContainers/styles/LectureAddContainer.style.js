@@ -202,3 +202,8 @@ export const XButton = styled(RefreshButton).attrs({
 })`
   right: 20px;
 `;
+
+export const LectureSection = styled.div`
+  height: 863px;
+  overflow-y: auto;
+`;

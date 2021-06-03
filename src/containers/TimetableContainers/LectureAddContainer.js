@@ -19,6 +19,7 @@ import {
   FilterSection,
   Label,
   LectureAddBox,
+  LectureSection,
   MajorFilterButton,
   PrevButton,
   RefreshButton,
@@ -30,6 +31,7 @@ import {
   WhiteBackground,
   XButton,
 } from "./styles/LectureAddContainer.style";
+import Lecture from "components/TimetableComponents/Lecture";
 
 const LectureAddContainer = () => {
   const dispatch = useDispatch();
@@ -87,6 +89,16 @@ const LectureAddContainer = () => {
               onClick={() => setIsClassificationFilterVisible((prev) => !prev)}
             />
           </FilterSection>
+        )}
+
+        {/* LECTURES SECTION */}
+
+        {current === "검색추가" && (
+          <LectureSection>
+            {lectureList.map((lectureInfo) => (
+              <Lecture infos={lectureInfo} key={lectureInfo.id} />
+            ))}
+          </LectureSection>
         )}
       </WhiteBackground>
 
