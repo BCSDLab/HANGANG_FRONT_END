@@ -39,7 +39,6 @@ const StarIcon = styled.img.attrs({
 })`
   width: 16px;
   height: 16px;
-  z-index: 9990;
 `;
 const HalfStarIcon = styled.img.attrs({
   src:
@@ -48,7 +47,6 @@ const HalfStarIcon = styled.img.attrs({
 })`
   width: 16px;
   height: 16px;
-  z-index: 9990;
 `;
 
 const ReviewWrapper = styled.div`
@@ -92,7 +90,6 @@ const ThumbUpIcon = styled.img.attrs(({ isLiked }) => ({
   width: 16px;
   height: 16px;
   margin-right: 4px;
-  z-index: 9990;
 `;
 
 const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
@@ -103,8 +100,6 @@ const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
   width: 16px;
   height: 16px;
   margin-right: 4px;
-
-  z-index: 9990;
 `;
 const FilterPickSection = styled.div`
   margin-left: 4px;

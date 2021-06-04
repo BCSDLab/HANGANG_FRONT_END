@@ -84,8 +84,34 @@ const LectureDetailContainer = () => {
       setIsFetched(true);
     }
   };
+  const fetchReviews = async (options) => {
+    try {
+      let accessToken = isLoggedIn
+        ? getValueOnLocalStorage("hangangToken").access_token
+        : null;
 
-  useEffect(() => fetchLectureDetailInfo(), []);
+      const { data } = await LectureDetailAPI.getLectureReviews(
+        accessToken,
+        lectureId,
+        limit,
+        page,
+        sort
+      );
+      console.log(data);
+      dispatch(setLectureReviews(data));
+    } catch (error) {
+      throw new Error(error);
+    } finally {
+      dispatch(requestLectureReviewsFinished());
+    }
+  };
+  /**
+   * TODO:
+   * - 필터링 선택시 다시 패치 될 수 있도록 할 것
+   */
+  useEffect(() => {
+    fetchLectureDetailInfo();
+  }, []);
 
   return (
     <>

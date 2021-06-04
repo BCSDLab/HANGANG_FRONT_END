@@ -5,12 +5,13 @@ import PropTypes from "prop-types";
 
 import styled from "styled-components";
 import LectureDetailAPI from "api/lectureDetail";
-import AdditionalModal from "components/LectureDetailComponents/AdditionalModal";
+import FilterModal from "components/LectureDetailComponents/FilterModal";
 import Review from "components/LectureDetailComponents/Review";
 import {
   addNextPageReviews,
   clickLikeIcon,
-  openAdditionalModal,
+  openFilterModal,
+  openTimetableModal,
 } from "store/modules/lectureDetailModule";
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 
@@ -121,16 +122,11 @@ const LowArrowIcon = styled.img.attrs({
  * @param {*} param0
  * @returns
  */
-const LectureReviewContainer = ({
-  lectureId,
-  lectureReviews,
-  isAdditionalModalOpened = false,
-  ...rest
-}) => {
+const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
   const dispatch = useDispatch();
   const [reveiws, setReveiws] = useState("");
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
-  const { limit, page, maxPage, sort } = useSelector(
+  const { limit, page, maxPage, sort, isFilterModalOpened } = useSelector(
     (state) => state.lectureDetailReducer
   );
   /**
@@ -166,7 +162,7 @@ const LectureReviewContainer = ({
   }, 20);
   const { targetRef } = useInfiniteScroll(fetchMore, 5);
 
-  if (isAdditionalModalOpened) {
+  if (isFilterModalOpened) {
     console.log("modal-open");
   }
 
@@ -175,14 +171,13 @@ const LectureReviewContainer = ({
       <ReviewInfoSection>
         <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
         {/* <FilterPickSection onClick={() => clickFilter(props.id, props.is_liked)}> */}
-        <FilterPickSection onClick={() => dispatch(openAdditionalModal())}>
+        <FilterPickSection onClick={() => dispatch(openFilterModal())}>
           <FilterPickLabel style={{ cursor: "pointer" }}>{rest.sort}</FilterPickLabel>
           <LowArrowIcon></LowArrowIcon>
         </FilterPickSection>
-        {isAdditionalModalOpened && (
-          <AdditionalModal
-            contentId={contentId}
-            isScrapped={isScrapped}
+        {isFilterModalOpened && (
+          <FilterModal
+            lectureId={lectureId}
             isLoggedIn={isLoggedIn}
             isCheckedToken={isCheckedToken}
           />
