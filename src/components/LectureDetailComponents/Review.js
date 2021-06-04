@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import LectureDetailAPI from "api/lectureDetail";
-import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
-
 import { clickLikeIcon } from "store/modules/lectureDetailModule";
+import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { callReportModal } from "utils/reportUtils";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { showAlertModal } from "store/modules/modalModule";
 
 const ReviewSection = styled.div`
   border-bottom: 1px solid #eeeeee;
@@ -160,8 +162,10 @@ const LectureClassSection = ({ props, ...rest }) => {
   const history = useHistory();
   const { limit, page, maxPage } = useSelector((state) => state.lectureDetailReducer);
 
-  const clickLike = async (id) => {
-    console.log(id);
+  console.log(props, rest.idx);
+
+  const clickLike = async (id, idx) => {
+    console.log(id, idx);
     try {
       if (!isLoggedIn && isCheckedToken) {
         history.push("/login");
@@ -169,12 +173,15 @@ const LectureClassSection = ({ props, ...rest }) => {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
         let { data } = await LectureDetailAPI.postLectureReviewLike(accessToken, id);
         if (data.httpStatus === "OK") {
-          dispatch(clickLikeIcon());
+          dispatch(clickLikeIcon({ idx: idx }));
         }
       }
     } catch (error) {
-      if (error.response.data.code) {
-        alert(error.response.data.errorMessage);
+      if (error.response.data) {
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
+        dispatch(showAlertModal({ title, content }));
+      } else{
+        dispatch(showAlertModal({ "오류", "오류가 발생했습니다." }));
       }
       throw new Error(error);
     }
@@ -188,7 +195,7 @@ const LectureClassSection = ({ props, ...rest }) => {
           {[...Array(parseInt(props.rating))].map((num, idx) => {
             return <StarIcon key={idx}></StarIcon>;
           })}
-          {props.rating - parseInt(props.rating) === 0 && <HalfStarIcon></HalfStarIcon>}
+          {!Number.isInteger(props.rating) && <HalfStarIcon />}
         </ReviewStarSection>
       </ReviewTitleSection>
 
@@ -200,7 +207,7 @@ const LectureClassSection = ({ props, ...rest }) => {
         <ThumbUpSection
           id={props.id}
           isLiked={props.is_liked}
-          onClick={() => clickLike(props.id, props.is_liked)}
+          onClick={() => clickLike(props.id, rest.idx)}
         >
           <ThumbUpIcon isLiked={props.is_liked} />
           <SubLabelGrey>{props.likes}</SubLabelGrey>

@@ -5,6 +5,8 @@ const SET_LECTURE_INFO = "SET_LECTURE_INFO";
 const CLICK_SCRAP_ICON = "CLICK_SCRAP_ICON";
 const UNCLICK_SCRAP_ICON = "UNCLICK_SCRAP_ICON";
 const CLICK_LIKE_ICON = "CLICK_LIKE_ICON";
+const OPEN_ADDITIONAL_MODAL = "OPEN_ADDITIONAL_MODAL";
+const CLOSE_ADDITIONAL_MODAL = "CLOSE_ADDITIONAL_MODAL";
 const SET_LECTURE_FILTER = "SET_LECTURE_FILTER";
 const SET_DEFAULT_LECTURE_FILTER = "SET_DEFAULT_LECTURE_FILTER";
 const ADD_NEXT_PAGE_REVIEWS = "ADD_NEXT_PAGE_REVIEWS";
@@ -16,7 +18,9 @@ const SET_LOADING_FINISHED = "SET_LOADING_FINISHED";
 export const setLectureInfo = (payload) => ({ type: SET_LECTURE_INFO, payload });
 export const clickScrapIcon = (payload) => ({ type: CLICK_SCRAP_ICON, payload });
 export const unclickScrapIcon = (payload) => ({ type: UNCLICK_SCRAP_ICON, payload });
-export const clickLikeIcon = () => ({ type: CLICK_LIKE_ICON });
+export const clickLikeIcon = (payload) => ({ type: CLICK_LIKE_ICON, payload });
+export const openAdditionalModal = () => ({ type: OPEN_ADDITIONAL_MODAL });
+export const closeAdditionalModal = () => ({ type: CLOSE_ADDITIONAL_MODAL });
 export const addNextPageReviews = (payload) => ({
   type: ADD_NEXT_PAGE_REVIEWS,
   payload,
@@ -24,7 +28,9 @@ export const addNextPageReviews = (payload) => ({
 const defaultFilterOptions = {
   sort: "좋아요순",
 };
-
+const MODAL_STATE = {
+  isAdditionalModalOpened: false,
+};
 const REVIEW_STATE = {
   limit: 5,
   page: 1,
@@ -35,6 +41,7 @@ const STATE = {
   isLoading: false,
   lectureReviews: {},
   ...defaultFilterOptions,
+  ...MODAL_STATE,
   ...REVIEW_STATE,
 };
 
@@ -63,12 +70,34 @@ export default function lectureDetailReducer(state = STATE, action) {
         user_scrap_id: 0,
       };
     case CLICK_LIKE_ICON:
+      console.log("CLICK_LIKE_ICON=>" + action);
       return {
         ...state,
-        likes: state.lectureReviews.result[1].is_liked
-          ? state.likes - 1
-          : state.likes + 1,
+        lectureReviews: {
+          ...state.lectureReviews,
+          result: [
+            ...state.lectureReviews.result,
+            {
+              ...state.lectureReviews.result[idx],
+              is_liked: !state.lectureReviews.result[idx].is_liked,
+              likes: state.lectureReviews.result[idx]
+                ? state.lectureReviews.result[idx].likes - 1
+                : state.lectureReviews.result[idx].likes + 1,
+            },
+          ],
+        },
+        likes: state.is_liked ? state.likes - 1 : state.likes + 1,
         is_liked: !state.is_liked,
+      };
+    case OPEN_ADDITIONAL_MODAL:
+      return {
+        ...state,
+        isAdditionalModalOpened: true,
+      };
+    case CLOSE_ADDITIONAL_MODAL:
+      return {
+        ...state,
+        isAdditionalModalOpened: false,
       };
     case SET_LECTURE_FILTER:
       // eslint-disable-next-line no-case-declarations
@@ -85,7 +114,10 @@ export default function lectureDetailReducer(state = STATE, action) {
     case ADD_NEXT_PAGE_REVIEWS:
       return {
         ...state,
-        lectureReviews: [...state.lectureReviews],
+        lectureReviews: {
+          count: action.payload.count,
+          result: [...state.lectureReviews.result, ...action.payload.result],
+        },
         page: ++state.page,
       };
     default:

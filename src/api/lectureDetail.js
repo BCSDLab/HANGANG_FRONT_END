@@ -65,8 +65,7 @@ export default {
     accessToken,
     lectureId,
     limit = 10,
-    sort = "좋아요순",
-    page = 1
+    page = 1,
     sort = "좋아요순"
   ) => {
     const response = await axios.get(
@@ -153,6 +152,14 @@ export default {
   getEvaluationTotal: async (accessToken, lectureId) => {
     const response = await axios.get(
       `/evaluation/total/${lectureId}`,
+      axiosConfig(accessToken)
+    );
+    return response;
+  },
+
+  getTimetable: async (accessToken, semesterDateId) => {
+    const response = await axios.get(
+      `/timetable?semesterDateId=${semesterDateId}`,
       axiosConfig(accessToken)
     );
     return response;

@@ -1,12 +1,17 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
+import { useParams, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
+import styled from "styled-components";
 import LectureDetailAPI from "api/lectureDetail";
+import AdditionalModal from "components/LectureDetailComponents/AdditionalModal";
 import Review from "components/LectureDetailComponents/Review";
-import { addNextPageReviews, clickLikeIcon } from "store/modules/lectureDetailModule";
+import {
+  addNextPageReviews,
+  clickLikeIcon,
+  openAdditionalModal,
+} from "store/modules/lectureDetailModule";
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
@@ -116,24 +121,37 @@ const LowArrowIcon = styled.img.attrs({
  * @param {*} param0
  * @returns
  */
-const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
+const LectureReviewContainer = ({
+  lectureId,
+  lectureReviews,
+  isAdditionalModalOpened = false,
+  ...rest
+}) => {
   const dispatch = useDispatch();
+  const [reveiws, setReveiws] = useState("");
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const { limit, page, maxPage, sort } = useSelector(
+    (state) => state.lectureDetailReducer
+  );
   /**
    * 무한 스크롤
    * 다음 페이지 리뷰 호출합니다.
    */
   const getMoreReviews = async () => {
-    console.log("[getMoreReviews] => ");
     try {
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-      let { data } = await LectureDetailAPI.getLectureReviews(
+      const {
+        data: { count, result },
+        status,
+      } = await LectureDetailAPI.getLectureReviews(
         accessToken,
         lectureId,
         limit,
-        page + 1
+        page + 1,
+        sort
       );
-      if (data.httpStatus === "OK") {
-        dispatch(addNextPageReviews({ lectureReviews }));
+      if (status === 200) {
+        dispatch(addNextPageReviews({ count, result }));
       }
     } catch (error) {
       throw new Error(error);
@@ -145,23 +163,36 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
     if (target.isIntersecting && page < maxPage) {
       getMoreReviews();
     }
-  }, 200);
+  }, 20);
   const { targetRef } = useInfiniteScroll(fetchMore, 5);
+
+  if (isAdditionalModalOpened) {
+    console.log("modalopen");
+  }
 
   return (
     <Section>
       <ReviewInfoSection>
         <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
-        <FilterPickSection onClick={() => clickFilter(props.id, props.is_liked)}>
-          <FilterPickLabel>{rest.sort}</FilterPickLabel>
+        {/* <FilterPickSection onClick={() => clickFilter(props.id, props.is_liked)}> */}
+        <FilterPickSection onClick={() => dispatch(openAdditionalModal())}>
+          <FilterPickLabel style={{ cursor: "pointer" }}>{rest.sort}</FilterPickLabel>
           <LowArrowIcon></LowArrowIcon>
         </FilterPickSection>
+        {isAdditionalModalOpened && (
+          <AdditionalModal
+            contentId={contentId}
+            isScrapped={isScrapped}
+            isLoggedIn={isLoggedIn}
+            isCheckedToken={isCheckedToken}
+          />
+        )}
       </ReviewInfoSection>
 
       <ReviewWrapper ref={targetRef}>
-        {lectureReviews.result.map((props, idx) => (
-          <Review key={props.id} idx={idx} props={props} />
-        ))}
+        {lectureReviews.result.map((props, idx) => {
+          return <Review key={props.id} idx={idx} props={props} />;
+        })}
 
         {lectureReviews.count === 0 && (
           <SubWarningLabel>등록된 개인 평가 정보가 없습니다.</SubWarningLabel>
