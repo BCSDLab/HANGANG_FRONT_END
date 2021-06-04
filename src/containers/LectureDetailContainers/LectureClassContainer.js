@@ -108,11 +108,25 @@ const SetButton = styled.button`
     content: "빼기";
   }
 `;
-
-const getDayNo = (classTimes) => {
-  return 2 + parseInt(parseInt(classTimes.split(",")[0].replace(/\[/, "")) / 100);
+/**
+ * 인자로 받은 배열의 첫번째 요소로 요일을 가져오는 함수입니다.
+ * 배열의 첫 번째로 들어온 수의 가장 앞자라리로 classTime 배열안에서 해당 요일이 위치해 있는 배열의 수를 반환합니다.
+ * classTime.js
+ * @param {*} classTimes
+ * @returns 수업 시작~끝 문자열로 조합한 결과
+ */
+const getDay = (classTimes) => {
+  let dayNo = 2 + parseInt(parseInt(classTimes.split(",")[0].replace(/\[/, "")) / 100);
+  return classTime[0][dayNo] + " ";
 };
 
+/**
+ * 인자로 받은 배열의 첫번째와 마지막 요소로 수업 시간을 문자열로 조합해 반환하는 함수입니다.
+ * 인자가 문자열로 들어와서 배열로 바꿔준 뒤 첫번째와 마지막 요소로 classTime에서 수업 시간을 가져와
+ * 문자열로 조합한 결과를 반환합니다.
+ * @param {*} classTimes
+ * @returns 수업 시작~끝 문자열로 조합한 결과
+ */
 const classStartToEnd = (classTimes) => {
   let times = classTimes.replace(/\[/, "").replace(/\]/, "").split(","),
     start = 1 + parseInt(times[0] % 100),
@@ -153,7 +167,7 @@ const LectureClassContainer = ({ grade, lectureClassInfo }) => {
         {lectureClassInfo.map((data) => (
           <ClassContent key={data.id}>
             <SubLabelContent>
-              {`${classTime[0][getDayNo(data.classTime)]} `}
+              {getDay(data.classTime)}
               {classStartToEnd(data.classTime)}
               {` (${data.classNumber})`}
             </SubLabelContent>
