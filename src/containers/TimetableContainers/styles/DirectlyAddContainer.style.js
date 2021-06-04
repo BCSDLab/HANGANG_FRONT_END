@@ -42,7 +42,6 @@ export const AddFormGrid = styled.div`
     "label input"
     "label div";
   grid-template-columns: 63px 449px;
-  /* grid-template-rows: 35px; */
   grid-gap: 32px 0px;
   margin-top: 29px;
 `;
@@ -67,5 +66,11 @@ export const Input = styled.input.attrs({
 
   ::placeholder {
     color: ${PlaceholderColor};
+  }
+`;
+
+export const TimeSection = styled.div`
+  & > div:not(:last-child) {
+    margin-bottom: 26px;
   }
 `;

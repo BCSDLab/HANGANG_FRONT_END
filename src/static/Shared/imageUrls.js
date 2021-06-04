@@ -38,3 +38,5 @@ export const X_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/x.png";
 export const DUMMY_TIMETABLE_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/dummy_timetable.png";
+export const DOWN_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/down.png";

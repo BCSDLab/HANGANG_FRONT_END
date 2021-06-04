@@ -5,12 +5,30 @@ import {
   ConfirmButton,
   Input,
   Label,
+  TimeSection,
   Title,
-} from "components/TimetableComponents/styles/DirectlyAddContainer.style";
+} from "containers/TimetableContainers/styles/DirectlyAddContainer.style";
+import TimeOnDirectlyAddContainer from "components/TimetableComponents/TimeComponent";
 
 const DirectlyAddContainer = () => {
   const [directlyAddForm, setDirectlyAddForm] = useState({
-    class_times: [["000", "001"]],
+    class_times: [
+      {
+        order: 0,
+        day: 0,
+        time: ["00", "01"],
+      },
+      {
+        order: 1,
+        day: 2,
+        time: ["00", "01"],
+      },
+      {
+        order: 2,
+        day: 4,
+        time: ["00", "01"],
+      },
+    ],
     name: "",
     professor: "",
   });
@@ -33,6 +51,16 @@ const DirectlyAddContainer = () => {
         <Label>교수명</Label>
         <Input name="professor" onChange={onChangeInput} />
         <Label>시간</Label>
+        <TimeSection>
+          {directlyAddForm.class_times.map((info) => (
+            <TimeOnDirectlyAddContainer
+              info={info}
+              key={info.order}
+              class_times={directlyAddForm.class_times}
+              setDirectlyAddForm={setDirectlyAddForm}
+            />
+          ))}
+        </TimeSection>
       </AddFormGrid>
     </Background>
   );
