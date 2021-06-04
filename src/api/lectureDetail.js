@@ -67,6 +67,7 @@ export default {
     limit = 10,
     sort = "좋아요순",
     page = 1
+    sort = "좋아요순"
   ) => {
     const response = await axios.get(
       `/reviews/lectures/${lectureId}?limit=${limit}&page=${page}&sort=${sort}`,

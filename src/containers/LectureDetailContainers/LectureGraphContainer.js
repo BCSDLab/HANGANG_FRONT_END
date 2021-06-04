@@ -164,7 +164,7 @@ const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) =
       <InfoLabel>종합 평가</InfoLabel>
       <GraphWrapper>
         <SubLabel>평점</SubLabel>
-        <SubInfoLabel>{rest.rating}</SubInfoLabel>
+        <SubInfoLabel>{rest.rating.toFixed(1)}</SubInfoLabel>
         <SubSubLabel>전체 평가 수 {rest.count}명</SubSubLabel>
         <GraphSection>
           <Graph>
