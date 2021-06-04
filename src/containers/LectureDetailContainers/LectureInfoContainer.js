@@ -7,8 +7,10 @@ import PropTypes from "prop-types";
 import LectureDetailAPI from "api/lectureDetail";
 
 import { clickScrapIcon, unclickScrapIcon } from "store/modules/lectureDetailModule";
+import { showAlertModal } from "store/modules/modalModule";
 import { FontColor, ConceptColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const Section = styled.section`
   width: 100%;
@@ -104,7 +106,8 @@ function LectureInfoContainer({ lectureInfo = {} }) {
     } catch (error) {
       console.dir(error);
       if (error.response.data.code) {
-        alert(error.response.data.errorMessage);
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
+        dispatch(showAlertModal({ title, content }));
       }
       throw new Error(error);
     }
