@@ -16,6 +16,7 @@ import LectureReviewContainer from "./LectureReviewContainer";
 import LectureClassContainer from "./LectureClassContainer";
 
 import LoadingSpinner from "components/Shared/LoadingSpinner";
+import { showAlertModal } from "store/modules/modalModule";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -55,6 +56,7 @@ const LectureDetailContainer = () => {
     lectureEvaluationRating,
     lectureEvaluationTotal,
     lectureClassInfo,
+    page,
     limit,
     sort,
     ...rest
@@ -62,15 +64,11 @@ const LectureDetailContainer = () => {
 
   const fetchLectureDetailInfo = async () => {
     try {
-      if (!isLoggedIn && !getValueOnLocalStorage("hangangToken")) {
-        history.push("/lectures");
-      }
-
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
       const lectureInfo = await Promise.all([
         LectureDetailAPI.getLectureInfo(accessToken, lectureId),
-        LectureDetailAPI.getLectureReviews(accessToken, lectureId, limit, sort),
+        LectureDetailAPI.getLectureReviews(accessToken, lectureId, limit, page, sort),
         LectureDetailAPI.getEvaluationRating(accessToken, lectureId),
         LectureDetailAPI.getEvaluationTotal(accessToken, lectureId),
         LectureDetailAPI.getLectureClassInfo(accessToken, lectureId),
@@ -78,7 +76,10 @@ const LectureDetailContainer = () => {
 
       dispatch(setLectureInfo(lectureInfo));
     } catch (error) {
-      console.log(error);
+      if (error.response.data.code === 30) {
+        history.push("/lectures");
+      }
+      throw new Error(error);
     } finally {
       setIsFetched(true);
     }
