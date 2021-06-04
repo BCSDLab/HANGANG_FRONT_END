@@ -70,24 +70,15 @@ export default function lectureDetailReducer(state = STATE, action) {
         user_scrap_id: 0,
       };
     case CLICK_LIKE_ICON:
-      console.log("CLICK_LIKE_ICON=>" + action);
+      console.log("CLICK_LIKE_ICON=>" + state, action.payload);
+
+      const likeReflectedReviews = getLikeReflectedResult(
+        state.lectureReviews,
+        action.payload.idx
+      );
       return {
         ...state,
-        lectureReviews: {
-          ...state.lectureReviews,
-          result: [
-            ...state.lectureReviews.result,
-            {
-              ...state.lectureReviews.result[idx],
-              is_liked: !state.lectureReviews.result[idx].is_liked,
-              likes: state.lectureReviews.result[idx]
-                ? state.lectureReviews.result[idx].likes - 1
-                : state.lectureReviews.result[idx].likes + 1,
-            },
-          ],
-        },
-        likes: state.is_liked ? state.likes - 1 : state.likes + 1,
-        is_liked: !state.is_liked,
+        lectureReviews: likeReflectedReviews,
       };
     case OPEN_ADDITIONAL_MODAL:
       return {
@@ -124,3 +115,18 @@ export default function lectureDetailReducer(state = STATE, action) {
       return state;
   }
 }
+
+/**
+ * 좋아요를 누른 글에 좋아요 수 반영 및 좋아요 토글하는 함수
+ * @param {*} lectureReviews
+ * @param {*} idx
+ * @returns
+ */
+const getLikeReflectedResult = (lectureReviews, idx) => {
+  lectureReviews.result[idx].is_liked = !lectureReviews.result[idx].is_liked;
+  lectureReviews.result[idx].is_liked
+    ? lectureReviews.result[idx].likes++
+    : lectureReviews.result[idx].likes--;
+
+  return lectureReviews;
+};

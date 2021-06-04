@@ -167,7 +167,7 @@ const LectureReviewContainer = ({
   const { targetRef } = useInfiniteScroll(fetchMore, 5);
 
   if (isAdditionalModalOpened) {
-    console.log("modalopen");
+    console.log("modal-open");
   }
 
   return (

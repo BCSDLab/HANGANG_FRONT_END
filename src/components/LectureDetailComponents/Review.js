@@ -162,10 +162,7 @@ const LectureClassSection = ({ props, ...rest }) => {
   const history = useHistory();
   const { limit, page, maxPage } = useSelector((state) => state.lectureDetailReducer);
 
-  console.log(props, rest.idx);
-
-  const clickLike = async (id, idx) => {
-    console.log(id, idx);
+  const clickLike = async (id, index) => {
     try {
       if (!isLoggedIn && isCheckedToken) {
         history.push("/login");
@@ -173,16 +170,15 @@ const LectureClassSection = ({ props, ...rest }) => {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
         let { data } = await LectureDetailAPI.postLectureReviewLike(accessToken, id);
         if (data.httpStatus === "OK") {
-          dispatch(clickLikeIcon({ idx: idx }));
+          dispatch(clickLikeIcon({ idx: index }));
         }
       }
     } catch (error) {
-      if (error.response.data) {
+      if (error.response) {
         const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
         dispatch(showAlertModal({ title, content }));
-      } else{
-        dispatch(showAlertModal({ "오류", "오류가 발생했습니다." }));
       }
+      console.dir(error);
       throw new Error(error);
     }
   };
