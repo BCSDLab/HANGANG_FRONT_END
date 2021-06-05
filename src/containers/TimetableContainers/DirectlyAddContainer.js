@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import {
   AddFormGrid,
+  AddTime,
   Background,
   ConfirmButton,
   Input,
   Label,
+  PlusImg,
   TimeSection,
   Title,
 } from "containers/TimetableContainers/styles/DirectlyAddContainer.style";
@@ -16,17 +18,10 @@ const DirectlyAddContainer = () => {
       {
         order: 0,
         day: 0,
-        time: ["00", "01"],
-      },
-      {
-        order: 1,
-        day: 2,
-        time: ["00", "01"],
-      },
-      {
-        order: 2,
-        day: 4,
-        time: ["00", "01"],
+        time: {
+          startTime: "00",
+          endTime: "02",
+        },
       },
     ],
     name: "",
@@ -35,6 +30,26 @@ const DirectlyAddContainer = () => {
 
   const onChangeInput = (e) => {
     setDirectlyAddForm({ ...directlyAddForm, [e.target.name]: e.target.value });
+  };
+
+  const onClickAddTime = () => {
+    let currentClassTimes = directlyAddForm["class_times"];
+    let lastOrderNumber = currentClassTimes[currentClassTimes.length - 1].order;
+
+    setDirectlyAddForm({
+      ...directlyAddForm,
+      class_times: [
+        ...currentClassTimes,
+        {
+          order: lastOrderNumber + 1,
+          day: 0,
+          time: {
+            startTime: "00",
+            endTime: "02",
+          },
+        },
+      ],
+    });
   };
 
   React.useEffect(() => {
@@ -60,6 +75,10 @@ const DirectlyAddContainer = () => {
               setDirectlyAddForm={setDirectlyAddForm}
             />
           ))}
+          <AddTime onClick={onClickAddTime}>
+            <PlusImg />
+            시간 추가하기
+          </AddTime>
         </TimeSection>
       </AddFormGrid>
     </Background>

@@ -1,79 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  BorderColor,
-  ConceptColor,
-  CopyRightColor,
-  FontColor,
-} from "static/Shared/commonStyles";
-import { DOWN_URL, X_URL } from "static/Shared/imageUrls";
-import styled from "styled-components";
-
-const Wrapper = styled.div`
-  width: 100%;
-  position: relative;
-  height: 54px;
-`;
-
-const Day = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 25px;
-  height: 25px;
-  border-radius: 4px;
-  border: ${({ isChoiced }) => (isChoiced ? "none" : `1px solid ${CopyRightColor}`)};
-  background-color: ${({ isChoiced }) =>
-    isChoiced ? `${ConceptColor}` : `${BorderColor}`};
-  color: ${({ isChoiced }) => (isChoiced ? "#fff" : `${CopyRightColor}`)};
-  font-size: 14px;
-  cursor: pointer;
-`;
-
-const DayWrapper = styled.div`
-  display: flex;
-
-  ${Day}:not(:last-child) {
-    margin-right: 8px;
-  }
-`;
-
-const X = styled.img.attrs({
-  src: X_URL,
-  alt: "x",
-})`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  cursor: pointer;
-`;
-
-const StartTime = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
-  font-size: 14px;
-  color: ${FontColor};
-  cursor: pointer;
-`;
-
-const Down = styled.img.attrs({
-  src: DOWN_URL,
-  alt: "down",
-})`
-  margin: 2px 0 0 4px;
-  width: 14px;
-`;
-
-const EndTime = styled(StartTime)`
-  margin-left: 16px;
-`;
-
-const TimeWrapper = styled.div`
-  display: flex;
-`;
+  Day,
+  DayWrapper,
+  Down,
+  EndTime,
+  StartTime,
+  Time,
+  TimeDropdown,
+  TimeWrapper,
+  Wrapper,
+  X,
+} from "./styles/TimeComponent.style";
 
 const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) => {
+  const [isDropdownVisible, setIsDropdownVisible] = useState({
+    startTime: false,
+    endTime: false,
+  });
+
+  React.useEffect(() => {
+    console.log(isDropdownVisible);
+  });
+
   /**
    * 요일 정보를 받아 class_times 의 현재 변경하려는 타겟의 요일을 변경합니다.
    * @param {number} value 요일 정보가 담겨있는 value 값입니다.
@@ -96,6 +44,37 @@ const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) =
     }));
   };
 
+  /**
+   * 드롭다운의 시간 정보를 클릭 시 시간 데이터를 변경합니다.
+   */
+  const onTimeDropdownClick = (e, target, value) => {
+    if (target === "startTime" && parseInt(value) > parseInt(info.time.endTime)) {
+      alert("시작 시간보다 종료 시간이 빠를 수 없습니다.");
+      return;
+    }
+
+    if (target === "endTime" && parseInt(value) < parseInt(info.time.startTime)) {
+      alert("시작 시간보다 종료 시간이 빠를 수 없습니다.");
+      return;
+    }
+
+    e.stopPropagation();
+
+    class_times[info.order] = {
+      ...info,
+      time: {
+        ...class_times[info.order]["time"],
+        [target]: value,
+      },
+    };
+
+    setIsDropdownVisible((prev) => ({ ...prev, [target]: false }));
+    setDirectlyAddForm((prev) => ({
+      ...prev,
+      class_times: [...class_times],
+    }));
+  };
+
   return (
     <Wrapper>
       <DayWrapper>
@@ -111,13 +90,44 @@ const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) =
       </DayWrapper>
       <X onClick={onXElementClick} />
       <TimeWrapper>
-        <StartTime>
-          09:00
+        <StartTime
+          onClick={() => setIsDropdownVisible((prev) => ({ ...prev, startTime: true }))}
+        >
+          {TIME_WITH_VALUE.find(({ value }) => value === info.time.startTime).label}
           <Down />
+
+          {isDropdownVisible.startTime && (
+            <TimeDropdown>
+              {TIME_WITH_VALUE.map(({ label, value }) => (
+                <Time
+                  key={value}
+                  onClick={(e) => onTimeDropdownClick(e, "startTime", value)}
+                >
+                  {label}
+                </Time>
+              ))}
+            </TimeDropdown>
+          )}
         </StartTime>
-        <EndTime>
-          10:00
+
+        <EndTime
+          onClick={() => setIsDropdownVisible((prev) => ({ ...prev, endTime: true }))}
+        >
+          {TIME_WITH_VALUE.find(({ value }) => value === info.time.endTime).label}
           <Down />
+
+          {isDropdownVisible.endTime && (
+            <TimeDropdown>
+              {TIME_WITH_VALUE.map(({ label, value }) => (
+                <Time
+                  key={value}
+                  onClick={(e) => onTimeDropdownClick(e, "endTime", value)}
+                >
+                  {label}
+                </Time>
+              ))}
+            </TimeDropdown>
+          )}
         </EndTime>
       </TimeWrapper>
     </Wrapper>
@@ -130,6 +140,27 @@ const DAY_WITH_VALUE = [
   { label: "수", value: 2 },
   { label: "목", value: 3 },
   { label: "금", value: 4 },
+];
+
+const TIME_WITH_VALUE = [
+  { label: "09:00", value: "00" },
+  { label: "09:30", value: "01" },
+  { label: "10:00", value: "02" },
+  { label: "10:30", value: "03" },
+  { label: "11:00", value: "04" },
+  { label: "11:30", value: "05" },
+  { label: "12:00", value: "06" },
+  { label: "12:30", value: "07" },
+  { label: "13:00", value: "08" },
+  { label: "13:30", value: "09" },
+  { label: "14:00", value: "10" },
+  { label: "14:30", value: "11" },
+  { label: "15:00", value: "12" },
+  { label: "15:30", value: "13" },
+  { label: "16:00", value: "14" },
+  { label: "16:30", value: "15" },
+  { label: "17:00", value: "16" },
+  { label: "17:30", value: "17" },
 ];
 
 export default TimeOnDirectlyAddContainer;

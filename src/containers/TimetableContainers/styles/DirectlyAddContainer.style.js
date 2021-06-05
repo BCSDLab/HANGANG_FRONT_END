@@ -5,6 +5,7 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import { PLUS_URL } from "static/Shared/imageUrls";
 
 export const Background = styled.div`
   position: relative;
@@ -73,4 +74,20 @@ export const TimeSection = styled.div`
   & > div:not(:last-child) {
     margin-bottom: 26px;
   }
+`;
+
+export const PlusImg = styled.img.attrs({
+  src: PLUS_URL,
+  alt: "plus",
+})`
+  width: 20px;
+  margin-right: 4px;
+`;
+
+export const AddTime = styled.span`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: ${ConceptColor};
+  cursor: pointer;
 `;
