@@ -24,7 +24,6 @@ import {
   LectureSection,
   MajorFilterButton,
   PrevButton,
-  RecentlySearchedBox,
   RefreshButton,
   SearchAddBox,
   SearchAddButton,
@@ -36,6 +35,7 @@ import {
   XButton,
 } from "./styles/LectureAddContainer.style";
 import Lecture from "components/TimetableComponents/Lecture";
+import DirectlyAddContainer from "./DirectlyAddContainer";
 
 const LectureAddContainer = () => {
   const dispatch = useDispatch();
@@ -101,7 +101,6 @@ const LectureAddContainer = () => {
             </FilterSection>
 
             {/* LECTURES SECTION */}
-
             <LectureSection>
               {lectureList.map((lectureInfo) => (
                 <Lecture infos={lectureInfo} key={lectureInfo.id} />
@@ -110,7 +109,7 @@ const LectureAddContainer = () => {
           </SearchAddBox>
 
           <DirectlyAddBox>
-            <span>hihi</span>
+            <DirectlyAddContainer />
           </DirectlyAddBox>
         </BoxWrapper>
       </WhiteBackground>

@@ -75,7 +75,7 @@ export const SearchBarSection = styled.form`
   align-items: center;
   width: 528px;
   margin: 0 auto;
-  padding: 17px 0 20px;
+  padding: 17px 0 15px;
 `;
 
 export const SearchBar = styled.input.attrs({
