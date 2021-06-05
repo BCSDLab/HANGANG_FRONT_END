@@ -52,10 +52,6 @@ const DirectlyAddContainer = () => {
     });
   };
 
-  React.useEffect(() => {
-    console.log(directlyAddForm);
-  });
-
   return (
     <Background>
       <Title>직접 추가</Title>

@@ -154,8 +154,8 @@ export const AdjustmentButton = styled.img.attrs({
 
 export const ClassificationFilter = styled.div`
   position: absolute;
-  top: 180px;
-  right: 16px;
+  top: 175px;
+  left: 150px;
   width: 383px;
   height: 190px;
   border: 1px solid ${CopyRightColor};
