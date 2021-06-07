@@ -29,7 +29,6 @@ export const SEARCH_BUTTON_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/search.png";
 export const ADJUSTMENT_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/adjustments.png";
-
 export const REFRESH_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/refresh.png";
 export const MORE_URL =
@@ -42,3 +41,5 @@ export const DOWN_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/down.png";
 export const PLUS_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/plus.png";
+export const MAIN_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/main.png";
