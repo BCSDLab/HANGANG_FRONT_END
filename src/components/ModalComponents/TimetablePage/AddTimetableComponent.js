@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -18,8 +18,8 @@ import {
 } from "./styles/AddTimetableComponents.style";
 
 const AddTimetableComponent = () => {
-  const [screenHeight, setScreenHeight] = React.useState();
   const dispatch = useDispatch();
+  const [screenHeight, setScreenHeight] = React.useState();
   const { isAddTimetableModalShowing, name, semester_date_id } = useSelector(
     (state) => state.modalReducer
   );

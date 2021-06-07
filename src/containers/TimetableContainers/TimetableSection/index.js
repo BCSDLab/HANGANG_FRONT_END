@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { showAddTimetableModal } from "store/modules/modalModule";
+import { showAddTimetableModal, showTimetableMoreModal } from "store/modules/modalModule";
 import {
   AddNewTimetableLabel,
   DownImage,
@@ -29,7 +29,7 @@ const TimetableSection = () => {
           <PlusImage />새 시간표 추가하기
         </AddNewTimetableLabel>
       </TimetableSelectBar>
-      <TimetableSettingButton />
+      <TimetableSettingButton onClick={() => dispatch(showTimetableMoreModal())} />
       <Timetable />
     </TimetableAddBox>
   );

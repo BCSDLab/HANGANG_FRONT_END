@@ -8,6 +8,8 @@ const HIDE_REPORT_MODAL = "HIDE_REPORT_MODAL";
 const SHOW_ADD_TIMETABLE_MODAL = "SHOW_ADD_TIMETABLE_MODAL";
 const CHANGE_ADD_TIMETABLE_FORM_VALUE = "CHANGE_ADD_TIMETABLE_FORM_VALUE";
 const HIDE_ADD_TIMETABLE_MODAL = "HIDE_ADD_TIMETABLE_MODAL";
+const SHOW_TIMETABLE_MORE_MODAL = "SHOW_TIMETABLE_MORE_MODAL";
+const HIDE_TIMETABLE_MORE_MODAL = "HIDE_TIMETABLE_MORE_MODAL";
 
 // Action Creators
 export const showAlertModal = (payload) => ({ type: SHOW_ALERT_MODAL, payload });
@@ -23,6 +25,8 @@ export const changeAddTimetableFormValue = (key, value) => ({
   value,
 });
 export const hideAddTimetableModal = () => ({ type: HIDE_ADD_TIMETABLE_MODAL });
+export const showTimetableMoreModal = () => ({ type: SHOW_TIMETABLE_MORE_MODAL });
+export const hideTimetableMoreModal = () => ({ type: HIDE_TIMETABLE_MORE_MODAL });
 
 // State
 const INITIAL_ALERT_MODAL_STATE = {
@@ -50,11 +54,18 @@ const INITIAL_ADD_TIMETABLE_MODAL_STATE = {
   semester_date_id: 5,
 };
 
+const INITIAL_TIMETABLE_MORE_STATE = {
+  isTimetableMoreModalShowing: false,
+  name: null,
+  id: null,
+};
+
 const STATE = {
   ...INITIAL_ALERT_MODAL_STATE,
   ...INITIAL_CONFIRM_MODAL_STATE,
   ...INITIAL_REPORT_MODAL_STATE,
   ...INITIAL_ADD_TIMETABLE_MODAL_STATE,
+  ...INITIAL_TIMETABLE_MORE_STATE,
 };
 
 // Reducer
@@ -111,6 +122,20 @@ export default function modalReducer(state = STATE, action) {
       return {
         ...state,
         ...INITIAL_ADD_TIMETABLE_MODAL_STATE,
+      };
+    case SHOW_TIMETABLE_MORE_MODAL:
+      return {
+        ...state,
+        isTimetableMoreModalShowing: true,
+        name: "플랜 a",
+        id: 255,
+        // name:action.name,
+        // id:action.id,
+      };
+    case HIDE_TIMETABLE_MORE_MODAL:
+      return {
+        ...state,
+        ...INITIAL_TIMETABLE_MORE_STATE,
       };
     default:
       return state;
