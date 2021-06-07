@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 import ChangingSemesterBar from "components/TimetableComponents/ChangingSemesterBar";
-import LectureAddContainer from "containers/TimetableContainers/LectureAddContainer";
+import AddLectureSection from "containers/TimetableContainers/AddLectureSection";
+import TimetableSection from "containers/TimetableContainers/TimetableSection";
 
 const Background = styled.div`
   display: flex;
@@ -16,17 +17,20 @@ const Background = styled.div`
 
 const MainContentsWrapper = styled.div`
   width: 1135px;
+  display: flex;
+  justify-content: space-between;
 `;
 
-const TimetableContainer = () => {
+const TimetablePageContainer = () => {
   return (
     <Background>
       <ChangingSemesterBar />
       <MainContentsWrapper>
-        <LectureAddContainer />
+        <AddLectureSection />
+        <TimetableSection />
       </MainContentsWrapper>
     </Background>
   );
 };
 
-export default TimetableContainer;
+export default TimetablePageContainer;

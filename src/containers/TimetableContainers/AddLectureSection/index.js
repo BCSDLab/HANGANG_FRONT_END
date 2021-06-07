@@ -38,12 +38,12 @@ import {
   XButton,
   TermDeleteButton,
   TermWrapper,
-} from "./styles/LectureAddContainer.style";
+} from "./styles/index.style";
 import Lecture from "components/TimetableComponents/Lecture";
 import DirectlyAddContainer from "./DirectlyAddContainer";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 
-const LectureAddContainer = () => {
+const AddLectureSection = () => {
   const dispatch = useDispatch();
   const boxWrapperRef = useRef();
   const { lectureList, ...rest } = useSelector((state) => state.timetableReducer);
@@ -197,4 +197,4 @@ const setLecturesOnState = async (options, dispatch) => {
   }
 };
 
-export default LectureAddContainer;
+export default AddLectureSection;

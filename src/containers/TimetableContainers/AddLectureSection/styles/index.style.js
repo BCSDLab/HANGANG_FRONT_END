@@ -14,9 +14,10 @@ import {
   X_URL,
 } from "static/Shared/imageUrls";
 
-export const LectureAddBox = styled.div`
+export const LectureAddBox = styled.section`
   position: relative;
   margin-top: 33px;
+  width: 560px;
 `;
 
 export const WhiteBackground = styled.div`

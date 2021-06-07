@@ -9,7 +9,7 @@ import {
   PlusImg,
   TimeSection,
   Title,
-} from "containers/TimetableContainers/styles/DirectlyAddContainer.style";
+} from "containers/TimetableContainers/AddLectureSection/styles/DirectlyAddContainer.style";
 import TimeOnDirectlyAddContainer from "components/TimetableComponents/TimeComponent";
 
 const DirectlyAddContainer = () => {

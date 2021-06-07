@@ -1,8 +1,8 @@
 import React from "react";
-import TimetableContainer from "containers/TimetableContainers";
+import TimetablePageContainer from "containers/TimetableContainers";
 
 const TimetablePage = () => {
-  return <TimetableContainer />;
+  return <TimetablePageContainer />;
 };
 
 export default TimetablePage;
