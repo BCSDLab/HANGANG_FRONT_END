@@ -222,3 +222,38 @@ export const LectureSection = styled.div`
   height: 863px;
   overflow-y: auto;
 `;
+
+export const RecentlySearchTermSection = styled.div`
+  position: absolute;
+  width: 100%;
+  padding: 14px 18px;
+  background-color: #fff;
+`;
+
+export const RecentlySearchTermLabel = styled.span`
+  font-size: 14px;
+  font-weight: 500;
+  color: ${ConceptColor};
+`;
+
+export const TermWrapper = styled.div`
+  position: relative;
+  width: 524px;
+`;
+
+export const Term = styled(RecentlySearchTermLabel)`
+  margin-top: 26px;
+  font-weight: normal;
+  color: ${FontColor};
+  cursor: pointer;
+`;
+
+export const TermDeleteButton = styled(RefreshButton).attrs({
+  src: X_URL,
+  alt: "x",
+})`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+`;

@@ -22,6 +22,7 @@ const DEFAULT_SEARCH_LECTURE_OPTION = {
 const STATE = {
   ...DEFAULT_SEARCH_LECTURE_OPTION,
   lectureList: [],
+  amount: 0,
 };
 
 // Reducer
@@ -62,7 +63,8 @@ export default function timetableReducer(state = STATE, action) {
     case SET_LECTURE_LIST:
       return {
         ...state,
-        lectureList: action.payload,
+        amount: action.payload.count,
+        lectureList: action.payload.result,
       };
     default:
       return state;

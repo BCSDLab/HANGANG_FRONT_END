@@ -24,32 +24,61 @@ import {
   LectureSection,
   MajorFilterButton,
   PrevButton,
+  RecentlySearchTermLabel,
+  RecentlySearchTermSection,
   RefreshButton,
   SearchAddBox,
   SearchAddButton,
   SearchBar,
   SearchBarSection,
   SearchButton,
+  Term,
   UnderBar,
   WhiteBackground,
   XButton,
+  TermDeleteButton,
+  TermWrapper,
 } from "./styles/LectureAddContainer.style";
 import Lecture from "components/TimetableComponents/Lecture";
 import DirectlyAddContainer from "./DirectlyAddContainer";
+import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 
 const LectureAddContainer = () => {
   const dispatch = useDispatch();
-  const { lectureList, ...rest } = useSelector((state) => state.timetableReducer);
   const boxWrapperRef = useRef();
+  const { lectureList, ...rest } = useSelector((state) => state.timetableReducer);
   const [current, setCurrent] = useState("검색추가");
+  const [searchTermList, setSearchTermList] = useState(
+    getValueOnLocalStorage("timetableSearchTerm")
+  );
   const [isClassificationFilterVisible, setIsClassificationFilterVisible] = useState(
     false
   );
 
-  const searchLectureOnWord = (e) => {
+  const setSearchTermOnLocalStorage = (term) => {
+    if (searchTermList === null) {
+      setSearchTermList([term]);
+      setValueOnLocalStorage("timetableSearchTerm", [term]);
+    } else {
+      setSearchTermList([...searchTermList, term]);
+      setValueOnLocalStorage("timetableSearchTerm", [...searchTermList, term]);
+    }
+  };
+
+  const deleteTerm = (term) => {
+    let currentTermList = searchTermList;
+    let erasedTermList = currentTermList.filter((t) => t !== term);
+    setSearchTermList(erasedTermList);
+    setValueOnLocalStorage("timetableSearchTerm", erasedTermList);
+  };
+
+  const searchLectureOnWord = (e, word) => {
     e.preventDefault();
-    dispatch(setFilterOption({ key: "keyword", value: e.target[0].value }));
+    dispatch(setFilterOption({ key: "keyword", value: word }));
     setCurrent("검색추가");
+    if (word !== "" && !searchTermList.includes(word)) {
+      setSearchTermOnLocalStorage(word);
+    }
   };
 
   useEffect(() => {
@@ -75,7 +104,7 @@ const LectureAddContainer = () => {
         <BoxWrapper ref={boxWrapperRef}>
           <SearchAddBox>
             {/* SEARCH BAR SECTION */}
-            <SearchBarSection onSubmit={searchLectureOnWord}>
+            <SearchBarSection onSubmit={(e) => searchLectureOnWord(e, e.target[0].value)}>
               {current === "검색" && (
                 <PrevButton onClick={() => setCurrent("검색추가")} />
               )}
@@ -84,28 +113,48 @@ const LectureAddContainer = () => {
             </SearchBarSection>
 
             {/* FILTER SECTION */}
-            <FilterSection>
-              {MAJOR_LIST.map(({ label, department: value }) => (
-                <MajorFilterButton
-                  key={label}
-                  value={label}
-                  isTarget={rest.department === value}
-                  onClick={() => dispatch(setFilterOption({ key: "department", value }))}
-                >
-                  {label}
-                </MajorFilterButton>
-              ))}
-              <AdjustmentButton
-                onClick={() => setIsClassificationFilterVisible((prev) => !prev)}
-              />
-            </FilterSection>
+            {current === "검색추가" && (
+              <FilterSection>
+                {MAJOR_LIST.map(({ label, department: value }) => (
+                  <MajorFilterButton
+                    key={label}
+                    value={label}
+                    isTarget={rest.department === value}
+                    onClick={() =>
+                      dispatch(setFilterOption({ key: "department", value }))
+                    }
+                  >
+                    {label}
+                  </MajorFilterButton>
+                ))}
+                <AdjustmentButton
+                  onClick={() => setIsClassificationFilterVisible((prev) => !prev)}
+                />
+              </FilterSection>
+            )}
 
             {/* LECTURES SECTION */}
-            <LectureSection>
-              {lectureList.map((lectureInfo) => (
-                <Lecture infos={lectureInfo} key={lectureInfo.id} />
-              ))}
-            </LectureSection>
+            {current === "검색추가" && (
+              <LectureSection>
+                {lectureList.map((lectureInfo) => (
+                  <Lecture infos={lectureInfo} key={lectureInfo.id} />
+                ))}
+              </LectureSection>
+            )}
+
+            {current === "검색" && (
+              <RecentlySearchTermSection>
+                <RecentlySearchTermLabel>최근검색어</RecentlySearchTermLabel>
+                {searchTermList.map((term) => (
+                  <TermWrapper key={term}>
+                    <Term as="div" onClick={(e) => searchLectureOnWord(e, term)}>
+                      {term}
+                    </Term>
+                    <TermDeleteButton onClick={() => deleteTerm(term)} />
+                  </TermWrapper>
+                ))}
+              </RecentlySearchTermSection>
+            )}
           </SearchAddBox>
 
           <DirectlyAddBox>
