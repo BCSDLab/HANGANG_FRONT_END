@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { showAddTimetableModal } from "store/modules/modalModule";
 import {
   AddNewTimetableLabel,
   DownImage,
@@ -12,6 +14,7 @@ import {
 import Timetable from "./Timetable";
 
 const TimetableSection = () => {
+  const dispatch = useDispatch();
   return (
     <TimetableAddBox>
       <TimetableSelectBar>
@@ -22,7 +25,7 @@ const TimetableSection = () => {
         <TimetableLabel>2020년 2학기 (2)</TimetableLabel>
         <TimetableLabel>2020년 2학기 (3)</TimetableLabel>
         <TimetableLabel>2020년 2학기 (4)</TimetableLabel>
-        <AddNewTimetableLabel>
+        <AddNewTimetableLabel onClick={() => dispatch(showAddTimetableModal())}>
           <PlusImage />새 시간표 추가하기
         </AddNewTimetableLabel>
       </TimetableSelectBar>

@@ -4,7 +4,7 @@ import { DUMMY_TIMETABLE_URL } from "static/Shared/imageUrls";
 
 const TimetableWrapper = styled.div`
   width: 560px;
-  margin-top: 54px;
+  margin-top: 55px;
 `;
 
 const DummyTimetable = styled.img.attrs({
