@@ -155,7 +155,6 @@ const LectureClassSection = ({ props, ...rest }) => {
   const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
   const dispatch = useDispatch();
   const history = useHistory();
-  const { limit, page, maxPage } = useSelector((state) => state.lectureDetailReducer);
 
   const clickLike = async (id, index) => {
     try {
@@ -182,6 +181,7 @@ const LectureClassSection = ({ props, ...rest }) => {
     <ReviewSection>
       <ReviewTitleSection>
         <ReviewWriterInfo>{props.semester_date} 수강자</ReviewWriterInfo>
+
         <ReviewStarSection>
           {[...Array(parseInt(props.rating))].map((num, idx) => {
             return <StarIcon key={idx}></StarIcon>;

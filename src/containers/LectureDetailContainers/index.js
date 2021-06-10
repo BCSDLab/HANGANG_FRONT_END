@@ -5,7 +5,11 @@ import styled from "styled-components";
 
 import LectureDetailAPI from "api/lectureDetail";
 
-import { setLectureInfo } from "store/modules/lectureDetailModule";
+import {
+  setLectureInfo,
+  requestLectureReviewsFinished,
+  setLectureReviews,
+} from "store/modules/lectureDetailModule";
 import { BorderColor, InnerContentWidth } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
@@ -16,7 +20,6 @@ import LectureReviewContainer from "./LectureReviewContainer";
 import LectureClassContainer from "./LectureClassContainer";
 
 import LoadingSpinner from "components/Shared/LoadingSpinner";
-import { showAlertModal } from "store/modules/modalModule";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -47,11 +50,8 @@ const LectureDetailContainer = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { isLoading, ...orderOption } = useSelector((state) => state.lectureReducer);
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
-
-  const [isFetched, setIsFetched] = useState(false);
   const {
+    isLoading,
     lectureReviews,
     lectureEvaluationRating,
     lectureEvaluationTotal,
@@ -59,8 +59,11 @@ const LectureDetailContainer = () => {
     page,
     limit,
     sort,
-    ...rest
+    isFetchedOnFirstReviewsMount,
+    ...orderOptions
   } = useSelector((state) => state.lectureDetailReducer);
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const [isFetched, setIsFetched] = useState(false);
 
   const fetchLectureDetailInfo = async () => {
     try {
@@ -84,12 +87,13 @@ const LectureDetailContainer = () => {
       setIsFetched(true);
     }
   };
+
   const fetchReviews = async (options) => {
     try {
       let accessToken = isLoggedIn
         ? getValueOnLocalStorage("hangangToken").access_token
         : null;
-
+      console.log("fetchReviews optinos=>", options);
       const { data } = await LectureDetailAPI.getLectureReviews(
         accessToken,
         lectureId,
@@ -97,7 +101,7 @@ const LectureDetailContainer = () => {
         page,
         sort
       );
-      console.log(data);
+      console.log("data => ", data);
       dispatch(setLectureReviews(data));
     } catch (error) {
       throw new Error(error);
@@ -105,13 +109,18 @@ const LectureDetailContainer = () => {
       dispatch(requestLectureReviewsFinished());
     }
   };
-  /**
-   * TODO:
-   * - 필터링 선택시 다시 패치 될 수 있도록 할 것
-   */
+
   useEffect(() => {
-    fetchLectureDetailInfo();
-  }, []);
+    console.log(
+      "useEffect => ",
+      isCheckedToken,
+      (isCheckedToken && !isFetchedOnFirstReviewsMount) || isLoading
+    );
+
+    if ((isCheckedToken && !isFetchedOnFirstReviewsMount) || isLoading)
+      fetchReviews({ page, ...orderOptions });
+    else fetchLectureDetailInfo();
+  }, [isCheckedToken, isFetchedOnFirstReviewsMount, isLoading]);
 
   return (
     <>
@@ -125,12 +134,12 @@ const LectureDetailContainer = () => {
           {isFetched && (
             <>
               <ReviewSection>
-                <LectureInfoContainer lectureInfo={rest}></LectureInfoContainer>
+                <LectureInfoContainer lectureInfo={orderOptions}></LectureInfoContainer>
 
                 <LectureGraphContainer
-                  rating={rest.total_rating}
-                  count={rest.review_count}
-                  hashtags={rest.top3_hash_tag}
+                  rating={orderOptions.total_rating}
+                  count={orderOptions.review_count}
+                  hashtags={orderOptions.top3_hash_tag}
                   evaluationRating={lectureEvaluationRating}
                   evaluationTotal={lectureEvaluationTotal}
                 ></LectureGraphContainer>
@@ -140,15 +149,15 @@ const LectureDetailContainer = () => {
                 <LectureReviewContainer
                   lectureReviewCount={lectureReviews.count}
                   lectureReviews={lectureReviews}
-                  lectureId={rest.id}
-                  page={rest.page}
+                  lectureId={orderOptions.id}
+                  page={orderOptions.page}
                   limit={limit}
                   sort={sort}
                 ></LectureReviewContainer>
               </ReviewSection>
 
               <LectureClassContainer
-                grade={rest.grade}
+                grade={orderOptions.grade}
                 lectureClassInfo={lectureClassInfo}
               ></LectureClassContainer>
             </>

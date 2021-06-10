@@ -4,19 +4,16 @@ import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import styled from "styled-components";
-import LectureDetailAPI from "api/lectureDetail";
 import {
   setLectureReviewFilter,
   requestLectureReviews,
 } from "store/modules/lectureDetailModule";
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { triggerWhenNotLoggedIn, callReportModal } from "utils/reportUtils";
 
 const ModalWrapper = styled.div`
   position: absolute;
-  top: 850px;
-  right: 760px;
+  margin-left: 640px;
+  margin-top: 125px;
   width: 100px;
   height: 100px;
 
@@ -44,11 +41,11 @@ FilterModal.propTypes = {
 
 function FilterModal({ lectureId, isLoggedIn, isCheckedToken = false }) {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const { limit, page, maxPage, sort } = useSelector(
-    (state) => state.lectureDetailReducer
-  );
-  const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
+  // const history = useHistory();
+  // const { limit, page, maxPage, sort } = useSelector(
+  //   (state) => state.lectureDetailReducer
+  // );
+  // const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
 
   const fetchReviewWithFilter = async (sortLabel) => {
     console.log("[fetchReviewWithFilter] => " + sortLabel);

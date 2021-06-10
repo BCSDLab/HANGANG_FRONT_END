@@ -64,6 +64,7 @@ const REVIEW_STATE = {
 };
 const STATE = {
   isLoading: false,
+  isFetchedOnFirstReviewsMount: false,
   lectureReviews: {},
   ...defaultFilterOptions,
   ...MODAL_STATE,
@@ -165,6 +166,7 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         isLoading: false,
+        isFetchedOnFirstReviewsMount: true,
       };
     default:
       return state;

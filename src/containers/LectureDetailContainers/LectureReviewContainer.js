@@ -131,7 +131,7 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
   );
   /**
    * 무한 스크롤
-   * 다음 페이지 리뷰 호출합니다.
+   * 다음 페이지 리뷰를 호출합니다.
    */
   const getMoreReviews = async () => {
     try {
@@ -159,18 +159,13 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
     if (target.isIntersecting && page < maxPage) {
       getMoreReviews();
     }
-  }, 20);
+  }, 300);
   const { targetRef } = useInfiniteScroll(fetchMore, 5);
-
-  if (isFilterModalOpened) {
-    console.log("modal-open");
-  }
 
   return (
     <Section>
       <ReviewInfoSection>
         <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
-        {/* <FilterPickSection onClick={() => clickFilter(props.id, props.is_liked)}> */}
         <FilterPickSection onClick={() => dispatch(openFilterModal())}>
           <FilterPickLabel style={{ cursor: "pointer" }}>{rest.sort}</FilterPickLabel>
           <LowArrowIcon></LowArrowIcon>
