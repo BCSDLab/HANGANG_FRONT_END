@@ -18,10 +18,6 @@ const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) =
     endTime: false,
   });
 
-  React.useEffect(() => {
-    console.log(isDropdownVisible);
-  });
-
   /**
    * 요일 정보를 받아 class_times 의 현재 변경하려는 타겟의 요일을 변경합니다.
    * @param {number} value 요일 정보가 담겨있는 value 값입니다.
