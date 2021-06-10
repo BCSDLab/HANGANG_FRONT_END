@@ -144,7 +144,9 @@ const LectureDetailContainer = () => {
                   evaluationTotal={lectureEvaluationTotal}
                 ></LectureGraphContainer>
 
-                <LectureResourceContainer></LectureResourceContainer>
+                <LectureResourceContainer
+                  lectureResource={orderOptions}
+                ></LectureResourceContainer>
 
                 <LectureReviewContainer
                   lectureReviewCount={lectureReviews.count}

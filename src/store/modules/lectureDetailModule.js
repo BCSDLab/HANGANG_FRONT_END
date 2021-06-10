@@ -55,7 +55,7 @@ const defaultFilterOptions = {
 };
 const MODAL_STATE = {
   isFilterModalOpened: false,
-  isTimeTableModalOpened: false,
+  isTimetableModalOpened: false,
 };
 const REVIEW_STATE = {
   limit: 5,

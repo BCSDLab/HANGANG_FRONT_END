@@ -124,7 +124,7 @@ const LowArrowIcon = styled.img.attrs({
  */
 const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
   const dispatch = useDispatch();
-  const [reveiws, setReveiws] = useState("");
+
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const { limit, page, maxPage, sort, isFilterModalOpened } = useSelector(
     (state) => state.lectureDetailReducer

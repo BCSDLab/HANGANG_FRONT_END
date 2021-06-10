@@ -26,7 +26,7 @@ const ModalWrapper = styled.div`
   border: 1px solid ${PlaceholderColor};
   background-color: #fff;
 
-  z-index: 9999;
+  z-index: 1;
 `;
 
 const FilterLabel = styled.p`
@@ -41,12 +41,6 @@ FilterModal.propTypes = {
 
 function FilterModal({ lectureId, isLoggedIn, isCheckedToken = false }) {
   const dispatch = useDispatch();
-  // const history = useHistory();
-  // const { limit, page, maxPage, sort } = useSelector(
-  //   (state) => state.lectureDetailReducer
-  // );
-  // const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;
-
   const fetchReviewWithFilter = async (sortLabel) => {
     console.log("[fetchReviewWithFilter] => " + sortLabel);
     try {
