@@ -4,10 +4,19 @@ const SET_FILTER_OPTION = "SET_FILTER_OPTION";
 const SET_DEFAULT_FILTER_OPTION = "SET_DEFAULT_FILTER_OPTION";
 const SET_LECTURE_LIST = "SET_LECTURE_LIST";
 
+const SET_CANDIDATE_CLASS_TIMES = "SET_CANDIDATE_CLASS_TIMES";
+const REMOVE_CANDIDATE_CLASS_TIMES = "REMOVE_CANDIDATE_CLASS_TIMES";
+
 // Action Creator
 export const setFilterOption = (payload) => ({ type: SET_FILTER_OPTION, payload });
 export const setDefaultFilterOption = () => ({ type: SET_DEFAULT_FILTER_OPTION });
 export const setLectureList = (payload) => ({ type: SET_LECTURE_LIST, payload });
+
+export const setCandidateClassTimes = (payload) => ({
+  type: SET_CANDIDATE_CLASS_TIMES,
+  payload,
+});
+export const removeCandidateClassTimes = () => ({ type: REMOVE_CANDIDATE_CLASS_TIMES });
 
 // State
 const DEFAULT_SEARCH_LECTURE_OPTION = {
@@ -19,8 +28,13 @@ const DEFAULT_SEARCH_LECTURE_OPTION = {
   semesterDateId: 5,
 };
 
+const CANDIDATE_LECTURE = {
+  candidateLectureClassTimes: [],
+};
+
 const STATE = {
   ...DEFAULT_SEARCH_LECTURE_OPTION,
+  ...CANDIDATE_LECTURE,
   lectureList: [],
   amount: 0,
 };
@@ -65,6 +79,16 @@ export default function timetableReducer(state = STATE, action) {
         ...state,
         amount: action.payload.count,
         lectureList: action.payload.result,
+      };
+    case SET_CANDIDATE_CLASS_TIMES:
+      return {
+        ...state,
+        candidateLectureClassTimes: action.payload.class_time,
+      };
+    case REMOVE_CANDIDATE_CLASS_TIMES:
+      return {
+        ...state,
+        candidateLectureClassTimes: [],
       };
     default:
       return state;

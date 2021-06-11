@@ -5,6 +5,7 @@ import TimetableAPI from "api/timetable";
 import { CLASSIFICATION_LIST } from "static/Shared/CLASSIFICATION_LIST";
 import { MAJOR_LIST } from "static/Shared/MAJOR_LIST";
 import {
+  removeCandidateClassTimes,
   setDefaultFilterOption,
   setFilterOption,
   setLectureList,
@@ -135,7 +136,7 @@ const AddLectureSection = () => {
 
             {/* LECTURES SECTION */}
             {current === "검색추가" && (
-              <LectureSection>
+              <LectureSection onMouseLeave={() => dispatch(removeCandidateClassTimes())}>
                 {lectureList.map((lectureInfo) => (
                   <Lecture infos={lectureInfo} key={lectureInfo.id} />
                 ))}

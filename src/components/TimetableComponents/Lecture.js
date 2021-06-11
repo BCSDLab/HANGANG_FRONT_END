@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import {
+  removeCandidateClassTimes,
+  setCandidateClassTimes,
+} from "store/modules/timetableModule";
 import {
   Background,
   Code,
@@ -13,7 +18,14 @@ import {
 
 const Lecture = ({ infos }) => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (isHovered) {
+      dispatch(setCandidateClassTimes({ class_time: JSON.parse(infos.class_time) }));
+    }
+  }, [isHovered]);
 
   return (
     <Background
