@@ -26,16 +26,16 @@ const AlertModalBox = styled.div`
   padding: 16px;
 `;
 
-const Title = styled.div`
+const Title = styled.h2`
   width: 100%;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: bold;
   margin-top: 8px;
   color: ${FontColor};
 `;
 
 const Content = styled.div`
-  width: 100%;
+  width: 80%;
   font-size: 12px;
   margin-top: 12px;
   color: ${FontColor};
