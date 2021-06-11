@@ -83,7 +83,19 @@ const AddLectureSection = () => {
   };
 
   useEffect(() => {
-    setLecturesOnState(rest, dispatch);
+    const {
+      classification,
+      department,
+      keyword,
+      limit,
+      page,
+      semesterDateId,
+      amount,
+    } = rest;
+    setLecturesOnState(
+      { classification, department, keyword, limit, page, semesterDateId, amount },
+      dispatch
+    );
   }, [rest.classification, rest.department, rest.keyword]);
 
   useEffect(() => {
