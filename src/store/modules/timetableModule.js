@@ -10,6 +10,8 @@ const SET_USER_CREATED_TIMETABLE = "SET_USER_CREATED_TIMETABLE";
 const SET_CANDIDATE_CLASS_TIMES = "SET_CANDIDATE_CLASS_TIMES";
 const REMOVE_CANDIDATE_CLASS_TIMES = "REMOVE_CANDIDATE_CLASS_TIMES";
 
+const SET_LECTURE_ON_LECTURE_LIST = "SET_LECTURE_ON_LECTURE_LIST";
+
 // Action Creator
 export const setFilterOption = (payload) => ({ type: SET_FILTER_OPTION, payload });
 export const setDefaultFilterOption = () => ({ type: SET_DEFAULT_FILTER_OPTION });
@@ -29,6 +31,11 @@ export const setCandidateClassTimes = (payload) => ({
   payload,
 });
 export const removeCandidateClassTimes = () => ({ type: REMOVE_CANDIDATE_CLASS_TIMES });
+
+export const setLectureOnLectureList = (payload) => ({
+  type: SET_LECTURE_ON_LECTURE_LIST,
+  payload,
+});
 
 // State
 const DEFAULT_SEARCH_LECTURE_OPTION = {
@@ -117,6 +124,14 @@ export default function timetableReducer(state = STATE, action) {
       return {
         ...state,
         candidateLectureClassTimes: [],
+      };
+    case SET_LECTURE_ON_LECTURE_LIST:
+      return {
+        ...state,
+        displayTimetable: {
+          ...state.displayTimetable,
+          lectureList: [...state.displayTimetable.lectureList, action.payload.lecture],
+        },
       };
     default:
       return state;

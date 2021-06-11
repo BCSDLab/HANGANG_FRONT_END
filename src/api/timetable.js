@@ -31,4 +31,12 @@ export default {
     const response = await axios.get("/timetable", setTokenInHeader());
     return response;
   },
+  setLectureOnTimetable: async (lectureTimetableId, userTimetableId) => {
+    const body = {
+      lecture_timetable_id: lectureTimetableId,
+      user_timetable_id: userTimetableId,
+    };
+    const response = await axios.post("/timetable/lecture", body, setTokenInHeader());
+    return response;
+  },
 };

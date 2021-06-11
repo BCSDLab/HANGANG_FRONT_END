@@ -33,8 +33,8 @@ const Timetable = () => {
    */
   useEffect(() => {
     if (displayTimetable.length !== 0) {
-      const { lectureList } = displayTimetable;
       const ctx = canvasRef.current.getContext("2d");
+      const { lectureList } = displayTimetable;
       lectureList.forEach((lectureInfo, lectureIdx) => {
         drawChosenLecturesOnTimetable(ctx, lectureInfo, lectureIdx);
       });

@@ -39,4 +39,7 @@ export default {
     title: "문제가 발생하였습니다.",
     content: "알 수 없는 오류로 요청이 실패하였습니다. 관리자에게 문의하세요.",
   },
+  overlappedLectureError: {
+    title: "시간표가 중복되었습니다.",
+  },
 };

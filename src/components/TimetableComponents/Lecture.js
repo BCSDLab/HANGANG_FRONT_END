@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import TimetableAPI from "api/timetable";
 import {
-  removeCandidateClassTimes,
   setCandidateClassTimes,
+  setLectureOnLectureList,
 } from "store/modules/timetableModule";
 import {
   Background,
@@ -15,11 +17,14 @@ import {
   SubTitle,
   Title,
 } from "./styles/Lecture.style";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const Lecture = ({ infos }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
+  const { displayTimetable } = useSelector((state) => state.timetableReducer);
 
   useEffect(() => {
     if (isHovered) {
@@ -47,7 +52,9 @@ const Lecture = ({ infos }) => {
       <Rating>{infos.rating.toFixed(1)}</Rating>
       {isHovered && (
         <>
-          <ReflectButton />
+          <ReflectButton
+            onClick={() => requestReflectLecture(infos, displayTimetable.id, dispatch)}
+          />
           <LecturePageButton
             onClick={() => history.push(`/lecture/${infos.lecture_id}`)}
           />
@@ -55,6 +62,22 @@ const Lecture = ({ infos }) => {
       )}
     </Background>
   );
+};
+
+const requestReflectLecture = async (lectureInfo, userTimetableId, dispatch) => {
+  try {
+    const { data } = await TimetableAPI.setLectureOnTimetable(
+      lectureInfo.id,
+      userTimetableId
+    );
+    if (data.httpStatus === "OK") {
+      dispatch(setLectureOnLectureList({ lecture: lectureInfo }));
+    }
+  } catch (error) {
+    const { title } = ALERT_MESSAGE_ON_ERROR_TYPE["overlappedLectureError"];
+    const content = `해당 시간표에 ${error.response.data.errorMessage}`;
+    dispatch(showAlertModal({ title, content }));
+  }
 };
 
 export default Lecture;
