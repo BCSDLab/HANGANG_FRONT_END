@@ -6,7 +6,11 @@ import AddLectureSection from "containers/TimetableContainers/AddLectureSection"
 import TimetableSection from "containers/TimetableContainers/TimetableSection";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
+import TimetableAPI from "api/timetable";
 import { triggerWhenNotLoggedIn } from "utils/reportUtils";
+import { Promise } from "core-js";
+import { setMainTimetable, setUserCreatedTimetable } from "store/modules/timetableModule";
 
 const Background = styled.div`
   display: flex;
@@ -35,6 +39,10 @@ const TimetablePageContainer = () => {
     }
   });
 
+  useEffect(() => {
+    getMainTimetableWithUserCreatedTimetable(dispatch);
+  }, []);
+
   return (
     <Background>
       <ChangingSemesterBar />
@@ -44,6 +52,21 @@ const TimetablePageContainer = () => {
       </MainContentsWrapper>
     </Background>
   );
+};
+
+const getMainTimetableWithUserCreatedTimetable = async (dispatch) => {
+  try {
+    const { fetchMainTimetable, fetchUserCreatedTimetables } = TimetableAPI;
+    const [{ data: mainTimetable }, { data: userCreatedTimetable }] = await Promise.all([
+      fetchMainTimetable(),
+      fetchUserCreatedTimetables(),
+    ]);
+
+    dispatch(setMainTimetable({ mainTimetable }));
+    dispatch(setUserCreatedTimetable({ userCreatedTimetable }));
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 export default TimetablePageContainer;

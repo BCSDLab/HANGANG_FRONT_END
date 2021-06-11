@@ -1,9 +1,12 @@
 import axios from "axios";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const setTokenInHeader = (accessToken = null, data = null) => {
+const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+
+const setTokenInHeader = (token = accessToken, data = null) => {
   let config = {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -18,6 +21,14 @@ export default {
       .join("&");
 
     const response = await axios.get(`/timetable/lecture/list?${query}`);
+    return response;
+  },
+  fetchMainTimetable: async () => {
+    const response = await axios.get("/timetable/main/lecture", setTokenInHeader());
+    return response;
+  },
+  fetchUserCreatedTimetables: async () => {
+    const response = await axios.get("/timetable", setTokenInHeader());
     return response;
   },
 };

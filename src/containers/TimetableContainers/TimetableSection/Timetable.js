@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import { distributeClassTime } from "utils/timetablePage/distributeClassTime";
 import { drawCandidateLectureOnTimetable } from "utils/timetablePage/drawCandidateLectureOnTimetable";
 import { drawChosenLecturesOnTimetable } from "utils/timetablePage/drawChosenLecturesOnTimetable";
 import { drawDefaultTimetableFrame } from "utils/timetablePage/drawDefaultTimetableFrame";
@@ -12,18 +13,32 @@ import {
 const Timetable = () => {
   const canvasRef = useRef();
   const candidateCanvasRef = useRef();
-  const { candidateLectureClassTimes } = useSelector((state) => state.timetableReducer);
+  const { candidateLectureClassTimes, mainTimetable } = useSelector(
+    (state) => state.timetableReducer
+  );
 
+  /**
+   * 첫 마운트 시 default 시간표를 그립니다.
+   */
   useEffect(() => {
     canvasRef.current.width = 562;
     canvasRef.current.height = 977;
     const ctx = canvasRef.current.getContext("2d");
     drawDefaultTimetableFrame(ctx);
-
-    SAMPLE_LECTURE_LIST.forEach((lectureInfo, lectureIdx) => {
-      drawChosenLecturesOnTimetable(ctx, lectureInfo, lectureIdx);
-    });
   }, []);
+
+  /**
+   * 유저의 메인 시간표에 선택되어 있는 강의들을 캔버스에 그립니다.
+   */
+  useEffect(() => {
+    if (mainTimetable.length !== 0) {
+      const { lectureList } = mainTimetable;
+      const ctx = canvasRef.current.getContext("2d");
+      lectureList.forEach((lectureInfo, lectureIdx) => {
+        drawChosenLecturesOnTimetable(ctx, lectureInfo, lectureIdx);
+      });
+    }
+  }, [mainTimetable]);
 
   /**
    * 검색 추가에서 강의를 hover 할 때마다 redux store에 classTime이 변경됩니다.
@@ -41,7 +56,7 @@ const Timetable = () => {
 
     ctx.clearRect(0, 0, 562, 977);
 
-    const lectures = distributeLectures(candidateLectureClassTimes);
+    const lectures = distributeClassTime(candidateLectureClassTimes);
     lectures.forEach((lecture) => {
       drawCandidateLectureOnTimetable(ctx, lecture);
     });
@@ -54,99 +69,5 @@ const Timetable = () => {
     </TimetableWrapper>
   );
 };
-
-/**
- * 백엔드에서 넘겨주는 classTime을 연속된 시간으로 나눕니다.
- * 예를 들어, [10, 11, 12, 13, 204, 205, 206, 207]는 [10, 11, 12, 13], [204, 205, 206, 207] 로 나눕니다.
- */
-const distributeLectures = (target) => {
-  let startIdx = 0;
-
-  let distributedLectureList = target.reduce((acc, curr, idx) => {
-    if (idx === target.length - 1 || curr !== target[idx + 1] - 1) {
-      let slicedLecture = target.slice(startIdx, idx + 1);
-      acc.push(slicedLecture);
-      startIdx = idx + 1;
-    }
-    return acc;
-  }, []);
-
-  return distributedLectureList;
-};
-
-const SAMPLE_LECTURE_LIST = [
-  {
-    id: 53,
-    lecture_id: 25,
-    is_scraped: false,
-    is_custom: false,
-    user_timetable_id: null,
-    semester_date: "5",
-    code: "HRD030",
-    name: "경력개발이해와상담",
-    classification: "HRD필수",
-    grades: "2",
-    classNumber: "02",
-    regular_number: "50",
-    department: "HRD학과",
-    target: "시스템설계제조전공2",
-    professor: "황부순",
-    is_english: null,
-    design_score: null,
-    is_elearning: null,
-    class_time: "[100, 101, 102, 103]",
-    created_at: "2021-03-15T12:07:50.000+00:00",
-    updated_at: "2021-03-15T12:09:23.000+00:00",
-    rating: 0,
-  },
-  {
-    id: 53,
-    lecture_id: 25,
-    is_scraped: false,
-    is_custom: false,
-    user_timetable_id: null,
-    semester_date: "5",
-    code: "HRD030",
-    name: "HRD개론",
-    classification: "HRD필수",
-    grades: "2",
-    classNumber: "02",
-    regular_number: "50",
-    department: "HRD학과",
-    target: "시스템설계제조전공2",
-    professor: "박지원",
-    is_english: null,
-    design_score: null,
-    is_elearning: null,
-    class_time: "[304, 305, 306, 307]",
-    created_at: "2021-03-15T12:07:50.000+00:00",
-    updated_at: "2021-03-15T12:09:23.000+00:00",
-    rating: 0,
-  },
-  {
-    id: 53,
-    lecture_id: 25,
-    is_scraped: false,
-    is_custom: false,
-    user_timetable_id: null,
-    semester_date: "5",
-    code: "HRD030",
-    name: "디지털공학 및 실습",
-    classification: "HRD필수",
-    grades: "2",
-    classNumber: "03",
-    regular_number: "50",
-    department: "HRD학과",
-    target: "시스템설계제조전공2",
-    professor: "주영복",
-    is_english: null,
-    design_score: null,
-    is_elearning: null,
-    class_time: "[10, 11, 12, 13, 204, 205, 206, 207]",
-    created_at: "2021-03-15T12:07:50.000+00:00",
-    updated_at: "2021-03-15T12:09:23.000+00:00",
-    rating: 0,
-  },
-];
 
 export default Timetable;

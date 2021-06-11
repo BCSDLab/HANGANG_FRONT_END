@@ -7,26 +7,33 @@ import {
   PADDING,
   WIDTH_ON_SINGLE_TIME,
 } from "static/TimetablePage/timetableConstants";
+import { distributeClassTime } from "./distributeClassTime";
 import { getStartPosition } from "./getStartPosition";
 
 /**
  * 유저에 의해 추가된 강의를 시간표에 보여줍니다.
+ * classTime을 부분으로 나누어진 시간별로 구분하고,
+ * 이를 Text와 함께 캔버스에 그립니다.
  */
 export const drawChosenLecturesOnTimetable = (ctx, infos, idx) => {
   if (infos) {
     const { name, classNumber, professor, class_time } = infos;
     const parsedClassTime = JSON.parse(class_time);
-    const { day, hour } = getStartPosition(parsedClassTime[0]);
+    const distributedClassTime = distributeClassTime(parsedClassTime);
 
-    ctx.fillStyle = COLOR_TABLE[idx % COLOR_TABLE.length];
-    ctx.fillRect(
-      51 + WIDTH_ON_SINGLE_TIME * day,
-      51 + HEIGHT_ON_SINGLE_TIME * hour,
-      WIDTH_ON_SINGLE_TIME,
-      HEIGHT_ON_SINGLE_TIME * parsedClassTime.length
-    );
+    distributedClassTime.forEach((classTime) => {
+      const { day, hour } = getStartPosition(classTime[0]);
 
-    fillTextOnLecture(ctx, { name, classNumber, professor, day, hour });
+      ctx.fillStyle = COLOR_TABLE[idx % COLOR_TABLE.length];
+      ctx.fillRect(
+        51 + WIDTH_ON_SINGLE_TIME * day,
+        51 + HEIGHT_ON_SINGLE_TIME * hour,
+        WIDTH_ON_SINGLE_TIME,
+        HEIGHT_ON_SINGLE_TIME * classTime.length
+      );
+
+      fillTextOnLecture(ctx, { name, classNumber, professor, day, hour });
+    });
   }
 };
 
