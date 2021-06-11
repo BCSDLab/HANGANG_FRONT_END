@@ -10,7 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import TimetableAPI from "api/timetable";
 import { triggerWhenNotLoggedIn } from "utils/reportUtils";
 import { Promise } from "core-js";
-import { setMainTimetable, setUserCreatedTimetable } from "store/modules/timetableModule";
+import {
+  setDisplayTimetable,
+  setUserCreatedTimetable,
+} from "store/modules/timetableModule";
 
 const Background = styled.div`
   display: flex;
@@ -62,7 +65,7 @@ const getMainTimetableWithUserCreatedTimetable = async (dispatch) => {
       fetchUserCreatedTimetables(),
     ]);
 
-    dispatch(setMainTimetable({ mainTimetable }));
+    dispatch(setDisplayTimetable({ displayTimetable: mainTimetable }));
     userCreatedTimetable = userCreatedTimetable.map((t) => ({
       ...t,
       isMain: t.id === mainTimetable.id,

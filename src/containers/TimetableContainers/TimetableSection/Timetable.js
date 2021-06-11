@@ -14,7 +14,7 @@ import {
 const Timetable = () => {
   const canvasRef = useRef();
   const candidateCanvasRef = useRef();
-  const { candidateLectureClassTimes, mainTimetable } = useSelector(
+  const { candidateLectureClassTimes, displayTimetable } = useSelector(
     (state) => state.timetableReducer
   );
 
@@ -32,14 +32,14 @@ const Timetable = () => {
    * 유저의 메인 시간표에 선택되어 있는 강의들을 캔버스에 그립니다.
    */
   useEffect(() => {
-    if (mainTimetable.length !== 0) {
-      const { lectureList } = mainTimetable;
+    if (displayTimetable.length !== 0) {
+      const { lectureList } = displayTimetable;
       const ctx = canvasRef.current.getContext("2d");
       lectureList.forEach((lectureInfo, lectureIdx) => {
         drawChosenLecturesOnTimetable(ctx, lectureInfo, lectureIdx);
       });
     }
-  }, [mainTimetable]);
+  }, [displayTimetable]);
 
   /**
    * 검색 추가에서 강의를 hover 할 때마다 redux store에 classTime이 변경됩니다.
