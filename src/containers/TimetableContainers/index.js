@@ -57,12 +57,16 @@ const TimetablePageContainer = () => {
 const getMainTimetableWithUserCreatedTimetable = async (dispatch) => {
   try {
     const { fetchMainTimetable, fetchUserCreatedTimetables } = TimetableAPI;
-    const [{ data: mainTimetable }, { data: userCreatedTimetable }] = await Promise.all([
+    let [{ data: mainTimetable }, { data: userCreatedTimetable }] = await Promise.all([
       fetchMainTimetable(),
       fetchUserCreatedTimetables(),
     ]);
 
     dispatch(setMainTimetable({ mainTimetable }));
+    userCreatedTimetable = userCreatedTimetable.map((t) => ({
+      ...t,
+      isMain: t.id === mainTimetable.id,
+    }));
     dispatch(setUserCreatedTimetable({ userCreatedTimetable }));
   } catch (error) {
     throw new Error(error);

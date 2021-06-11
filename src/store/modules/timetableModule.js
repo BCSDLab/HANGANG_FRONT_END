@@ -39,7 +39,7 @@ const DEFAULT_SEARCH_LECTURE_OPTION = {
 
 const TIMETABLE_STATE = {
   mainTimetable: [],
-  createdTimetable: [],
+  userCreatedTimetable: [],
 };
 
 const CANDIDATE_LECTURE = {

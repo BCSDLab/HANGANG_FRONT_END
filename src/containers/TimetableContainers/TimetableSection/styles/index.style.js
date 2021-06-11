@@ -46,6 +46,11 @@ export const TimetableLabel = styled.label`
   cursor: pointer;
 `;
 
+export const MainLabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const PlusImage = styled.img.attrs({
   src: PLUS_URL,
   alt: "plus",
