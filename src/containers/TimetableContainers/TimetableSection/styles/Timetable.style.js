@@ -6,7 +6,7 @@ export const TimetableWrapper = styled.div`
 `;
 
 export const TimetableCanvas = styled.canvas`
-  width: 560px;
+  width: 562px;
   height: 977px;
   background-color: #ffffff;
 `;
