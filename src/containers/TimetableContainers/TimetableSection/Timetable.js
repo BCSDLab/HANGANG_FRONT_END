@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import { MAX_HEIGHT, MAX_WIDTH } from "static/TimetablePage/timetableConstants";
 import { distributeClassTime } from "utils/timetablePage/distributeClassTime";
 import { drawCandidateLectureOnTimetable } from "utils/timetablePage/drawCandidateLectureOnTimetable";
 import { drawChosenLecturesOnTimetable } from "utils/timetablePage/drawChosenLecturesOnTimetable";
@@ -21,8 +22,8 @@ const Timetable = () => {
    * 첫 마운트 시 default 시간표를 그립니다.
    */
   useEffect(() => {
-    canvasRef.current.width = 562;
-    canvasRef.current.height = 977;
+    canvasRef.current.width = MAX_WIDTH;
+    canvasRef.current.height = MAX_HEIGHT;
     const ctx = canvasRef.current.getContext("2d");
     drawDefaultTimetableFrame(ctx);
   }, []);
@@ -50,11 +51,11 @@ const Timetable = () => {
    * 쉽게 말해, hover 할 때마다 시간표 위에 덧댄 종이를 찢고, 다시 그린다고 생각하면 됩니다.
    */
   useEffect(() => {
-    candidateCanvasRef.current.width = 562;
-    candidateCanvasRef.current.height = 977;
+    candidateCanvasRef.current.width = MAX_WIDTH;
+    candidateCanvasRef.current.height = MAX_HEIGHT;
     const ctx = candidateCanvasRef.current.getContext("2d");
 
-    ctx.clearRect(0, 0, 562, 977);
+    ctx.clearRect(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
     const lectures = distributeClassTime(candidateLectureClassTimes);
     lectures.forEach((lecture) => {

@@ -1,6 +1,6 @@
 export const STARTING_POINT = 51;           //  월 09시 강의를 위치시키는 시작 포인트입니다. (51px, 51px)
 
-export const MAX_WIDTH = 560;               //  최대 시간표 폭입니다.
+export const MAX_WIDTH = 562;               //  최대 시간표 폭입니다.
 export const MAX_HEIGHT = 977;              //  최대 시간표 높이입니다.
 
 export const WIDTH_ON_SINGLE_TIME = 102;    //  시간표 한칸의 폭입니다.
