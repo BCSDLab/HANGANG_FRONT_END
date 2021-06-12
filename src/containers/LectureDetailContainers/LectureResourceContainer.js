@@ -5,10 +5,6 @@ import PropTypes from "prop-types";
 
 import ResourceAPI from "api/resources";
 import { FontColor, PlaceholderColor, BorderColor } from "static/Shared/commonStyles";
-import {
-  notPurchasedIconPath,
-  purchasedIconPath,
-} from "static/ResourceDetailPage/imgPath";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import {
   addNextPageResources,
@@ -180,16 +176,16 @@ const LectureResourceContainer = ({ options, lectureResource = {} }) => {
       console.log(options, lectureResource);
 
       const { data: resources } = await ResourceAPI.getResources(
-        {
-          order: "hits",
-          page: resourcePage + 1,
-        },
         // {
-        //   department: orderOption.department,
         //   order: "hits",
-        //   keyword: orderOption.name,
         //   page: resourcePage + 1,
         // },
+        {
+          department: orderOption.department,
+          order: "hits",
+          keyword: orderOption.name,
+          page: resourcePage + 1,
+        },
         accessToken
       );
       console.log("resources=>", resources);
@@ -227,10 +223,10 @@ const LectureResourceContainer = ({ options, lectureResource = {} }) => {
     <Section>
       <InfoLabel>강의자료 추천</InfoLabel>
       <ResourceSection>
-        {!lectureResources && (
+        {lectureResources.result.length === 0 && (
           <SubWarningLabel>등록된 강의자료 추천 정보가 없습니다.</SubWarningLabel>
         )}
-        {lectureResources && (
+        {lectureResources.result && (
           <Wrapper>
             <ResourceWrapper ref={resourceWrapperRef} fileAmountOnRow={fileAmountOnRow}>
               {lectureResources.result.map(({ id, title, thumbnail, isPurchased }) => (
