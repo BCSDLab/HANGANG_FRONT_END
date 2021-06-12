@@ -1,6 +1,7 @@
 // Actions
 const SET_LECTURE_INFO = "SET_LECTURE_INFO";
 const SET_LECTURE_REVIEWS = "SET_LECTURE_REVIEWS";
+const SET_LECTURE_RESOURCES = "SET_LECTURE_RESOURCES";
 
 const CLICK_SCRAP_ICON = "CLICK_SCRAP_ICON";
 const UNCLICK_SCRAP_ICON = "UNCLICK_SCRAP_ICON";
@@ -15,6 +16,7 @@ const SET_LECTURE_REVIEW_FILTER = "SET_LECTURE_REVIEW_FILTER";
 const SET_DEFAULT_LECTURE_REVIEW_FILTER = "SET_DEFAULT_LECTURE_REVIEW_FILTER";
 
 const ADD_NEXT_PAGE_REVIEWS = "ADD_NEXT_PAGE_REVIEWS";
+const ADD_NEXT_PAGE_RESROUCES = "ADD_NEXT_PAGE_RESROUCES";
 
 const SET_REVIEWS_LOADING_START = "SET_REVIEWS_LOADING_START";
 const SET_REVIEWS_LOADING_FINISHED = "SET_REVIEWS_LOADING_FINISHED";
@@ -22,6 +24,10 @@ const SET_REVIEWS_LOADING_FINISHED = "SET_REVIEWS_LOADING_FINISHED";
 // Action Creators
 export const setLectureInfo = (payload) => ({ type: SET_LECTURE_INFO, payload });
 export const setLectureReviews = (payload) => ({ type: SET_LECTURE_REVIEWS, payload });
+export const setLectureResources = (payload) => ({
+  type: SET_LECTURE_RESOURCES,
+  payload,
+});
 
 export const clickScrapIcon = (payload) => ({ type: CLICK_SCRAP_ICON, payload });
 export const unclickScrapIcon = (payload) => ({ type: UNCLICK_SCRAP_ICON, payload });
@@ -49,6 +55,10 @@ export const addNextPageReviews = (payload) => ({
   type: ADD_NEXT_PAGE_REVIEWS,
   payload,
 });
+export const addNextPageResources = (payload) => ({
+  type: ADD_NEXT_PAGE_RESROUCES,
+  payload,
+});
 
 const defaultFilterOptions = {
   sort: "좋아요순",
@@ -60,12 +70,15 @@ const MODAL_STATE = {
 const REVIEW_STATE = {
   limit: 5,
   page: 1,
+  resourcePage: 0,
   maxPage: 1,
+  maxResourcePage: 1,
 };
 const STATE = {
   isLoading: false,
   isFetchedOnFirstReviewsMount: false,
   lectureReviews: {},
+  lectureResources: { count: 0, result: [] },
   ...defaultFilterOptions,
   ...MODAL_STATE,
   ...REVIEW_STATE,
@@ -96,6 +109,12 @@ export default function lectureDetailReducer(state = STATE, action) {
         ...state,
         lectureReviews: action.payload,
         maxPage: Math.ceil(action.payload.count / state.limit),
+      };
+    case SET_LECTURE_RESOURCES:
+      return {
+        ...state,
+        lectureResources: action.payload,
+        maxResourcePage: Math.ceil(action.payload.count / state.limit),
       };
     case CLICK_SCRAP_ICON:
       return {
@@ -154,6 +173,15 @@ export default function lectureDetailReducer(state = STATE, action) {
           result: [...state.lectureReviews.result, ...action.payload.result],
         },
         page: ++state.page,
+      };
+    case ADD_NEXT_PAGE_RESROUCES:
+      return {
+        ...state,
+        lectureResources: {
+          count: action.payload.count,
+          result: [...state.lectureResources.result, ...action.payload.result],
+        },
+        resourcePage: ++state.resourcePage,
       };
     case SET_REVIEWS_LOADING_START:
       return {

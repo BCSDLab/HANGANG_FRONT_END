@@ -156,7 +156,12 @@ export default {
     );
     return response;
   },
-
+  /**
+   * 사용자가 생성한 시간표 목록 불러오기
+   * @param {*} accessToken
+   * @param {*} semesterDateId
+   * @returns
+   */
   getTimetable: async (accessToken, semesterDateId) => {
     const response = await axios.get(
       `/timetable?semesterDateId=${semesterDateId}`,
