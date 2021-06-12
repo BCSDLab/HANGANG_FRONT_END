@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { hideTimetableMoreModal } from "store/modules/modalModule";
+import TimetableAPI from "api/timetable";
+import { hideTimetableMoreModal, showAlertModal } from "store/modules/modalModule";
 import {
   CloseButton,
   Label,
@@ -16,6 +17,8 @@ import {
   TimetableNameModifySection,
   Title,
 } from "./styles/TimetableMoreComponent.style";
+import { removeTimetableOnList } from "store/modules/timetableModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const TimetableMoreComponent = () => {
   const dispatch = useDispatch();
@@ -44,7 +47,9 @@ const TimetableMoreComponent = () => {
             <SettingTimetableLabel>메인시간표 설정</SettingTimetableLabel>
             <SubLabel>해당 시간표가 메인으로 나타납니다.</SubLabel>
           </SetMainTimetableSection>
-          <Label>시간표 삭제</Label>
+          <Label onClick={() => removeTimetable(displayTimetable.id, dispatch)}>
+            시간표 삭제
+          </Label>
           <Label onClick={() => captureScreenshot(displayTimetable.tableName)}>
             이미지 저장
           </Label>
@@ -52,6 +57,21 @@ const TimetableMoreComponent = () => {
       </TimetableMoreComponentBackground>
     )
   );
+};
+
+const removeTimetable = async (timetableId, dispatch) => {
+  try {
+    const { data } = await TimetableAPI.requestRemoveTimetable(timetableId);
+    if (data.httpStatus === "OK") {
+      dispatch(removeTimetableOnList({ id: timetableId }));
+      dispatch(hideTimetableMoreModal());
+      const content = "시간표가 정상적으로 삭제되었습니다.";
+      dispatch(showAlertModal({ content }));
+    }
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
+  }
 };
 
 const captureScreenshot = (tableName) => {

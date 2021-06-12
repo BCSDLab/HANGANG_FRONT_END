@@ -44,6 +44,14 @@ export default {
     const response = await axios.post("/timetable", body, setTokenInHeader());
     return response;
   },
+  requestRemoveTimetable: async (id) => {
+    const data = { id };
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.delete("/timetable", { data, headers });
+    return response;
+  },
   setLectureOnTimetable: async (lectureTimetableId, userTimetableId) => {
     const body = {
       lecture_timetable_id: lectureTimetableId,
