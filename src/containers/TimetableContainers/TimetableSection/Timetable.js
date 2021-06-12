@@ -26,6 +26,8 @@ const Timetable = () => {
     canvasRef.current.width = MAX_WIDTH;
     canvasRef.current.height = MAX_HEIGHT;
     const ctx = canvasRef.current.getContext("2d");
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, MAX_WIDTH, MAX_HEIGHT);
     drawDefaultTimetableFrame(ctx);
 
     if (displayTimetable.length !== 0) {

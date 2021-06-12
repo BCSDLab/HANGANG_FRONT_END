@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { hideTimetableMoreModal } from "store/modules/modalModule";
@@ -19,24 +19,22 @@ import {
 
 const TimetableMoreComponent = () => {
   const dispatch = useDispatch();
-  const [screenHeight, setScreenHeight] = React.useState();
-  const { isTimetableMoreModalShowing, name, id } = useSelector(
-    (state) => state.modalReducer
-  );
+  const { isTimetableMoreModalShowing } = useSelector((state) => state.modalReducer);
+  const { displayTimetable } = useSelector((state) => state.timetableReducer);
 
-  React.useEffect(() => {
-    setScreenHeight(document.querySelector("main").clientHeight);
-  });
+  useEffect(() => {
+    console.log(displayTimetable);
+  }, [displayTimetable]);
 
   return (
     isTimetableMoreModalShowing && (
       <TimetableMoreComponentBackground
-        screenHeight={screenHeight}
+        screenHeight={document.querySelector("main").clientHeight}
         onClick={() => dispatch(hideTimetableMoreModal())}
       >
         <TimetableMoreModal onClick={(e) => e.stopPropagation()}>
           <Title>시간표 더보기</Title>
-          <CloseButton />
+          <CloseButton onClick={() => dispatch(hideTimetableMoreModal())} />
           <TimetableNameModifySection>
             <TimetableNameInput />
             <ModifyButton>수정</ModifyButton>
@@ -47,11 +45,22 @@ const TimetableMoreComponent = () => {
             <SubLabel>해당 시간표가 메인으로 나타납니다.</SubLabel>
           </SetMainTimetableSection>
           <Label>시간표 삭제</Label>
-          <Label>이미지 저장</Label>
+          <Label onClick={() => captureScreenshot(displayTimetable.tableName)}>
+            이미지 저장
+          </Label>
         </TimetableMoreModal>
       </TimetableMoreComponentBackground>
     )
   );
+};
+
+const captureScreenshot = (tableName) => {
+  const canvas = document.querySelector("canvas");
+  const image = canvas.toDataURL("image/png");
+  const link = document.createElement("a");
+  link.href = image;
+  link.download = tableName;
+  link.click();
 };
 
 export default TimetableMoreComponent;
