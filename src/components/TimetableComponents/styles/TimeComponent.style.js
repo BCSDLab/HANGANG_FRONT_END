@@ -63,6 +63,8 @@ export const Down = styled.img.attrs({
 })`
   margin: 2px 0 0 4px;
   width: 14px;
+  transform: ${({ isChoiced }) => (isChoiced ? "rotate(180deg)" : "none")};
+  transition: transform ease-in-out 0.2s;
 `;
 
 export const EndTime = styled(StartTime)`

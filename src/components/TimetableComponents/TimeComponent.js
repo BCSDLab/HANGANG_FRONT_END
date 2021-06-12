@@ -90,7 +90,7 @@ const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) =
           onClick={() => setIsDropdownVisible((prev) => ({ ...prev, startTime: true }))}
         >
           {TIME_WITH_VALUE.find(({ value }) => value === info.time.startTime).label}
-          <Down />
+          <Down isChoiced={isDropdownVisible.startTime} />
 
           {isDropdownVisible.startTime && (
             <TimeDropdown>
@@ -110,7 +110,7 @@ const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) =
           onClick={() => setIsDropdownVisible((prev) => ({ ...prev, endTime: true }))}
         >
           {TIME_WITH_VALUE.find(({ value }) => value === info.time.endTime).label}
-          <Down />
+          <Down isChoiced={isDropdownVisible.endTime} />
 
           {isDropdownVisible.endTime && (
             <TimeDropdown>
