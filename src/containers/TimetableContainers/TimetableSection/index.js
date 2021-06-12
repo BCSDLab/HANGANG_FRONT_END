@@ -11,7 +11,6 @@ import { setDisplayTimetable } from "store/modules/timetableModule";
 import {
   AddNewTimetableLabel,
   DownImage,
-  MainLabelWrapper,
   MainMark,
   PlusImage,
   TimetableAddBox,
@@ -37,12 +36,6 @@ const TimetableSection = () => {
     } else {
       return 1;
     }
-  });
-
-  console.log(userCreatedTimetable);
-
-  React.useEffect(() => {
-    console.log(displayTimetable, userCreatedTimetable);
   });
 
   return (
