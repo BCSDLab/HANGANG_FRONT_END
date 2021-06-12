@@ -6,10 +6,13 @@ const SET_LECTURE_RESOURCES = "SET_LECTURE_RESOURCES";
 const CLICK_SCRAP_ICON = "CLICK_SCRAP_ICON";
 const UNCLICK_SCRAP_ICON = "UNCLICK_SCRAP_ICON";
 const CLICK_LIKE_ICON = "CLICK_LIKE_ICON";
+const CLICK_TIMETABLE_ADD_REMOVE_ICON = "CLICK_TIMETABLE_ADD_REMOVE_ICON";
 
 const OPEN_FILTER_MODAL = "OPEN_FILTER_MODAL";
 const CLOSE_FILTER_MODAL = "CLOSE_FILTER_MODAL";
+
 const OPEN_TIMETABLE_MODAL = "OPEN_TIMETABLE_MODAL";
+const SET_LECTURE_TIMETABLES = "SET_LECTURE_TIMETABLES";
 const CLOSE_TIMETABLE_MODAL = "CLOSE_TIMETABLE_MODAL";
 
 const SET_LECTURE_REVIEW_FILTER = "SET_LECTURE_REVIEW_FILTER";
@@ -32,10 +35,18 @@ export const setLectureResources = (payload) => ({
 export const clickScrapIcon = (payload) => ({ type: CLICK_SCRAP_ICON, payload });
 export const unclickScrapIcon = (payload) => ({ type: UNCLICK_SCRAP_ICON, payload });
 export const clickLikeIcon = (payload) => ({ type: CLICK_LIKE_ICON, payload });
+export const clickTitmetableAddRemoveButtom = (payload) => ({
+  type: CLICK_TIMETABLE_ADD_REMOVE_ICON,
+  payload,
+});
 
 export const openFilterModal = () => ({ type: OPEN_FILTER_MODAL });
 export const closeFilterModal = () => ({ type: CLOSE_FILTER_MODAL });
 export const openTimetableModal = () => ({ type: OPEN_TIMETABLE_MODAL });
+export const setLectureTimetables = (payload) => ({
+  type: SET_LECTURE_TIMETABLES,
+  payload,
+});
 export const closeTimetableModal = () => ({ type: CLOSE_TIMETABLE_MODAL });
 
 export const setLectureReviewFilter = (payload) => ({
@@ -78,15 +89,14 @@ const STATE = {
   isLoading: false,
   isFetchedOnFirstReviewsMount: false,
   lectureReviews: {},
+  timetables: [],
+  timetablesLectures: [],
   lectureResources: { count: 0, result: [] },
   ...defaultFilterOptions,
   ...MODAL_STATE,
   ...REVIEW_STATE,
 };
 /**
- *  TODO:
- * - 스크랩 취소시 오류(API 호출방법 ??) -> 백엔드 질문 해봐야 함
- * - CLOSe_~_MODEL 필요 없으면 삭제할 예정
  * @param {*} state
  * @param {*} action
  * @returns
@@ -103,6 +113,7 @@ export default function lectureDetailReducer(state = STATE, action) {
         lectureEvaluationTotal: action.payload[3].data,
         lectureClassInfo: action.payload[4].data,
         maxPage: Math.ceil(action.payload[1].data.count / state.limit),
+        semesterDates: action.payload[5].data,
       };
     case SET_LECTURE_REVIEWS:
       return {
@@ -135,6 +146,16 @@ export default function lectureDetailReducer(state = STATE, action) {
         ...state,
         lectureReviews: likeReflectedReviews,
       };
+    case CLICK_TIMETABLE_ADD_REMOVE_ICON:
+      const timetableReflectedResult = getTimetableReflectedResult(
+        state.timetables,
+        action.payload.index,
+        action.payload.idx
+      );
+      return {
+        ...state,
+        timetables: timetableReflectedResult,
+      };
     case OPEN_FILTER_MODAL:
       return {
         ...state,
@@ -149,6 +170,20 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         isTimetableModalOpened: true,
+      };
+    case SET_LECTURE_TIMETABLES:
+      // const convertedTimetables = getDatasFrom2DepthPayload(action.payload[0]);
+      const convertedTimetables = getConvertedTimtableList(
+        action.payload[0],
+        action.payload[1],
+        state.id
+      );
+      const convertedTimetablesLectures = getDatasFrom1DepthPayload(action.payload[1]);
+
+      return {
+        ...state,
+        timetables: convertedTimetables,
+        timetablesLectures: convertedTimetablesLectures,
       };
     case CLOSE_TIMETABLE_MODAL:
       return {
@@ -214,4 +249,64 @@ const getLikeReflectedResult = (lectureReviews, idx) => {
     : lectureReviews.result[idx].likes--;
 
   return lectureReviews;
+};
+/**
+ *
+ * @param {*} timetables
+ * @param {*} index
+ * @param {*} idx
+ * @returns
+ */
+const getTimetableReflectedResult = (timeTables, index, idx) => {
+  console.log(timeTables);
+  timeTables[index][idx].is_added = !timeTables[index][idx].is_added;
+  return timeTables;
+};
+
+/**
+ *
+ * @param {*} data
+ * @param {*} lectureLists
+ * @param {*} lectureId
+ * @returns
+ */
+const getConvertedTimtableList = (data = [], lectureLists = [], lectureId = 0) => {
+  let result = [data].map((el) => {
+    el.data.map((datas, idx) => {
+      datas.is_added = false;
+      if (lectureLists[idx].data.lectureList.length != 0) {
+        let tmp = lectureLists[idx].data.lectureList.map(({ id }) => {
+          return id;
+        });
+        datas.is_added = tmp.indexOf(lectureId) != -1 ? true : false;
+      }
+    });
+
+    return el.data;
+  });
+
+  return result;
+};
+
+/**
+ * 순수 데이터 배열로 재 구성
+ * @param {*} array
+ * @returns
+ */
+const getDatasFrom2DepthPayload = (data = []) => {
+  let result = [data].map((el) => {
+    console.log(el);
+    return el.data;
+  });
+  console.log("getDatasFrom2DepthPayload=> " + result);
+  return result;
+};
+const getDatasFrom1DepthPayload = (data = []) => {
+  let result = data.map((el) => {
+    console.log(el);
+    return el.data;
+  });
+
+  console.log("getDatasFrom1DepthPayload=> " + result);
+  return result;
 };

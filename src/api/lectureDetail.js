@@ -1,4 +1,5 @@
 import axios from "axios";
+import lecture from "./lecture";
 /**
  * accessToken
  * @param {*} accessToken
@@ -157,16 +158,68 @@ export default {
     return response;
   },
   /**
-   * 사용자가 생성한 시간표 목록 불러오기
+   * 강의 개설 학기를 받아 해당 학기 기준으로 생성된 시간표 조회하기
    * @param {*} accessToken
-   * @param {*} semesterDateId
+   * @param {*} semesterDataId
    * @returns
    */
-  getTimetable: async (accessToken, semesterDateId) => {
-    const response = await axios.get(
-      `/timetable?semesterDateId=${semesterDateId}`,
+  getTimetables: async (accessToken, semesterDatas, lectureId = 0) => {
+    const response = await Promise.all(
+      semesterDatas.map(async (semesterDataId) => {
+        return await axios.get(
+          `/timetable?semesterDateId=${semesterDataId}`,
+          axiosConfig(accessToken)
+        );
+      })
+    );
+
+    return response;
+  },
+  /**
+   * 시간표 Id로 해당 시간표에 등록된 강의 목록 조회하기
+   * @param {*} accessToken
+   * @param {*} timeTableIds
+   * @returns
+   */
+  getTimetablesLecture: async (accessToken, timeTableIds) => {
+    console.log(timeTableIds);
+    const response = await Promise.all(
+      timeTableIds.map(async (timeTableId) => {
+        return await axios.get(
+          `/timetable/lecture?timeTableId=${timeTableId}`,
+          axiosConfig(accessToken)
+        );
+      })
+    );
+
+    console.log(response);
+    return response;
+  },
+  /**
+   * 시간표 Id와 강의 id로 해당 시간표에 등록하기
+   * @param {*} accessToken
+   * @param {*} timeTableIds
+   * @returns
+   */
+  addTimetablesLecture: async (accessToken, timeTableId, lectureId) => {
+    const response = await axios.post(
+      `/timetable/lecture`,
+      { lecture_timetable_id: lectureId, user_timetable_id: timeTableId },
       axiosConfig(accessToken)
     );
+    return response;
+  },
+  /**
+   * 시간표 Id와 강의 id로 해당 시간표에서 삭제하기
+   * @param {*} accessToken
+   * @param {*} timeTableIds
+   * @returns
+   */
+  removeTimetablesLecture: async (accessToken, timeTableId, lectureId) => {
+    const obj = axiosConfig(accessToken);
+    obj["lecture_timetable_id"] = lectureId;
+    obj["user_timetable_id"] = timeTableId;
+    const response = await axios.delete(`/timetable/lecture`, obj);
     return response;
   },
 };

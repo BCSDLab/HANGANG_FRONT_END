@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import LectureDetailAPI from "api/lectureDetail";
+import ResourceAPI from "api/resources";
 
 import {
   setLectureInfo,
   requestLectureReviewsFinished,
   setLectureReviews,
+  setLectureResources,
 } from "store/modules/lectureDetailModule";
 import { BorderColor, InnerContentWidth } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
@@ -53,6 +55,7 @@ const LectureDetailContainer = () => {
   const {
     isLoading,
     lectureReviews,
+    lectureResources,
     lectureEvaluationRating,
     lectureEvaluationTotal,
     lectureClassInfo,
@@ -75,10 +78,30 @@ const LectureDetailContainer = () => {
         LectureDetailAPI.getEvaluationRating(accessToken, lectureId),
         LectureDetailAPI.getEvaluationTotal(accessToken, lectureId),
         LectureDetailAPI.getLectureClassInfo(accessToken, lectureId),
+        LectureDetailAPI.getLectureSemesterDates(accessToken, lectureId),
       ]);
 
       dispatch(setLectureInfo(lectureInfo));
+
+      /**
+       * resource 가져오려면 department 정보랑 학과명 등이 필요한데
+       * 이는 위에서 정보 조회후에 얻어지는 정보라 나중에 가능함
+       * TODO: 이건 어떻게 할건지
+       */
+
+      // const data = await ResourceAPI.getResources(
+      //   {
+      //     department: orderOptions.department,
+      //     order: "hits",
+      //     keyword: orderOptions.name,
+      //     page: orderOptions.resourcePage,
+      //   },
+      //   accessToken
+      // );
+      // console.log("rest2", data);
+      // dispatch(setLectureResources(data));
     } catch (error) {
+      console.dir(error);
       if (error.response.data.code === 30) {
         history.push("/lectures");
       }
@@ -145,7 +168,8 @@ const LectureDetailContainer = () => {
                 ></LectureGraphContainer>
 
                 <LectureResourceContainer
-                  lectureResource={orderOptions}
+                  lectureResource={lectureResources}
+                  options={orderOptions}
                 ></LectureResourceContainer>
 
                 <LectureReviewContainer

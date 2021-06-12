@@ -1,15 +1,17 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import styled from "styled-components";
+import { FontColor, ConceptColor } from "static/Shared/commonStyles";
+import LectureDetailAPI from "api/lectureDetail";
+
 import {
-  setLectureReviewFilter,
-  requestLectureReviews,
+  setLectureTimetables,
   closeTimetableModal,
+  clickTitmetableAddRemoveButtom,
 } from "store/modules/lectureDetailModule";
-import { FontColor, PlaceholderColor, ConceptColor } from "static/Shared/commonStyles";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const ModalWrapper = styled.div`
   position: absolute;
@@ -82,33 +84,76 @@ TimetableModal.propTypes = {
   isTimetableModalOpened: PropTypes.bool,
 };
 
-function TimetableModal({ ...rest }) {
+/**
+ * TODO:
+ * - 시간표 정보 API연동
+ * - 시간표 담기 빼기 기능 연동
+ * @param {*} param0
+ * @returns
+ */
+function TimetableModal() {
   const dispatch = useDispatch();
-  console.log(rest);
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const { timetables, timetablesLectures, id } = useSelector(
+    (state) => state.lectureDetailReducer
+  );
+  console.log(timetables, timetablesLectures);
 
-  const fetchReviewWithFilter = async (id) => {
-    // console.log("[fetchReviewWithFilter] => " + sortLabel);
+  const checkLectureToTimetable = async (index, idx) => {
     try {
-      // dispatch(setLectureReviewFilter({ sort: sortLabel }));
-      // dispatch(requestLectureReviews());
+      dispatch(clickTitmetableAddRemoveButtom({ index: index, idx: idx }));
     } catch (error) {
+      console.dir(error);
+      throw new Error(error);
+    }
+  };
+
+  const saveTimetableChecked = async () => {
+    console.log("[checkLectureToTimetable] => ");
+    try {
+      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+
+      let { data } = await Promise.all(
+        timetables.map((props) => {
+          props.map(async (el) => {
+            return el.is_added
+              ? LectureDetailAPI.addTimetablesLecture(accessToken, el.id, id)
+              : LectureDetailAPI.removeTimetablesLecture(accessToken, el.id, id);
+          });
+        })
+      );
+    } catch (error) {
+      console.dir(error);
       throw new Error(error);
     }
   };
 
   return (
     <ModalWrapper>
-      <TimetableLabel onClick={() => fetchReviewWithFilter("")}>
-        시간표 1 <Check />{" "}
-      </TimetableLabel>
-      <TimetableLabel onClick={() => fetchReviewWithFilter("")}>
-        시간표 2 <Check />
-      </TimetableLabel>
+      {timetables &&
+        timetables.map((props, index) => {
+          return props.map((data, idx) => {
+            return (
+              <TimetableLabel
+                key={data.id}
+                onClick={() => checkLectureToTimetable(index, idx)}
+              >
+                {data.name}
+                {/* {timetablesLectures[idx].lectureList.length != 0 &&
+                  timetablesLectures[idx].lectureList.map(({ id }) => {
+                    if (id === data.id) return true;
+                  }) && <Check />} */}
+                {data.is_added && <Check />}
+              </TimetableLabel>
+            );
+          });
+        })}
+
       <ButtonSection>
         <Close onClick={() => dispatch(closeTimetableModal())}>닫기</Close>
         <Confirm
           onClick={() => {
-            onConfirm();
+            saveTimetableChecked();
             dispatch(closeTimetableModal());
           }}
         >

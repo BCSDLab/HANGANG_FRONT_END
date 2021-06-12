@@ -1,20 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import styled from "styled-components";
 import LectureDetailAPI from "api/lectureDetail";
-import FilterModal from "components/LectureDetailComponents/FilterModal";
-import Review from "components/LectureDetailComponents/Review";
-import {
-  addNextPageReviews,
-  clickLikeIcon,
-  openFilterModal,
-  openTimetableModal,
-} from "store/modules/lectureDetailModule";
+
+import styled from "styled-components";
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 
+import FilterModal from "components/LectureDetailComponents/FilterModal";
+import Review from "components/LectureDetailComponents/Review";
+
+import { addNextPageReviews, openFilterModal } from "store/modules/lectureDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import debounce from "lodash.debounce";
@@ -112,13 +108,6 @@ const LowArrowIcon = styled.img.attrs({
 `;
 
 /**
- * TODO:
- * - 좋아요 누를시 좋아요 불 들어오록 dispatch 수정
- *  - 좋아요 순 백엔드 확인해야함
- * - 무한스크롤
- *
- * - 신고 기능
- *  - 신고창 UI
  * @param {*} param0
  * @returns
  */

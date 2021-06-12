@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
 
 import styled from "styled-components";
 import {
@@ -14,10 +12,9 @@ import {
 import LectureDetailAPI from "api/lectureDetail";
 import TimetableModal from "components/LectureDetailComponents/TimetableModal";
 import {
-  addNextPageReviews,
-  clickAddLectureButton,
-  clickRemoveectureButton,
   openTimetableModal,
+  closeTimetableModal,
+  setLectureTimetables,
 } from "store/modules/lectureDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
@@ -110,22 +107,49 @@ const RemoveTimetable = styled(AddTimtable)`
   }
 `;
 /**
- * TODO:
- * - 시간표 선택 모달
- * - 모달에서 시간표에 담기 기능 추가하기
  *
  * @param {*} param0
  * @returns
  */
 const LectureClassContainer = ({ grade, lectureClassInfo }) => {
   const dispatch = useDispatch();
-
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
-  const { limit, page, maxPage, sort, isTimetableModalOpened } = useSelector(
+  const { semesterDates, isTimetableModalOpened, id } = useSelector(
     (state) => state.lectureDetailReducer
   );
 
-  console.log(grade, lectureClassInfo);
+  const getTitmetables = async () => {
+    console.log("[getTitmetables] => " + semesterDates);
+    try {
+      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+      const [timetables] = await LectureDetailAPI.getTimetables(
+        accessToken,
+        semesterDates,
+        id
+      );
+      console.log("[timetables]=>" + timetables);
+
+      const timetablesIds = timetables.data.map((el) => {
+        return el.id;
+      });
+      console.log(timetablesIds);
+
+      const timetablesLectures = await LectureDetailAPI.getTimetablesLecture(
+        accessToken,
+        timetablesIds
+      );
+      console.log("[timetablesLectures]=>" + timetablesLectures);
+
+      dispatch(setLectureTimetables([timetables, timetablesLectures]));
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  useEffect(() => {
+    getTitmetables();
+  }, [isLoggedIn, isCheckedToken, isTimetableModalOpened]);
+
   return (
     <Section>
       <InfoLabel>{`시간표 정보`}</InfoLabel>
@@ -153,17 +177,19 @@ const LectureClassContainer = ({ grade, lectureClassInfo }) => {
               {classStartToEnd(data.classTime)}
               {` (${data.classNumber})`}
             </SubLabelContent>
-            {!data.selectedTableId ? (
-              <RemoveTimetable onClick={() => dispatch(openTimetableModal())} />
+            {data.selectedTableId ? (
+              <RemoveTimetable
+                onClick={() => {
+                  dispatch(closeTimetableModal());
+                  dispatch(openTimetableModal());
+                }}
+              />
             ) : (
-              <AddTimtable onClick={() => dispatch(openTimetableModal())} />
+              <AddTimtable onClick={() => openModal(dispatch, isTimetableModalOpened)} />
             )}
           </ClassContent>
         ))}
-        <ClassContent key={22222}>
-          <SubLabelContent>월 1A~3B (01)</SubLabelContent>
-          <RemoveTimetable onClick={() => dispatch(openTimetableModal())} />
-        </ClassContent>
+
         {isTimetableModalOpened && <TimetableModal />}
       </Wrapper>
     </Section>
@@ -196,4 +222,17 @@ const classStartToEnd = (classTimes) => {
 
   return classTime[start][0] + "~" + classTime[end][0];
 };
+
+/**
+ * 모달이 열려 있는 상태에서 다른 과목의 담기 버튼을 눌렀을 때 시간표 정보가 갱신되도록
+ * @param {*} dispatch
+ * @param {*} isTimetableModalOpened
+ */
+const openModal = (dispatch, isTimetableModalOpened) => {
+  if (isTimetableModalOpened) {
+    dispatch(closeTimetableModal());
+  }
+  dispatch(openTimetableModal());
+};
+
 export default LectureClassContainer;
