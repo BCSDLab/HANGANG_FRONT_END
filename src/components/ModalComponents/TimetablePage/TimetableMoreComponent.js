@@ -6,6 +6,7 @@ import { hideTimetableMoreModal, showAlertModal } from "store/modules/modalModul
 import {
   CloseButton,
   Label,
+  MainButton,
   ModifyButton,
   NotMainButton,
   SetMainTimetableSection,
@@ -23,11 +24,10 @@ import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TY
 const TimetableMoreComponent = () => {
   const dispatch = useDispatch();
   const { isTimetableMoreModalShowing } = useSelector((state) => state.modalReducer);
-  const { displayTimetable } = useSelector((state) => state.timetableReducer);
-
-  useEffect(() => {
-    console.log(displayTimetable);
-  }, [displayTimetable]);
+  const { userCreatedTimetable, displayTimetable } = useSelector(
+    (state) => state.timetableReducer
+  );
+  const mainTable = userCreatedTimetable.filter(({ isMain }) => isMain)[0];
 
   return (
     isTimetableMoreModalShowing && (
@@ -39,11 +39,14 @@ const TimetableMoreComponent = () => {
           <Title>시간표 더보기</Title>
           <CloseButton onClick={() => dispatch(hideTimetableMoreModal())} />
           <TimetableNameModifySection>
-            <TimetableNameInput />
+            <TimetableNameInput
+              value={displayTimetable.tableName}
+              onChange={(e) => console.log(e.target.value)}
+            />
             <ModifyButton>수정</ModifyButton>
           </TimetableNameModifySection>
           <SetMainTimetableSection>
-            <NotMainButton />
+            {mainTable.id === displayTimetable.id ? <MainButton /> : <NotMainButton />}
             <SettingTimetableLabel>메인시간표 설정</SettingTimetableLabel>
             <SubLabel>해당 시간표가 메인으로 나타납니다.</SubLabel>
           </SetMainTimetableSection>

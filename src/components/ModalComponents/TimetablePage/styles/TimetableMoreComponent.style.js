@@ -5,7 +5,7 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
-import { NOT_MAIN_URL, X_URL } from "static/Shared/imageUrls";
+import { MAIN_URL, NOT_MAIN_URL, X_URL } from "static/Shared/imageUrls";
 
 export const TimetableMoreComponentBackground = styled.aside`
   position: absolute;
@@ -55,7 +55,6 @@ export const TimetableNameModifySection = styled.div`
 
 export const TimetableNameInput = styled.input.attrs({
   type: "text",
-  placeholder: "플랜 a",
 })`
   all: unset;
   box-sizing: border-box;
@@ -90,6 +89,14 @@ export const NotMainButton = styled.img.attrs({
   width: 20px;
   margin-right: 8px;
   cursor: pointer;
+`;
+
+export const MainButton = styled.img.attrs({
+  src: MAIN_URL,
+  alt: "main",
+})`
+  width: 20px;
+  margin-right: 8px;
 `;
 
 export const SettingTimetableLabel = styled.label`
