@@ -42,4 +42,8 @@ export default {
   overlappedLectureError: {
     title: "시간표가 중복되었습니다.",
   },
+  invalidDirectlyAddFormError: {
+    title: "수업명이나 교수명이 입력되지 않았습니다.",
+    content: "직접 추가하려는 시간의 \n수업명과 교수명을 모두 입력해주세요.",
+  },
 };

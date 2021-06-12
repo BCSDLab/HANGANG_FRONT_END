@@ -45,7 +45,7 @@ const fillTextOnLecture = (ctx, lectureInfo) => {
   const { name, classNumber, professor, day, hour } = lectureInfo;
   let sentencesByLine = [];
   let mainLabel = name;
-  let subLabel = `${classNumber} ${professor}`;
+  let subLabel = `${classNumber !== null ? classNumber : ""} ${professor}`;
 
   while (mainLabel.length > MAX_LENGTH_ON_ONE_LINE) {
     let trimmed = mainLabel.slice(0, MAX_LENGTH_ON_ONE_LINE);

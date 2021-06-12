@@ -21,7 +21,7 @@ export const Title = styled.span`
 `;
 
 export const ConfirmButton = styled.input.attrs({
-  type: "button",
+  type: "submit",
   value: "완료",
 })`
   position: absolute;
@@ -36,7 +36,7 @@ export const ConfirmButton = styled.input.attrs({
   cursor: pointer;
 `;
 
-export const AddFormGrid = styled.div`
+export const AddFormGrid = styled.form`
   display: grid;
   grid-template-areas:
     "label input"
@@ -53,10 +53,10 @@ export const Label = styled.label`
   margin-top: 7px;
 `;
 
-export const Input = styled.input.attrs({
+export const Input = styled.input.attrs(({ name }) => ({
   type: "text",
-  placeholder: "수업명을 입력해 주세요.",
-})`
+  placeholder: name === "name" ? "수업명을 입력해 주세요." : "교수명을 입력해 주세요.",
+}))`
   all: unset;
   width: 100%;
   height: 27px;

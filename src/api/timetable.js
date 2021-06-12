@@ -1,7 +1,9 @@
 import axios from "axios";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+const accessToken = getValueOnLocalStorage("hangangToken")
+  ? getValueOnLocalStorage("hangangToken").access_token
+  : "";
 
 const setTokenInHeader = (token = accessToken, data = null) => {
   let config = {
@@ -37,6 +39,14 @@ export default {
       user_timetable_id: userTimetableId,
     };
     const response = await axios.post("/timetable/lecture", body, setTokenInHeader());
+    return response;
+  },
+  setCustomLectureOnTimetable: async (body) => {
+    const response = await axios.post(
+      "/timetable/custom/lecture",
+      body,
+      setTokenInHeader()
+    );
     return response;
   },
 };
