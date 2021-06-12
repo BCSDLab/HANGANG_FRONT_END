@@ -1,10 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import TimetableAPI from "api/timetable";
 import {
   changeAddTimetableFormValue,
   hideAddTimetableModal,
+  showAlertModal,
 } from "store/modules/modalModule";
+import { getSemesterOptions } from "utils/timetablePage/getSemesterOptions";
 import {
   AddTimetableComponentBackground,
   AddTimetableModal,
@@ -16,6 +19,7 @@ import {
   TimetableNameInput,
   Title,
 } from "./styles/AddTimetableComponents.style";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const AddTimetableComponent = () => {
   const dispatch = useDispatch();
@@ -24,9 +28,18 @@ const AddTimetableComponent = () => {
     (state) => state.modalReducer
   );
 
-  const requestCreateTimetable = (e) => {
+  const currentYear = new Date().getFullYear().toString();
+  const semesterData = getSemesterOptions().filter(({ year }) => year === currentYear);
+
+  const createTimetable = (e) => {
     e.preventDefault();
-    console.log(name, semester_date_id);
+    if (name === null) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["inValidAddTimetableError"];
+      dispatch(hideAddTimetableModal());
+      dispatch(showAlertModal({ title, content }));
+      return;
+    }
+    requestCreateTimetable({ name, semester_date_id }, dispatch);
   };
 
   React.useEffect(() => {
@@ -41,7 +54,7 @@ const AddTimetableComponent = () => {
       >
         <AddTimetableModal
           onClick={(e) => e.stopPropagation()}
-          onSubmit={requestCreateTimetable}
+          onSubmit={createTimetable}
         >
           <Title>시간표 추가</Title>
           <CloseButton onClick={() => dispatch(hideAddTimetableModal())} />
@@ -50,10 +63,11 @@ const AddTimetableComponent = () => {
             onChange={(e) =>
               dispatch(changeAddTimetableFormValue("name", e.target.value))
             }
+            maxLength={35}
           />
-          <Label>학기 설정 (2020년)</Label>
+          <Label>{`학기 설정 (${currentYear}년)`}</Label>
           <SubLabel>이번 연도 시간표만 생성 가능합니다.</SubLabel>
-          {SEMESTER_LABEL.map(({ label, semester_date_id: value }) => (
+          {semesterData.map(({ label, value }) => (
             <SemesterButton
               key={label}
               label={label}
@@ -70,11 +84,21 @@ const AddTimetableComponent = () => {
   );
 };
 
-const SEMESTER_LABEL = [
-  { label: "1학기", semester_date_id: 5 },
-  { label: "여름학기", semester_date_id: 998 },
-  { label: "2학기", semester_date_id: 6 },
-  { label: "겨울학기", semester_date_id: 999 },
-];
+const requestCreateTimetable = async (body, dispatch) => {
+  try {
+    const { data } = await TimetableAPI.createTimetable(body);
+    if (data.httpStatus === "OK") {
+      dispatch(hideAddTimetableModal());
+      const successTitle = "시간표가 생성되었습니다.";
+      const successContent = "해당 학기 시간표 드롭다운에서 확인할 수 있습니다.";
+      dispatch(showAlertModal({ title: successTitle, content: successContent }));
+      // dispatch to add createdTimetable on List
+    }
+  } catch (error) {
+    dispatch(hideAddTimetableModal());
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
+    dispatch(showAlertModal({ title, content }));
+  }
+};
 
 export default AddTimetableComponent;

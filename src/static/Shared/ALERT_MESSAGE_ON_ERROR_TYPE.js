@@ -15,6 +15,10 @@ export default {
     title: "댓글 작성 과정에서 문제가 발생하였습니다.",
     content: "본문은 최소 한 글자 이상이여야 합니다.",
   },
+  24: {
+    title: "시간표가 초과되었습니다.",
+    content: "한 학기 당 최대 5개까지 시간표를 추가할 수 있습니다.",
+  },
   30: {
     title: "문제가 발생하였습니다.",
     content: "해당 게시글 혹은 자료가 존재하지 않습니다.",
@@ -45,5 +49,9 @@ export default {
   invalidDirectlyAddFormError: {
     title: "수업명이나 교수명이 입력되지 않았습니다.",
     content: "직접 추가하려는 시간의 \n수업명과 교수명을 모두 입력해주세요.",
+  },
+  inValidAddTimetableError: {
+    title: "시간표 이름이 입력되지 않았습니다.",
+    content: "추가하려는 시간표의 이름을 모두 입력해주세요.",
   },
 };
