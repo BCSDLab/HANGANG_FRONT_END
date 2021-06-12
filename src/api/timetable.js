@@ -33,6 +33,13 @@ export default {
     const response = await axios.get("/timetable", setTokenInHeader());
     return response;
   },
+  fetchTimetableInfo: async (id) => {
+    const response = await axios.get(
+      `/timetable/lecture?timeTableId=${id}`,
+      setTokenInHeader()
+    );
+    return response;
+  },
   createTimetable: async (body) => {
     const response = await axios.post("/timetable", body, setTokenInHeader());
     return response;

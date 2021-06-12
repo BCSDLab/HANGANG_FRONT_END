@@ -19,19 +19,15 @@ const Timetable = () => {
   );
 
   /**
-   * 첫 마운트 시 default 시간표를 그립니다.
+   * displayTimetable 에 변경값이 발생할 때마다 default 시간표를 그리고
+   * 시간표에 선택되어 있는 강의들을 캔버스에 그립니다.
    */
   useEffect(() => {
     canvasRef.current.width = MAX_WIDTH;
     canvasRef.current.height = MAX_HEIGHT;
     const ctx = canvasRef.current.getContext("2d");
     drawDefaultTimetableFrame(ctx);
-  }, []);
 
-  /**
-   * 유저의 메인 시간표에 선택되어 있는 강의들을 캔버스에 그립니다.
-   */
-  useEffect(() => {
     if (displayTimetable.length !== 0) {
       const ctx = canvasRef.current.getContext("2d");
       const { lectureList } = displayTimetable;

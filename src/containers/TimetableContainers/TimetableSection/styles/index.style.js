@@ -15,7 +15,7 @@ export const TimetableSelectBar = styled.div`
   left: 0;
   width: 240px;
   height: 34px;
-  padding: 0 12px;
+  padding: 4px 12px 0 12px;
   border-radius: 4px;
   border: solid 1px ${BorderColor};
   background-color: #fff;
@@ -40,9 +40,9 @@ export const TimetableLabel = styled.label`
   display: flex;
   align-items: center;
   font-size: 14px;
-  height: ${({ role }) => (role === "main" ? "29px" : "37px")};
-  padding-top: ${({ role }) => (role === "main" ? "0" : "16px")};
-  color: ${({ role }) => (role === "main" ? `${ConceptColor}` : `${FontColor}`)};
+  height: 37px;
+  padding-bottom: 16px;
+  color: ${({ isMain }) => (isMain ? `${ConceptColor}` : `${FontColor}`)};
   cursor: pointer;
 `;
 
@@ -62,7 +62,7 @@ export const PlusImage = styled.img.attrs({
 export const AddNewTimetableLabel = styled.label`
   display: flex;
   align-items: center;
-  padding: 16px 0;
+  padding: 0 0 16px 0;
   color: ${ConceptColor};
   font-size: 14px;
   cursor: pointer;
