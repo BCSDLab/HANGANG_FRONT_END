@@ -8,6 +8,7 @@ const FINISH_FETCH_DEFAULT_DATA = "FINISH_FETCH_DEFAULT_DATA";
 const SET_FILTER_OPTION = "SET_FILTER_OPTION";
 const SET_DEFAULT_FILTER_OPTION = "SET_DEFAULT_FILTER_OPTION";
 const SET_LECTURE_LIST = "SET_LECTURE_LIST";
+const SET_LECTURE_ON_NEXT_PAGE = "SET_LECTURE_ON_NEXT_PAGE";
 
 const SET_DISPLAY_TIMETABLE = "SET_DISPLAY_TIMETABLE";
 const SET_USER_CREATED_TIMETABLE = "SET_USER_CREATED_TIMETABLE";
@@ -28,6 +29,10 @@ export const finishFetchDefaultData = () => ({ type: FINISH_FETCH_DEFAULT_DATA }
 export const setFilterOption = (payload) => ({ type: SET_FILTER_OPTION, payload });
 export const setDefaultFilterOption = () => ({ type: SET_DEFAULT_FILTER_OPTION });
 export const setLectureList = (payload) => ({ type: SET_LECTURE_LIST, payload });
+export const setLectureOnNextPage = (payload) => ({
+  type: SET_LECTURE_ON_NEXT_PAGE,
+  payload,
+});
 
 export const setDisplayTimetable = (payload) => ({
   type: SET_DISPLAY_TIMETABLE,
@@ -138,8 +143,14 @@ export default function timetableReducer(state = STATE, action) {
     case SET_LECTURE_LIST:
       return {
         ...state,
-        amount: action.payload.count,
         lectureList: action.payload.result,
+        maxPageOnLectureList: Math.ceil(action.payload.count / state.limit),
+      };
+    case SET_LECTURE_ON_NEXT_PAGE:
+      return {
+        ...state,
+        lectureList: [...state.lectureList, ...action.payload.lectures],
+        page: ++state.page,
       };
     case SET_DISPLAY_TIMETABLE:
       return {

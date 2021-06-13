@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { debounce } from "lodash";
 
 import TimetableAPI from "api/timetable";
 import { CLASSIFICATION_LIST } from "static/Shared/CLASSIFICATION_LIST";
@@ -9,6 +10,7 @@ import {
   setDefaultFilterOption,
   setFilterOption,
   setLectureList,
+  setLectureOnNextPage,
 } from "store/modules/timetableModule";
 import {
   AdjustmentButton,
@@ -42,13 +44,16 @@ import {
 } from "./styles/index.style";
 import Lecture from "components/TimetableComponents/Lecture";
 import DirectlyAddContainer from "./DirectlyAddContainer";
-import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 import NoData from "components/TimetableComponents/NoData";
+import useInfiniteScroll from "hooks/useInfiniteScroll";
+import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 
 const AddLectureSection = () => {
-  const dispatch = useDispatch();
   const boxWrapperRef = useRef();
-  const { lectureList, ...rest } = useSelector((state) => state.timetableReducer);
+  const dispatch = useDispatch();
+  const { lectureList, maxPageOnLectureList, ...rest } = useSelector(
+    (state) => state.timetableReducer
+  );
   const [current, setCurrent] = useState("검색추가");
   const [searchTermList, setSearchTermList] = useState(
     getValueOnLocalStorage("timetableSearchTerm")
@@ -56,6 +61,22 @@ const AddLectureSection = () => {
   const [isClassificationFilterVisible, setIsClassificationFilterVisible] = useState(
     false
   );
+
+  const fetchMore = debounce((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && rest.page < maxPageOnLectureList) {
+      const { classification, department, keyword, limit, page, semesterDateId } = rest;
+      fetchLectureOnNextPage(
+        { classification, department, keyword, limit, page, semesterDateId },
+        dispatch
+      );
+    }
+  }, 200);
+  const { targetRef } = useInfiniteScroll(fetchMore);
+
+  React.useEffect(() => {
+    console.log(rest);
+  });
 
   const setSearchTermOnLocalStorage = (term) => {
     if (searchTermList === null) {
@@ -141,7 +162,10 @@ const AddLectureSection = () => {
 
             {/* LECTURES SECTION */}
             {current === "검색추가" && (
-              <LectureSection onMouseLeave={() => dispatch(removeCandidateClassTimes())}>
+              <LectureSection
+                ref={targetRef}
+                onMouseLeave={() => dispatch(removeCandidateClassTimes())}
+              >
                 {lectureList.length !== 0 &&
                   lectureList.map((lectureInfo) => (
                     <Lecture infos={lectureInfo} key={lectureInfo.id} />
@@ -194,6 +218,16 @@ const AddLectureSection = () => {
       )}
     </LectureAddBox>
   );
+};
+
+const fetchLectureOnNextPage = async (options, dispatch) => {
+  try {
+    let nextPageOptions = { ...options, page: ++options.page };
+    const { data } = await TimetableAPI.fetchLectures(nextPageOptions);
+    dispatch(setLectureOnNextPage({ lectures: data.result }));
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const setLecturesOnState = async (options, dispatch) => {
