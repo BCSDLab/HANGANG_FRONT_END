@@ -61,6 +61,11 @@ export default {
     );
     return response;
   },
+  requestChangeTimetableName: async (id, name) => {
+    const body = { id, name };
+    const response = await axios.patch("/timetable", body, setTokenInHeader());
+    return response;
+  },
   setLectureOnTimetable: async (lectureTimetableId, userTimetableId) => {
     const body = {
       lecture_timetable_id: lectureTimetableId,

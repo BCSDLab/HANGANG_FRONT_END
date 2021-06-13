@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {
   BorderColor,
+  ConceptColor,
   CopyRightColor,
   FontColor,
   PlaceholderColor,
@@ -53,9 +54,7 @@ export const TimetableNameModifySection = styled.div`
   margin: 26px 0 36px 0;
 `;
 
-export const TimetableNameInput = styled.input.attrs({
-  type: "text",
-})`
+export const TimetableNameInput = styled.input`
   all: unset;
   box-sizing: border-box;
   width: 100%;
@@ -74,7 +73,8 @@ export const ModifyButton = styled.span`
   top: 11px;
   right: 0;
   font-size: 14px;
-  color: ${PlaceholderColor};
+  color: ${({ isEditable }) => (isEditable ? `${ConceptColor}` : `${PlaceholderColor}`)};
+  cursor: pointer;
 `;
 
 export const SetMainTimetableSection = styled.div`

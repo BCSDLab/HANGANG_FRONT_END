@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TimetableAPI from "api/timetable";
@@ -20,21 +20,41 @@ import {
 } from "./styles/TimetableMoreComponent.style";
 import {
   changeMainTimetableOnList,
+  changeNameOfTimetable,
   removeTimetableOnList,
 } from "store/modules/timetableModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const TimetableMoreComponent = () => {
   const dispatch = useDispatch();
+  const inputRef = useRef();
   const { isTimetableMoreModalShowing } = useSelector((state) => state.modalReducer);
   const { userCreatedTimetable, displayTimetable } = useSelector(
     (state) => state.timetableReducer
   );
   const mainTable = userCreatedTimetable.filter(({ isMain }) => isMain)[0];
-
-  React.useEffect(() => {
-    console.log(userCreatedTimetable);
+  const [timetableInputState, setTimetableInputState] = useState({
+    tableName: "",
+    editable: false,
   });
+
+  useEffect(() => {
+    setTimetableInputState((prev) => ({
+      ...prev,
+      tableName: displayTimetable.tableName,
+    }));
+  }, [displayTimetable]);
+
+  const handleClickModifyButton = () => {
+    if (timetableInputState.editable) {
+      setTimetableInputState((prev) => ({ ...prev, editable: false }));
+      changeTimetableName(displayTimetable.id, timetableInputState.tableName, dispatch);
+    } else {
+      setTimetableInputState((prev) => ({ ...prev, editable: true }));
+      inputRef.current.focus();
+    }
+  };
+
   return (
     isTimetableMoreModalShowing && (
       <TimetableMoreComponentBackground
@@ -46,10 +66,19 @@ const TimetableMoreComponent = () => {
           <CloseButton onClick={() => dispatch(hideTimetableMoreModal())} />
           <TimetableNameModifySection>
             <TimetableNameInput
-              value={displayTimetable.tableName}
-              onChange={(e) => console.log(e.target.value)}
+              ref={inputRef}
+              value={timetableInputState.tableName}
+              readOnly={!timetableInputState.editable}
+              onChange={(e) =>
+                setTimetableInputState((prev) => ({ ...prev, tableName: e.target.value }))
+              }
             />
-            <ModifyButton>수정</ModifyButton>
+            <ModifyButton
+              onClick={handleClickModifyButton}
+              isEditable={timetableInputState.editable}
+            >
+              {!timetableInputState.editable ? "수정" : "완료"}
+            </ModifyButton>
           </TimetableNameModifySection>
           <SetMainTimetableSection>
             {mainTable.id === displayTimetable.id ? (
@@ -72,6 +101,21 @@ const TimetableMoreComponent = () => {
       </TimetableMoreComponentBackground>
     )
   );
+};
+
+const changeTimetableName = async (id, name, dispatch) => {
+  try {
+    const { data } = await TimetableAPI.requestChangeTimetableName(id, name);
+    if (data.httpStatus === "OK") {
+      dispatch(changeNameOfTimetable({ id, name }));
+      dispatch(hideTimetableMoreModal());
+      const content = "시간표 이름이 정상적으로 변경되었습니다.";
+      dispatch(showAlertModal({ content }));
+    }
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
+  }
 };
 
 const changeMainTimetable = async (timetableId, dispatch) => {

@@ -8,6 +8,7 @@ const SET_DISPLAY_TIMETABLE = "SET_DISPLAY_TIMETABLE";
 const SET_USER_CREATED_TIMETABLE = "SET_USER_CREATED_TIMETABLE";
 const REMOVE_TIMETABLE_ON_LIST = "REMOVE_TIMETABLE_ON_LIST";
 const CHANGE_MAIN_TIMETABLE_ON_LIST = "CHANGE_MAIN_TIMETABLE_ON_LIST";
+const CHANGE_NAME_OF_TIMETABLE = "CHANGE_NAME_OF_TIMETABLE";
 
 const SET_CANDIDATE_CLASS_TIMES = "SET_CANDIDATE_CLASS_TIMES";
 const REMOVE_CANDIDATE_CLASS_TIMES = "REMOVE_CANDIDATE_CLASS_TIMES";
@@ -33,6 +34,10 @@ export const removeTimetableOnList = (payload) => ({
 });
 export const changeMainTimetableOnList = (payload) => ({
   type: CHANGE_MAIN_TIMETABLE_ON_LIST,
+  payload,
+});
+export const changeNameOfTimetable = (payload) => ({
+  type: CHANGE_NAME_OF_TIMETABLE,
   payload,
 });
 
@@ -139,6 +144,17 @@ export default function timetableReducer(state = STATE, action) {
           ...elem,
           isMain: elem.id === action.payload.id,
         })),
+      };
+    case CHANGE_NAME_OF_TIMETABLE:
+      return {
+        ...state,
+        userCreatedTimetable: state.userCreatedTimetable.map((elem) => {
+          if (elem.id === action.payload.id) {
+            return { ...elem, name: action.payload.name };
+          } else {
+            return { ...elem };
+          }
+        }),
       };
     case SET_CANDIDATE_CLASS_TIMES:
       return {
