@@ -19,13 +19,15 @@ export const Semester = styled.span`
 
 export const RightButton = styled.button`
   all: unset;
+  width: 20px;
+  height: 20px;
 `;
 
 export const RightImage = styled.img.attrs({
   src: RIGHT_BUTTON_URL,
   alt: "rightBtn",
 })`
-  width: 20px;
+  width: 100%;
   cursor: pointer;
 `;
 
