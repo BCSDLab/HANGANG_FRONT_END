@@ -88,4 +88,15 @@ export default {
     );
     return response;
   },
+  deleteLectureOnTimetable: async (lectureId, timetableId) => {
+    const data = {
+      lecture_timetable_id: lectureId,
+      user_timetable_id: timetableId,
+    };
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.delete("/timetable/lecture", { data, headers });
+    return response;
+  },
 };

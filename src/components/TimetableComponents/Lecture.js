@@ -19,7 +19,6 @@ import {
 } from "./styles/Lecture.style";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
-import { distributeClassTime } from "utils/timetablePage/distributeClassTime";
 import { getTimetableClassName } from "utils/timetablePage/getTimetableClassName";
 
 const Lecture = ({ infos }) => {

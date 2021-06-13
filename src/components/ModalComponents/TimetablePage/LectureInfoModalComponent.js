@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
-// import TimetableAPI from "api/timetable";
-import { hideLectureInfoModal } from "store/modules/modalModule";
+import TimetableAPI from "api/timetable";
+import { hideLectureInfoModal, showAlertModal } from "store/modules/modalModule";
 import { getTimetableClassName } from "utils/timetablePage/getTimetableClassName";
 import {
   LectureInfoModalBackground,
@@ -18,6 +19,7 @@ import {
   DeleteButton,
   MemoModifyButton,
 } from "./styles/LectureInfoModalComponent.style";
+import { deleteLectureOnLectureList } from "store/modules/timetableModule";
 
 const LectureInfoModalComponent = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,12 @@ const LectureInfoModalComponent = () => {
   const { lectureInfo, isLectureInfoModalShowing } = useSelector(
     (state) => state.modalReducer
   );
+  const { displayTimetable } = useSelector((state) => state.timetableReducer);
+
+  React.useEffect(() => {
+    console.log(lectureInfo);
+    console.log(displayTimetable.id);
+  }, [lectureInfo]);
 
   return (
     isLectureInfoModalShowing && (
@@ -44,12 +52,32 @@ const LectureInfoModalComponent = () => {
           </Label>
           <DelimiterLine />
           <Memo />
-          <DeleteButton />
+          <DeleteButton
+            onClick={() =>
+              deleteLectureOnTimetable(lectureInfo.id, displayTimetable.id, dispatch)
+            }
+          />
           <MemoModifyButton />
         </LectureInfoModal>
       </LectureInfoModalBackground>
     )
   );
+};
+
+const deleteLectureOnTimetable = async (lectureId, timetableId, dispatch) => {
+  try {
+    const { data } = await TimetableAPI.deleteLectureOnTimetable(lectureId, timetableId);
+    console.dir(data);
+    if (data.httpStatus === "OK") {
+      dispatch(hideLectureInfoModal());
+      const content = "강의가 정상적으로 삭제되었습니다.";
+      dispatch(showAlertModal({ content }));
+      dispatch(deleteLectureOnLectureList({ id: lectureId }));
+    }
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
+  }
 };
 
 export default LectureInfoModalComponent;

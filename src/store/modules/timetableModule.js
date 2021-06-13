@@ -23,6 +23,7 @@ const SET_CANDIDATE_CLASS_TIMES = "SET_CANDIDATE_CLASS_TIMES";
 const REMOVE_CANDIDATE_CLASS_TIMES = "REMOVE_CANDIDATE_CLASS_TIMES";
 
 const SET_LECTURE_ON_LECTURE_LIST = "SET_LECTURE_ON_LECTURE_LIST";
+const DELETE_LECTURE_ON_LECTURE_LIST = "DELETE_LECTURE_ON_LECTURE_LIST";
 
 const CHANGE_PREV_SEMESTER = "CHANGE_PREV_SEMESTER";
 const CHANGE_NEXT_SEMESTER = "CHANGE_NEXT_SEMESTER";
@@ -74,6 +75,10 @@ export const removeCandidateClassTimes = () => ({ type: REMOVE_CANDIDATE_CLASS_T
 
 export const setLectureOnLectureList = (payload) => ({
   type: SET_LECTURE_ON_LECTURE_LIST,
+  payload,
+});
+export const deleteLectureOnLectureList = (payload) => ({
+  type: DELETE_LECTURE_ON_LECTURE_LIST,
   payload,
 });
 
@@ -237,6 +242,19 @@ export default function timetableReducer(state = STATE, action) {
           ...state.displayTimetable,
           lectureList: [...state.displayTimetable.lectureList, action.payload.lecture],
         },
+      };
+    case DELETE_LECTURE_ON_LECTURE_LIST:
+      return {
+        ...state,
+        displayTimetable: {
+          ...state.displayTimetable,
+          lectureList: state.displayTimetable.lectureList.filter(
+            (elem) => elem.id !== action.payload.id
+          ),
+        },
+        lecturePosition: state.lecturePosition.filter(
+          (elem) => elem.infos.id !== action.payload.id
+        ),
       };
     case CHANGE_PREV_SEMESTER:
       return {
