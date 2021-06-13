@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MAX_HEIGHT, MAX_WIDTH } from "static/TimetablePage/timetableConstants";
+import { showLectureInfoModal } from "store/modules/modalModule";
 import { distributeClassTime } from "utils/timetablePage/distributeClassTime";
 import { drawCandidateLectureOnTimetable } from "utils/timetablePage/drawCandidateLectureOnTimetable";
 import { drawChosenLecturesOnTimetable } from "utils/timetablePage/drawChosenLecturesOnTimetable";
@@ -66,18 +67,18 @@ const Timetable = () => {
       <TimetableCanvas ref={canvasRef} />
       <CandidateLectureCanvas
         ref={candidateCanvasRef}
-        onClick={(e) => onLectureClick(e, lecturePosition)}
+        onClick={(e) => onLectureClick(e, lecturePosition, dispatch)}
       />
     </TimetableWrapper>
   );
 };
 
-const onLectureClick = (e, lecturePosition) => {
+const onLectureClick = (e, lecturePosition, dispatch) => {
   const { offsetX, offsetY } = getOffsetPositionOnCanvas(e);
   const lecture = findLectureOnPosition({ offsetX, offsetY }, lecturePosition);
 
   if (lecture !== undefined) {
-    console.log(lecture);
+    dispatch(showLectureInfoModal({ info: lecture.infos }));
   }
 };
 
