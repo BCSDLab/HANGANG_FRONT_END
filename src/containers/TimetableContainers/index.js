@@ -50,19 +50,20 @@ const TimetablePageContainer = () => {
   );
 };
 
+/**
+ * 우선 main 시간표와 유저가 만든 시간표 목록을 가져옵니다.
+ * 이후, 검색 추가란의 강의들을 가져옵니다.
+ * Default 강의들은 유저가 세팅한 메인 시간표의 학기를 기준으로 가져오게 됩니다.
+ */
 const getDefaultData = async (dispatch) => {
   try {
     const {
-      fetchDefaultLectures,
       fetchMainTimetable,
       fetchUserCreatedTimetables,
+      fetchDefaultLectures,
     } = TimetableAPI;
-    let [
-      { data: defaultLectures },
-      { data: mainTimetable },
-      { data: userCreatedTimetable },
-    ] = await Promise.all([
-      fetchDefaultLectures(),
+
+    let [{ data: mainTimetable }, { data: userCreatedTimetable }] = await Promise.all([
       fetchMainTimetable(),
       fetchUserCreatedTimetables(),
     ]);
@@ -72,10 +73,14 @@ const getDefaultData = async (dispatch) => {
       isMain: t.id === mainTimetable.id,
     }));
 
-    dispatch(setLectureList(defaultLectures));
     dispatch(setDisplayTimetable({ displayTimetable: mainTimetable }));
     dispatch(setUserCreatedTimetable({ userCreatedTimetable }));
 
+    const { data: defaultLectures } = await fetchDefaultLectures(
+      mainTimetable.tableSemesterDate
+    );
+
+    dispatch(setLectureList(defaultLectures));
     dispatch(finishFetchDefaultData());
   } catch (error) {
     throw new Error(error);

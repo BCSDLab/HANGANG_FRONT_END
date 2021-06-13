@@ -17,8 +17,10 @@ const setTokenInHeader = (token = accessToken, data = null) => {
 };
 
 export default {
-  fetchDefaultLectures: async () => {
-    const response = await axios.get(`/timetable/lecture/list?limit=20&semesterDateId=5`);
+  fetchDefaultLectures: async (semesterId) => {
+    const response = await axios.get(
+      `/timetable/lecture/list?limit=20&semesterDateId=${semesterId}`
+    );
     return response;
   },
   fetchLectures: async (options) => {

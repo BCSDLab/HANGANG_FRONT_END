@@ -101,9 +101,23 @@ const AddLectureSection = () => {
   };
 
   useEffect(() => {
-    const { classification, department, keyword, limit, page, semesterDateId } = rest;
+    const {
+      classification,
+      department,
+      keyword,
+      limit,
+      page,
+      currentSemesterValue,
+    } = rest;
     setLecturesOnState(
-      { classification, department, keyword, limit, page, semesterDateId },
+      {
+        classification,
+        department,
+        keyword,
+        limit,
+        page,
+        semesterDateId: currentSemesterValue,
+      },
       dispatch
     );
   }, [rest.classification, rest.department, rest.keyword]);
@@ -166,7 +180,9 @@ const AddLectureSection = () => {
                   lectureList.map((lectureInfo) => (
                     <Lecture infos={lectureInfo} key={lectureInfo.id} />
                   ))}
-                {lectureList.length === 0 && <NoData status="no-search" />}
+                {lectureList.length === 0 && (
+                  <NoData isSeasonSemester={rest.currentSemesterValue % 2 === 0} />
+                )}
               </LectureSection>
             )}
 

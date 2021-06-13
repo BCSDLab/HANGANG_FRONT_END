@@ -79,13 +79,17 @@ export const changePrevSemester = () => ({ type: CHANGE_PREV_SEMESTER });
 export const changeNextSemester = () => ({ type: CHANGE_NEXT_SEMESTER });
 
 // State
+
+const semesterOptions = getSemesterOptions();
+const DEFAULT_SEMESTER_VALUE = getCurrentSemesterValue();
+
 const DEFAULT_SEARCH_LECTURE_OPTION = {
   classification: [], //  유형
   department: "", //  학과
   keyword: "", //  검색어
   limit: 20,
   page: 1,
-  semesterDateId: 5,
+  semesterDateId: DEFAULT_SEMESTER_VALUE,
 };
 
 const TIMETABLE_STATE = {
@@ -96,9 +100,6 @@ const TIMETABLE_STATE = {
 const CANDIDATE_LECTURE = {
   candidateLectureClassTimes: [],
 };
-
-const semesterOptions = getSemesterOptions();
-const DEFAULT_SEMESTER_VALUE = getCurrentSemesterValue();
 
 const SEMESTER_VALUE = {
   currentSemesterValue: DEFAULT_SEMESTER_VALUE,

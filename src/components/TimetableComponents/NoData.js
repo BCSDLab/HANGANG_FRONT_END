@@ -38,11 +38,11 @@ const Label = styled.label`
   color: ${PlaceholderColor};
 `;
 
-const NoData = ({ status }) => (
+const NoData = ({ isSeasonSemester }) => (
   <Background>
     <Wrapper>
       <NoDataImage />
-      <Label>{status === "no-search" ? NO_SEARCH_DATA : NO_SEASON_SEMESTER_DATA}</Label>
+      <Label>{isSeasonSemester ? NO_SEASON_SEMESTER_DATA : NO_SEARCH_DATA}</Label>
     </Wrapper>
   </Background>
 );
