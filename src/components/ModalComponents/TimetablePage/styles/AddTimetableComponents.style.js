@@ -16,7 +16,7 @@ export const AddTimetableComponentBackground = styled.aside`
   width: 100vw;
 
   background-color: rgba(0, 0, 0, 0.2);
-  z-index: 9999;
+  z-index: 9995;
 `;
 
 export const AddTimetableModal = styled.form`

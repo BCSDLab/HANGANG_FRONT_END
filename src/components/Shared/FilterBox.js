@@ -34,7 +34,7 @@ const Wrapper = styled.div`
   border: solid 1px ${CopyRightColor};
   padding: 20px;
 
-  z-index: 9998;
+  z-index: 9995;
 `;
 
 const NotifyLabel = styled.label`

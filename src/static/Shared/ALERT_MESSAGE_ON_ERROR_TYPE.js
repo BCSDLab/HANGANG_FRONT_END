@@ -7,6 +7,9 @@ export default {
 자료를 무단으로 가공 및 유통, 재판매하는
 경우 이용에 제한이 생길 수 있습니다.`,
   },
+  confirmDeleteTimetable: {
+    title: "해당 시간표를 삭제하시겠습니까?",
+  },
   notLoggedIn: {
     title: "로그인 후 이용 가능한 서비스입니다.",
     content: "로그인하러 가시겠습니까?",

@@ -19,7 +19,7 @@ export const TimetableSelectBar = styled.div`
   border-radius: 4px;
   border: solid 1px ${BorderColor};
   background-color: #fff;
-  z-index: 9998;
+  z-index: 9995;
 
   :hover {
     height: fit-content;

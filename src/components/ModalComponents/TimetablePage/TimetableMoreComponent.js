@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TimetableAPI from "api/timetable";
-import { hideTimetableMoreModal, showAlertModal } from "store/modules/modalModule";
+import {
+  hideTimetableMoreModal,
+  showAlertModal,
+  showConfirmModal,
+} from "store/modules/modalModule";
 import {
   CloseButton,
   Label,
@@ -22,6 +26,7 @@ import {
   changeMainTimetableOnList,
   changeNameOfTimetable,
   removeTimetableOnList,
+  setDisplayTimetable,
 } from "store/modules/timetableModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
@@ -44,6 +49,10 @@ const TimetableMoreComponent = () => {
       tableName: displayTimetable.tableName,
     }));
   }, [displayTimetable]);
+
+  React.useEffect(() => {
+    console.log(userCreatedTimetable);
+  });
 
   const handleClickModifyButton = () => {
     if (timetableInputState.editable) {
@@ -91,7 +100,22 @@ const TimetableMoreComponent = () => {
             <SettingTimetableLabel>메인시간표 설정</SettingTimetableLabel>
             <SubLabel>해당 시간표가 메인으로 나타납니다.</SubLabel>
           </SetMainTimetableSection>
-          <Label onClick={() => removeTimetable(displayTimetable.id, dispatch)}>
+          <Label
+            onClick={() => {
+              const { title } = ALERT_MESSAGE_ON_ERROR_TYPE["confirmDeleteTimetable"];
+              dispatch(
+                showConfirmModal({
+                  title,
+                  onConfirm: () =>
+                    removeTimetable(
+                      displayTimetable.id,
+                      dispatch,
+                      userCreatedTimetable[1].id
+                    ),
+                })
+              );
+            }}
+          >
             시간표 삭제
           </Label>
           <Label onClick={() => captureScreenshot(displayTimetable.tableName)}>
@@ -133,7 +157,7 @@ const changeMainTimetable = async (timetableId, dispatch) => {
   }
 };
 
-const removeTimetable = async (timetableId, dispatch) => {
+const removeTimetable = async (timetableId, dispatch, otherTableId) => {
   try {
     const { data } = await TimetableAPI.requestRemoveTimetable(timetableId);
     if (data.httpStatus === "OK") {
@@ -141,6 +165,8 @@ const removeTimetable = async (timetableId, dispatch) => {
       dispatch(hideTimetableMoreModal());
       const content = "시간표가 정상적으로 삭제되었습니다.";
       dispatch(showAlertModal({ content }));
+      const { data } = await TimetableAPI.fetchTimetableInfo(otherTableId);
+      dispatch(setDisplayTimetable({ displayTimetable: data }));
     }
   } catch (error) {
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
