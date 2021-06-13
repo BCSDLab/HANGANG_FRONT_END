@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TimetableAPI from "api/timetable";
@@ -18,7 +18,10 @@ import {
   TimetableNameModifySection,
   Title,
 } from "./styles/TimetableMoreComponent.style";
-import { removeTimetableOnList } from "store/modules/timetableModule";
+import {
+  changeMainTimetableOnList,
+  removeTimetableOnList,
+} from "store/modules/timetableModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const TimetableMoreComponent = () => {
@@ -29,6 +32,9 @@ const TimetableMoreComponent = () => {
   );
   const mainTable = userCreatedTimetable.filter(({ isMain }) => isMain)[0];
 
+  React.useEffect(() => {
+    console.log(userCreatedTimetable);
+  });
   return (
     isTimetableMoreModalShowing && (
       <TimetableMoreComponentBackground
@@ -46,7 +52,13 @@ const TimetableMoreComponent = () => {
             <ModifyButton>수정</ModifyButton>
           </TimetableNameModifySection>
           <SetMainTimetableSection>
-            {mainTable.id === displayTimetable.id ? <MainButton /> : <NotMainButton />}
+            {mainTable.id === displayTimetable.id ? (
+              <MainButton />
+            ) : (
+              <NotMainButton
+                onClick={() => changeMainTimetable(displayTimetable.id, dispatch)}
+              />
+            )}
             <SettingTimetableLabel>메인시간표 설정</SettingTimetableLabel>
             <SubLabel>해당 시간표가 메인으로 나타납니다.</SubLabel>
           </SetMainTimetableSection>
@@ -60,6 +72,21 @@ const TimetableMoreComponent = () => {
       </TimetableMoreComponentBackground>
     )
   );
+};
+
+const changeMainTimetable = async (timetableId, dispatch) => {
+  try {
+    const { data } = await TimetableAPI.requestChangeMainTimetable(timetableId);
+    if (data.httpStatus === "OK") {
+      dispatch(changeMainTimetableOnList({ id: timetableId }));
+      dispatch(hideTimetableMoreModal());
+      const content = "메인 시간표가 정상적으로 변경되었습니다.";
+      dispatch(showAlertModal({ content }));
+    }
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
+  }
 };
 
 const removeTimetable = async (timetableId, dispatch) => {

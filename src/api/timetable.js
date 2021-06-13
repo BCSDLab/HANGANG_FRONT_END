@@ -52,6 +52,15 @@ export default {
     const response = await axios.delete("/timetable", { data, headers });
     return response;
   },
+  requestChangeMainTimetable: async (id) => {
+    const body = { id };
+    const response = await axios.patch(
+      "/timetable/main/lecture",
+      body,
+      setTokenInHeader()
+    );
+    return response;
+  },
   setLectureOnTimetable: async (lectureTimetableId, userTimetableId) => {
     const body = {
       lecture_timetable_id: lectureTimetableId,
