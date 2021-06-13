@@ -1,6 +1,8 @@
 /* eslint-disable no-case-declarations */
 // Actions
 
+import { getCurrentSemesterValue } from "utils/timetablePage/getCurrentSemesterValue";
+
 const FINISH_FETCH_DEFAULT_DATA = "FINISH_FETCH_DEFAULT_DATA";
 
 const SET_FILTER_OPTION = "SET_FILTER_OPTION";
@@ -90,6 +92,7 @@ const STATE = {
   lectureList: [],
   amount: 0,
   isFetched: false,
+  currentSemesterValue: getCurrentSemesterValue(),
 };
 
 // Reducer

@@ -23,7 +23,7 @@ import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TY
 
 const TimetableSection = () => {
   const dispatch = useDispatch();
-  let { displayTimetable, userCreatedTimetable } = useSelector(
+  let { currentSemesterValue, displayTimetable, userCreatedTimetable } = useSelector(
     (state) => state.timetableReducer
   );
 
@@ -42,16 +42,18 @@ const TimetableSection = () => {
     <TimetableAddBox>
       <TimetableSelectBar>
         <DownImage />
-        {userCreatedTimetable.map((timetable) => (
-          <TimetableLabel
-            isMain={timetable.isMain}
-            key={timetable.id}
-            onClick={() => changeDisplayTimetable(timetable.id, dispatch)}
-          >
-            {timetable.name}
-            {timetable.isMain && <MainMark />}
-          </TimetableLabel>
-        ))}
+        {userCreatedTimetable
+          .filter((state) => state.semester_date_id === currentSemesterValue)
+          .map((timetable) => (
+            <TimetableLabel
+              isMain={timetable.isMain}
+              key={timetable.id}
+              onClick={() => changeDisplayTimetable(timetable.id, dispatch)}
+            >
+              {timetable.name}
+              {timetable.isMain && <MainMark />}
+            </TimetableLabel>
+          ))}
         <AddNewTimetableLabel onClick={() => dispatch(showAddTimetableModal())}>
           <PlusImage />새 시간표 추가하기
         </AddNewTimetableLabel>
