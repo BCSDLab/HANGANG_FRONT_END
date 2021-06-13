@@ -43,6 +43,7 @@ import {
 import Lecture from "components/TimetableComponents/Lecture";
 import DirectlyAddContainer from "./DirectlyAddContainer";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
+import NoData from "components/TimetableComponents/NoData";
 
 const AddLectureSection = () => {
   const dispatch = useDispatch();
@@ -83,17 +84,9 @@ const AddLectureSection = () => {
   };
 
   useEffect(() => {
-    const {
-      classification,
-      department,
-      keyword,
-      limit,
-      page,
-      semesterDateId,
-      amount,
-    } = rest;
+    const { classification, department, keyword, limit, page, semesterDateId } = rest;
     setLecturesOnState(
-      { classification, department, keyword, limit, page, semesterDateId, amount },
+      { classification, department, keyword, limit, page, semesterDateId },
       dispatch
     );
   }, [rest.classification, rest.department, rest.keyword]);
@@ -149,9 +142,11 @@ const AddLectureSection = () => {
             {/* LECTURES SECTION */}
             {current === "검색추가" && (
               <LectureSection onMouseLeave={() => dispatch(removeCandidateClassTimes())}>
-                {lectureList.map((lectureInfo) => (
-                  <Lecture infos={lectureInfo} key={lectureInfo.id} />
-                ))}
+                {lectureList.length !== 0 &&
+                  lectureList.map((lectureInfo) => (
+                    <Lecture infos={lectureInfo} key={lectureInfo.id} />
+                  ))}
+                {lectureList.length === 0 && <NoData status="no-search" />}
               </LectureSection>
             )}
 

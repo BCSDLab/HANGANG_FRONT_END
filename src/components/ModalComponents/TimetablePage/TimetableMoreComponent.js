@@ -50,10 +50,6 @@ const TimetableMoreComponent = () => {
     }));
   }, [displayTimetable]);
 
-  React.useEffect(() => {
-    console.log(userCreatedTimetable);
-  });
-
   const handleClickModifyButton = () => {
     if (timetableInputState.editable) {
       setTimetableInputState((prev) => ({ ...prev, editable: false }));
