@@ -42,9 +42,16 @@ const LectureInfoModalComponent = () => {
       >
         <LectureInfoModal onClick={(e) => e.stopPropagation()}>
           <CloseButton onClick={() => dispatch(hideLectureInfoModal())} />
-          <Title onClick={() => history.push(`/lecture/${lectureInfo.lecture_id}`)}>
+          <Title
+            onClick={() => {
+              if (!lectureInfo.is_custom) {
+                history.push(`/lecture/${lectureInfo.lecture_id}`);
+              }
+            }}
+            isCustom={lectureInfo.is_custom}
+          >
             {lectureInfo.name}
-            <MoveLectureDetailPageButton />
+            {!lectureInfo.is_custom && <MoveLectureDetailPageButton />}
           </Title>
           <Label>
             {lectureInfo.professor}

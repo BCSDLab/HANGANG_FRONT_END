@@ -53,7 +53,7 @@ export const Title = styled.h2`
   margin: 4px 0 10px 0;
   font-size: 20px;
   color: ${FontColor};
-  cursor: pointer;
+  cursor: ${({ isCustom }) => (isCustom ? "default" : "pointer")};
 `;
 
 export const Label = styled.h4`
