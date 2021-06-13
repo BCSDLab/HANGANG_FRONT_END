@@ -53,27 +53,29 @@ const TimetablePageContainer = () => {
 const getDefaultData = async (dispatch) => {
   try {
     const {
+      fetchDefaultLectures,
       fetchMainTimetable,
       fetchUserCreatedTimetables,
-      fetchDefaultLectures,
     } = TimetableAPI;
     let [
+      { data: defaultLectures },
       { data: mainTimetable },
       { data: userCreatedTimetable },
-      { data: defaultLectures },
     ] = await Promise.all([
+      fetchDefaultLectures(),
       fetchMainTimetable(),
       fetchUserCreatedTimetables(),
-      fetchDefaultLectures(),
     ]);
 
-    dispatch(setDisplayTimetable({ displayTimetable: mainTimetable }));
     userCreatedTimetable = userCreatedTimetable.map((t) => ({
       ...t,
       isMain: t.id === mainTimetable.id,
     }));
-    dispatch(setUserCreatedTimetable({ userCreatedTimetable }));
+
     dispatch(setLectureList(defaultLectures));
+    dispatch(setDisplayTimetable({ displayTimetable: mainTimetable }));
+    dispatch(setUserCreatedTimetable({ userCreatedTimetable }));
+
     dispatch(finishFetchDefaultData());
   } catch (error) {
     throw new Error(error);
