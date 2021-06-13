@@ -2,6 +2,7 @@
 // Actions
 
 import { getCurrentSemesterValue } from "utils/timetablePage/getCurrentSemesterValue";
+import { getSemesterOptions } from "utils/timetablePage/getSemesterOptions";
 
 const FINISH_FETCH_DEFAULT_DATA = "FINISH_FETCH_DEFAULT_DATA";
 
@@ -22,6 +23,9 @@ const SET_CANDIDATE_CLASS_TIMES = "SET_CANDIDATE_CLASS_TIMES";
 const REMOVE_CANDIDATE_CLASS_TIMES = "REMOVE_CANDIDATE_CLASS_TIMES";
 
 const SET_LECTURE_ON_LECTURE_LIST = "SET_LECTURE_ON_LECTURE_LIST";
+
+const CHANGE_PREV_SEMESTER = "CHANGE_PREV_SEMESTER";
+const CHANGE_NEXT_SEMESTER = "CHANGE_NEXT_SEMESTER";
 
 // Action Creator
 export const finishFetchDefaultData = () => ({ type: FINISH_FETCH_DEFAULT_DATA });
@@ -71,6 +75,9 @@ export const setLectureOnLectureList = (payload) => ({
   payload,
 });
 
+export const changePrevSemester = () => ({ type: CHANGE_PREV_SEMESTER });
+export const changeNextSemester = () => ({ type: CHANGE_NEXT_SEMESTER });
+
 // State
 const DEFAULT_SEARCH_LECTURE_OPTION = {
   classification: [], //  유형
@@ -90,14 +97,23 @@ const CANDIDATE_LECTURE = {
   candidateLectureClassTimes: [],
 };
 
+const semesterOptions = getSemesterOptions();
+const DEFAULT_SEMESTER_VALUE = getCurrentSemesterValue();
+
+const SEMESTER_VALUE = {
+  currentSemesterValue: DEFAULT_SEMESTER_VALUE,
+  minSemesterValue: semesterOptions[0].value,
+  maxSemesterValue: semesterOptions[semesterOptions.length - 1].value,
+};
+
 const STATE = {
   ...DEFAULT_SEARCH_LECTURE_OPTION,
   ...TIMETABLE_STATE,
   ...CANDIDATE_LECTURE,
+  ...SEMESTER_VALUE,
   lectureList: [],
   amount: 0,
   isFetched: false,
-  currentSemesterValue: getCurrentSemesterValue(),
 };
 
 // Reducer
@@ -145,6 +161,7 @@ export default function timetableReducer(state = STATE, action) {
         ...state,
         lectureList: action.payload.result,
         maxPageOnLectureList: Math.ceil(action.payload.count / state.limit),
+        page: 1,
       };
     case SET_LECTURE_ON_NEXT_PAGE:
       return {
@@ -156,6 +173,7 @@ export default function timetableReducer(state = STATE, action) {
       return {
         ...state,
         displayTimetable: action.payload.displayTimetable,
+        currentSemesterValue: parseInt(action.payload.displayTimetable.tableSemesterDate),
       };
     case SET_USER_CREATED_TIMETABLE:
       return {
@@ -210,6 +228,16 @@ export default function timetableReducer(state = STATE, action) {
           ...state.displayTimetable,
           lectureList: [...state.displayTimetable.lectureList, action.payload.lecture],
         },
+      };
+    case CHANGE_PREV_SEMESTER:
+      return {
+        ...state,
+        currentSemesterValue: --state.currentSemesterValue,
+      };
+    case CHANGE_NEXT_SEMESTER:
+      return {
+        ...state,
+        currentSemesterValue: ++state.currentSemesterValue,
       };
     default:
       return state;

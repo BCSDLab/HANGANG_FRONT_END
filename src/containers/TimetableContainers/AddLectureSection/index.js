@@ -74,10 +74,6 @@ const AddLectureSection = () => {
   }, 200);
   const { targetRef } = useInfiniteScroll(fetchMore);
 
-  React.useEffect(() => {
-    console.log(rest);
-  });
-
   const setSearchTermOnLocalStorage = (term) => {
     if (searchTermList === null) {
       setSearchTermList([term]);
@@ -232,7 +228,8 @@ const fetchLectureOnNextPage = async (options, dispatch) => {
 
 const setLecturesOnState = async (options, dispatch) => {
   try {
-    const { data } = await TimetableAPI.fetchLectures(options);
+    let firstPageOptions = { ...options, page: 1 };
+    const { data } = await TimetableAPI.fetchLectures(firstPageOptions);
     dispatch(setLectureList(data));
   } catch (error) {
     throw new Error(error);
