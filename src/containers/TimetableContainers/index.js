@@ -1,40 +1,27 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Promise } from "core-js";
 
+import TimetableAPI from "api/timetable";
+import LoadingSpinner from "components/Shared/LoadingSpinner";
 import ChangingSemesterBar from "components/TimetableComponents/ChangingSemesterBar";
 import AddLectureSection from "containers/TimetableContainers/AddLectureSection";
 import TimetableSection from "containers/TimetableContainers/TimetableSection";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-
-import TimetableAPI from "api/timetable";
-import { triggerWhenNotLoggedIn } from "utils/reportUtils";
-import { Promise } from "core-js";
 import {
+  finishFetchDefaultData,
   setDisplayTimetable,
+  setLectureList,
   setUserCreatedTimetable,
 } from "store/modules/timetableModule";
-
-const Background = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  width: 100%;
-  padding: 66px 0px;
-  background-color: #f7f7f7;
-`;
-
-const MainContentsWrapper = styled.div`
-  width: 1135px;
-  display: flex;
-  justify-content: space-between;
-`;
+import { triggerWhenNotLoggedIn } from "utils/reportUtils";
+import { Background, SpinnerWrapper, MainContentsWrapper } from "./index.style";
 
 const TimetablePageContainer = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const { isFetched } = useSelector((state) => state.timetableReducer);
 
   useEffect(() => {
     if (isCheckedToken && !isLoggedIn) {
@@ -42,27 +29,42 @@ const TimetablePageContainer = () => {
     }
   });
 
-  useEffect(() => {
-    getMainTimetableWithUserCreatedTimetable(dispatch);
-  }, []);
+  useEffect(() => getDefaultData(dispatch), []);
 
   return (
     <Background>
-      <ChangingSemesterBar />
-      <MainContentsWrapper>
-        <AddLectureSection />
-        <TimetableSection />
-      </MainContentsWrapper>
+      {!isFetched || (isCheckedToken && !isLoggedIn) ? (
+        <SpinnerWrapper>
+          <LoadingSpinner />
+        </SpinnerWrapper>
+      ) : (
+        <>
+          <ChangingSemesterBar />
+          <MainContentsWrapper>
+            <AddLectureSection />
+            <TimetableSection />
+          </MainContentsWrapper>
+        </>
+      )}
     </Background>
   );
 };
 
-const getMainTimetableWithUserCreatedTimetable = async (dispatch) => {
+const getDefaultData = async (dispatch) => {
   try {
-    const { fetchMainTimetable, fetchUserCreatedTimetables } = TimetableAPI;
-    let [{ data: mainTimetable }, { data: userCreatedTimetable }] = await Promise.all([
+    const {
+      fetchMainTimetable,
+      fetchUserCreatedTimetables,
+      fetchDefaultLectures,
+    } = TimetableAPI;
+    let [
+      { data: mainTimetable },
+      { data: userCreatedTimetable },
+      { data: defaultLectures },
+    ] = await Promise.all([
       fetchMainTimetable(),
       fetchUserCreatedTimetables(),
+      fetchDefaultLectures(),
     ]);
 
     dispatch(setDisplayTimetable({ displayTimetable: mainTimetable }));
@@ -71,6 +73,8 @@ const getMainTimetableWithUserCreatedTimetable = async (dispatch) => {
       isMain: t.id === mainTimetable.id,
     }));
     dispatch(setUserCreatedTimetable({ userCreatedTimetable }));
+    dispatch(setLectureList(defaultLectures));
+    dispatch(finishFetchDefaultData());
   } catch (error) {
     throw new Error(error);
   }

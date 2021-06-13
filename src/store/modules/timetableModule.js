@@ -1,5 +1,8 @@
 /* eslint-disable no-case-declarations */
 // Actions
+
+const FINISH_FETCH_DEFAULT_DATA = "FINISH_FETCH_DEFAULT_DATA";
+
 const SET_FILTER_OPTION = "SET_FILTER_OPTION";
 const SET_DEFAULT_FILTER_OPTION = "SET_DEFAULT_FILTER_OPTION";
 const SET_LECTURE_LIST = "SET_LECTURE_LIST";
@@ -16,6 +19,8 @@ const REMOVE_CANDIDATE_CLASS_TIMES = "REMOVE_CANDIDATE_CLASS_TIMES";
 const SET_LECTURE_ON_LECTURE_LIST = "SET_LECTURE_ON_LECTURE_LIST";
 
 // Action Creator
+export const finishFetchDefaultData = () => ({ type: FINISH_FETCH_DEFAULT_DATA });
+
 export const setFilterOption = (payload) => ({ type: SET_FILTER_OPTION, payload });
 export const setDefaultFilterOption = () => ({ type: SET_DEFAULT_FILTER_OPTION });
 export const setLectureList = (payload) => ({ type: SET_LECTURE_LIST, payload });
@@ -77,11 +82,17 @@ const STATE = {
   ...CANDIDATE_LECTURE,
   lectureList: [],
   amount: 0,
+  isFetched: false,
 };
 
 // Reducer
 export default function timetableReducer(state = STATE, action) {
   switch (action.type) {
+    case FINISH_FETCH_DEFAULT_DATA:
+      return {
+        ...state,
+        isFetched: true,
+      };
     case SET_FILTER_OPTION:
       let { key, value } = action.payload;
 
