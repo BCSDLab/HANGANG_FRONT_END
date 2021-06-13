@@ -165,8 +165,8 @@ const removeTimetable = async (timetableId, dispatch, otherTableId) => {
       dispatch(setDisplayTimetable({ displayTimetable: data }));
     }
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
-    dispatch(showAlertModal({ title, content }));
+    const { title } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
+    dispatch(showAlertModal({ title }));
   }
 };
 
