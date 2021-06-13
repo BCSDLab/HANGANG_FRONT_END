@@ -9,6 +9,8 @@ const SET_LECTURE_LIST = "SET_LECTURE_LIST";
 
 const SET_DISPLAY_TIMETABLE = "SET_DISPLAY_TIMETABLE";
 const SET_USER_CREATED_TIMETABLE = "SET_USER_CREATED_TIMETABLE";
+
+const ADD_TIMETABLE_ON_LIST = "ADD_TIMETABLE_ON_LIST";
 const REMOVE_TIMETABLE_ON_LIST = "REMOVE_TIMETABLE_ON_LIST";
 const CHANGE_MAIN_TIMETABLE_ON_LIST = "CHANGE_MAIN_TIMETABLE_ON_LIST";
 const CHANGE_NAME_OF_TIMETABLE = "CHANGE_NAME_OF_TIMETABLE";
@@ -31,6 +33,11 @@ export const setDisplayTimetable = (payload) => ({
 });
 export const setUserCreatedTimetable = (payload) => ({
   type: SET_USER_CREATED_TIMETABLE,
+  payload,
+});
+
+export const addTimetableOnList = (payload) => ({
+  type: ADD_TIMETABLE_ON_LIST,
   payload,
 });
 export const removeTimetableOnList = (payload) => ({
@@ -140,6 +147,11 @@ export default function timetableReducer(state = STATE, action) {
       return {
         ...state,
         userCreatedTimetable: action.payload.userCreatedTimetable,
+      };
+    case ADD_TIMETABLE_ON_LIST:
+      return {
+        ...state,
+        userCreatedTimetable: [...state.userCreatedTimetable, action.payload.timetable],
       };
     case REMOVE_TIMETABLE_ON_LIST:
       return {

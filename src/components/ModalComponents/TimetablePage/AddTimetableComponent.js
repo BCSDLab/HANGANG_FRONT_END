@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TimetableAPI from "api/timetable";
@@ -20,10 +20,11 @@ import {
   Title,
 } from "./styles/AddTimetableComponents.style";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { addTimetableOnList } from "store/modules/timetableModule";
 
 const AddTimetableComponent = () => {
   const dispatch = useDispatch();
-  const [screenHeight, setScreenHeight] = React.useState();
+  const [screenHeight, setScreenHeight] = useState();
   const { isAddTimetableModalShowing, name, semester_date_id } = useSelector(
     (state) => state.modalReducer
   );
@@ -87,15 +88,23 @@ const AddTimetableComponent = () => {
 const requestCreateTimetable = async (body, dispatch) => {
   try {
     const { data } = await TimetableAPI.createTimetable(body);
-    if (data.httpStatus === "OK") {
-      dispatch(hideAddTimetableModal());
-      const successTitle = "시간표가 생성되었습니다.";
-      const successContent = "해당 학기 시간표 드롭다운에서 확인할 수 있습니다.";
-      dispatch(showAlertModal({ title: successTitle, content: successContent }));
-      // dispatch to add createdTimetable on List
-    }
+
+    const successTitle = "시간표가 생성되었습니다.";
+    const successContent = "해당 학기 시간표 드롭다운에서 확인할 수 있습니다.";
+    dispatch(showAlertModal({ title: successTitle, content: successContent }));
+    dispatch(hideAddTimetableModal());
+
+    const newTimetableId = parseInt(data.split(":")[1].trim());
+    const newTimetableData = {
+      id: newTimetableId,
+      isMain: false,
+      ...body,
+    };
+
+    dispatch(addTimetableOnList({ timetable: newTimetableData }));
   } catch (error) {
     dispatch(hideAddTimetableModal());
+
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
     dispatch(showAlertModal({ title, content }));
   }
