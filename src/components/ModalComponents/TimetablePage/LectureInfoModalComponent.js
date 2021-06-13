@@ -74,7 +74,6 @@ const LectureInfoModalComponent = () => {
 const deleteLectureOnTimetable = async (lectureId, timetableId, dispatch) => {
   try {
     const { data } = await TimetableAPI.deleteLectureOnTimetable(lectureId, timetableId);
-    console.dir(data);
     if (data.httpStatus === "OK") {
       dispatch(hideLectureInfoModal());
       const content = "강의가 정상적으로 삭제되었습니다.";

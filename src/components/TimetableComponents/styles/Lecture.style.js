@@ -69,6 +69,12 @@ export const ReflectButton = styled.input.attrs({
   cursor: pointer;
 `;
 
+export const DrawOffButton = styled(ReflectButton).attrs({
+  value: "빼기",
+})`
+  background-color: #ffab2e;
+`;
+
 export const LecturePageButton = styled(ReflectButton).attrs({
   value: "강의평",
 })`
