@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TimetableAPI from "api/timetable";
@@ -24,7 +24,6 @@ import { addTimetableOnList } from "store/modules/timetableModule";
 
 const AddTimetableComponent = () => {
   const dispatch = useDispatch();
-  const [screenHeight, setScreenHeight] = useState();
   const { isAddTimetableModalShowing, name, semester_date_id } = useSelector(
     (state) => state.modalReducer
   );
@@ -43,14 +42,10 @@ const AddTimetableComponent = () => {
     requestCreateTimetable({ name, semester_date_id }, dispatch);
   };
 
-  React.useEffect(() => {
-    setScreenHeight(document.querySelector("main").clientHeight);
-  });
-
   return (
     isAddTimetableModalShowing && (
       <AddTimetableComponentBackground
-        screenHeight={screenHeight}
+        screenHeight={document.querySelector("main").clientHeight}
         onClick={() => dispatch(hideAddTimetableModal())}
       >
         <AddTimetableModal

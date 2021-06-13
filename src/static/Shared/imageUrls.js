@@ -47,3 +47,5 @@ export const NOT_MAIN_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/not_main.png";
 export const NO_DATA_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/NoDataImage.png";
+export const RIGHT_ARROW_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/right-button.png";
