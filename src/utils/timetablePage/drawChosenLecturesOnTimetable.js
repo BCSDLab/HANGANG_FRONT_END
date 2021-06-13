@@ -7,6 +7,7 @@ import {
   PADDING,
   WIDTH_ON_SINGLE_TIME,
 } from "static/TimetablePage/timetableConstants";
+import { addLecturesWithPosition } from "store/modules/timetableModule";
 import { distributeClassTime } from "./distributeClassTime";
 import { getStartPosition } from "./getStartPosition";
 
@@ -15,7 +16,7 @@ import { getStartPosition } from "./getStartPosition";
  * classTime을 부분으로 나누어진 시간별로 구분하고,
  * 이를 Text와 함께 캔버스에 그립니다.
  */
-export const drawChosenLecturesOnTimetable = (ctx, infos, idx) => {
+export const drawChosenLecturesOnTimetable = (ctx, infos, idx, dispatch) => {
   if (infos) {
     const { name, classNumber, professor, class_time } = infos;
     const parsedClassTime = JSON.parse(class_time);
@@ -25,14 +26,15 @@ export const drawChosenLecturesOnTimetable = (ctx, infos, idx) => {
       const { day, hour } = getStartPosition(classTime[0]);
 
       ctx.fillStyle = COLOR_TABLE[idx % COLOR_TABLE.length];
-      ctx.fillRect(
-        51 + WIDTH_ON_SINGLE_TIME * day,
-        51 + HEIGHT_ON_SINGLE_TIME * hour,
-        WIDTH_ON_SINGLE_TIME,
-        HEIGHT_ON_SINGLE_TIME * classTime.length
-      );
+
+      const startX = 51 + WIDTH_ON_SINGLE_TIME * day;
+      const startY = 51 + HEIGHT_ON_SINGLE_TIME * hour;
+      const width = WIDTH_ON_SINGLE_TIME;
+      const height = HEIGHT_ON_SINGLE_TIME * classTime.length;
+      ctx.fillRect(startX, startY, width, height);
 
       fillTextOnLecture(ctx, { name, classNumber, professor, day, hour });
+      storePositionOfCanvas({ startX, startY, width, height }, infos, dispatch);
     });
   }
 };
@@ -71,4 +73,8 @@ const fillTextOnLecture = (ctx, lectureInfo) => {
       WIDTH_ON_SINGLE_TIME - PADDING * 2
     );
   });
+};
+
+const storePositionOfCanvas = (position, infos, dispatch) => {
+  dispatch(addLecturesWithPosition({ infos: { position, infos } }));
 };

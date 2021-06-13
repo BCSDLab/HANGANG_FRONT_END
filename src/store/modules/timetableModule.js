@@ -27,6 +27,8 @@ const SET_LECTURE_ON_LECTURE_LIST = "SET_LECTURE_ON_LECTURE_LIST";
 const CHANGE_PREV_SEMESTER = "CHANGE_PREV_SEMESTER";
 const CHANGE_NEXT_SEMESTER = "CHANGE_NEXT_SEMESTER";
 
+const ADD_LECTURES_WITH_POSITON = "ADD_LECTURES_WITH_POSITION";
+
 // Action Creator
 export const finishFetchDefaultData = () => ({ type: FINISH_FETCH_DEFAULT_DATA });
 
@@ -78,6 +80,11 @@ export const setLectureOnLectureList = (payload) => ({
 export const changePrevSemester = () => ({ type: CHANGE_PREV_SEMESTER });
 export const changeNextSemester = () => ({ type: CHANGE_NEXT_SEMESTER });
 
+export const addLecturesWithPosition = (payload) => ({
+  type: ADD_LECTURES_WITH_POSITON,
+  payload,
+});
+
 // State
 
 const semesterOptions = getSemesterOptions();
@@ -113,6 +120,7 @@ const STATE = {
   ...CANDIDATE_LECTURE,
   ...SEMESTER_VALUE,
   lectureList: [],
+  lecturePosition: [],
   amount: 0,
   isFetched: false,
 };
@@ -239,6 +247,11 @@ export default function timetableReducer(state = STATE, action) {
       return {
         ...state,
         currentSemesterValue: ++state.currentSemesterValue,
+      };
+    case ADD_LECTURES_WITH_POSITON:
+      return {
+        ...state,
+        lecturePosition: [...state.lecturePosition, action.payload.infos],
       };
     default:
       return state;

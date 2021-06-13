@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MAX_HEIGHT, MAX_WIDTH } from "static/TimetablePage/timetableConstants";
 import { distributeClassTime } from "utils/timetablePage/distributeClassTime";
 import { drawCandidateLectureOnTimetable } from "utils/timetablePage/drawCandidateLectureOnTimetable";
@@ -12,9 +12,10 @@ import {
 } from "./styles/Timetable.style";
 
 const Timetable = () => {
+  const dispatch = useDispatch();
   const canvasRef = useRef();
   const candidateCanvasRef = useRef();
-  const { candidateLectureClassTimes, displayTimetable } = useSelector(
+  const { candidateLectureClassTimes, displayTimetable, lecturePosition } = useSelector(
     (state) => state.timetableReducer
   );
 
@@ -33,7 +34,7 @@ const Timetable = () => {
     if (displayTimetable.length !== 0) {
       const { lectureList } = displayTimetable;
       lectureList.forEach((lectureInfo, lectureIdx) => {
-        drawChosenLecturesOnTimetable(ctx, lectureInfo, lectureIdx);
+        drawChosenLecturesOnTimetable(ctx, lectureInfo, lectureIdx, dispatch);
       });
     }
   }, [displayTimetable]);
@@ -63,9 +64,48 @@ const Timetable = () => {
   return (
     <TimetableWrapper>
       <TimetableCanvas ref={canvasRef} />
-      <CandidateLectureCanvas ref={candidateCanvasRef} />
+      <CandidateLectureCanvas
+        ref={candidateCanvasRef}
+        onClick={(e) => onLectureClick(e, lecturePosition)}
+      />
     </TimetableWrapper>
   );
+};
+
+const onLectureClick = (e, lecturePosition) => {
+  const { offsetX, offsetY } = getOffsetPositionOnCanvas(e);
+  const lecture = findLectureOnPosition({ offsetX, offsetY }, lecturePosition);
+
+  if (lecture !== undefined) {
+    console.log(lecture);
+  }
+};
+
+const findLectureOnPosition = ({ offsetX, offsetY }, data) => {
+  const target = data.find(({ position }) => {
+    let sX = position.startX;
+    let sY = position.startY;
+    let eX = position.startX + position.width;
+    let eY = position.startY + position.height;
+
+    if (offsetX >= sX && offsetX <= eX && offsetY >= sY && offsetY <= eY) {
+      return true;
+    } else return false;
+  });
+  return target;
+};
+
+/**
+ * 마우스 클릭 시,
+ * 현재 마우스의 Canvas 상대 위치를 반환합니다.
+ */
+const getOffsetPositionOnCanvas = (e) => {
+  const { left, top } = e.target.getBoundingClientRect();
+  const { clientX, clientY } = e;
+  const offsetX = clientX - left;
+  const offsetY = clientY - top;
+
+  return { offsetX, offsetY };
 };
 
 export default Timetable;
