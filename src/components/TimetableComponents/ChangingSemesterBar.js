@@ -35,19 +35,13 @@ const ChangingSemesterBar = () => {
     ({ value }) => value === currentSemesterValue
   )[0];
 
-  const filterTimetable = (semester) =>
-    userCreatedTimetable.filter((state) => state.semester_date_id === semester);
-
   const changeSemester = (direction) => {
-    if (direction === "left") {
-      const timetableList = filterTimetable(currentSemesterValue - 1);
-      fetchDataOnChangedSemester(timetableList[0].id, currentSemesterValue - 1, dispatch);
-      dispatch(changePrevSemester());
-    } else {
-      const timetableList = filterTimetable(currentSemesterValue + 1);
-      fetchDataOnChangedSemester(timetableList[0].id, currentSemesterValue + 1, dispatch);
-      dispatch(changeNextSemester());
-    }
+    fetchDataOnChangedSemester(
+      direction,
+      currentSemesterValue,
+      userCreatedTimetable,
+      dispatch
+    );
   };
 
   return (
@@ -67,14 +61,29 @@ const ChangingSemesterBar = () => {
   );
 };
 
-const fetchDataOnChangedSemester = async (timetableId, semesterDateId, dispatch) => {
+/**
+ * semester 가 변경되면 시간표와 검색 추가란의 강의들을 불러옵니다.
+ */
+const fetchDataOnChangedSemester = async (
+  direction,
+  semesterDateId,
+  userCreatedTimetable,
+  dispatch
+) => {
   try {
     const { fetchTimetableInfo, fetchDefaultLectures } = TimetableAPI;
+    const changedSemesterId = direction === "left" ? --semesterDateId : ++semesterDateId;
 
+    // fetch data
+    const timetableList = filterTimetable(userCreatedTimetable, changedSemesterId);
     let [{ data: displayTimetable }, { data: lectureList }] = await Promise.all([
-      fetchTimetableInfo(timetableId),
-      fetchDefaultLectures(semesterDateId),
+      fetchTimetableInfo(timetableList[0].id),
+      fetchDefaultLectures(changedSemesterId),
     ]);
+
+    // change store state
+    if (direction === "left") dispatch(changePrevSemester());
+    else dispatch(changeNextSemester());
     dispatch(setDisplayTimetable({ displayTimetable }));
     dispatch(setLectureList(lectureList));
   } catch (error) {
@@ -82,5 +91,8 @@ const fetchDataOnChangedSemester = async (timetableId, semesterDateId, dispatch)
     dispatch(showAlertModal({ title, content }));
   }
 };
+
+const filterTimetable = (userCreatedTimetable, semester) =>
+  userCreatedTimetable.filter((state) => state.semester_date_id === semester);
 
 export default ChangingSemesterBar;
