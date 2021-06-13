@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 
 // import TimetableAPI from "api/timetable";
 import { hideLectureInfoModal } from "store/modules/modalModule";
+import { getTimetableClassName } from "utils/timetablePage/getTimetableClassName";
 import {
   LectureInfoModalBackground,
   Title,
@@ -39,7 +40,7 @@ const LectureInfoModalComponent = () => {
           </Title>
           <Label>
             {lectureInfo.professor}
-            <SubLabel>{lectureInfo.class_time}</SubLabel>
+            <SubLabel>{getTimetableClassName(lectureInfo.class_time)}</SubLabel>
           </Label>
           <DelimiterLine />
           <Memo />
