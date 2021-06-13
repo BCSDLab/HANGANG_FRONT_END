@@ -58,7 +58,6 @@ export const TimetableNameInput = styled.input`
   all: unset;
   box-sizing: border-box;
   width: 100%;
-
   padding: 7px 40px 7px 0;
   border-bottom: 1px solid ${BorderColor};
   font-size: 14px;

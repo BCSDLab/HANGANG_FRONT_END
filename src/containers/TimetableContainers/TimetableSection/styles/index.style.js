@@ -39,11 +39,19 @@ export const DownImage = styled.img.attrs({
 export const TimetableLabel = styled.label`
   display: flex;
   align-items: center;
+
   font-size: 14px;
   height: 37px;
   padding-bottom: 16px;
   color: ${({ isMain }) => (isMain ? `${ConceptColor}` : `${FontColor}`)};
   cursor: pointer;
+`;
+
+export const TimetableName = styled.span`
+  width: 171px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const PlusImage = styled.img.attrs({

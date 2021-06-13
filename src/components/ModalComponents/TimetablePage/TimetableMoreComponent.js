@@ -77,6 +77,7 @@ const TimetableMoreComponent = () => {
               onChange={(e) =>
                 setTimetableInputState((prev) => ({ ...prev, tableName: e.target.value }))
               }
+              maxLength={30}
             />
             <ModifyButton
               onClick={handleClickModifyButton}
@@ -133,7 +134,7 @@ const changeTimetableName = async (id, name, dispatch) => {
       dispatch(showAlertModal({ content }));
     }
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["invalidTimetableNameError"];
     dispatch(showAlertModal({ title, content }));
   }
 };

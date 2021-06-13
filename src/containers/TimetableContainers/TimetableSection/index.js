@@ -15,6 +15,7 @@ import {
   PlusImage,
   TimetableAddBox,
   TimetableLabel,
+  TimetableName,
   TimetableSelectBar,
   TimetableSettingButton,
 } from "./styles/index.style";
@@ -52,7 +53,7 @@ const TimetableSection = () => {
             key={timetable.id}
             onClick={() => changeDisplayTimetable(timetable.id, dispatch)}
           >
-            {timetable.name}
+            <TimetableName>{timetable.name}</TimetableName>
             {timetable.isMain && <MainMark />}
           </TimetableLabel>
         ))}
