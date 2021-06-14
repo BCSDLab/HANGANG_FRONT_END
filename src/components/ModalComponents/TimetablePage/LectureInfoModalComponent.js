@@ -4,7 +4,11 @@ import { useHistory } from "react-router-dom";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 import TimetableAPI from "api/timetable";
-import { hideLectureInfoModal, showAlertModal } from "store/modules/modalModule";
+import {
+  hideLectureInfoModal,
+  showAlertModal,
+  showConfirmModal,
+} from "store/modules/modalModule";
 import { getTimetableClassName } from "utils/timetablePage/getTimetableClassName";
 import {
   LectureInfoModalBackground,
@@ -60,14 +64,23 @@ const LectureInfoModalComponent = () => {
           <DelimiterLine />
           <Memo />
           <DeleteButton
-            onClick={() =>
-              deleteLectureOnTimetable(lectureInfo.id, displayTimetable.id, dispatch)
-            }
+            onClick={() => {
+              showAlertToDeleteLecture(lectureInfo.id, displayTimetable.id, dispatch);
+            }}
           />
           <MemoModifyButton />
         </LectureInfoModal>
       </LectureInfoModalBackground>
     )
+  );
+};
+
+const showAlertToDeleteLecture = (lectureId, timetableId, dispatch) => {
+  dispatch(
+    showConfirmModal({
+      content: "해당 시간표를 삭제하시겠습니까?",
+      onConfirm: () => deleteLectureOnTimetable(lectureId, timetableId, dispatch),
+    })
   );
 };
 
