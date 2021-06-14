@@ -76,16 +76,35 @@ const fetchDataOnChangedSemester = async (
 
     // fetch data
     const timetableList = filterTimetable(userCreatedTimetable, changedSemesterId);
-    let [{ data: displayTimetable }, { data: lectureList }] = await Promise.all([
-      fetchTimetableInfo(timetableList[0].id),
-      fetchDefaultLectures(changedSemesterId),
-    ]);
 
-    // change store state
-    if (direction === "left") dispatch(changePrevSemester());
-    else dispatch(changeNextSemester());
-    dispatch(setDisplayTimetable({ displayTimetable }));
-    dispatch(setLectureList(lectureList));
+    if (timetableList.length !== 0) {
+      let [{ data: displayTimetable }, { data: lectureList }] = await Promise.all([
+        fetchTimetableInfo(timetableList[0].id),
+        fetchDefaultLectures(changedSemesterId),
+      ]);
+
+      // change store state
+      if (direction === "left") dispatch(changePrevSemester());
+      else dispatch(changeNextSemester());
+      dispatch(setDisplayTimetable({ displayTimetable }));
+      dispatch(setLectureList(lectureList));
+    } else {
+      const { data: lectureList } = await fetchDefaultLectures(changedSemesterId);
+
+      // change store state
+      if (direction === "left") dispatch(changePrevSemester());
+      else dispatch(changeNextSemester());
+      dispatch(
+        setDisplayTimetable({
+          displayTimetable: {
+            lectureList: [],
+            tableSemesterDate: changedSemesterId,
+          },
+        })
+      );
+
+      dispatch(setLectureList(lectureList));
+    }
   } catch (error) {
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
     dispatch(showAlertModal({ title, content }));

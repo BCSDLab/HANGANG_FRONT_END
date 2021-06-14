@@ -187,6 +187,7 @@ export default function timetableReducer(state = STATE, action) {
       return {
         ...state,
         displayTimetable: action.payload.displayTimetable,
+        lecturePosition: [],
         currentSemesterValue: parseInt(action.payload.displayTimetable.tableSemesterDate),
       };
     case SET_USER_CREATED_TIMETABLE:

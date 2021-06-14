@@ -34,7 +34,7 @@ const TimetableMoreComponent = () => {
   const dispatch = useDispatch();
   const inputRef = useRef();
   const { isTimetableMoreModalShowing } = useSelector((state) => state.modalReducer);
-  const { userCreatedTimetable, displayTimetable } = useSelector(
+  const { currentSemesterValue, userCreatedTimetable, displayTimetable } = useSelector(
     (state) => state.timetableReducer
   );
   const mainTable = userCreatedTimetable.filter(({ isMain }) => isMain)[0];
@@ -42,12 +42,35 @@ const TimetableMoreComponent = () => {
     tableName: "",
     editable: false,
   });
+  const currentSemesterUserCreatedTimetable = userCreatedTimetable.filter(
+    (state) => state.semester_date_id === currentSemesterValue
+  );
+
+  currentSemesterUserCreatedTimetable.sort((curr, next) => {
+    let isCurrDisplayed = curr.id === displayTimetable.id;
+    let isNextDisplayed = next.id === displayTimetable.id;
+
+    if (isCurrDisplayed > isNextDisplayed) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+
+  const getNextTimetableId = () => {
+    if (currentSemesterUserCreatedTimetable.length === 1) {
+      return null;
+    } else {
+      return currentSemesterUserCreatedTimetable[1].id;
+    }
+  };
 
   useEffect(() => {
     setTimetableInputState((prev) => ({
       ...prev,
       tableName: displayTimetable.tableName,
     }));
+    console.log(displayTimetable);
   }, [displayTimetable]);
 
   const handleClickModifyButton = () => {
@@ -107,7 +130,8 @@ const TimetableMoreComponent = () => {
                     removeTimetable(
                       displayTimetable.id,
                       dispatch,
-                      userCreatedTimetable[1].id
+                      getNextTimetableId(),
+                      currentSemesterValue
                     ),
                 })
               );
@@ -154,7 +178,12 @@ const changeMainTimetable = async (timetableId, dispatch) => {
   }
 };
 
-const removeTimetable = async (timetableId, dispatch, otherTableId) => {
+const removeTimetable = async (
+  timetableId,
+  dispatch,
+  otherTableId,
+  currentSemesterValue
+) => {
   try {
     const { data } = await TimetableAPI.requestRemoveTimetable(timetableId);
     if (data.httpStatus === "OK") {
@@ -162,8 +191,20 @@ const removeTimetable = async (timetableId, dispatch, otherTableId) => {
       dispatch(hideTimetableMoreModal());
       const content = "시간표가 정상적으로 삭제되었습니다.";
       dispatch(showAlertModal({ content }));
-      const { data } = await TimetableAPI.fetchTimetableInfo(otherTableId);
-      dispatch(setDisplayTimetable({ displayTimetable: data }));
+
+      if (otherTableId !== null) {
+        const { data } = await TimetableAPI.fetchTimetableInfo(otherTableId);
+        dispatch(setDisplayTimetable({ displayTimetable: data }));
+      } else {
+        dispatch(
+          setDisplayTimetable({
+            displayTimetable: {
+              lectureList: [],
+              tableSemesterDate: currentSemesterValue,
+            },
+          })
+        );
+      }
     }
   } catch (error) {
     const { title } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
