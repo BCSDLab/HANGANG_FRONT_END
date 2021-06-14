@@ -225,6 +225,7 @@ export default function timetableReducer(state = STATE, action) {
             return { ...elem };
           }
         }),
+        displayTimetable: { ...state.displayTimetable, tableName: action.payload.name },
       };
     case SET_CANDIDATE_CLASS_TIMES:
       return {
