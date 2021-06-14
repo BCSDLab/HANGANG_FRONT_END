@@ -12,7 +12,12 @@ import {
   X,
 } from "./styles/TimeComponent.style";
 
-const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) => {
+const TimeOnDirectlyAddContainer = ({
+  info,
+  class_times,
+  directlyAddForm,
+  setDirectlyAddForm,
+}) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState({
     startTime: false,
     endTime: false,
@@ -34,9 +39,17 @@ const TimeOnDirectlyAddContainer = ({ info, class_times, setDirectlyAddForm }) =
    * X 버튼을 누를 경우 해당 시간을 제거합니다.
    */
   const onXElementClick = () => {
+    let addForm = directlyAddForm["class_times"].filter(
+      ({ order }) => order !== info.order
+    );
+
+    addForm = addForm.map((elem, idx) => {
+      return { ...elem, order: idx };
+    });
+
     setDirectlyAddForm((prev) => ({
       ...prev,
-      class_times: prev["class_times"].filter(({ order }) => order !== info.order),
+      class_times: addForm,
     }));
   };
 

@@ -78,6 +78,7 @@ const DirectlyAddContainer = () => {
               info={info}
               key={info.order}
               class_times={directlyAddForm.class_times}
+              directlyAddForm={directlyAddForm}
               setDirectlyAddForm={setDirectlyAddForm}
             />
           ))}

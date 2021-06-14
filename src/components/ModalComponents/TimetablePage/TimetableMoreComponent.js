@@ -70,7 +70,6 @@ const TimetableMoreComponent = () => {
       ...prev,
       tableName: displayTimetable.tableName,
     }));
-    console.log(displayTimetable);
   }, [displayTimetable]);
 
   const handleClickModifyButton = () => {

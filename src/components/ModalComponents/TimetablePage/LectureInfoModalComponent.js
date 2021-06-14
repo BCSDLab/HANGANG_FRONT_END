@@ -29,11 +29,6 @@ const LectureInfoModalComponent = () => {
   );
   const { displayTimetable } = useSelector((state) => state.timetableReducer);
 
-  React.useEffect(() => {
-    console.log(lectureInfo);
-    console.log(displayTimetable.id);
-  }, [lectureInfo]);
-
   return (
     isLectureInfoModalShowing && (
       <LectureInfoModalBackground
