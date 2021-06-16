@@ -15,7 +15,7 @@ export const TimetableSelectBar = styled.div`
   left: 0;
   width: 240px;
   height: 34px;
-  padding: 4px 12px 0 12px;
+  padding: 5px 12px 0 12px;
   border-radius: 4px;
   border: solid 1px ${BorderColor};
   background-color: #fff;
@@ -48,6 +48,7 @@ export const TimetableLabel = styled.label`
 `;
 
 export const TimetableName = styled.span`
+  height: 18px;
   width: 171px;
   white-space: nowrap;
   overflow: hidden;
@@ -86,6 +87,6 @@ export const MainMark = styled.img.attrs({
   src: MAIN_URL,
   alt: "main",
 })`
-  margin: 2px 0 0 8px;
+  margin-bottom: 1px 0 0 8px;
   width: 16px;
 `;

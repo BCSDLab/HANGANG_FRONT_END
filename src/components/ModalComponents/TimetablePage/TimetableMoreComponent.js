@@ -29,6 +29,7 @@ import {
   setDisplayTimetable,
 } from "store/modules/timetableModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 
 const TimetableMoreComponent = () => {
   const dispatch = useDispatch();
@@ -94,7 +95,7 @@ const TimetableMoreComponent = () => {
           <TimetableNameModifySection>
             <TimetableNameInput
               ref={inputRef}
-              value={timetableInputState.tableName}
+              value={convertHTMLEntities(timetableInputState.tableName)}
               readOnly={!timetableInputState.editable}
               onChange={(e) =>
                 setTimetableInputState((prev) => ({ ...prev, tableName: e.target.value }))
@@ -149,9 +150,10 @@ const TimetableMoreComponent = () => {
 
 const changeTimetableName = async (id, name, dispatch) => {
   try {
-    const { data } = await TimetableAPI.requestChangeTimetableName(id, name);
+    const trimmedName = name.trim();
+    const { data } = await TimetableAPI.requestChangeTimetableName(id, trimmedName);
     if (data.httpStatus === "OK") {
-      dispatch(changeNameOfTimetable({ id, name }));
+      dispatch(changeNameOfTimetable({ id, name: trimmedName }));
       dispatch(hideTimetableMoreModal());
       const content = "시간표 이름이 정상적으로 변경되었습니다.";
       dispatch(showAlertModal({ content }));

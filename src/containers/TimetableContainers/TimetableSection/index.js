@@ -21,6 +21,7 @@ import {
 } from "./styles/index.style";
 import Timetable from "./Timetable";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 
 const TimetableSection = () => {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const TimetableSection = () => {
             key={timetable.id}
             onClick={() => changeDisplayTimetable(timetable.id, dispatch)}
           >
-            <TimetableName>{timetable.name}</TimetableName>
+            <TimetableName>{convertHTMLEntities(timetable.name)}</TimetableName>
             {timetable.isMain && <MainMark />}
           </TimetableLabel>
         ))}
