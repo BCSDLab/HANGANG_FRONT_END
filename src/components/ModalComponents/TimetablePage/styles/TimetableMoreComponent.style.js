@@ -21,7 +21,7 @@ export const TimetableMoreComponentBackground = styled.aside`
 
 export const TimetableMoreModal = styled.form`
   position: fixed;
-  top: 430px;
+  top: calc(50% - 134px);
   left: calc(50% - 262px);
   width: 524px;
   height: 268px;

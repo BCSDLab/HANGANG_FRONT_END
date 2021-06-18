@@ -20,7 +20,7 @@ export const LectureInfoModalBackground = styled.aside`
 
 export const LectureInfoModal = styled.form`
   position: fixed;
-  top: 478px;
+  top: calc(50% - 134px);
   left: calc(50% - 262px);
   width: 524px;
   height: 268px;

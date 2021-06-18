@@ -21,7 +21,7 @@ export const AddTimetableComponentBackground = styled.aside`
 
 export const AddTimetableModal = styled.form`
   position: fixed;
-  top: 430px;
+  top: calc(50% - 188.5px);
   left: calc(50% - 262px);
   width: 524px;
   height: 377px;
