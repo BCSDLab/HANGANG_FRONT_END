@@ -214,11 +214,12 @@ const removeTimetable = async (
 };
 
 const captureScreenshot = (tableName) => {
+  const IMAGE_EXTENSION = "png";
   const canvas = document.querySelector("canvas");
-  const image = canvas.toDataURL("image/png");
+  const image = canvas.toDataURL(`image/${IMAGE_EXTENSION}`);
   const link = document.createElement("a");
   link.href = image;
-  link.download = tableName;
+  link.download = `${tableName}.${IMAGE_EXTENSION}`;
   link.click();
 };
 

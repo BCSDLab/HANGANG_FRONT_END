@@ -32,6 +32,7 @@ export const BoxWrapper = styled.div`
   display: flex;
   transform: translateX(0);
   transition: transform 0.75s ease-in-out;
+  will-change: transform;
 `;
 
 export const SearchAddBox = styled.div`
