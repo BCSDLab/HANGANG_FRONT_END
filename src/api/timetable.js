@@ -99,4 +99,18 @@ export default {
     const response = await axios.delete("/timetable/lecture", { data, headers });
     return response;
   },
+  getMemo: async (id) => {
+    const response = await axios.get(`/memo?timeTableId=${id}`, setTokenInHeader());
+    return response;
+  },
+  createMemo: async (timetable_id, memo) => {
+    const body = { timetable_id, memo };
+    const response = await axios.post("/memo", body, setTokenInHeader());
+    return response;
+  },
+  reviseMemo: async (timetable_id, memo) => {
+    const body = { timetable_id, memo };
+    const response = await axios.patch("/memo", body, setTokenInHeader());
+    return response;
+  },
 };

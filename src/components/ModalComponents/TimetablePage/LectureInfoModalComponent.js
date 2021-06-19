@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
@@ -28,6 +28,17 @@ const LectureInfoModalComponent = () => {
     (state) => state.modalReducer
   );
   const { displayTimetable } = useSelector((state) => state.timetableReducer);
+  const [memo, setMemo] = useState({
+    wasExistMemo: false,
+    content: "",
+  });
+
+  useEffect(() => {
+    if (isLectureInfoModalShowing) {
+      console.log(lectureInfo);
+      getMemoOnLecture(lectureInfo.id, setMemo);
+    }
+  }, [lectureInfo]);
 
   return (
     isLectureInfoModalShowing && (
@@ -53,17 +64,77 @@ const LectureInfoModalComponent = () => {
             <SubLabel>{getTimetableClassName(lectureInfo.class_time)}</SubLabel>
           </Label>
           <DelimiterLine />
-          <Memo />
+          <Memo
+            value={memo.content}
+            onChange={(e) => setMemo((prev) => ({ ...prev, content: e.target.value }))}
+          />
           <DeleteButton
             onClick={() =>
               deleteLectureOnTimetable(lectureInfo.id, displayTimetable.id, dispatch)
             }
           />
-          <MemoModifyButton />
+          <MemoModifyButton
+            onClick={() =>
+              modifyMemo(
+                memo.wasExistMemo,
+                { lectureId: lectureInfo.id, content: memo.content },
+                dispatch
+              )
+            }
+          />
         </LectureInfoModal>
       </LectureInfoModalBackground>
     )
   );
+};
+
+const modifyMemo = (previousStatus, { lectureId, content }, dispatch) => {
+  if (!previousStatus) {
+    createMemoOnLecture({ lectureId, content }, dispatch);
+  } else {
+    reviseMemoOnLecture({ lectureId, content }, dispatch);
+  }
+};
+
+const getMemoOnLecture = async (lectureId, setMemo) => {
+  try {
+    const { data, status } = await TimetableAPI.getMemo(lectureId);
+    if (status === 200) {
+      setMemo({ wasExistMemo: true, content: data.memo });
+    }
+  } catch (error) {
+    setMemo({ wasExistMemo: false, content: "" });
+  }
+};
+
+const createMemoOnLecture = async ({ lectureId, content }, dispatch) => {
+  try {
+    const {
+      data: { httpStatus, message },
+    } = await TimetableAPI.createMemo(lectureId, content);
+    if (httpStatus === "OK") {
+      const content = message;
+      dispatch(showAlertModal({ content }));
+    }
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
+  }
+};
+
+const reviseMemoOnLecture = async ({ lectureId, content }, dispatch) => {
+  try {
+    const {
+      data: { httpStatus, message },
+    } = await TimetableAPI.reviseMemo(lectureId, content);
+    if (httpStatus === "OK") {
+      const content = message;
+      dispatch(showAlertModal({ content }));
+    }
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
+  }
 };
 
 const deleteLectureOnTimetable = async (lectureId, timetableId, dispatch) => {
