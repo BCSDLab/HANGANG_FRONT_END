@@ -118,9 +118,9 @@ const changeStateFormAsAPIBody = (stateForm, timetableId) => {
 
 const requestReflectCustomLecture = async (body, dispatch) => {
   try {
-    const { data } = await TimetableAPI.setCustomLectureOnTimetable(body);
-    if (data.httpStatus === "OK") {
-      dispatch(setLectureOnLectureList({ lecture: { ...body, classNumber: null } }));
+    const { data, status } = await TimetableAPI.setCustomLectureOnTimetable(body);
+    if (status === 200) {
+      dispatch(setLectureOnLectureList({ lecture: data }));
     }
   } catch (error) {
     const { title } = ALERT_MESSAGE_ON_ERROR_TYPE["overlappedLectureError"];
