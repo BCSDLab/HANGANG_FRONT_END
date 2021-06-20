@@ -35,7 +35,6 @@ const LectureInfoModalComponent = () => {
 
   useEffect(() => {
     if (isLectureInfoModalShowing) {
-      console.log(lectureInfo);
       getMemoOnLecture(lectureInfo.id, setMemo);
     }
   }, [lectureInfo]);
@@ -70,7 +69,11 @@ const LectureInfoModalComponent = () => {
           />
           <DeleteButton
             onClick={() =>
-              deleteLectureOnTimetable(lectureInfo.id, displayTimetable.id, dispatch)
+              deleteLectureOnTimetable(
+                lectureInfo.lecture_timetable_id,
+                displayTimetable.id,
+                dispatch
+              )
             }
           />
           <MemoModifyButton
@@ -100,7 +103,11 @@ const getMemoOnLecture = async (lectureId, setMemo) => {
   try {
     const { data, status } = await TimetableAPI.getMemo(lectureId);
     if (status === 200) {
-      setMemo({ wasExistMemo: true, content: data.memo });
+      if (data.memo === "") {
+        setMemo({ wasExistMemo: false, content: data.memo });
+      } else {
+        setMemo({ wasExistMemo: true, content: data.memo });
+      }
     }
   } catch (error) {
     setMemo({ wasExistMemo: false, content: "" });
@@ -132,6 +139,7 @@ const reviseMemoOnLecture = async ({ lectureId, content }, dispatch) => {
       dispatch(showAlertModal({ content }));
     }
   } catch (error) {
+    // FIXME: 빈 메모를 수정할 때 에러 뜰거임. 이 때 해당 코드 넣어서 ALERT
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
     dispatch(showAlertModal({ title, content }));
   }

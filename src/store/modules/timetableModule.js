@@ -251,11 +251,11 @@ export default function timetableReducer(state = STATE, action) {
         displayTimetable: {
           ...state.displayTimetable,
           lectureList: state.displayTimetable.lectureList.filter(
-            (elem) => elem.id !== action.payload.id
+            (elem) => elem.lecture_timetable_id !== action.payload.id
           ),
         },
         lecturePosition: state.lecturePosition.filter(
-          (elem) => elem.infos.id !== action.payload.id
+          (elem) => elem.infos.lecture_timetable_id !== action.payload.id
         ),
       };
     case CHANGE_PREV_SEMESTER:

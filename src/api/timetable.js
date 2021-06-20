@@ -1,9 +1,7 @@
 import axios from "axios";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const getAccessToken = () => {
-  return getValueOnLocalStorage("hangangToken")?.access_token;
-};
+const getAccessToken = () => getValueOnLocalStorage("hangangToken")?.access_token;
 
 const setTokenInHeader = (data = null) => {
   const accessToken = getAccessToken();
@@ -53,6 +51,7 @@ export default {
   },
   requestRemoveTimetable: async (id) => {
     const data = { id };
+    const accessToken = getAccessToken();
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
@@ -94,6 +93,7 @@ export default {
       lecture_timetable_id: lectureId,
       user_timetable_id: timetableId,
     };
+    const accessToken = getAccessToken();
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
@@ -101,16 +101,19 @@ export default {
     return response;
   },
   getMemo: async (id) => {
-    const response = await axios.get(`/memo?timeTableId=${id}`, setTokenInHeader());
+    const response = await axios.get(
+      `/memo?timetableComponentId=${id}`,
+      setTokenInHeader()
+    );
     return response;
   },
-  createMemo: async (timetable_id, memo) => {
-    const body = { timetable_id, memo };
+  createMemo: async (timetable_component_id, memo) => {
+    const body = { timetable_component_id, memo };
     const response = await axios.post("/memo", body, setTokenInHeader());
     return response;
   },
-  reviseMemo: async (timetable_id, memo) => {
-    const body = { timetable_id, memo };
+  reviseMemo: async (timetable_component_id, memo) => {
+    const body = { timetable_component_id, memo };
     const response = await axios.patch("/memo", body, setTokenInHeader());
     return response;
   },

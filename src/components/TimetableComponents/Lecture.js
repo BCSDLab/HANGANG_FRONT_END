@@ -34,7 +34,11 @@ const Lecture = ({ infos }) => {
     if (isHovered) {
       dispatch(setCandidateClassTimes({ class_time: JSON.parse(infos.class_time) }));
     }
-    if (displayTimetable.lectureList.find((elem) => elem.id === infos.id) !== undefined) {
+    if (
+      displayTimetable.lectureList.find(
+        (elem) => elem.lecture_timetable_id === infos.id
+      ) !== undefined
+    ) {
       setIsChosen(true);
     } else {
       setIsChosen(false);
@@ -100,12 +104,12 @@ const deleteLectureOnTimetable = async (lectureInfo, timetableId, dispatch) => {
 
 const requestReflectLecture = async (lectureInfo, userTimetableId, dispatch) => {
   try {
-    const { data } = await TimetableAPI.setLectureOnTimetable(
+    const { data, status } = await TimetableAPI.setLectureOnTimetable(
       lectureInfo.id,
       userTimetableId
     );
-    if (data.httpStatus === "OK") {
-      dispatch(setLectureOnLectureList({ lecture: lectureInfo }));
+    if (status === 200) {
+      dispatch(setLectureOnLectureList({ lecture: data }));
     }
   } catch (error) {
     const { title } = ALERT_MESSAGE_ON_ERROR_TYPE["overlappedLectureError"];
