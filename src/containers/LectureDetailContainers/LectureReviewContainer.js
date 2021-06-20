@@ -15,6 +15,8 @@ import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import debounce from "lodash.debounce";
 
+import LoadingSpinner from "components/Shared/LoadingSpinner";
+
 const Section = styled.section`
   width: 100%;
 `;
@@ -76,7 +78,6 @@ const ReviewSection = styled.div`
 
 const ReviewWrapper = styled.div`
   height: auto;
-
   overflow-y: auto;
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
@@ -107,6 +108,13 @@ const LowArrowIcon = styled.img.attrs({
   margin-left: 4px;
 `;
 
+const SpinnerWrapper = styled.div`
+  width: 100%;
+  height: 15vh;
+  display: flex;
+  align-items: center;
+`;
+
 /**
  * @param {*} param0
  * @returns
@@ -115,7 +123,7 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
   const dispatch = useDispatch();
 
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
-  const { limit, page, maxPage, sort, isFilterModalOpened } = useSelector(
+  const { limit, page, maxPage, sort, isFilterModalOpened, isLoading } = useSelector(
     (state) => state.lectureDetailReducer
   );
   /**
@@ -124,17 +132,19 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
    */
   const getMoreReviews = async () => {
     try {
-      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+      const accessToken = isLoggedIn
+        ? getValueOnLocalStorage("hangangToken").access_token
+        : null;
+
       const {
         data: { count, result },
         status,
-      } = await LectureDetailAPI.getLectureReviews(
-        accessToken,
-        lectureId,
-        limit,
-        page + 1,
-        sort
-      );
+      } = await LectureDetailAPI.getLectureReviews(accessToken, lectureId, {
+        limit: limit,
+        page: page + 1,
+        sort: sort,
+      });
+
       if (status === 200) {
         dispatch(addNextPageReviews({ count, result }));
       }
@@ -175,6 +185,12 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
 
         {lectureReviews.count === 0 && (
           <SubWarningLabel>등록된 개인 평가 정보가 없습니다.</SubWarningLabel>
+        )}
+
+        {isLoading && (
+          <SpinnerWrapper>
+            <LoadingSpinner />
+          </SpinnerWrapper>
         )}
       </ReviewWrapper>
     </Section>
