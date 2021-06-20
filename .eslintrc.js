@@ -1,6 +1,7 @@
 module.exports = {
   plugins: ["react"],
   extends: ["eslint:recommended", "plugin:react/recommended"],
+  parser: "@babel/eslint-parser",
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: "module", // fix Parsing error: The keyword 'import' is reserved

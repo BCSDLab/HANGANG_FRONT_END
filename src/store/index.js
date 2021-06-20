@@ -7,6 +7,7 @@ import resourceReducer from "./modules/resourcesModule";
 import resourceCreateReducer from "./modules/resourceCreateModule";
 import resourceDetailReducer from "./modules/resourceDetailModule";
 import modalReducer from "./modules/modalModule";
+import timetableReducer from "./modules/timetableModule";
 
 const rootReducer = combineReducers({
   authReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   resourceCreateReducer,
   resourceDetailReducer,
   modalReducer,
+  timetableReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
