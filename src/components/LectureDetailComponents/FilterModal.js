@@ -12,25 +12,29 @@ import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 
 const ModalWrapper = styled.div`
   position: absolute;
-  margin-left: 640px;
-  margin-top: 125px;
-  width: 100px;
-  height: 100px;
+  margin-left: 595px;
+  margin-top: 140px;
+  width: 112px;
+  height: 112px;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  padding: 23px 16px;
+  padding: 22px 16px;
   border-radius: 8px;
-  border: 1px solid ${PlaceholderColor};
-  background-color: #fff;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
+  border: solid 1px #eeeeee;
+  background-color: #ffffff;
 
   z-index: 1;
 `;
 
 const FilterLabel = styled.p`
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: normal;
   cursor: pointer;
   color: ${FontColor};
 `;
@@ -42,7 +46,6 @@ FilterModal.propTypes = {
 function FilterModal({ lectureId, isLoggedIn, isCheckedToken = false }) {
   const dispatch = useDispatch();
   const fetchReviewWithFilter = async (sortLabel) => {
-    console.log("[fetchReviewWithFilter] => " + sortLabel);
     try {
       dispatch(setLectureReviewFilter({ sort: sortLabel }));
       dispatch(requestLectureReviews());
@@ -53,10 +56,10 @@ function FilterModal({ lectureId, isLoggedIn, isCheckedToken = false }) {
 
   return (
     <ModalWrapper>
-      <FilterLabel onClick={() => fetchReviewWithFilter("좋아요순")}>
-        좋아요순
+      <FilterLabel onClick={() => fetchReviewWithFilter("좋아요 순")}>
+        좋아요 순
       </FilterLabel>
-      <FilterLabel onClick={() => fetchReviewWithFilter("최신순")}>최신순</FilterLabel>
+      <FilterLabel onClick={() => fetchReviewWithFilter("최신 순")}>최신 순</FilterLabel>
     </ModalWrapper>
   );
 }
