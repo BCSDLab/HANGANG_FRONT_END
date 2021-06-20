@@ -148,7 +148,6 @@ function TimetableModal() {
 
   const checkLectureToTimetable = (index, idx, timetableId) => {
     try {
-      console.log(timetableId);
       dispatch(
         clickTitmetableAddRemoveButton({
           idx: lectureInfoIdx,
@@ -197,11 +196,8 @@ function TimetableModal() {
         })
       );
 
-      console.log(data);
       dispatch(updateLectureClassInfo());
     } catch (error) {
-      console.dir(error);
-      console.log(error);
       if (error.response.data) {
         const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
         dispatch(showAlertModal({ title, content }));

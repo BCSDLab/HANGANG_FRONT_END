@@ -103,7 +103,6 @@ const STATE = {
 };
 
 export default function lectureDetailReducer(state = STATE, action) {
-  console.log("[lectureDetailReducer] => " + action.type, action.payload, state);
   switch (action.type) {
     case SET_LECTURE_INFO:
       return {
