@@ -125,7 +125,7 @@ const FooterContainer = () => {
           <InnerPush>
             <InnerPushLink to="/lectures">강의평</InnerPushLink>
             <InnerPushLink to="/resources">강의자료</InnerPushLink>
-            <InnerPushLink to="/timetables">시간표</InnerPushLink>
+            <InnerPushLink to="/timetable">시간표</InnerPushLink>
           </InnerPush>
           <ExternalURL>
             <ExternalURLButton>

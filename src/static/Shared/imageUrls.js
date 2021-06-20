@@ -19,3 +19,33 @@ export const FILE_ERASE_BUTTON_URL =
 // Resource Detail Page
 export const COMMENT_ICON_URL =
   "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/ResourceDetailPage/write_comment.png";
+
+// Timetable Page
+export const RIGHT_BUTTON_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/right_button.png";
+export const PREV_BUTTON_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/search_bar_left_button.png";
+export const SEARCH_BUTTON_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/search.png";
+export const ADJUSTMENT_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/adjustments.png";
+export const REFRESH_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/refresh.png";
+export const MORE_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/more.png";
+export const X_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/x.png";
+export const DUMMY_TIMETABLE_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/dummy_timetable.png";
+export const DOWN_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/down.png";
+export const PLUS_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/plus.png";
+export const MAIN_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/main.png";
+export const NOT_MAIN_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/not_main.png";
+export const NO_DATA_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/NoDataImage.png";
+export const RIGHT_ARROW_URL =
+  "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/TimetablePage/right-button.png";
