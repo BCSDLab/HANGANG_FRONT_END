@@ -4,12 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import LectureDetailAPI from "api/lectureDetail";
-import { clickLikeIcon } from "store/modules/lectureDetailModule";
+
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
-import { callReportModal } from "utils/reportUtils";
-import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
+
+import { clickLikeIcon } from "store/modules/lectureDetailModule";
 import { showAlertModal } from "store/modules/modalModule";
+
+import { callReportModal } from "utils/reportUtils";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
+
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const ReviewSection = styled.div`
   border-bottom: 1px solid #eeeeee;
@@ -159,7 +163,7 @@ const LectureClassSection = ({ props, ...rest }) => {
   const clickLike = async (id, index) => {
     try {
       if (!isLoggedIn && isCheckedToken) {
-        history.push("/login");
+        triggerWhenNotLoggedIn({ history, dispatch });
       } else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
         let { data } = await LectureDetailAPI.postLectureReviewLike(accessToken, id);
