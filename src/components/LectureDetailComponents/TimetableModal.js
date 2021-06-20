@@ -8,7 +8,8 @@ import LectureDetailAPI from "api/lectureDetail";
 
 import {
   closeTimetableModal,
-  clickTitmetableAddRemoveButtom,
+  clickTitmetableAddRemoveButton,
+  updateLectureClassInfo,
 } from "store/modules/lectureDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
@@ -116,34 +117,25 @@ const isSelectedBoth = (
   }
   return 2;
 };
-// 다운로드에 약 1초가 걸리는 비동기 함수라고 가정
-const getCheckedTimetable = (
-  changedLectureClassInfo,
-  lectureClassInfo,
-  lectureInfoIdx,
-  accessToken,
-  id,
-  selectedClassId
-) => {
-  switch (isSelectedBoth(changedLectureClassInfo, lectureClassInfo, lectureInfoIdx, id)) {
-    case 0:
-      return new Promise((resolve, reject) => {
-        LectureDetailAPI.removeTimetablesLecture(accessToken, id, selectedClassId);
-      });
-    case 1:
-      return new Promise((resolve, reject) => {
-        LectureDetailAPI.addTimetablesLecture(accessToken, id, selectedClassId);
-      });
-    default:
-      LectureDetailAPI.addTimetablesLecture(accessToken, id, selectedClassId);
+
+const showTimetableAlertModal = (dispatch, error) => {
+  if (error.response.data.code === 50) {
+    dispatch(
+      showAlertModal({
+        title: "시간표가 중복되었습니다.",
+        content: error.response.data.errorMessage,
+      })
+    );
+  } else {
+    dispatch(
+      showAlertModal({
+        title: "확인되지 않은 오류입니다.",
+        content: "관리자에게 문의하세요.",
+      })
+    );
   }
 };
-/**
- * TODO:
- * - 시간표 추가 삭제 오류 발생시 알림 창
- * - 시간표 추가 삭제 이후 모듈 값 없데이트 해야함
- * @returns
- */
+
 function TimetableModal() {
   const dispatch = useDispatch();
   const {
@@ -154,10 +146,11 @@ function TimetableModal() {
     selectedClassId,
   } = useSelector((state) => state.lectureDetailReducer);
 
-  const checkLectureToTimetable = (timetableId) => {
+  const checkLectureToTimetable = (index, idx, timetableId) => {
     try {
+      console.log(timetableId);
       dispatch(
-        clickTitmetableAddRemoveButtom({
+        clickTitmetableAddRemoveButton({
           idx: lectureInfoIdx,
           timetableId: timetableId,
         })
@@ -171,81 +164,43 @@ function TimetableModal() {
     try {
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
-      // FIXME:
-      // - 오류 발생시 알림 창 띄우기
-      let messageObject = await Promise.all(
-        timetables.map((props) =>
-          props.map((el) =>
-            getCheckedTimetable(
-              changedLectureClassInfo,
-              lectureClassInfo,
-              lectureInfoIdx,
-              accessToken,
-              el.id,
-              selectedClassId
-            )
-              .then((result) => console.log(result))
-              .catch((error) => console.log("실패:", error))
-          )
-        )
+      let data = await Promise.all(
+        timetables.map((props) => {
+          return props.map(async (el) => {
+            switch (
+              isSelectedBoth(
+                changedLectureClassInfo,
+                lectureClassInfo,
+                lectureInfoIdx,
+                el.id
+              )
+            ) {
+              case 0:
+                return LectureDetailAPI.removeTimetablesLecture(
+                  accessToken,
+                  el.id,
+                  selectedClassId
+                ).catch((error) => {
+                  showTimetableAlertModal(dispatch, error);
+                });
+              case 1:
+                return LectureDetailAPI.addTimetablesLecture(
+                  accessToken,
+                  el.id,
+                  selectedClassId
+                ).catch((error) => {
+                  showTimetableAlertModal(dispatch, error);
+                });
+              default:
+            }
+          });
+        })
       );
 
-      messageObject = messageObject.reduce((result, message, index) => {
-        console.log(result, message, index);
-        return result;
-      }, {});
-
-      console.log("messageObject", messageObject, messageObject[0]);
-
-      // const promises = timetables.map((props) =>
-      //   props.map((el) =>
-      //     getCheckedTimetable(
-      //       changedLectureClassInfo,
-      //       lectureClassInfo,
-      //       lectureInfoIdx,
-      //       accessToken,
-      //       el.id,
-      //       selectedClassId
-      //     )
-      //   )
-      // );
-
-      // const promisesData = await Promise.all(promises);
-
-      // console.log("all done :)", promisesData);
-
-      // promisesData.map((props) => {props.});
-
-      // let data = await Promise.all(
-      //   timetables.map((props) => {
-      //     return props.map(async (el) => {
-      //       switch (
-      //         isSelectedBoth(
-      //           changedLectureClassInfo,
-      //           lectureClassInfo,
-      //           lectureInfoIdx,
-      //           el.id
-      //         )
-      //       ) {
-      //         case 0:
-      //           return await LectureDetailAPI.removeTimetablesLecture(
-      //             accessToken,
-      //             el.id,
-      //             selectedClassId
-      //           );
-      //         case 1:
-      //           return await LectureDetailAPI.addTimetablesLecture(
-      //             accessToken,
-      //             el.id,
-      //             selectedClassId
-      //           );
-      //         default:
-      //       }
-      //     });
-      //   })
-      // );
-      // console.log(data);
+      console.log(data);
+      dispatch(updateLectureClassInfo());
     } catch (error) {
+      console.dir(error);
       console.log(error);
       if (error.response.data) {
         const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
@@ -258,10 +213,13 @@ function TimetableModal() {
   return (
     <ModalWrapper>
       {timetables &&
-        timetables.map((props) => {
-          return props.map((el) => {
+        timetables.map((props, index) => {
+          return props.map((el, idx) => {
             return (
-              <TimetableLabel key={el.id} onClick={() => checkLectureToTimetable(el.id)}>
+              <TimetableLabel
+                key={el.id}
+                onClick={() => checkLectureToTimetable(index, idx, el.id)}
+              >
                 {el.name}
                 {changedLectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(
                   el.id

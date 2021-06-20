@@ -2,6 +2,7 @@
 const SET_LECTURE_INFO = "SET_LECTURE_INFO";
 const SET_LECTURE_REVIEWS = "SET_LECTURE_REVIEWS";
 const SET_LECTURE_RESOURCES = "SET_LECTURE_RESOURCES";
+const SET_LECTURE_TIMETABLES = "SET_LECTURE_TIMETABLES";
 
 const CLICK_SCRAP_ICON = "CLICK_SCRAP_ICON";
 const UNCLICK_SCRAP_ICON = "UNCLICK_SCRAP_ICON";
@@ -10,9 +11,7 @@ const CLICK_TIMETABLE_ADD_REMOVE_ICON = "CLICK_TIMETABLE_ADD_REMOVE_ICON";
 
 const OPEN_FILTER_MODAL = "OPEN_FILTER_MODAL";
 const CLOSE_FILTER_MODAL = "CLOSE_FILTER_MODAL";
-
 const OPEN_TIMETABLE_MODAL = "OPEN_TIMETABLE_MODAL";
-const SET_LECTURE_TIMETABLES = "SET_LECTURE_TIMETABLES";
 const CLOSE_TIMETABLE_MODAL = "CLOSE_TIMETABLE_MODAL";
 
 const SET_LECTURE_REVIEW_FILTER = "SET_LECTURE_REVIEW_FILTER";
@@ -23,6 +22,7 @@ const ADD_NEXT_PAGE_RESROUCES = "ADD_NEXT_PAGE_RESROUCES";
 
 const SET_REVIEWS_LOADING_START = "SET_REVIEWS_LOADING_START";
 const SET_REVIEWS_LOADING_FINISHED = "SET_REVIEWS_LOADING_FINISHED";
+const UPDATE_LECTURE_CLASSINFO = "UPDATE_LECTURE_CLASSINFO";
 
 // Action Creators
 export const setLectureInfo = (payload) => ({ type: SET_LECTURE_INFO, payload });
@@ -39,7 +39,7 @@ export const setLectureTimetables = (payload) => ({
 export const clickScrapIcon = (payload) => ({ type: CLICK_SCRAP_ICON, payload });
 export const unclickScrapIcon = (payload) => ({ type: UNCLICK_SCRAP_ICON, payload });
 export const clickLikeIcon = (payload) => ({ type: CLICK_LIKE_ICON, payload });
-export const clickTitmetableAddRemoveButtom = (payload) => ({
+export const clickTitmetableAddRemoveButton = (payload) => ({
   type: CLICK_TIMETABLE_ADD_REMOVE_ICON,
   payload,
 });
@@ -62,6 +62,7 @@ export const requestLectureReviews = () => ({ type: SET_REVIEWS_LOADING_START })
 export const requestLectureReviewsFinished = () => ({
   type: SET_REVIEWS_LOADING_FINISHED,
 });
+export const updateLectureClassInfo = () => ({ type: UPDATE_LECTURE_CLASSINFO });
 
 export const addNextPageReviews = (payload) => ({
   type: ADD_NEXT_PAGE_REVIEWS,
@@ -230,6 +231,11 @@ export default function lectureDetailReducer(state = STATE, action) {
         ...state,
         isLoading: false,
       };
+    case UPDATE_LECTURE_CLASSINFO:
+      return {
+        ...state,
+        lectureClassInfo: copyObject(state.changedLectureClassInfo),
+      };
     default:
       return state;
   }
@@ -258,7 +264,10 @@ const getLikeReflectedResult = (lectureReviews, idx) => {
  */
 const getTimetableReflectedResult = (lectureClassInfo, idx, timetableId) => {
   lectureClassInfo[idx].selectedTableId.indexOf(timetableId) !== -1
-    ? lectureClassInfo[idx].selectedTableId.pop(timetableId)
+    ? lectureClassInfo[idx].selectedTableId.splice(
+        lectureClassInfo[idx].selectedTableId.indexOf(timetableId),
+        1
+      )
     : lectureClassInfo[idx].selectedTableId.push(timetableId);
 
   return lectureClassInfo;
