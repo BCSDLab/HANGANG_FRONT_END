@@ -7,11 +7,13 @@ import { FontColor, ConceptColor } from "static/Shared/commonStyles";
 import LectureDetailAPI from "api/lectureDetail";
 
 import {
-  setLectureTimetables,
   closeTimetableModal,
   clickTitmetableAddRemoveButtom,
 } from "store/modules/lectureDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+
+import { showAlertModal } from "store/modules/modalModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const ModalWrapper = styled.div`
   position: absolute;
@@ -83,47 +85,172 @@ const Check = styled.img.attrs({
 TimetableModal.propTypes = {
   isTimetableModalOpened: PropTypes.bool,
 };
-
+/**
+ * 기존과 변경된 데이터 비교해서 값 반환
+ * 0: 삭제
+ * 1: 추가
+ * 2: 아무것도 안함
+ * @param {*} changedLectureClassInfo 유저가 세이브 신청한 데이터
+ * @param {*} lectureClassInfo 기존 유저 수강과목 데이터
+ * @param {*} lectureInfoIdx
+ * @param {*} tableId
+ * @returns
+ */
+const isSelectedBoth = (
+  changedLectureClassInfo,
+  lectureClassInfo,
+  lectureInfoIdx,
+  tableId
+) => {
+  if (
+    lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) !== -1 &&
+    changedLectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) === -1
+  ) {
+    return 0;
+  }
+  if (
+    lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) === -1 &&
+    changedLectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) !== -1
+  ) {
+    return 1;
+  }
+  return 2;
+};
+// 다운로드에 약 1초가 걸리는 비동기 함수라고 가정
+const getCheckedTimetable = (
+  changedLectureClassInfo,
+  lectureClassInfo,
+  lectureInfoIdx,
+  accessToken,
+  id,
+  selectedClassId
+) => {
+  switch (isSelectedBoth(changedLectureClassInfo, lectureClassInfo, lectureInfoIdx, id)) {
+    case 0:
+      return new Promise((resolve, reject) => {
+        LectureDetailAPI.removeTimetablesLecture(accessToken, id, selectedClassId);
+      });
+    case 1:
+      return new Promise((resolve, reject) => {
+        LectureDetailAPI.addTimetablesLecture(accessToken, id, selectedClassId);
+      });
+    default:
+      LectureDetailAPI.addTimetablesLecture(accessToken, id, selectedClassId);
+  }
+};
 /**
  * TODO:
- * - 시간표 정보 API연동
- * - 시간표 담기 빼기 기능 연동
- * @param {*} param0
+ * - 시간표 추가 삭제 오류 발생시 알림 창
+ * - 시간표 추가 삭제 이후 모듈 값 없데이트 해야함
  * @returns
  */
 function TimetableModal() {
   const dispatch = useDispatch();
-  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
-  const { timetables, timetablesLectures, id } = useSelector(
-    (state) => state.lectureDetailReducer
-  );
-  console.log(timetables, timetablesLectures);
+  const {
+    timetables,
+    changedLectureClassInfo,
+    lectureClassInfo,
+    lectureInfoIdx,
+    selectedClassId,
+  } = useSelector((state) => state.lectureDetailReducer);
 
-  const checkLectureToTimetable = async (index, idx) => {
+  const checkLectureToTimetable = (timetableId) => {
     try {
-      dispatch(clickTitmetableAddRemoveButtom({ index: index, idx: idx }));
+      dispatch(
+        clickTitmetableAddRemoveButtom({
+          idx: lectureInfoIdx,
+          timetableId: timetableId,
+        })
+      );
     } catch (error) {
-      console.dir(error);
       throw new Error(error);
     }
   };
 
   const saveTimetableChecked = async () => {
-    console.log("[checkLectureToTimetable] => ");
     try {
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
-      let { data } = await Promise.all(
-        timetables.map((props) => {
-          props.map(async (el) => {
-            return el.is_added
-              ? LectureDetailAPI.addTimetablesLecture(accessToken, el.id, id)
-              : LectureDetailAPI.removeTimetablesLecture(accessToken, el.id, id);
-          });
-        })
+      // FIXME:
+      // - 오류 발생시 알림 창 띄우기
+      let messageObject = await Promise.all(
+        timetables.map((props) =>
+          props.map((el) =>
+            getCheckedTimetable(
+              changedLectureClassInfo,
+              lectureClassInfo,
+              lectureInfoIdx,
+              accessToken,
+              el.id,
+              selectedClassId
+            )
+              .then((result) => console.log(result))
+              .catch((error) => console.log("실패:", error))
+          )
+        )
       );
+
+      messageObject = messageObject.reduce((result, message, index) => {
+        console.log(result, message, index);
+        return result;
+      }, {});
+
+      console.log("messageObject", messageObject, messageObject[0]);
+
+      // const promises = timetables.map((props) =>
+      //   props.map((el) =>
+      //     getCheckedTimetable(
+      //       changedLectureClassInfo,
+      //       lectureClassInfo,
+      //       lectureInfoIdx,
+      //       accessToken,
+      //       el.id,
+      //       selectedClassId
+      //     )
+      //   )
+      // );
+
+      // const promisesData = await Promise.all(promises);
+
+      // console.log("all done :)", promisesData);
+
+      // promisesData.map((props) => {props.});
+
+      // let data = await Promise.all(
+      //   timetables.map((props) => {
+      //     return props.map(async (el) => {
+      //       switch (
+      //         isSelectedBoth(
+      //           changedLectureClassInfo,
+      //           lectureClassInfo,
+      //           lectureInfoIdx,
+      //           el.id
+      //         )
+      //       ) {
+      //         case 0:
+      //           return await LectureDetailAPI.removeTimetablesLecture(
+      //             accessToken,
+      //             el.id,
+      //             selectedClassId
+      //           );
+      //         case 1:
+      //           return await LectureDetailAPI.addTimetablesLecture(
+      //             accessToken,
+      //             el.id,
+      //             selectedClassId
+      //           );
+      //         default:
+      //       }
+      //     });
+      //   })
+      // );
+      // console.log(data);
     } catch (error) {
-      console.dir(error);
+      console.log(error);
+      if (error.response.data) {
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
+        dispatch(showAlertModal({ title, content }));
+      }
       throw new Error(error);
     }
   };
@@ -131,19 +258,14 @@ function TimetableModal() {
   return (
     <ModalWrapper>
       {timetables &&
-        timetables.map((props, index) => {
-          return props.map((data, idx) => {
+        timetables.map((props) => {
+          return props.map((el) => {
             return (
-              <TimetableLabel
-                key={data.id}
-                onClick={() => checkLectureToTimetable(index, idx)}
-              >
-                {data.name}
-                {/* {timetablesLectures[idx].lectureList.length != 0 &&
-                  timetablesLectures[idx].lectureList.map(({ id }) => {
-                    if (id === data.id) return true;
-                  }) && <Check />} */}
-                {data.is_added && <Check />}
+              <TimetableLabel key={el.id} onClick={() => checkLectureToTimetable(el.id)}>
+                {el.name}
+                {changedLectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(
+                  el.id
+                ) !== -1 && <Check />}
               </TimetableLabel>
             );
           });

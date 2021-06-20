@@ -31,6 +31,10 @@ export const setLectureResources = (payload) => ({
   type: SET_LECTURE_RESOURCES,
   payload,
 });
+export const setLectureTimetables = (payload) => ({
+  type: SET_LECTURE_TIMETABLES,
+  payload,
+});
 
 export const clickScrapIcon = (payload) => ({ type: CLICK_SCRAP_ICON, payload });
 export const unclickScrapIcon = (payload) => ({ type: UNCLICK_SCRAP_ICON, payload });
@@ -42,11 +46,8 @@ export const clickTitmetableAddRemoveButtom = (payload) => ({
 
 export const openFilterModal = () => ({ type: OPEN_FILTER_MODAL });
 export const closeFilterModal = () => ({ type: CLOSE_FILTER_MODAL });
-export const openTimetableModal = () => ({ type: OPEN_TIMETABLE_MODAL });
-export const setLectureTimetables = (payload) => ({
-  type: SET_LECTURE_TIMETABLES,
-  payload,
-});
+export const openTimetableModal = (payload) => ({ type: OPEN_TIMETABLE_MODAL, payload });
+
 export const closeTimetableModal = () => ({ type: CLOSE_TIMETABLE_MODAL });
 
 export const setLectureReviewFilter = (payload) => ({
@@ -72,7 +73,7 @@ export const addNextPageResources = (payload) => ({
 });
 
 const defaultFilterOptions = {
-  sort: "좋아요순",
+  sort: "좋아요 순",
 };
 const MODAL_STATE = {
   isFilterModalOpened: false,
@@ -80,15 +81,18 @@ const MODAL_STATE = {
 };
 const REVIEW_STATE = {
   limit: 5,
+  resourceLimit: 100,
   page: 1,
-  resourcePage: 0,
+  resourcePage: 1,
   maxPage: 1,
   maxResourcePage: 1,
+  isFetchedOnFirstReviewsMount: false,
 };
 const STATE = {
   isLoading: false,
-  isFetchedOnFirstReviewsMount: false,
   lectureReviews: {},
+  lectureClassInfo: [],
+  semesterDates: [],
   timetables: [],
   timetablesLectures: [],
   lectureResources: { count: 0, result: [] },
@@ -96,13 +100,9 @@ const STATE = {
   ...MODAL_STATE,
   ...REVIEW_STATE,
 };
-/**
- * @param {*} state
- * @param {*} action
- * @returns
- */
+
 export default function lectureDetailReducer(state = STATE, action) {
-  console.log("[lectureDetailReducer] => " + action.type, action, state);
+  console.log("[lectureDetailReducer] => " + action.type, action.payload, state);
   switch (action.type) {
     case SET_LECTURE_INFO:
       return {
@@ -111,9 +111,11 @@ export default function lectureDetailReducer(state = STATE, action) {
         lectureReviews: action.payload[1].data,
         lectureEvaluationRating: action.payload[2].data,
         lectureEvaluationTotal: action.payload[3].data,
-        lectureClassInfo: action.payload[4].data,
+        lectureClassInfo: action.payload[4]
+          ? action.payload[4].data
+          : state.lectureClassInfo,
         maxPage: Math.ceil(action.payload[1].data.count / state.limit),
-        semesterDates: action.payload[5].data,
+        semesterDates: action.payload[5] ? action.payload[5].data : state.semesterDates,
       };
     case SET_LECTURE_REVIEWS:
       return {
@@ -125,20 +127,27 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         lectureResources: action.payload,
-        maxResourcePage: Math.ceil(action.payload.count / state.limit),
+        maxResourcePage: Math.ceil(action.payload.count / state.resourceLimit),
+      };
+    case SET_LECTURE_TIMETABLES:
+      let convertedTimetables = getDatasFrom2DepthPayload(action.payload);
+      return {
+        ...state,
+        timetables: convertedTimetables,
+        changedLectureClassInfo: copyObject(state.lectureClassInfo),
       };
     case CLICK_SCRAP_ICON:
       return {
         ...state,
-        is_scraped: !state.is_scraped,
+        is_scraped: true,
       };
     case UNCLICK_SCRAP_ICON:
       return {
         ...state,
-        user_scrap_id: 0,
+        is_scraped: false,
       };
     case CLICK_LIKE_ICON:
-      const likeReflectedReviews = getLikeReflectedResult(
+      let likeReflectedReviews = getLikeReflectedResult(
         state.lectureReviews,
         action.payload.idx
       );
@@ -147,14 +156,14 @@ export default function lectureDetailReducer(state = STATE, action) {
         lectureReviews: likeReflectedReviews,
       };
     case CLICK_TIMETABLE_ADD_REMOVE_ICON:
-      const timetableReflectedResult = getTimetableReflectedResult(
-        state.timetables,
-        action.payload.index,
-        action.payload.idx
+      let convertedLectureClassInfo = getTimetableReflectedResult(
+        state.changedLectureClassInfo,
+        action.payload.idx,
+        action.payload.timetableId
       );
       return {
         ...state,
-        timetables: timetableReflectedResult,
+        changedLectureClassInfo: convertedLectureClassInfo,
       };
     case OPEN_FILTER_MODAL:
       return {
@@ -170,24 +179,13 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         isTimetableModalOpened: true,
-      };
-    case SET_LECTURE_TIMETABLES:
-      // const convertedTimetables = getDatasFrom2DepthPayload(action.payload[0]);
-      const convertedTimetables = getConvertedTimtableList(
-        action.payload[0],
-        action.payload[1],
-        state.id
-      );
-      const convertedTimetablesLectures = getDatasFrom1DepthPayload(action.payload[1]);
-
-      return {
-        ...state,
-        timetables: convertedTimetables,
-        timetablesLectures: convertedTimetablesLectures,
+        lectureInfoIdx: action.payload.lectureInfoIdx,
+        selectedClassId: action.payload.selectedClassId,
       };
     case CLOSE_TIMETABLE_MODAL:
       return {
         ...state,
+        changedLectureClassInfo: copyObject(state.lectureClassInfo),
         isTimetableModalOpened: false,
       };
     case SET_LECTURE_REVIEW_FILTER:
@@ -217,19 +215,20 @@ export default function lectureDetailReducer(state = STATE, action) {
           result: [...state.lectureResources.result, ...action.payload.result],
         },
         resourcePage: ++state.resourcePage,
+        maxResourcePage: Math.ceil(action.payload.count / state.resourceLimit),
       };
     case SET_REVIEWS_LOADING_START:
       return {
         ...state,
         isLoading: true,
+        isFetchedOnFirstReviewsMount: true,
         page: 1,
-        lectureReviews: { count: 0, result: [] },
+        lectureReviews: { count: state.lectureReviews.count, result: [] },
       };
     case SET_REVIEWS_LOADING_FINISHED:
       return {
         ...state,
         isLoading: false,
-        isFetchedOnFirstReviewsMount: true,
       };
     default:
       return state;
@@ -251,41 +250,22 @@ const getLikeReflectedResult = (lectureReviews, idx) => {
   return lectureReviews;
 };
 /**
- *
+ * 시간표 반영
  * @param {*} timetables
  * @param {*} index
  * @param {*} idx
  * @returns
  */
-const getTimetableReflectedResult = (timeTables, index, idx) => {
-  console.log(timeTables);
-  timeTables[index][idx].is_added = !timeTables[index][idx].is_added;
-  return timeTables;
+const getTimetableReflectedResult = (lectureClassInfo, idx, timetableId) => {
+  lectureClassInfo[idx].selectedTableId.indexOf(timetableId) !== -1
+    ? lectureClassInfo[idx].selectedTableId.pop(timetableId)
+    : lectureClassInfo[idx].selectedTableId.push(timetableId);
+
+  return lectureClassInfo;
 };
 
-/**
- *
- * @param {*} data
- * @param {*} lectureLists
- * @param {*} lectureId
- * @returns
- */
-const getConvertedTimtableList = (data = [], lectureLists = [], lectureId = 0) => {
-  let result = [data].map((el) => {
-    el.data.map((datas, idx) => {
-      datas.is_added = false;
-      if (lectureLists[idx].data.lectureList.length != 0) {
-        let tmp = lectureLists[idx].data.lectureList.map(({ id }) => {
-          return id;
-        });
-        datas.is_added = tmp.indexOf(lectureId) != -1 ? true : false;
-      }
-    });
-
-    return el.data;
-  });
-
-  return result;
+const copyObject = (data) => {
+  return JSON.parse(JSON.stringify(data));
 };
 
 /**
@@ -294,19 +274,18 @@ const getConvertedTimtableList = (data = [], lectureLists = [], lectureId = 0) =
  * @returns
  */
 const getDatasFrom2DepthPayload = (data = []) => {
-  let result = [data].map((el) => {
-    console.log(el);
-    return el.data;
+  let result = data.map((el) => {
+    return el.data.map((props) => {
+      return props;
+    });
   });
-  console.log("getDatasFrom2DepthPayload=> " + result);
+
   return result;
 };
 const getDatasFrom1DepthPayload = (data = []) => {
   let result = data.map((el) => {
-    console.log(el);
     return el.data;
   });
 
-  console.log("getDatasFrom1DepthPayload=> " + result);
   return result;
 };
