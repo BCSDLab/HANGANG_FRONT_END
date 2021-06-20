@@ -1,14 +1,15 @@
 import axios from "axios";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const accessToken = getValueOnLocalStorage("hangangToken")
-  ? getValueOnLocalStorage("hangangToken").access_token
-  : "";
+const getAccessToken = () => {
+  return getValueOnLocalStorage("hangangToken")?.access_token;
+};
 
-const setTokenInHeader = (token = accessToken, data = null) => {
+const setTokenInHeader = (data = null) => {
+  const accessToken = getAccessToken();
   let config = {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   };
 
