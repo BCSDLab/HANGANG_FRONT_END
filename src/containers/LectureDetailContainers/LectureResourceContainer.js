@@ -1,15 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
-
-import ResourceAPI from "api/resources";
 import { FontColor, PlaceholderColor, BorderColor } from "static/Shared/commonStyles";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import {
-  addNextPageResources,
-  setLectureResources,
-} from "store/modules/lectureDetailModule";
 
 const Section = styled.section`
   width: 100%;
@@ -149,57 +140,13 @@ const MoveRightButtonComponent = ({ move }) => (
   </MoveRightButton>
 );
 
-/**
- * TODO:
- * - 강의자료 불러오는 API연동
- * @param {*} param0
- * @returns
- */
-
 const LectureResourceContainer = ({ options, lectureResource = {} }) => {
-  const dispatch = useDispatch();
+  const SLIDING_DISTANCE = 90;
+  const FILE_AMOUNT_ON_ROW = 7;
 
   const resourceWrapperRef = useRef();
   const [widthOffset, setWidthOffset] = React.useState(0);
-  const slidingDistance = 700;
-  const fileAmountOnRow = 7;
-
-  const { lectureResources, resourcePage, ...orderOption } = useSelector(
-    (state) => state.lectureDetailReducer
-  );
-  const hiddenFiles = lectureResources.result.length - fileAmountOnRow;
-  const [isFetched, setIsFetched] = useState(false);
-
-  const fetchLectureResources = async () => {
-    try {
-      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-      console.log(options, lectureResource);
-
-      const { data: resources } = await ResourceAPI.getResources(
-        // {
-        //   order: "hits",
-        //   page: resourcePage + 1,
-        // },
-        {
-          department: orderOption.department,
-          order: "hits",
-          keyword: orderOption.name,
-          page: resourcePage + 1,
-        },
-        accessToken
-      );
-      console.log("resources=>", resources);
-      dispatch(addNextPageResources(resources));
-    } catch (error) {
-      console.dir(error);
-      if (error.response.data.code === 30) {
-        history.push("/lectures");
-      }
-      throw new Error(error);
-    } finally {
-      setIsFetched(true);
-    }
-  };
+  const hiddenFiles = lectureResource.count - FILE_AMOUNT_ON_ROW;
 
   /**
    * A function to set width offset.
@@ -207,30 +154,32 @@ const LectureResourceContainer = ({ options, lectureResource = {} }) => {
    * @param {string} dir A string to use to know direction.
    */
   const move = (dir) => {
-    if (dir === "right") setWidthOffset(widthOffset - 1);
-    else setWidthOffset(widthOffset + 1);
+    if (dir === "right") setWidthOffset(widthOffset - FILE_AMOUNT_ON_ROW);
+    else setWidthOffset(widthOffset + FILE_AMOUNT_ON_ROW);
   };
 
   useEffect(() => {
-    fetchLectureResources();
     resourceWrapperRef.current.style.transform = `translateX(${
-      widthOffset * slidingDistance
+      widthOffset * SLIDING_DISTANCE
     }px)`;
   }, [widthOffset]);
 
-  console.log("[resources] => " + lectureResources);
   return (
     <Section>
       <InfoLabel>강의자료 추천</InfoLabel>
       <ResourceSection>
-        {lectureResources.result.length === 0 && (
+        {lectureResource.count === 0 && (
           <SubWarningLabel>등록된 강의자료 추천 정보가 없습니다.</SubWarningLabel>
         )}
-        {lectureResources.result && (
+
+        {lectureResource.result && (
           <Wrapper>
-            <ResourceWrapper ref={resourceWrapperRef} fileAmountOnRow={fileAmountOnRow}>
-              {lectureResources.result.map(({ id, title, thumbnail, isPurchased }) => (
-                <Resource>
+            <ResourceWrapper
+              ref={resourceWrapperRef}
+              FILE_AMOUNT_ON_ROW={FILE_AMOUNT_ON_ROW}
+            >
+              {lectureResource.result.map(({ id, title, thumbnail, isPurchased }) => (
+                <Resource key={id}>
                   <ResourceBox isPurchased={isPurchased}>
                     <Thumbnail thumbnail={thumbnail} />
                   </ResourceBox>
@@ -244,7 +193,7 @@ const LectureResourceContainer = ({ options, lectureResource = {} }) => {
         )}
 
         {widthOffset !== 0 && <MoveLeftButtonComponent move={move} />}
-        {widthOffset !== -hiddenFiles && hiddenFiles > 0 && (
+        {widthOffset >= -hiddenFiles && hiddenFiles > 0 && (
           <MoveRightButtonComponent move={move} />
         )}
       </ResourceSection>

@@ -11,6 +11,8 @@ import {
   requestLectureReviewsFinished,
   setLectureReviews,
   setLectureResources,
+  setLectureTimetables,
+  closeFilterModal,
 } from "store/modules/lectureDetailModule";
 import { BorderColor, InnerContentWidth } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
@@ -54,77 +56,107 @@ const LectureDetailContainer = () => {
 
   const {
     isLoading,
+    timetables,
     lectureReviews,
     lectureResources,
     lectureEvaluationRating,
     lectureEvaluationTotal,
     lectureClassInfo,
     page,
+    resourcePage,
     limit,
+    resourceLimit,
     sort,
     isFetchedOnFirstReviewsMount,
-    ...orderOptions
+    ...rest
   } = useSelector((state) => state.lectureDetailReducer);
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const [isFetched, setIsFetched] = useState(false);
 
   const fetchLectureDetailInfo = async () => {
     try {
-      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+      if (isLoggedIn && isCheckedToken) {
+        const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
-      const lectureInfo = await Promise.all([
-        LectureDetailAPI.getLectureInfo(accessToken, lectureId),
-        LectureDetailAPI.getLectureReviews(accessToken, lectureId, limit, page, sort),
-        LectureDetailAPI.getEvaluationRating(accessToken, lectureId),
-        LectureDetailAPI.getEvaluationTotal(accessToken, lectureId),
-        LectureDetailAPI.getLectureClassInfo(accessToken, lectureId),
-        LectureDetailAPI.getLectureSemesterDates(accessToken, lectureId),
-      ]);
+        const lectureInfo = await Promise.all([
+          LectureDetailAPI.getLectureInfo(accessToken, lectureId),
+          LectureDetailAPI.getLectureReviews(accessToken, lectureId, {
+            limit: limit,
+            page: page,
+            sort: sort,
+          }),
+          LectureDetailAPI.getEvaluationRating(lectureId),
+          LectureDetailAPI.getEvaluationTotal(lectureId),
+          LectureDetailAPI.getLectureClassInfo(accessToken, lectureId),
+          LectureDetailAPI.getLectureSemesterDates(accessToken, lectureId),
+        ]);
 
-      dispatch(setLectureInfo(lectureInfo));
+        const { data: resources } = await ResourceAPI.getResources(
+          {
+            department: lectureInfo[0].data.department,
+            order: "hits",
+            keyword: lectureInfo[0].data.name,
+            page: resourcePage,
+          },
+          accessToken
+        );
 
-      /**
-       * resource 가져오려면 department 정보랑 학과명 등이 필요한데
-       * 이는 위에서 정보 조회후에 얻어지는 정보라 나중에 가능함
-       * TODO: 이건 어떻게 할건지
-       */
+        dispatch(setLectureInfo(lectureInfo));
+        dispatch(setLectureResources(resources));
+        if (lectureInfo[5].data) {
+          const usersTimetables = await LectureDetailAPI.getTimetables(
+            accessToken,
+            lectureInfo[5].data
+          );
+          dispatch(setLectureTimetables(usersTimetables));
+        }
+      } else {
+        const lectureInfo = await Promise.all([
+          LectureDetailAPI.getLectureInfo(null, lectureId),
+          LectureDetailAPI.getLectureReviews(null, lectureId, {
+            limit: limit,
+            page: page,
+            sort: sort,
+          }),
+          LectureDetailAPI.getEvaluationRating(lectureId),
+          LectureDetailAPI.getEvaluationTotal(lectureId),
+        ]);
 
-      // const data = await ResourceAPI.getResources(
-      //   {
-      //     department: orderOptions.department,
-      //     order: "hits",
-      //     keyword: orderOptions.name,
-      //     page: orderOptions.resourcePage,
-      //   },
-      //   accessToken
-      // );
-      // console.log("rest2", data);
-      // dispatch(setLectureResources(data));
-    } catch (error) {
-      console.dir(error);
-      if (error.response.data.code === 30) {
-        history.push("/lectures");
+        const { data: resources } = await ResourceAPI.getResources(
+          {
+            department: lectureInfo[0].data.department,
+            order: "hits",
+            keyword: lectureInfo[0].data.name,
+            page: resourcePage,
+          },
+          null
+        );
+
+        dispatch(setLectureInfo(lectureInfo));
+        dispatch(setLectureResources(resources));
       }
-      throw new Error(error);
+    } catch (error) {
+      if (error.response.data.code === 30) {
+        alert("존재하지 않는 게시물입니다.");
+      } else {
+        alert("확인되지 않은 오류입니다. 관리자에게 문의하세요.");
+      }
+      history.push("/lectures");
     } finally {
       setIsFetched(true);
     }
   };
 
-  const fetchReviews = async (options) => {
+  const fetchReviews = async () => {
     try {
-      let accessToken = isLoggedIn
+      const accessToken = isLoggedIn
         ? getValueOnLocalStorage("hangangToken").access_token
         : null;
-      console.log("fetchReviews optinos=>", options);
-      const { data } = await LectureDetailAPI.getLectureReviews(
-        accessToken,
-        lectureId,
-        limit,
-        page,
-        sort
-      );
-      console.log("data => ", data);
+      const { data } = await LectureDetailAPI.getLectureReviews(accessToken, lectureId, {
+        limit: limit,
+        page: page,
+        sort: sort,
+      });
       dispatch(setLectureReviews(data));
     } catch (error) {
       throw new Error(error);
@@ -134,20 +166,20 @@ const LectureDetailContainer = () => {
   };
 
   useEffect(() => {
-    console.log(
-      "useEffect => ",
-      isCheckedToken,
-      (isCheckedToken && !isFetchedOnFirstReviewsMount) || isLoading
-    );
+    if ((isCheckedToken && isFetchedOnFirstReviewsMount) || isLoading) {
+      fetchReviews();
+    } else {
+      fetchLectureDetailInfo();
+    }
+  }, [isLoggedIn, isCheckedToken, isFetchedOnFirstReviewsMount, isLoading]);
 
-    if ((isCheckedToken && !isFetchedOnFirstReviewsMount) || isLoading)
-      fetchReviews({ page, ...orderOptions });
-    else fetchLectureDetailInfo();
-  }, [isCheckedToken, isFetchedOnFirstReviewsMount, isLoading]);
+  const closeFilterModalEventTriggered = () => {
+    if (rest.isFilterModalOpened) dispatch(closeFilterModal());
+  };
 
   return (
     <>
-      <Wrapper>
+      <Wrapper onClick={() => closeFilterModalEventTriggered()}>
         {!isFetched && (
           <SpinnerWrapper>
             <LoadingSpinner />
@@ -157,34 +189,35 @@ const LectureDetailContainer = () => {
           {isFetched && (
             <>
               <ReviewSection>
-                <LectureInfoContainer lectureInfo={orderOptions}></LectureInfoContainer>
+                <LectureInfoContainer lectureInfo={rest}></LectureInfoContainer>
 
                 <LectureGraphContainer
-                  rating={orderOptions.total_rating}
-                  count={orderOptions.review_count}
-                  hashtags={orderOptions.top3_hash_tag}
+                  rating={rest.total_rating}
+                  count={rest.review_count}
+                  hashtags={rest.top3_hash_tag}
                   evaluationRating={lectureEvaluationRating}
                   evaluationTotal={lectureEvaluationTotal}
                 ></LectureGraphContainer>
 
                 <LectureResourceContainer
                   lectureResource={lectureResources}
-                  options={orderOptions}
+                  options={rest}
                 ></LectureResourceContainer>
 
                 <LectureReviewContainer
                   lectureReviewCount={lectureReviews.count}
                   lectureReviews={lectureReviews}
-                  lectureId={orderOptions.id}
-                  page={orderOptions.page}
+                  lectureId={lectureId}
+                  page={rest.page}
                   limit={limit}
                   sort={sort}
                 ></LectureReviewContainer>
               </ReviewSection>
 
               <LectureClassContainer
-                grade={orderOptions.grade}
+                grade={rest.grade}
                 lectureClassInfo={lectureClassInfo}
+                timetables={timetables}
               ></LectureClassContainer>
             </>
           )}
