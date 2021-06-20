@@ -2,7 +2,6 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 import LectureDetailAPI from "api/lectureDetail";
 
@@ -10,6 +9,8 @@ import { clickScrapIcon, unclickScrapIcon } from "store/modules/lectureDetailMod
 import { showAlertModal } from "store/modules/modalModule";
 import { FontColor, ConceptColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { triggerWhenNotLoggedIn } from "utils/reportUtils";
+
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const Section = styled.section`
@@ -68,23 +69,15 @@ const Bookmark = styled.img.attrs(({ isScrapped }) => ({
   cursor: pointer;
 `;
 
-LectureInfoContainer.propTypes = {
-  lectureInfo: PropTypes.object,
-};
-
-/**
- * @param {*} param0
- * @returns
- */
 function LectureInfoContainer({ lectureInfo = {} }) {
-  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const history = useHistory();
+  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
 
   const clickBookmark = async () => {
     try {
       if (!isLoggedIn && isCheckedToken) {
-        history.push("/login");
+        triggerWhenNotLoggedIn({ history, dispatch });
       } else {
         const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
@@ -99,17 +92,18 @@ function LectureInfoContainer({ lectureInfo = {} }) {
             accessToken,
             lectureInfo.id
           );
-          console.log(data, lectureInfo.id);
           if (data.httpStatus === "OK") dispatch(clickScrapIcon());
         }
       }
     } catch (error) {
-      console.dir(error);
-      if (error.response.data.code) {
+      if (error.response.data.code === 34) {
+        dispatch(showAlertModal({ title: error.response.data.errorMessage }));
+      } else if (error.response.data.code) {
         const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
         dispatch(showAlertModal({ title, content }));
+      } else {
+        throw new Error(error);
       }
-      throw new Error(error);
     }
   };
 
@@ -131,10 +125,12 @@ function LectureInfoContainer({ lectureInfo = {} }) {
             ? semesterNum(lectureInfo.semester_data.join(","))
             : `없음`}
 
-          <Bookmark
-            isScrapped={lectureInfo.is_scraped}
-            onClick={() => clickBookmark(dispatch)}
-          ></Bookmark>
+          {isLoggedIn && (
+            <Bookmark
+              isScrapped={lectureInfo.is_scraped}
+              onClick={() => clickBookmark(dispatch)}
+            ></Bookmark>
+          )}
         </SubLabel>
       </Wrapper>
     </Section>
