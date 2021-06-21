@@ -6,7 +6,7 @@ export const distributeClassTime = (target) => {
   let startIdx = 0;
 
   let distributedLectureList = target.reduce((acc, curr, idx) => {
-    if (idx === target.length - 1 || curr !== target[idx + 1] - 1) {
+    if (curr !== target[idx + 1] - 1 || idx === target.length - 1) {
       let slicedLecture = target.slice(startIdx, idx + 1);
       acc.push(slicedLecture);
       startIdx = idx + 1;

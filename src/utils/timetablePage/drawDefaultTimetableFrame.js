@@ -27,7 +27,7 @@ const drawHorizontalLines = (ctx) => {
   const HORIZONTAL_DISTANCE = HEIGHT_ON_SINGLE_TIME * 2;
 
   ctx.beginPath();
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i <= MAX_HOUR - MIN_HOUR + 1; i++) {
     if (i === 0) {
       ctx.moveTo(0, STARTING_POINT + HORIZONTAL_DISTANCE * i);
     } else {
@@ -44,7 +44,7 @@ const drawHorizontalLines = (ctx) => {
  */
 const drawVerticalLines = (ctx) => {
   ctx.beginPath();
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < DAYS.length; i++) {
     ctx.moveTo(STARTING_POINT + WIDTH_ON_SINGLE_TIME * i, STARTING_POINT);
     ctx.lineTo(STARTING_POINT + WIDTH_ON_SINGLE_TIME * i, MAX_HEIGHT);
   }
@@ -58,19 +58,27 @@ const drawVerticalLines = (ctx) => {
  */
 const fillTextOnTimetableFrame = (ctx) => {
   const HORIZONTAL_DISTANCE = HEIGHT_ON_SINGLE_TIME * 2;
-  const DAYS = ["월", "화", "수", "목", "금"];
+
   ctx.font = "12px Arial";
   ctx.fillStyle = `${FontColor}`;
 
   DAYS.forEach((value, idx) => {
-    ctx.fillText(value, 94 + WIDTH_ON_SINGLE_TIME * idx, 28);
+    ctx.fillText(value, DAY_START_POINT + WIDTH_ON_SINGLE_TIME * idx, INTERVAL_ON_DAYS);
   });
 
-  for (let hour = 9; hour <= 19; hour++) {
+  for (let hour = MIN_HOUR; hour <= MAX_HOUR; hour++) {
     ctx.fillText(
       hour.toString().padStart(2, "0"),
-      30,
-      64 + HORIZONTAL_DISTANCE * (hour - 9)
+      INTERVAL_ON_HOURS,
+      HOUR_START_POINT + HORIZONTAL_DISTANCE * (hour - MIN_HOUR)
     );
   }
 };
+
+const MIN_HOUR = 9;
+const MAX_HOUR = 19;
+const INTERVAL_ON_DAYS = 28;
+const INTERVAL_ON_HOURS = 30;
+const DAYS = ["월", "화", "수", "목", "금"];
+const DAY_START_POINT = 94;
+const HOUR_START_POINT = 64;

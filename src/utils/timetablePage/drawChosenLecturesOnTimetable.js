@@ -5,6 +5,7 @@ import {
   LINE_HEIGHT,
   MAX_LENGTH_ON_ONE_LINE,
   PADDING,
+  STARTING_POINT,
   WIDTH_ON_SINGLE_TIME,
 } from "static/TimetablePage/timetableConstants";
 import { addLecturesWithPosition } from "store/modules/timetableModule";
@@ -27,8 +28,8 @@ export const drawChosenLecturesOnTimetable = (ctx, infos, idx, dispatch) => {
 
       ctx.fillStyle = COLOR_TABLE[idx % COLOR_TABLE.length];
 
-      const startX = 51 + WIDTH_ON_SINGLE_TIME * day;
-      const startY = 51 + HEIGHT_ON_SINGLE_TIME * hour;
+      const startX = STARTING_POINT + WIDTH_ON_SINGLE_TIME * day;
+      const startY = STARTING_POINT + HEIGHT_ON_SINGLE_TIME * hour;
       const width = WIDTH_ON_SINGLE_TIME;
       const height = HEIGHT_ON_SINGLE_TIME * classTime.length;
       ctx.fillRect(startX, startY, width, height);
@@ -68,8 +69,12 @@ const fillTextOnLecture = (ctx, lectureInfo) => {
   sentencesByLine.forEach((s, idx) => {
     ctx.fillText(
       s.trim(),
-      51 + WIDTH_ON_SINGLE_TIME * day + PADDING,
-      51 + FONT_SIZE + PADDING + HEIGHT_ON_SINGLE_TIME * hour + LINE_HEIGHT * idx,
+      STARTING_POINT + WIDTH_ON_SINGLE_TIME * day + PADDING,
+      STARTING_POINT +
+        FONT_SIZE +
+        PADDING +
+        HEIGHT_ON_SINGLE_TIME * hour +
+        LINE_HEIGHT * idx,
       WIDTH_ON_SINGLE_TIME - PADDING * 2
     );
   });
