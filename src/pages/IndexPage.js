@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import MajorSearchContainer from "containers/IndexContainers/MajorSearchContainer";
 import RecommendResourceContainer from "containers/IndexContainers/RecommendResourceContainer";
@@ -22,38 +22,42 @@ import {
   RestBottomLeftSection,
   RestBottomRightSection,
 } from "pages/styles/IndexPage.style";
+import { sampleRecommendResources } from "static/IndexPage/sampleRecommendResources";
 
-const IndexPage = () => (
-  <Wrapper>
-    <Banner>
-      <CatchPhraseWrapper>
-        <NormalSpan>솔직한 강의평을 원한다면?</NormalSpan>
-        <BoldSpan>가자, 한강으로!</BoldSpan>
-      </CatchPhraseWrapper>
-      <BannerImg />
-    </Banner>
-    <MajorSearchSection>
-      <MajorSearchContainer />
-    </MajorSearchSection>
-    <BeneathLayout>
-      <LectureRankingSection>
-        <LectureRankingContainer />
-      </LectureRankingSection>
-      <RestSection>
-        <RestTopSection>
-          <RecommendResourceContainer />
-        </RestTopSection>
-        <RestBottomSection>
-          <RestBottomLeftSection>
-            <MyTimetableContainer />
-          </RestBottomLeftSection>
-          <RestBottomRightSection>
-            <RecentlyViewedLectureContainer />
-          </RestBottomRightSection>
-        </RestBottomSection>
-      </RestSection>
-    </BeneathLayout>
-  </Wrapper>
-);
+const IndexPage = () => {
+  const [recommendResources, setRecommendResources] = useState([]);
+  return (
+    <Wrapper>
+      <Banner>
+        <CatchPhraseWrapper>
+          <NormalSpan>솔직한 강의평을 원한다면?</NormalSpan>
+          <BoldSpan>가자, 한강으로!</BoldSpan>
+        </CatchPhraseWrapper>
+        <BannerImg />
+      </Banner>
+      <MajorSearchSection>
+        <MajorSearchContainer />
+      </MajorSearchSection>
+      <BeneathLayout>
+        <LectureRankingSection>
+          <LectureRankingContainer />
+        </LectureRankingSection>
+        <RestSection>
+          <RestTopSection>
+            <RecommendResourceContainer recommendResources={recommendResources} />
+          </RestTopSection>
+          <RestBottomSection>
+            <RestBottomLeftSection>
+              <MyTimetableContainer />
+            </RestBottomLeftSection>
+            <RestBottomRightSection>
+              <RecentlyViewedLectureContainer />
+            </RestBottomRightSection>
+          </RestBottomSection>
+        </RestSection>
+      </BeneathLayout>
+    </Wrapper>
+  );
+};
 
 export default IndexPage;
