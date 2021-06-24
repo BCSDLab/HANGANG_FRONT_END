@@ -36,10 +36,6 @@ const config = {
       template: "./public/index.html",
     }),
   ],
-  devServer: {
-    contentBase: path.resolve(__dirname, "./build"),
-    historyApiFallback: true, //  새로 고침 시
-  },
 };
 
 module.exports = config;
