@@ -7,7 +7,7 @@ This project is web application for [KOREATECH](https://www.koreatech.ac.kr/eng/
 ## Resources
 
 - [Development Retrospective](https://jhpa.tistory.com/4)
-- [Development Guildline](https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/2021.03.16+%E1%84%92%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A1%E1%86%BC+%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3+Guideline.pdf)
+- [Development Guideline](https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/2021.03.16+%E1%84%92%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A1%E1%86%BC+%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3+Guideline.pdf)
 
 ## npm scripts
 
