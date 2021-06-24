@@ -2,7 +2,7 @@
 
 <h3 align="center">http://stage.hangang.in</h3>
 
-This project is web application for [KOREATECH](https://www.koreatech.ac.kr/eng/Main.do) students to share insights which they achieved from lectures. Users can organize their lectures to create lecture review, resource and timetable, and learn about classes they will learn by seeing resources shared by previous users. We worked so hard to offer familiar user experience.
+This project is web application for [KOREATECH](https://www.koreatech.ac.kr/eng/Main.do) students to share insights which they achieved from lectures. Users can organize their lectures by creating lecture review, resource and timetable, and learn about classes they will learn by seeing resources shared by previous users. We worked so hard to offer familiar user experience.
 
 ## Resources
 
