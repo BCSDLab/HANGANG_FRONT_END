@@ -19,9 +19,6 @@ import { useSelector } from "react-redux";
 const RecommendResourceContainer = () => {
   const { recommendResources } = useSelector((state) => state.mainPageReducer);
 
-  React.useEffect(() => {
-    console.log(recommendResources);
-  });
   return (
     <>
       <Label>{RECOMMEND_RESOURCE_LABEL}</Label>
@@ -33,16 +30,16 @@ const RecommendResourceContainer = () => {
           <>
             <LeftSide>
               <LeftTopSide>
-                <Thumbnail index={0} recommendResources={recommendResources} />
-                <Thumbnail index={1} recommendResources={recommendResources} />
+                <Thumbnail index={0} />
+                <Thumbnail index={1} />
               </LeftTopSide>
               <LeftBottomSide>
-                <Thumbnail index={2} recommendResources={recommendResources} />
-                <Thumbnail index={3} recommendResources={recommendResources} />
+                <Thumbnail index={2} />
+                <Thumbnail index={3} />
               </LeftBottomSide>
             </LeftSide>
             <RightSide>
-              <Thumbnail index={4} recommendResources={recommendResources} />
+              <Thumbnail index={4} />
             </RightSide>
           </>
         )}

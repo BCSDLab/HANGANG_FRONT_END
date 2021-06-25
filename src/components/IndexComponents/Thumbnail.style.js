@@ -1,5 +1,6 @@
-import { BorderColor, FontColor } from "static/Shared/commonStyles";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { BorderColor, FontColor } from "static/Shared/commonStyles";
 
 export const ThumbnailWrapper = styled.div`
   position: relative;
@@ -9,6 +10,8 @@ export const ThumbnailWrapper = styled.div`
   margin-right: ${({ index }) => (index === 0 || index === 2 ? "16px" : "0px")};
   border-radius: 8px;
   border: 1px solid ${BorderColor};
+
+  cursor: pointer;
 `;
 
 export const Title = styled.span`
