@@ -1,3 +1,4 @@
+import { BorderColor, FontColor } from "static/Shared/commonStyles";
 import styled from "styled-components";
 
 export const ThumbnailWrapper = styled.div`
@@ -7,20 +8,13 @@ export const ThumbnailWrapper = styled.div`
   height: ${({ index }) => heightConverter(index)};
   margin-right: ${({ index }) => (index === 0 || index === 2 ? "16px" : "0px")};
   border-radius: 8px;
-
-  //background
-  background-color: rgba(153, 153, 153, 0.7);
-  background-image: url(${({ thumbnailURL }) => thumbnailURL});
-  background-blend-mode: saturation;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  border: 1px solid ${BorderColor};
 `;
 
 export const Title = styled.span`
   position: absolute;
   left: 12px;
-  bottom: 10px;
+  bottom: 11px;
   width: ${({ index }) => (index === 1 || index === 2 ? "94px" : "111px")};
 
   padding: 1px 0px;
@@ -30,16 +24,38 @@ export const Title = styled.span`
   font-size: 12px;
   font-weight: 500;
 
-  color: #fff;
+  color: ${FontColor};
 `;
 
-export const LectureNameAndAuthor = styled.span`
+export const LectureNameAndAuthor = styled.div`
   position: absolute;
-  top: 12px;
+  display: flex;
+  top: 9px;
   right: 12px;
+`;
+
+export const Name = styled.div`
+  max-width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 10px;
   font-weight: 500;
-  color: #fff;
+  color: ${FontColor};
+`;
+
+export const Slash = styled(Name)`
+  margin: 0 4px;
+`;
+
+export const Author = styled(Name)``;
+
+export const Icon = styled.img.attrs(({ thumbnailURL }) => ({
+  src: thumbnailURL,
+  alt: "thumbnail",
+}))`
+  width: 32px;
+  margin: 5px;
 `;
 
 const widthConverter = (index) => {
