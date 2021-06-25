@@ -30,8 +30,8 @@ const IndexPage = () => {
     <Wrapper>
       <Banner>
         <CatchPhraseWrapper>
-          <NormalSpan>솔직한 강의평을 원한다면?</NormalSpan>
-          <BoldSpan>가자, 한강으로!</BoldSpan>
+          <NormalSpan>{SUB_CATCH_PHRASE}</NormalSpan>
+          <BoldSpan>{MAIN_CATCH_PHRASE}</BoldSpan>
         </CatchPhraseWrapper>
         <BannerImg />
       </Banner>
@@ -59,5 +59,8 @@ const IndexPage = () => {
     </Wrapper>
   );
 };
+
+const SUB_CATCH_PHRASE = "솔직한 강의평을 원한다면?";
+const MAIN_CATCH_PHRASE = "가자, 한강으로!";
 
 export default IndexPage;
