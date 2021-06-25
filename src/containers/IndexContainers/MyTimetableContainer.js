@@ -1,107 +1,16 @@
 import React from "react";
-import styled from "styled-components";
-
 import {
-  BorderColor,
-  ConceptColor,
-  FontColor,
-  PlaceholderColor,
-} from "static/Shared/commonStyles";
-import { Link } from "react-router-dom";
-
-const Label = styled.label`
-  color: ${FontColor};
-  font-size: 16px;
-  font-weight: 500;
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 276px;
-  border: 1px solid ${BorderColor};
-  border-radius: 8px;
-  margin-top: 16px;
-  padding: 12px 20px;
-`;
-
-const Lecture = styled.div`
-  position: relative;
-  width: 100%;
-  height: 39px;
-  margin: 12px 0px;
-`;
-
-const Name = styled.span`
-  position: absolute;
-  top: 2px;
-  left: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: ${FontColor};
-`;
-
-const Professor = styled.span`
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  font-size: 12px;
-  color: #828282;
-`;
-
-const AssessButton = styled(Link)`
-  all: unset;
-  position: absolute;
-  top: calc(50% - 14px);
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 60px;
-  height: 28px;
-  border-radius: 20px;
-  background-color: ${ConceptColor};
-  font-size: 12px;
-  font-weight: 500;
-  color: #fff;
-  cursor: pointer;
-`;
-
-const AssessedButton = styled(AssessButton)`
-  color: ${PlaceholderColor};
-  background-color: ${BorderColor};
-  cursor: default;
-`;
-
-const NoTimetable = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const NoTimetableSpan = styled.span`
-  font-size: 12px;
-  color: ${PlaceholderColor};
-`;
-
-const GotoTimetable = styled(Link)`
-  all: unset;
-  margin-top: 6px;
-`;
-
-const GotoTimetableButton = styled.button`
-  all: unset;
-  height: 28px;
-  padding: 0px 20px;
-  border-radius: 20px;
-  background-color: ${BorderColor};
-  color: ${FontColor};
-  font-size: 12px;
-  cursor: pointer;
-`;
+  Label,
+  Content,
+  NoTimetableSpan,
+  GotoTimetable,
+  GotoTimetableButton,
+  Lecture,
+  Name,
+  Professor,
+  AssessButton,
+  AssessedButton,
+} from "containers/IndexContainers/styles/MyTimetableContainer.style";
 
 /**
  * MyTimetableContainer
@@ -110,27 +19,33 @@ const GotoTimetableButton = styled.button`
  */
 const MyTimetableContainer = ({ timetableLectures }) => (
   <>
-    <Label>내 시간표</Label>
+    <Label>{MY_TIMETABLE_LABEL}</Label>
     <Content>
       {timetableLectures.length === 0 && (
-        <NoTimetable>
-          <NoTimetableSpan>아직 작성한 시간표가 없습니다.</NoTimetableSpan>
+        <NoTimetableSpan>
+          <NoTimetableSpan>{NO_TIMETABLE_ALERT}</NoTimetableSpan>
           <GotoTimetable to="/timetable">
-            <GotoTimetableButton>작성하러 가기</GotoTimetableButton>
+            <GotoTimetableButton>{GO_TO_WRITE_ALERT}</GotoTimetableButton>
           </GotoTimetable>
-        </NoTimetable>
+        </NoTimetableSpan>
       )}
       {timetableLectures.length !== 0 &&
         timetableLectures.map(({ name, professor, isAssessed }, index) => (
           <Lecture key={index}>
             <Name>{name}</Name>
             <Professor>{professor}</Professor>
-            {!isAssessed && <AssessButton to="/lectures">평가하기</AssessButton>}
-            {isAssessed && <AssessedButton as="div">평가완료</AssessedButton>}
+            {!isAssessed && <AssessButton to="/lectures">{GO_TO_ASSESS}</AssessButton>}
+            {isAssessed && <AssessedButton as="div">{COMPLETE_ASSESS}</AssessedButton>}
           </Lecture>
         ))}
     </Content>
   </>
 );
+
+const MY_TIMETABLE_LABEL = "내 시간표";
+const NO_TIMETABLE_ALERT = "아직 작성한 시간표가 없습니다.";
+const GO_TO_WRITE_ALERT = "작성하러 가기";
+const GO_TO_ASSESS = "평가하기";
+const COMPLETE_ASSESS = "평가완료";
 
 export default MyTimetableContainer;
