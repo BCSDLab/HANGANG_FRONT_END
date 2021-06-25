@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import {
@@ -107,48 +107,30 @@ const GotoTimetableButton = styled.button`
  * MyTimetableContainer
  * 내 시간표 컨테이너입니다.
  * timetableLectures의 크기에 따라 없으면 안내 문구, 있으면 내 시간표 강의를 보여줍니다.
- * 추후에 API 연결이 필요합니다.
  */
-const MyTimetableContainer = () => {
-  const sampleTimetableLectures = [
-    { name: "사랑의 역사", professor: "김사랑", isAssessed: true },
-    { name: "하트의 역사", professor: "박사랑", isAssessed: false },
-    { name: "사랑의 히스토리", professor: "김하트", isAssessed: false },
-    { name: "사랑역사", professor: "최사랑", isAssessed: false },
-  ];
-  // API 연결 후 아래 주석 해제
-  // eslint-disable-next-line no-unused-vars
-  const [timetableLectures, setTimetableLectures] = useState(sampleTimetableLectures);
-
-  // useEffect(() => {
-  //   // API call
-  //   setTimetableLectures(~~~)
-  // }, [])
-
-  return (
-    <>
-      <Label>내 시간표</Label>
-      <Content>
-        {timetableLectures.length === 0 && (
-          <NoTimetable>
-            <NoTimetableSpan>아직 작성한 시간표가 없습니다.</NoTimetableSpan>
-            <GotoTimetable to="/timetable">
-              <GotoTimetableButton>작성하러 가기</GotoTimetableButton>
-            </GotoTimetable>
-          </NoTimetable>
-        )}
-        {timetableLectures.length !== 0 &&
-          timetableLectures.map(({ name, professor, isAssessed }, index) => (
-            <Lecture key={index}>
-              <Name>{name}</Name>
-              <Professor>{professor}</Professor>
-              {!isAssessed && <AssessButton to="/lectures">평가하기</AssessButton>}
-              {isAssessed && <AssessedButton as="div">평가완료</AssessedButton>}
-            </Lecture>
-          ))}
-      </Content>
-    </>
-  );
-};
+const MyTimetableContainer = ({ timetableLectures }) => (
+  <>
+    <Label>내 시간표</Label>
+    <Content>
+      {timetableLectures.length === 0 && (
+        <NoTimetable>
+          <NoTimetableSpan>아직 작성한 시간표가 없습니다.</NoTimetableSpan>
+          <GotoTimetable to="/timetable">
+            <GotoTimetableButton>작성하러 가기</GotoTimetableButton>
+          </GotoTimetable>
+        </NoTimetable>
+      )}
+      {timetableLectures.length !== 0 &&
+        timetableLectures.map(({ name, professor, isAssessed }, index) => (
+          <Lecture key={index}>
+            <Name>{name}</Name>
+            <Professor>{professor}</Professor>
+            {!isAssessed && <AssessButton to="/lectures">평가하기</AssessButton>}
+            {isAssessed && <AssessedButton as="div">평가완료</AssessedButton>}
+          </Lecture>
+        ))}
+    </Content>
+  </>
+);
 
 export default MyTimetableContainer;

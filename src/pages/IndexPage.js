@@ -26,6 +26,7 @@ import { sampleRecommendResources } from "static/IndexPage/sampleRecommendResour
 
 const IndexPage = () => {
   const [recommendResources, setRecommendResources] = useState([]);
+  const [timetableLectures, setTimetableLectures] = useState(sampleTimetableLectures);
   return (
     <Wrapper>
       <Banner>
@@ -48,7 +49,7 @@ const IndexPage = () => {
           </RestTopSection>
           <RestBottomSection>
             <RestBottomLeftSection>
-              <MyTimetableContainer />
+              <MyTimetableContainer timetableLectures={timetableLectures} />
             </RestBottomLeftSection>
             <RestBottomRightSection>
               <RecentlyViewedLectureContainer />
@@ -59,6 +60,13 @@ const IndexPage = () => {
     </Wrapper>
   );
 };
+
+const sampleTimetableLectures = [
+  { name: "사랑의 역사", professor: "김사랑", isAssessed: true },
+  { name: "하트의 역사", professor: "박사랑", isAssessed: false },
+  { name: "사랑의 히스토리", professor: "김하트", isAssessed: false },
+  { name: "사랑역사", professor: "최사랑", isAssessed: false },
+];
 
 const SUB_CATCH_PHRASE = "솔직한 강의평을 원한다면?";
 const MAIN_CATCH_PHRASE = "가자, 한강으로!";
