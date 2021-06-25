@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Promise } from "core-js";
 
+import ResourceAPI from "api/resources";
 import TimetableAPI from "api/timetable";
 
 import MajorSearchContainer from "containers/IndexContainers/MajorSearchContainer";
@@ -24,13 +26,11 @@ import {
   RestBottomLeftSection,
   RestBottomRightSection,
 } from "pages/styles/IndexPage.style";
-import { sampleRecommendResources } from "static/IndexPage/sampleRecommendResources";
-import { setMyTimetable } from "store/modules/mainPageModule";
+import { setMyTimetable, setRecommendResources } from "store/modules/mainPageModule";
 import { useDispatch } from "react-redux";
 
 const IndexPage = () => {
   const dispatch = useDispatch();
-  const [recommendResources, setRecommendResources] = useState([]);
 
   useEffect(() => {
     fetchUserDatas(dispatch);
@@ -54,7 +54,7 @@ const IndexPage = () => {
         </LectureRankingSection>
         <RestSection>
           <RestTopSection>
-            <RecommendResourceContainer recommendResources={recommendResources} />
+            <RecommendResourceContainer />
           </RestTopSection>
           <RestBottomSection>
             <RestBottomLeftSection>
@@ -72,13 +72,16 @@ const IndexPage = () => {
 
 const fetchUserDatas = async (dispatch) => {
   try {
-    const {
-      data: { lectureList },
-      status,
-    } = await TimetableAPI.fetchMainTimetable();
-    if (status === 200) {
-      dispatch(setMyTimetable({ lectureList }));
-    }
+    const { fetchRecommendResources } = ResourceAPI;
+    const { fetchMainTimetable } = TimetableAPI;
+
+    const [recommendResources, myTimetable] = await Promise.all([
+      fetchRecommendResources(),
+      fetchMainTimetable(),
+    ]);
+
+    dispatch(setRecommendResources({ resources: recommendResources.data }));
+    dispatch(setMyTimetable({ lectureList: myTimetable.data.lectureList }));
   } catch (error) {
     console.dir(error);
   }
