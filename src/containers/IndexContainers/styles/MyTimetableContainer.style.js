@@ -19,7 +19,7 @@ export const Content = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 276px;
+  min-height: 276px;
   border: 1px solid ${BorderColor};
   border-radius: 8px;
   margin-top: 16px;
@@ -29,7 +29,7 @@ export const Content = styled.div`
 export const Lecture = styled.div`
   position: relative;
   width: 100%;
-  height: 39px;
+  min-height: 39px;
   margin: 12px 0px;
 `;
 
@@ -81,6 +81,9 @@ export const NoTimetable = styled.div`
 `;
 
 export const NoTimetableSpan = styled.span`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 12px;
   color: ${PlaceholderColor};
 `;
@@ -93,6 +96,7 @@ export const GotoTimetable = styled(Link)`
 export const GotoTimetableButton = styled.button`
   all: unset;
   height: 28px;
+  margin-top: 2px;
   padding: 0px 20px;
   border-radius: 20px;
   background-color: ${BorderColor};
