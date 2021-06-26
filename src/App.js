@@ -16,8 +16,8 @@ import NavigationContainer from "containers/Shared/NavigationContainer";
 import FooterContainer from "containers/Shared/FooterContainer";
 
 import IndexPage from "pages/IndexPage";
-import LecturesPage from "pages/LecturesPages/LecturesPage";
-import ResourcesPage from "pages/ResourcesPages/ResourcesPage";
+import LecturesPage from "pages/LecturesPage";
+import ResourcesPage from "pages/ResourcesPage";
 import ResourceDetailPage from "pages/ResourceDetailPage";
 import TimetablePage from "pages/TimeTablePage";
 import LoginPage from "pages/AuthPages/LoginPage";
