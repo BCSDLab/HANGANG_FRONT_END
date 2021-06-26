@@ -22,18 +22,16 @@ const MajorSearchContainer = () => {
     <>
       <Label>학부별 탐색</Label>
       <Content>
-        {MajorInfoArray.map(({ src, label, value }) => {
-          return (
-            <MajorCard
-              to="/lectures"
-              key={label}
-              imagesrc={src}
-              onClick={() => dispatch(setDepartmentOnLectures({ department: value }))}
-            >
-              <MajorLabel>{label}</MajorLabel>
-            </MajorCard>
-          );
-        })}
+        {MajorInfoArray.map(({ src, label, value }) => (
+          <MajorCard
+            to="/lectures"
+            key={label}
+            imagesrc={src}
+            onClick={() => dispatch(setDepartmentOnLectures({ department: value }))}
+          >
+            <MajorLabel>{label}</MajorLabel>
+          </MajorCard>
+        ))}
       </Content>
     </>
   );
