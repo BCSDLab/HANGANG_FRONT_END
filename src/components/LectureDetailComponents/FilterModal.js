@@ -40,6 +40,8 @@ const FilterLabel = styled.p`
 const FilterModal = () => {
   const dispatch = useDispatch();
   const fetchReviewWithFilter = async (sortLabel) => {
+    if (![LIKE_ORDER, RECENT_ORDER].includes(sortLabel)) return;
+
     try {
       dispatch(setLectureReviewFilter({ sort: sortLabel }));
       dispatch(requestLectureReviews());
@@ -50,10 +52,13 @@ const FilterModal = () => {
 
   return (
     <ModalWrapper onClick={(e) => fetchReviewWithFilter(e.target.innerText)}>
-      <FilterLabel>좋아요 순</FilterLabel>
-      <FilterLabel>최신 순</FilterLabel>
+      <FilterLabel>{LIKE_ORDER}</FilterLabel>
+      <FilterLabel>{RECENT_ORDER}</FilterLabel>
     </ModalWrapper>
   );
 };
+
+const LIKE_ORDER = "좋아요 순";
+const RECENT_ORDER = "최신 순";
 
 export default FilterModal;
