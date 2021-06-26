@@ -20,9 +20,6 @@ import LoadingSpinner from "components/Shared/LoadingSpinner";
 const Section = styled.section`
   width: 100%;
 `;
-const Wrapper = styled.section`
-  padding: 40px;
-`;
 
 const ReviewInfoSection = styled.div`
   display: flex;
@@ -36,13 +33,6 @@ const InfoLabel = styled.label`
   font-size: 20px;
   font-weight: 500;
 `;
-const SubInfoLabel = styled.p`
-  display: contents;
-  margin: 0 10px 24px 0;
-  color: ${FontColor};
-  font-size: 20px;
-  font-weight: 500;
-`;
 const SubWarningLabel = styled.p`
   margin: 50px 0;
   text-align: center;
@@ -51,31 +41,6 @@ const SubWarningLabel = styled.p`
   letter-spacing: normal;
   color: ${PlaceholderColor};
 `;
-const SubLabelGrey = styled.label`
-  margin: 4px 4px 8px 0;
-  font-size: 12px;
-  color: ${PlaceholderColor};
-`;
-const SubLabelInfo = styled.label`
-  display: block;
-  margin: 4px 29px 8px 0;
-  font-size: 12px;
-  color: ##222222;
-`;
-const SubLabel = styled.label`
-  margin: 4px 29px 8px 4px;
-  font-size: 12px;
-  color: ##222222;
-`;
-
-const ReviewSection = styled.div`
-  border-bottom: 1px solid #eeeeee;
-  margin-bottom: 10px;
-  :last-child {
-    border: none;
-  }
-`;
-
 const ReviewWrapper = styled.div`
   height: auto;
   overflow-y: auto;
@@ -91,12 +56,15 @@ const FilterPickSection = styled.div`
 `;
 const FilterPickLabel = styled.label`
   margin: 0 2px 0 0;
+
   font-size: 12px;
   font-weight: normal;
   line-height: normal;
   letter-spacing: normal;
   text-align: left;
+
   color: ${FontColor};
+  cursor: pointer;
 `;
 const LowArrowIcon = styled.img.attrs({
   src:
@@ -107,7 +75,6 @@ const LowArrowIcon = styled.img.attrs({
   height: 5px;
   margin-left: 4px;
 `;
-
 const SpinnerWrapper = styled.div`
   width: 100%;
   height: 15vh;
@@ -115,14 +82,10 @@ const SpinnerWrapper = styled.div`
   align-items: center;
 `;
 
-/**
- * @param {*} param0
- * @returns
- */
 const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
   const dispatch = useDispatch();
 
-  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
   const { limit, page, maxPage, sort, isFilterModalOpened, isLoading } = useSelector(
     (state) => state.lectureDetailReducer
   );
@@ -166,32 +129,28 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
       <ReviewInfoSection>
         <InfoLabel>개인 평가({rest.lectureReviewCount})</InfoLabel>
         <FilterPickSection onClick={() => dispatch(openFilterModal())}>
-          <FilterPickLabel style={{ cursor: "pointer" }}>{rest.sort}</FilterPickLabel>
+          <FilterPickLabel>{rest.sort}</FilterPickLabel>
           <LowArrowIcon></LowArrowIcon>
         </FilterPickSection>
-        {isFilterModalOpened && (
-          <FilterModal
-            lectureId={lectureId}
-            isLoggedIn={isLoggedIn}
-            isCheckedToken={isCheckedToken}
-          />
-        )}
+        {isFilterModalOpened && <FilterModal />}
       </ReviewInfoSection>
 
       <ReviewWrapper ref={targetRef}>
-        {lectureReviews.result.map((props, idx) => {
-          return <Review key={props.id} idx={idx} props={props} />;
-        })}
-
-        {lectureReviews.count === 0 && (
-          <SubWarningLabel>등록된 개인 평가 정보가 없습니다.</SubWarningLabel>
-        )}
-
         {isLoading && (
           <SpinnerWrapper>
             <LoadingSpinner />
           </SpinnerWrapper>
         )}
+
+        {!isLoading && lectureReviews.count === 0 && (
+          <SubWarningLabel>등록된 개인 평가 정보가 없습니다.</SubWarningLabel>
+        )}
+
+        {!isLoading &&
+          lectureReviews.count !== 0 &&
+          lectureReviews.result.map((props, idx) => {
+            return <Review key={props.id} idx={idx} props={props} />;
+          })}
       </ReviewWrapper>
     </Section>
   );

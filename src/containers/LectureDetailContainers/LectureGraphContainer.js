@@ -1,16 +1,11 @@
 import React from "react";
-
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 
 const Section = styled.section`
   width: 100%;
   margin-bottom: 32px;
-`;
-const Wrapper = styled.section`
-  padding: 40px;
 `;
 
 const InfoLabel = styled.label`
@@ -122,28 +117,20 @@ const HashTag = styled.span`
 `;
 
 const difficultyLabelConverter = (key) => {
-  switch (key) {
-    case 1:
-      return "하";
-    case 2:
-      return "중";
-    case 3:
-      return "상";
-    default:
-      return;
-  }
+  const difficultyLabel = {
+    1: "하",
+    2: "중",
+    3: "상",
+  };
+  return difficultyLabel[key];
 };
 const gradePortionLabelConverter = (key) => {
-  switch (key) {
-    case 1:
-      return "후하게주심";
-    case 2:
-      return "적당히주심";
-    case 3:
-      return "아쉽게주심";
-    default:
-      return "";
-  }
+  const portioinLabel = {
+    1: "후하게주심",
+    2: "적당히주심",
+    3: "아쉽게주심",
+  };
+  return portioinLabel[key];
 };
 
 const getPercentage = (count, sum) => {

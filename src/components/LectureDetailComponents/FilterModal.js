@@ -1,14 +1,12 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
 
 import styled from "styled-components";
 import {
   setLectureReviewFilter,
   requestLectureReviews,
 } from "store/modules/lectureDetailModule";
-import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
+import { FontColor } from "static/Shared/commonStyles";
 
 const ModalWrapper = styled.div`
   position: absolute;
@@ -39,13 +37,11 @@ const FilterLabel = styled.p`
   color: ${FontColor};
 `;
 
-FilterModal.propTypes = {
-  isFilterModalOpened: PropTypes.bool,
-};
-
-function FilterModal({ lectureId, isLoggedIn, isCheckedToken = false }) {
+const FilterModal = () => {
   const dispatch = useDispatch();
   const fetchReviewWithFilter = async (sortLabel) => {
+    console.log(sortLabel);
+
     try {
       dispatch(setLectureReviewFilter({ sort: sortLabel }));
       dispatch(requestLectureReviews());
@@ -55,13 +51,20 @@ function FilterModal({ lectureId, isLoggedIn, isCheckedToken = false }) {
   };
 
   return (
-    <ModalWrapper>
-      <FilterLabel onClick={() => fetchReviewWithFilter("좋아요 순")}>
-        좋아요 순
-      </FilterLabel>
-      <FilterLabel onClick={() => fetchReviewWithFilter("최신 순")}>최신 순</FilterLabel>
+    <ModalWrapper onClick={(e) => fetchReviewWithFilter(e.target.innerText)}>
+      <FilterLabel>좋아요 순</FilterLabel>
+      <FilterLabel>최신 순</FilterLabel>
     </ModalWrapper>
   );
-}
+
+  // return (
+  //   <ModalWrapper>
+  //     <FilterLabel onClick={() => fetchReviewWithFilter("좋아요 순")}>
+  //       좋아요 순
+  //     </FilterLabel>
+  //     <FilterLabel onClick={() => fetchReviewWithFilter("최신 순")}>최신 순</FilterLabel>
+  //   </ModalWrapper>
+  // );
+};
 
 export default FilterModal;

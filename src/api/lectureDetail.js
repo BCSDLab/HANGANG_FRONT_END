@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Promise } from "core-js";
 
 const axiosConfig = (accessToken, data = null) => {
   let config = {
@@ -104,17 +105,6 @@ export default {
       semesterDatas.map(async (semesterDataId) => {
         return await axios.get(
           `/timetable?semesterDateId=${semesterDataId}`,
-          axiosConfig(accessToken)
-        );
-      })
-    );
-    return response;
-  },
-  getTimetablesLecture: async (accessToken, timeTableIds) => {
-    const response = await Promise.all(
-      timeTableIds.map(async (timeTableId) => {
-        return await axios.get(
-          `/timetable/lecture?timeTableId=${timeTableId}`,
           axiosConfig(accessToken)
         );
       })

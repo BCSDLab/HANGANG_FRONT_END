@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+
 import { FontColor, PlaceholderColor, BorderColor } from "static/Shared/commonStyles";
 
 const Section = styled.section`
@@ -25,13 +26,7 @@ const SubWarningLabel = styled.p`
   letter-spacing: normal;
   color: ${PlaceholderColor};
 `;
-const SubLabel = styled.label`
-  margin: 4px 8px 71px 0;
 
-  font-size: 14px;
-  color: #999999;
-`;
-//ㅇㅇㅇ
 const ResourceSection = styled.section`
   position: relative;
   width: 100%;
@@ -40,11 +35,6 @@ const ResourceSection = styled.section`
 const Wrapper = styled.div`
   overflow-x: hidden;
   min-height: 109px;
-`;
-
-const Label = styled.label`
-  font-size: 14px;
-  color: ${PlaceholderColor};
 `;
 
 const ResourceWrapper = styled.div`
@@ -140,7 +130,7 @@ const MoveRightButtonComponent = ({ move }) => (
   </MoveRightButton>
 );
 
-const LectureResourceContainer = ({ options, lectureResource = {} }) => {
+const LectureResourceContainer = ({ lectureResource = {} }) => {
   const SLIDING_DISTANCE = 90;
   const FILE_AMOUNT_ON_ROW = 7;
 

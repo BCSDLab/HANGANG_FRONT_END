@@ -14,6 +14,9 @@ import {
   setLectureTimetables,
   closeFilterModal,
 } from "store/modules/lectureDetailModule";
+import { showAlertModal } from "store/modules/modalModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+
 import { BorderColor, InnerContentWidth } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
@@ -24,6 +27,7 @@ import LectureReviewContainer from "./LectureReviewContainer";
 import LectureClassContainer from "./LectureClassContainer";
 
 import LoadingSpinner from "components/Shared/LoadingSpinner";
+import { Promise } from "core-js";
 
 const Wrapper = styled.div`
   width: ${InnerContentWidth};
@@ -56,7 +60,6 @@ const LectureDetailContainer = () => {
 
   const {
     isLoading,
-    timetables,
     lectureReviews,
     lectureResources,
     lectureEvaluationRating,
@@ -65,7 +68,6 @@ const LectureDetailContainer = () => {
     page,
     resourcePage,
     limit,
-    resourceLimit,
     sort,
     isFetchedOnFirstReviewsMount,
     ...rest
@@ -136,12 +138,10 @@ const LectureDetailContainer = () => {
         dispatch(setLectureResources(resources));
       }
     } catch (error) {
-      if (error.response.data.code === 30) {
-        alert("존재하지 않는 게시물입니다.");
-      } else {
-        alert("확인되지 않은 오류입니다. 관리자에게 문의하세요.");
-      }
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+      dispatch(showAlertModal({ title, content }));
       history.push("/lectures");
+      throw new Error(error);
     } finally {
       setIsFetched(true);
     }
@@ -197,12 +197,9 @@ const LectureDetailContainer = () => {
                   hashtags={rest.top3_hash_tag}
                   evaluationRating={lectureEvaluationRating}
                   evaluationTotal={lectureEvaluationTotal}
-                ></LectureGraphContainer>
+                />
 
-                <LectureResourceContainer
-                  lectureResource={lectureResources}
-                  options={rest}
-                ></LectureResourceContainer>
+                <LectureResourceContainer lectureResource={lectureResources} />
 
                 <LectureReviewContainer
                   lectureReviewCount={lectureReviews.count}
@@ -211,14 +208,13 @@ const LectureDetailContainer = () => {
                   page={rest.page}
                   limit={limit}
                   sort={sort}
-                ></LectureReviewContainer>
+                />
               </ReviewSection>
 
               <LectureClassContainer
                 grade={rest.grade}
                 lectureClassInfo={lectureClassInfo}
-                timetables={timetables}
-              ></LectureClassContainer>
+              />
             </>
           )}
         </Content>

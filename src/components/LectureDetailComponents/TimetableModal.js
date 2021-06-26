@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PropTypes from "prop-types";
 
 import styled from "styled-components";
 import { FontColor, ConceptColor } from "static/Shared/commonStyles";
@@ -15,6 +14,7 @@ import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 import { showAlertModal } from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { Promise } from "core-js";
 
 const ModalWrapper = styled.div`
   position: absolute;
@@ -83,9 +83,6 @@ const Check = styled.img.attrs({
   align-content: center;
 `;
 
-TimetableModal.propTypes = {
-  isTimetableModalOpened: PropTypes.bool,
-};
 /**
  * 기존과 변경된 데이터 비교해서 값 반환
  * 0: 삭제
@@ -97,7 +94,7 @@ TimetableModal.propTypes = {
  * @param {*} tableId
  * @returns
  */
-const isSelectedBoth = (
+const isSelected = (
   changedLectureClassInfo,
   lectureClassInfo,
   lectureInfoIdx,
@@ -136,7 +133,7 @@ const showTimetableAlertModal = (dispatch, error) => {
   }
 };
 
-function TimetableModal() {
+const TimetableModal = () => {
   const dispatch = useDispatch();
   const {
     timetables,
@@ -163,16 +160,11 @@ function TimetableModal() {
     try {
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
-      let data = await Promise.all(
+      await Promise.all(
         timetables.map((props) => {
           return props.map(async (el) => {
             switch (
-              isSelectedBoth(
-                changedLectureClassInfo,
-                lectureClassInfo,
-                lectureInfoIdx,
-                el.id
-              )
+              isSelected(changedLectureClassInfo, lectureClassInfo, lectureInfoIdx, el.id)
             ) {
               case 0:
                 return LectureDetailAPI.removeTimetablesLecture(
@@ -238,6 +230,6 @@ function TimetableModal() {
       </ButtonSection>
     </ModalWrapper>
   );
-}
+};
 
 export default TimetableModal;

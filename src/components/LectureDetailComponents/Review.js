@@ -10,7 +10,7 @@ import { FontColor, PlaceholderColor } from "static/Shared/commonStyles";
 import { clickLikeIcon } from "store/modules/lectureDetailModule";
 import { showAlertModal } from "store/modules/modalModule";
 
-import { callReportModal } from "utils/reportUtils";
+import { triggerWhenNotLoggedIn, callReportModal } from "utils/reportUtils";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
@@ -53,14 +53,6 @@ const HalfStarIcon = styled.img.attrs({
   height: 16px;
 `;
 
-const ReviewWrapper = styled.div`
-  height: auto;
-
-  overflow-y: auto;
-  ::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
-  }
-`;
 const ReviewContent = styled.p`
   margin: 8px 0;
   font-size: 14px;
@@ -96,54 +88,16 @@ const ThumbUpIcon = styled.img.attrs(({ isLiked }) => ({
   margin-right: 4px;
 `;
 
-const ThumbUpPushedIcon = styled(ThumbUpIcon).attrs({
-  src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/resourcepage/thumb_up_pushed.png",
-  alt: "thumb upped ",
-})`
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
-`;
-const FilterPickSection = styled.div`
-  margin-left: 4px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
-const FilterPickLabel = styled.label`
-  margin: 0 2px 0 0;
-  font-size: 12px;
-  font-weight: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  text-align: left;
-  color: ${FontColor};
-`;
-const LowArrowIcon = styled.img.attrs({
-  src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/arrow-low.png",
-  alt: "arrow low",
-})`
-  width: 9px;
-  height: 5px;
-  margin-left: 4px;
-`;
 const SubLabelGrey = styled.label`
   margin: 4px 4px 8px 0;
   font-size: 12px;
   color: ${PlaceholderColor};
 `;
-const SubLabelInfo = styled.label`
-  display: block;
-  margin: 4px 29px 8px 0;
-  font-size: 12px;
-  color: ##222222;
-`;
+
 const SubLabel = styled.label`
   margin: 4px 29px 8px 4px;
   font-size: 12px;
-  color: ##222222;
+  color: ${FontColor};
 `;
 
 /**
@@ -176,7 +130,6 @@ const LectureClassSection = ({ props, ...rest }) => {
         const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
         dispatch(showAlertModal({ title, content }));
       }
-      console.dir(error);
       throw new Error(error);
     }
   };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -10,16 +10,12 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 
-import LectureDetailAPI from "api/lectureDetail";
 import TimetableModal from "components/LectureDetailComponents/TimetableModal";
 import {
   openTimetableModal,
   closeTimetableModal,
-  setLectureTimetables,
 } from "store/modules/lectureDetailModule";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { triggerWhenNotLoggedIn } from "utils/reportUtils";
-import { classTime } from "static/LecturesDetailPage/classTime";
+import { CLASS_TIME } from "static/LectureDetailPage/classTime";
 
 const Section = styled.section`
   width: 368px;
@@ -83,6 +79,9 @@ const ClassContent = styled.div`
   line-height: 28px;
   margin-left: 40px;
 `;
+const ButtonWrapper = styled.div`
+  display: contents;
+`;
 const AddTimtable = styled.button`
   float: right;
   width: 56px;
@@ -117,7 +116,7 @@ const RemoveTimetable = styled(AddTimtable)`
  */
 const getDay = (classTimes) => {
   let dayNo = 2 + parseInt(parseInt(classTimes.split(",")[0].replace(/\[/, "")) / 100);
-  return classTime[0][dayNo] + " ";
+  return CLASS_TIME[0][dayNo] + " ";
 };
 
 /**
@@ -127,12 +126,12 @@ const getDay = (classTimes) => {
  * @param {*} classTimes 수업 시간 배열
  * @returns 수업 시작~끝 문자열로 조합한 결과
  */
-const classStartToEnd = (classTimes) => {
+const getClassTimePeriod = (classTimes) => {
   let times = classTimes.replace(/\[/, "").replace(/\]/, "").split(","),
     start = 1 + parseInt(times[0] % 100),
     end = 1 + parseInt(times[times.length - 1] % 100);
 
-  return classTime[start][0] + "~" + classTime[end][0];
+  return CLASS_TIME[start][0] + "~" + CLASS_TIME[end][0];
 };
 
 /**
@@ -149,7 +148,7 @@ const openModal = (dispatch, isTimetableModalOpened, obj) => {
   dispatch(openTimetableModal(obj));
 };
 
-const LectureClassContainer = ({ grade, lectureClassInfo = [], timetables = [] }) => {
+const LectureClassContainer = ({ grade, lectureClassInfo = [] }) => {
   const dispatch = useDispatch();
 
   const { isTimetableModalOpened } = useSelector((state) => state.lectureDetailReducer);
@@ -180,28 +179,24 @@ const LectureClassContainer = ({ grade, lectureClassInfo = [], timetables = [] }
               <ClassContent key={data.id}>
                 <SubLabelContent>
                   {getDay(data.classTime)}
-                  {classStartToEnd(data.classTime)}
+                  {getClassTimePeriod(data.classTime)}
                   {` (${data.classNumber})`}
                 </SubLabelContent>
-                {data.selectedTableId.length !== 0 ? (
-                  <RemoveTimetable
-                    onClick={() => {
-                      openModal(dispatch, isTimetableModalOpened, {
-                        lectureInfoIdx: idx,
-                        selectedClassId: data.id,
-                      });
-                    }}
-                  />
-                ) : (
-                  <AddTimtable
-                    onClick={() =>
-                      openModal(dispatch, isTimetableModalOpened, {
-                        lectureInfoIdx: idx,
-                        selectedClassId: data.id,
-                      })
-                    }
-                  />
-                )}
+
+                <ButtonWrapper
+                  onClick={() => {
+                    openModal(dispatch, isTimetableModalOpened, {
+                      lectureInfoIdx: idx,
+                      selectedClassId: data.id,
+                    });
+                  }}
+                >
+                  {data.selectedTableId.length !== 0 ? (
+                    <RemoveTimetable />
+                  ) : (
+                    <AddTimtable />
+                  )}
+                </ButtonWrapper>
               </ClassContent>
             ))}
 

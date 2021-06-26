@@ -290,10 +290,3 @@ const getDatasFrom2DepthPayload = (data = []) => {
 
   return result;
 };
-const getDatasFrom1DepthPayload = (data = []) => {
-  let result = data.map((el) => {
-    return el.data;
-  });
-
-  return result;
-};
