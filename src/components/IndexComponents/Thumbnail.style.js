@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { BorderColor, FontColor } from "static/Shared/commonStyles";
 
 export const ThumbnailWrapper = styled.div`

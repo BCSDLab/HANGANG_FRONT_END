@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Promise } from "core-js";
 
 import ResourceAPI from "api/resources";
@@ -28,6 +28,8 @@ import {
 } from "pages/styles/IndexPage.style";
 import { setMyTimetable, setRecommendResources } from "store/modules/mainPageModule";
 import { useDispatch } from "react-redux";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const IndexPage = () => {
   const dispatch = useDispatch();
@@ -83,7 +85,8 @@ const fetchUserDatas = async (dispatch) => {
     dispatch(setRecommendResources({ resources: recommendResources.data }));
     dispatch(setMyTimetable({ lectureList: myTimetable.data.lectureList }));
   } catch (error) {
-    console.dir(error);
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
   }
 };
 
