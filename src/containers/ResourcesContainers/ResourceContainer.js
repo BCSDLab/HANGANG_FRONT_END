@@ -61,30 +61,9 @@ const ResourceContainer = () => {
     else setIsCreateFormOpened(true);
   };
 
-  /**
-   * 특정한 상황에서 resources를 fetch 합니다.
-   * 1. 유저 token 체크가 끝나 로그인 여부가 파악되고, 아직 resource를 fetch 하지 않았을 때
-   * 2. 필터를 클릭할 때마다 isLoading을 true로 만들며, 이 때 fetchResources를 실행한다.
-   */
-
-  const fetchResources = async (options) => {
-    try {
-      let accessToken = isLoggedIn
-        ? getValueOnLocalStorage("hangangToken").access_token
-        : null;
-
-      const { data } = await ResourceAPI.getResources(options, accessToken);
-      dispatch(setResources(data));
-    } catch (error) {
-      throw new Error(error);
-    } finally {
-      dispatch(requestResourcesFinished());
-    }
-  };
-
   useEffect(() => {
     if ((isCheckedToken && !isFetchedOnFirstResourcesMount) || isLoading)
-      fetchResources({ page, ...filterOptions });
+      fetchResources({ page, ...filterOptions }, isLoggedIn, dispatch);
   }, [isCheckedToken, isFetchedOnFirstResourcesMount, isLoading]);
 
   /**
@@ -97,8 +76,7 @@ const ResourceContainer = () => {
   const fetchMore = debounce((entries) => {
     const target = entries[0];
     if (target.isIntersecting && page < max_page) {
-      fetchResources({ page: page + 1, ...filterOptions });
-      dispatch(setResourcesNextPage());
+      fetchResources({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, 500);
 
@@ -159,6 +137,28 @@ const ResourceContainer = () => {
       )}
     </Wrapper>
   );
+};
+
+/**
+ * 특정한 상황에서 resources를 fetch 합니다.
+ * 1. 유저 token 체크가 끝나 로그인 여부가 파악되고, 아직 resource를 fetch 하지 않았을 때
+ * 2. 필터를 클릭할 때마다 isLoading을 true로 만들며, 이 때 fetchResources를 실행한다.
+ */
+
+const fetchResources = async (options, isLoggedIn, dispatch) => {
+  try {
+    let accessToken = isLoggedIn
+      ? getValueOnLocalStorage("hangangToken").access_token
+      : null;
+
+    const { data } = await ResourceAPI.getResources(options, accessToken);
+    dispatch(setResources(data));
+    dispatch(setResourcesNextPage());
+  } catch (error) {
+    throw new Error(error);
+  } finally {
+    dispatch(requestResourcesFinished());
+  }
 };
 
 export default ResourceContainer;

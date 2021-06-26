@@ -88,7 +88,7 @@ function CommentsContainer({ comments, amount }) {
       fetchCommentOnNextPage();
     }
   }, 200);
-  const { targetRef } = useInfiniteScroll(fetchMore, 5);
+  const { targetRef } = useInfiniteScroll(fetchMore, 2);
 
   // JSX
   return (

@@ -56,11 +56,10 @@ const LecturesContainer = () => {
   const fetchMore = debounce((entries) => {
     const target = entries[0];
     if (target.isIntersecting && page < max_page) {
-      fetchLectures({ page: page + 1, ...filterOptions }, isLoggedIn, dispatch);
-      dispatch(setLecturesNextPage());
+      fetchLectures({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, 500);
-  const { targetRef } = useInfiniteScroll(fetchMore);
+  const { targetRef } = useInfiniteScroll(fetchMore, 2);
 
   return (
     <Wrapper>
@@ -127,6 +126,7 @@ const fetchLectures = async (options, isLoggedIn, dispatch) => {
 
     const { data } = await LectureAPI.getLectures(options, accessToken);
     dispatch(setLectures(data));
+    dispatch(setLecturesNextPage());
   } catch (error) {
     throw new Error(error);
   } finally {
