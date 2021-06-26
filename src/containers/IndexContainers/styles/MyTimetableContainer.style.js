@@ -16,8 +16,6 @@ export const Label = styled.label`
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100%;
   min-height: 276px;
   border: 1px solid ${BorderColor};
@@ -78,6 +76,14 @@ export const NoTimetable = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+export const NoTimetableWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 249.52px;
 `;
 
 export const NoTimetableSpan = styled.span`

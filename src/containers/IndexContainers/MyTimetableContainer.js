@@ -2,6 +2,7 @@ import React from "react";
 import {
   Label,
   Content,
+  NoTimetableWrapper,
   NoTimetableSpan,
   GotoTimetable,
   GotoTimetableButton,
@@ -25,13 +26,15 @@ const MyTimetableContainer = () => {
     <>
       <Label>{MY_TIMETABLE_LABEL}</Label>
       <Content>
-        {lectureList.length === 0 && (
-          <NoTimetableSpan>
-            <NoTimetableSpan>{NO_TIMETABLE_ALERT}</NoTimetableSpan>
-            <GotoTimetable to="/timetable">
-              <GotoTimetableButton>{GO_TO_WRITE_ALERT}</GotoTimetableButton>
-            </GotoTimetable>
-          </NoTimetableSpan>
+        {lectureList.filter(({ is_custom }) => !is_custom).length === 0 && (
+          <NoTimetableWrapper>
+            <NoTimetableSpan>
+              <NoTimetableSpan>{NO_TIMETABLE_ALERT}</NoTimetableSpan>
+              <GotoTimetable to="/timetable">
+                <GotoTimetableButton>{GO_TO_WRITE_ALERT}</GotoTimetableButton>
+              </GotoTimetable>
+            </NoTimetableSpan>
+          </NoTimetableWrapper>
         )}
         {lectureList.length !== 0 &&
           lectureList
