@@ -40,8 +40,6 @@ const FilterLabel = styled.p`
 const FilterModal = () => {
   const dispatch = useDispatch();
   const fetchReviewWithFilter = async (sortLabel) => {
-    console.log(sortLabel);
-
     try {
       dispatch(setLectureReviewFilter({ sort: sortLabel }));
       dispatch(requestLectureReviews());
@@ -56,15 +54,6 @@ const FilterModal = () => {
       <FilterLabel>최신 순</FilterLabel>
     </ModalWrapper>
   );
-
-  // return (
-  //   <ModalWrapper>
-  //     <FilterLabel onClick={() => fetchReviewWithFilter("좋아요 순")}>
-  //       좋아요 순
-  //     </FilterLabel>
-  //     <FilterLabel onClick={() => fetchReviewWithFilter("최신 순")}>최신 순</FilterLabel>
-  //   </ModalWrapper>
-  // );
 };
 
 export default FilterModal;

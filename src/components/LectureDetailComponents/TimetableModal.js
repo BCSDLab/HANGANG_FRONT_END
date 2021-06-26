@@ -143,7 +143,7 @@ const TimetableModal = () => {
     selectedClassId,
   } = useSelector((state) => state.lectureDetailReducer);
 
-  const checkLectureToTimetable = (index, idx, timetableId) => {
+  const checkLectureToTimetable = async (index, idx, timetableId) => {
     try {
       dispatch(
         clickTitmetableAddRemoveButton({
@@ -151,12 +151,50 @@ const TimetableModal = () => {
           timetableId: timetableId,
         })
       );
+
+      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+
+      switch (
+        isSelected(changedLectureClassInfo, lectureClassInfo, lectureInfoIdx, timetableId)
+      ) {
+        case 0:
+          await LectureDetailAPI.removeTimetablesLecture(
+            accessToken,
+            timetableId,
+            selectedClassId
+          ).catch((error) => {
+            showTimetableAlertModal(dispatch, error);
+            dispatch(
+              clickTitmetableAddRemoveButton({
+                idx: lectureInfoIdx,
+                timetableId: timetableId,
+              })
+            );
+          });
+          break;
+        case 1:
+          await LectureDetailAPI.addTimetablesLecture(
+            accessToken,
+            timetableId,
+            selectedClassId
+          ).catch((error) => {
+            showTimetableAlertModal(dispatch, error);
+            dispatch(
+              clickTitmetableAddRemoveButton({
+                idx: lectureInfoIdx,
+                timetableId: timetableId,
+              })
+            );
+          });
+          break;
+        default:
+      }
     } catch (error) {
       throw new Error(error);
     }
   };
 
-  const saveTimetableChecked = async () => {
+  const rollbackTimetable = async () => {
     try {
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
@@ -166,7 +204,7 @@ const TimetableModal = () => {
             switch (
               isSelected(changedLectureClassInfo, lectureClassInfo, lectureInfoIdx, el.id)
             ) {
-              case 0:
+              case 1:
                 return LectureDetailAPI.removeTimetablesLecture(
                   accessToken,
                   el.id,
@@ -174,7 +212,7 @@ const TimetableModal = () => {
                 ).catch((error) => {
                   showTimetableAlertModal(dispatch, error);
                 });
-              case 1:
+              case 0:
                 return LectureDetailAPI.addTimetablesLecture(
                   accessToken,
                   el.id,
@@ -187,13 +225,8 @@ const TimetableModal = () => {
           });
         })
       );
-
       dispatch(updateLectureClassInfo());
     } catch (error) {
-      if (error.response.data) {
-        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
-        dispatch(showAlertModal({ title, content }));
-      }
       throw new Error(error);
     }
   };
@@ -218,10 +251,17 @@ const TimetableModal = () => {
         })}
 
       <ButtonSection>
-        <Close onClick={() => dispatch(closeTimetableModal())}>닫기</Close>
+        <Close
+          onClick={() => {
+            rollbackTimetable();
+            dispatch(closeTimetableModal());
+          }}
+        >
+          닫기
+        </Close>
         <Confirm
           onClick={() => {
-            saveTimetableChecked();
+            dispatch(updateLectureClassInfo());
             dispatch(closeTimetableModal());
           }}
         >
