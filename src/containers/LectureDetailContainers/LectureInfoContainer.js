@@ -11,6 +11,7 @@ import { FontColor, ConceptColor, PlaceholderColor } from "static/Shared/commonS
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { triggerWhenNotLoggedIn } from "utils/reportUtils";
 
+import { bookmark, bookmarked } from "static/LectureDetailPage/imgPath";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const Section = styled.section`
@@ -59,9 +60,7 @@ const Professor = styled(Title)`
 
 const Bookmark = styled.img.attrs(({ isScrapped }) => ({
   alt: "스크랩",
-  src: isScrapped
-    ? "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/bookmarked.png"
-    : "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/LecturesDetailPage/bookmark.png",
+  src: isScrapped ? bookmarked : bookmark,
 }))`
   float: right;
   width: 14px;
@@ -125,12 +124,10 @@ function LectureInfoContainer({ lectureInfo = {} }) {
             ? semesterNum(lectureInfo.semester_data.join(","))
             : `없음`}
 
-          {isLoggedIn && (
-            <Bookmark
-              isScrapped={lectureInfo.is_scraped}
-              onClick={() => clickBookmark(dispatch)}
-            ></Bookmark>
-          )}
+          <Bookmark
+            isScrapped={lectureInfo.is_scraped}
+            onClick={() => clickBookmark(dispatch)}
+          ></Bookmark>
         </SubLabel>
       </Wrapper>
     </Section>
