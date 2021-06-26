@@ -100,14 +100,6 @@ const SubLabel = styled.label`
   color: ${FontColor};
 `;
 
-/**
- *  리뷰
- * TODO:
- * - 순서 클릭시 모달 띄우기
- * - 각 리뷰 좋아요 클릭시 반응 보여주기 (리덕스 사용 미숙으로 해매는 중입니다..)
- * @param {*} param0
- * @returns
- */
 const LectureClassSection = ({ props, ...rest }) => {
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const isAuthenticated = !isLoggedIn && isCheckedToken ? false : true;

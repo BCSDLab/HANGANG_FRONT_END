@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { FontColor, PlaceholderColor, BorderColor } from "static/Shared/commonStyles";
@@ -91,7 +92,7 @@ const ResourceBox = styled.div`
   border-radius: 8px;
   border: 1px solid ${BorderColor};
 
-  cursor: ${({ isPurchased }) => (isPurchased ? "pointer" : "default")};
+  cursor: pointer;
 `;
 
 const Thumbnail = styled.img.attrs(({ thumbnail }) => ({
@@ -134,10 +135,10 @@ const LectureResourceContainer = ({ lectureResource = {} }) => {
   const SLIDING_DISTANCE = 90;
   const FILE_AMOUNT_ON_ROW = 7;
 
+  const history = useHistory();
   const resourceWrapperRef = useRef();
   const [widthOffset, setWidthOffset] = React.useState(0);
   const hiddenFiles = lectureResource.count - FILE_AMOUNT_ON_ROW;
-
   /**
    * A function to set width offset.
    * If offset change, useEffect triggered.
@@ -169,13 +170,16 @@ const LectureResourceContainer = ({ lectureResource = {} }) => {
               FILE_AMOUNT_ON_ROW={FILE_AMOUNT_ON_ROW}
             >
               {lectureResource.result.map(({ id, title, thumbnail, isPurchased }) => (
-                <Resource key={id}>
-                  <ResourceBox isPurchased={isPurchased}>
+                <Resource
+                  key={id}
+                  onClick={() => {
+                    history.push("/resource/" + id);
+                  }}
+                >
+                  <ResourceBox>
                     <Thumbnail thumbnail={thumbnail} />
                   </ResourceBox>
-                  <ResourceTitle isPurchased={isPurchased}>
-                    {sliceString(title, 7)}
-                  </ResourceTitle>
+                  <ResourceTitle>{sliceString(title, 7)}</ResourceTitle>
                 </Resource>
               ))}
             </ResourceWrapper>
