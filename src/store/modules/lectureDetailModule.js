@@ -1,6 +1,7 @@
 // Actions
 const SET_LECTURE_INFO = "SET_LECTURE_INFO";
 const SET_LECTURE_REVIEWS = "SET_LECTURE_REVIEWS";
+const SET_LECTURE_CLASS_SEMESTER = "SET_LECTURE_CLASS_SEMESTER";
 const SET_LECTURE_RESOURCES = "SET_LECTURE_RESOURCES";
 const SET_LECTURE_TIMETABLES = "SET_LECTURE_TIMETABLES";
 
@@ -26,6 +27,10 @@ const UPDATE_LECTURE_CLASSINFO = "UPDATE_LECTURE_CLASSINFO";
 
 // Action Creators
 export const setLectureInfo = (payload) => ({ type: SET_LECTURE_INFO, payload });
+export const setLectureClassSemester = (payload) => ({
+  type: SET_LECTURE_CLASS_SEMESTER,
+  payload,
+});
 export const setLectureReviews = (payload) => ({ type: SET_LECTURE_REVIEWS, payload });
 export const setLectureResources = (payload) => ({
   type: SET_LECTURE_RESOURCES,
@@ -117,6 +122,14 @@ export default function lectureDetailReducer(state = STATE, action) {
         maxPage: Math.ceil(action.payload[1].data.count / state.limit),
         semesterDates: action.payload[5] ? action.payload[5].data : state.semesterDates,
       };
+    case SET_LECTURE_CLASS_SEMESTER:
+      return {
+        ...state,
+        lectureClassInfo: action.payload[0]
+          ? action.payload[0].data
+          : state.lectureClassInfo,
+        semesterDates: action.payload[1] ? action.payload[1].data : state.semesterDates,
+      };
     case SET_LECTURE_REVIEWS:
       return {
         ...state,
@@ -129,13 +142,14 @@ export default function lectureDetailReducer(state = STATE, action) {
         lectureResources: action.payload,
         maxResourcePage: Math.ceil(action.payload.count / state.resourceLimit),
       };
-    case SET_LECTURE_TIMETABLES:
+    case SET_LECTURE_TIMETABLES: {
       let convertedTimetables = getDatasFrom2DepthPayload(action.payload);
       return {
         ...state,
         timetables: convertedTimetables,
         changedLectureClassInfo: copyObject(state.lectureClassInfo),
       };
+    }
     case CLICK_SCRAP_ICON:
       return {
         ...state,
@@ -146,7 +160,7 @@ export default function lectureDetailReducer(state = STATE, action) {
         ...state,
         is_scraped: false,
       };
-    case CLICK_LIKE_ICON:
+    case CLICK_LIKE_ICON: {
       let likeReflectedReviews = getLikeReflectedResult(
         state.lectureReviews,
         action.payload.idx
@@ -155,7 +169,8 @@ export default function lectureDetailReducer(state = STATE, action) {
         ...state,
         lectureReviews: likeReflectedReviews,
       };
-    case CLICK_TIMETABLE_ADD_REMOVE_ICON:
+    }
+    case CLICK_TIMETABLE_ADD_REMOVE_ICON: {
       let convertedLectureClassInfo = getTimetableReflectedResult(
         state.changedLectureClassInfo,
         action.payload.idx,
@@ -165,6 +180,7 @@ export default function lectureDetailReducer(state = STATE, action) {
         ...state,
         changedLectureClassInfo: convertedLectureClassInfo,
       };
+    }
     case OPEN_FILTER_MODAL:
       return {
         ...state,

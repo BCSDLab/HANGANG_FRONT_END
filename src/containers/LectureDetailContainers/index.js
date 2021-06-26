@@ -8,6 +8,7 @@ import ResourceAPI from "api/resources";
 
 import {
   setLectureInfo,
+  setLectureClassSemester,
   requestLectureReviewsFinished,
   setLectureReviews,
   setLectureResources,
@@ -77,65 +78,49 @@ const LectureDetailContainer = () => {
 
   const fetchLectureDetailInfo = async () => {
     try {
-      if (isLoggedIn && isCheckedToken) {
-        const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+      const accessToken = isLoggedIn
+        ? getValueOnLocalStorage("hangangToken").access_token
+        : null;
 
-        const lectureInfo = await Promise.all([
-          LectureDetailAPI.getLectureInfo(accessToken, lectureId),
-          LectureDetailAPI.getLectureReviews(accessToken, lectureId, {
-            limit: limit,
-            page: page,
-            sort: sort,
-          }),
-          LectureDetailAPI.getEvaluationRating(lectureId),
-          LectureDetailAPI.getEvaluationTotal(lectureId),
+      const lectureInfo = await Promise.all([
+        LectureDetailAPI.getLectureInfo(accessToken, lectureId),
+        LectureDetailAPI.getLectureReviews(accessToken, lectureId, {
+          limit: limit,
+          page: page,
+          sort: sort,
+        }),
+        LectureDetailAPI.getEvaluationRating(lectureId),
+        LectureDetailAPI.getEvaluationTotal(lectureId),
+      ]);
+
+      const { data: resources } = await ResourceAPI.getResources(
+        {
+          department: lectureInfo[0].data.department,
+          order: "hits",
+          keyword: lectureInfo[0].data.name,
+          page: resourcePage,
+        },
+        null
+      );
+
+      dispatch(setLectureInfo(lectureInfo));
+      dispatch(setLectureResources(resources));
+
+      if (isLoggedIn && isCheckedToken) {
+        const lectureClassSemesterInfo = await Promise.all([
           LectureDetailAPI.getLectureClassInfo(accessToken, lectureId),
           LectureDetailAPI.getLectureSemesterDates(accessToken, lectureId),
         ]);
 
-        const { data: resources } = await ResourceAPI.getResources(
-          {
-            department: lectureInfo[0].data.department,
-            order: "hits",
-            keyword: lectureInfo[0].data.name,
-            page: resourcePage,
-          },
-          accessToken
-        );
+        dispatch(setLectureClassSemester(lectureClassSemesterInfo));
 
-        dispatch(setLectureInfo(lectureInfo));
-        dispatch(setLectureResources(resources));
-        if (lectureInfo[5].data) {
+        if (lectureClassSemesterInfo[1]?.data) {
           const usersTimetables = await LectureDetailAPI.getTimetables(
             accessToken,
-            lectureInfo[5].data
+            lectureClassSemesterInfo[1].data
           );
           dispatch(setLectureTimetables(usersTimetables));
         }
-      } else {
-        const lectureInfo = await Promise.all([
-          LectureDetailAPI.getLectureInfo(null, lectureId),
-          LectureDetailAPI.getLectureReviews(null, lectureId, {
-            limit: limit,
-            page: page,
-            sort: sort,
-          }),
-          LectureDetailAPI.getEvaluationRating(lectureId),
-          LectureDetailAPI.getEvaluationTotal(lectureId),
-        ]);
-
-        const { data: resources } = await ResourceAPI.getResources(
-          {
-            department: lectureInfo[0].data.department,
-            order: "hits",
-            keyword: lectureInfo[0].data.name,
-            page: resourcePage,
-          },
-          null
-        );
-
-        dispatch(setLectureInfo(lectureInfo));
-        dispatch(setLectureResources(resources));
       }
     } catch (error) {
       const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
@@ -166,12 +151,16 @@ const LectureDetailContainer = () => {
   };
 
   useEffect(() => {
-    if ((isCheckedToken && isFetchedOnFirstReviewsMount) || isLoading) {
-      fetchReviews();
-    } else {
+    if (isCheckedToken) {
       fetchLectureDetailInfo();
     }
-  }, [isLoggedIn, isCheckedToken, isFetchedOnFirstReviewsMount, isLoading]);
+  }, [isCheckedToken]);
+
+  useEffect(() => {
+    if ((isCheckedToken && isFetchedOnFirstReviewsMount) || isLoading) {
+      fetchReviews();
+    }
+  }, [isCheckedToken, isFetchedOnFirstReviewsMount, isLoading]);
 
   const closeFilterModalEventTriggered = () => {
     if (rest.isFilterModalOpened) dispatch(closeFilterModal());

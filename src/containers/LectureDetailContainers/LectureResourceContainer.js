@@ -169,7 +169,7 @@ const LectureResourceContainer = ({ lectureResource = {} }) => {
               ref={resourceWrapperRef}
               FILE_AMOUNT_ON_ROW={FILE_AMOUNT_ON_ROW}
             >
-              {lectureResource.result.map(({ id, title, thumbnail, isPurchased }) => (
+              {lectureResource.result.map(({ id, title, thumbnail }) => (
                 <Resource
                   key={id}
                   onClick={() => {

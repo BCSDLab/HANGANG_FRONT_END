@@ -13,7 +13,6 @@ import {
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 import { showAlertModal } from "store/modules/modalModule";
-import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { Promise } from "core-js";
 
 const ModalWrapper = styled.div`
