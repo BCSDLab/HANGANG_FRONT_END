@@ -1,50 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
-import styled from "styled-components";
 
 import MypageAPI from "api/mypage";
-import { InnerContentWidth } from "static/Shared/commonStyles";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { kickOut } from "utils/kickOut";
-
+import {
+  Wrapper,
+  UpperContent,
+  BelowContent,
+  Content,
+} from "containers/MyPageContainers/styles/MyPageContainer.style";
+import SettingSectionContainer from "containers/MyPageContainers/SettingSectionContainer";
 import UserInfo from "components/MyPageComponents/UserInfo";
 import PointSection from "components/MyPageComponents/PointSection";
 import ScrapSection from "components/MyPageComponents/ScrapSection";
 import PurchasedSection from "components/MyPageComponents/PurchasedSection";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
-
-import SettingSectionContainer from "./SettingSectionContainer";
-import { logout } from "store/modules/auth";
-
-const minHeight = "798px";
-
-const Wrapper = styled.div`
-  position: relative;
-  min-height: ${minHeight};
-  width: 100%;
-`;
-
-const UpperContent = styled.div`
-  width: 100%;
-  height: 285px;
-  background-color: #f7f7f7;
-`;
-
-const BelowContent = styled.div`
-  width: 100%;
-  background-color: transparent;
-`;
-
-const Content = styled.div`
-  width: ${InnerContentWidth};
-  height: 100%;
-  margin: 0 auto;
-`;
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { kickOut } from "utils/kickOut";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const MyPageContainer = () => {
-  const { addToast } = useToasts();
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -69,7 +45,11 @@ const MyPageContainer = () => {
    */
   let accessToken;
   if (getValueOnLocalStorage("hangangToken") === null) {
-    kickOut(1);
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[
+      "INVALID_ACCESS_WITHOUT_TOKEN"
+    ];
+    dispatch(showAlertModal({ title, content }));
+    history.push("/");
   } else {
     accessToken = getValueOnLocalStorage("hangangToken").access_token;
   }
@@ -100,11 +80,8 @@ const MyPageContainer = () => {
           currentNickname: infoDatas.nickname,
         }));
       } catch (error) {
-        dispatch(logout({ errorCode: error.response.data.code }));
-        addToast("토큰이 만료되었습니다. 다시 로그인 해주세요.", {
-          appearance: "error",
-          autoDismiss: true,
-        });
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["TOKEN_EXPIRED_ERROR"];
+        dispatch(showAlertModal({ title, content }));
         history.push("/");
       } finally {
         setIsLoaded(true);

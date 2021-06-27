@@ -64,4 +64,12 @@ export default {
     title: "시간표 이름이 입력되지 않았습니다.",
     content: "추가하려는 시간표의 이름을 모두 입력해주세요.",
   },
+  TOKEN_EXPIRED_ERROR: {
+    title: "",
+    content: "토큰이 만료되었습니다. \n다시 로그인해주세요.",
+  },
+  INVALID_ACCESS_WITHOUT_TOKEN: {
+    title: "허용되지 않은 접근입니다.",
+    content: "로그인 이후에 접근할 수 있습니다.",
+  },
 };
