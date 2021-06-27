@@ -21,7 +21,8 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode=production --progress",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot --mode=development",
-    "lint": "eslint . --ext .jsx,.js"
+    "lint": "eslint . --ext .jsx,.js",
+    "serve": "serve -s build"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -36,7 +37,8 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.2.1",
-    "styled-reset": "^4.3.4"
+    "styled-reset": "^4.3.4",
+    "webpack-merge": "^5.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
