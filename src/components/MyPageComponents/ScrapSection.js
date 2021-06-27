@@ -104,14 +104,11 @@ const ScrapSection = ({ scrapped, setScrapped }) => {
         alert("자료를 선택해주세요.");
       } else {
         try {
-          let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-
-          await MypageAPI.deleteScrapLecture(accessToken, selectedScrap);
+          await MypageAPI.deleteScrapLecture(selectedScrap);
           setScrapped((prev) => prev.filter((elem) => !selectedScrap.includes(elem.id)));
           setIsEditMode(false);
           alert("정상적으로 자료들을 삭제하였습니다.");
         } catch (err) {
-          console.dir(err);
           alert("자료 삭제에 실패하였습니다.");
         }
       }

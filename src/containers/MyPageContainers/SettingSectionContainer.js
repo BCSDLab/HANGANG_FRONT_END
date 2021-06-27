@@ -63,10 +63,7 @@ const SettingSectionContainer = ({
   const changeNickname = async () => {
     if (confirm("닉네임을 변경하시겠습니까?")) {
       try {
-        let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-
         await MypageAPI.updateUserInfo(
-          accessToken,
           userInfo.infoDatas.major,
           nicknameTest.currentNickname
         );
@@ -98,13 +95,7 @@ const SettingSectionContainer = ({
     }
 
     try {
-      let accessToken = getValueOnLocalStorage("hangangToken").access_token;
-
-      await MypageAPI.updateUserInfo(
-        accessToken,
-        currentMajor,
-        userInfo.infoDatas.nickname
-      );
+      await MypageAPI.updateUserInfo(currentMajor, userInfo.infoDatas.nickname);
 
       setUserInfo((prev) => ({
         ...prev,
