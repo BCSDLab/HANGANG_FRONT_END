@@ -124,7 +124,7 @@ const createMemoOnLecture = async ({ lectureId, content }, dispatch) => {
       dispatch(showAlertModal({ content }));
     }
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
   }
 };
@@ -140,7 +140,7 @@ const reviseMemoOnLecture = async ({ lectureId, content }, dispatch) => {
     }
   } catch (error) {
     // FIXME: 빈 메모를 수정할 때 에러 뜰거임. 이 때 해당 코드 넣어서 ALERT
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
   }
 };
@@ -155,7 +155,7 @@ const deleteLectureOnTimetable = async (lectureId, timetableId, dispatch) => {
       dispatch(deleteLectureOnLectureList({ id: lectureId }));
     }
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
   }
 };

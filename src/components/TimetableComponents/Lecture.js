@@ -97,7 +97,7 @@ const deleteLectureOnTimetable = async (lectureInfo, timetableId, dispatch) => {
       dispatch(deleteLectureOnLectureList({ id: lectureInfo.id }));
     }
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
   }
 };

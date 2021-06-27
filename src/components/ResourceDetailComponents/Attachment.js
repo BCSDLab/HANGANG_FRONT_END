@@ -58,7 +58,7 @@ const Attachment = ({ id = -1, fileName = "", ext = "", isPurchased = false }) =
       const { data } = await ResourceDetailAPI.requestAttachmentUri(id, accessToken);
       if (data) window.location.assign(data);
     } catch (error) {
-      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
       dispatch(showAlertModal({ title, content }));
       throw new Error(error);
     }
