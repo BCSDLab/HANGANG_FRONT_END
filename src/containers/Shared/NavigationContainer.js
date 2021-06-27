@@ -64,6 +64,7 @@ const currentConverter = (current) => {
   if (current.includes("/lectures")) return 1;
   else if (current.includes("/resources") || current.match(resourcePathRegex)) return 2;
   else if (current.includes("/timetable")) return 3;
+  else if (current.includes("/my")) return -1;
   else if (current.includes("/")) return 0;
   else return -1;
 };
