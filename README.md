@@ -41,6 +41,16 @@ or
 yarn run build
 ```
 
+**Serve**
+
+```zsh
+npm run serve
+
+or
+
+yarn run serve
+```
+
 **Lint**
 
 ```zsh
@@ -50,6 +60,8 @@ or
 
 yarn lint
 ```
+
+
 
 ## License
 
