@@ -10,6 +10,7 @@ import {
   PlaceholderColor,
 } from "static/Shared/commonStyles";
 import { PointGuidanceArr } from "static/MyPage/PointGuidance";
+import { useSelector } from "react-redux";
 
 const Section = styled.section`
   min-height: ${MyPageSectionHeight};
@@ -106,7 +107,9 @@ const Variance = styled.span`
   color: ${PlaceholderColor};
 `;
 
-const PointSection = ({ breakdown, totalPoint }) => {
+const PointSection = () => {
+  const { pointRecords, infos } = useSelector((state) => state.myPageReducer);
+
   /**
    * DB에 저장되있는 time을 기획에 맞게 보여줍니다.
    * @param {string} createdAt
@@ -156,9 +159,9 @@ const PointSection = ({ breakdown, totalPoint }) => {
       </Wrapper>
       <div style={{ position: "relative", marginBottom: "24px" }}>
         <Label>내 포인트 내역</Label>
-        <TotalLabel>{`합계 : ${totalPoint}P`}</TotalLabel>
+        <TotalLabel>{`합계 : ${infos.point}P`}</TotalLabel>
         <BreakdownWrapper>
-          {breakdown.map(({ id, variance, title, created_at }) => (
+          {pointRecords.map(({ id, variance, title, created_at }) => (
             <Breakdown key={id}>
               <Title>{title}</Title>
               <CreatedAt>{createdAtConverter(created_at)}</CreatedAt>
@@ -169,30 +172,6 @@ const PointSection = ({ breakdown, totalPoint }) => {
       </div>
     </Section>
   );
-};
-
-PointSection.defaultProps = {
-  breakdown: {
-    created_at: "",
-    id: 0,
-    title: "",
-    user_id: 0,
-    variance: 0,
-  },
-  totalPoint: 0,
-};
-
-PointSection.propTypes = {
-  breakdown: PropTypes.arrayOf(
-    PropTypes.shape({
-      created_at: PropTypes.string,
-      id: PropTypes.number,
-      title: PropTypes.string,
-      user_id: PropTypes.number,
-      variance: PropTypes.number,
-    })
-  ),
-  totalPoint: PropTypes.number,
 };
 
 export default PointSection;

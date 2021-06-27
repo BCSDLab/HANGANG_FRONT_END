@@ -8,6 +8,7 @@ import {
   InnerContentWidth,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   position: relative;
@@ -134,14 +135,16 @@ const Activity = ({ amount, label }) => (
   </ActivityWrapper>
 );
 
-const UserInfo = ({ userInfo: { activityAmount, infoDatas }, current, setCurrent }) => {
+const UserInfo = ({ current, setCurrent }) => {
+  const { activityAmount, infos } = useSelector((state) => state.myPageReducer);
+
   return (
     <Wrapper>
       <UserInfoWrapper>
-        <Nickname>{infoDatas.nickname}</Nickname>
-        <Major>{infoDatas.major.join(", ")}</Major>
+        <Nickname>{infos.nickname}</Nickname>
+        <Major>{infos.major.join(", ")}</Major>
         <Point>
-          <span>{infoDatas.point}P</span>
+          <span>{infos.point}P</span>
         </Point>
       </UserInfoWrapper>
       <ActivityAmountWrapper>
@@ -167,7 +170,7 @@ UserInfo.defaultProps = {
       LectureReview: 0,
       getLectureBankCount: 0,
     },
-    infoDatas: {
+    infos: {
       id: 0,
       portal_account: "",
       nickname: "",
@@ -189,7 +192,7 @@ UserInfo.propTypes = {
       LectureReview: PropTypes.number,
       getLectureBankCount: PropTypes.number,
     }),
-    infoDatas: PropTypes.shape({
+    infos: PropTypes.shape({
       id: PropTypes.number,
       portal_account: PropTypes.string,
       nickname: PropTypes.string,
