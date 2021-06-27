@@ -14,6 +14,7 @@ import {
   setLectureResources,
   setLectureTimetables,
   closeFilterModal,
+  closeTimetableModal,
 } from "store/modules/lectureDetailModule";
 import { showAlertModal } from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
@@ -114,7 +115,7 @@ const LectureDetailContainer = () => {
 
         dispatch(setLectureClassSemester(lectureClassSemesterInfo));
 
-        if (lectureClassSemesterInfo[1]?.data) {
+        if (lectureClassSemesterInfo[1].data) {
           const usersTimetables = await LectureDetailAPI.getTimetables(
             accessToken,
             lectureClassSemesterInfo[1].data
@@ -162,13 +163,13 @@ const LectureDetailContainer = () => {
     }
   }, [isCheckedToken, isFetchedOnFirstReviewsMount, isLoading]);
 
-  const closeFilterModalEventTriggered = () => {
+  const closeModalEventTriggered = () => {
     if (rest.isFilterModalOpened) dispatch(closeFilterModal());
   };
 
   return (
     <>
-      <Wrapper onClick={() => closeFilterModalEventTriggered()}>
+      <Wrapper onClick={() => closeModalEventTriggered()}>
         {!isFetched && (
           <SpinnerWrapper>
             <LoadingSpinner />

@@ -23,7 +23,6 @@ const ADD_NEXT_PAGE_RESROUCES = "ADD_NEXT_PAGE_RESROUCES";
 
 const SET_REVIEWS_LOADING_START = "SET_REVIEWS_LOADING_START";
 const SET_REVIEWS_LOADING_FINISHED = "SET_REVIEWS_LOADING_FINISHED";
-const UPDATE_LECTURE_CLASSINFO = "UPDATE_LECTURE_CLASSINFO";
 
 // Action Creators
 export const setLectureInfo = (payload) => ({ type: SET_LECTURE_INFO, payload });
@@ -67,8 +66,6 @@ export const requestLectureReviews = () => ({ type: SET_REVIEWS_LOADING_START })
 export const requestLectureReviewsFinished = () => ({
   type: SET_REVIEWS_LOADING_FINISHED,
 });
-export const updateLectureClassInfo = () => ({ type: UPDATE_LECTURE_CLASSINFO });
-
 export const addNextPageReviews = (payload) => ({
   type: ADD_NEXT_PAGE_REVIEWS,
   payload,
@@ -147,7 +144,6 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         timetables: convertedTimetables,
-        changedLectureClassInfo: copyObject(state.lectureClassInfo),
       };
     }
     case CLICK_SCRAP_ICON:
@@ -172,13 +168,13 @@ export default function lectureDetailReducer(state = STATE, action) {
     }
     case CLICK_TIMETABLE_ADD_REMOVE_ICON: {
       let convertedLectureClassInfo = getTimetableReflectedResult(
-        state.changedLectureClassInfo,
+        state.lectureClassInfo,
         action.payload.idx,
         action.payload.timetableId
       );
       return {
         ...state,
-        changedLectureClassInfo: convertedLectureClassInfo,
+        lectureClassInfo: convertedLectureClassInfo,
       };
     }
     case OPEN_FILTER_MODAL:
@@ -201,7 +197,6 @@ export default function lectureDetailReducer(state = STATE, action) {
     case CLOSE_TIMETABLE_MODAL:
       return {
         ...state,
-        changedLectureClassInfo: copyObject(state.lectureClassInfo),
         isTimetableModalOpened: false,
       };
     case SET_LECTURE_REVIEW_FILTER:
@@ -245,11 +240,6 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         isLoading: false,
-      };
-    case UPDATE_LECTURE_CLASSINFO:
-      return {
-        ...state,
-        lectureClassInfo: copyObject(state.changedLectureClassInfo),
       };
     default:
       return state;

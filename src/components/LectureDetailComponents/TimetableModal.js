@@ -93,22 +93,19 @@ const Check = styled.img.attrs({
  * @param {*} tableId
  * @returns
  */
-const isSelected = (
-  changedLectureClassInfo,
-  lectureClassInfo,
-  lectureInfoIdx,
-  tableId
-) => {
-  if (
-    lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) !== -1 &&
-    changedLectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) === -1
-  ) {
+const isSelected = (lectureClassInfo, lectureInfoIdx, tableId) => {
+  console.log(
+    lectureClassInfo,
+    lectureClassInfo[lectureInfoIdx].selectedTableId,
+    lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId),
+    lectureInfoIdx,
+    tableId
+  );
+
+  if (lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) !== -1) {
     return 0;
   }
-  if (
-    lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) === -1 &&
-    changedLectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) !== -1
-  ) {
+  if (lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) === -1) {
     return 1;
   }
   return 2;
@@ -134,98 +131,36 @@ const showTimetableAlertModal = (dispatch, error) => {
 
 const TimetableModal = () => {
   const dispatch = useDispatch();
-  const {
-    timetables,
-    changedLectureClassInfo,
-    lectureClassInfo,
-    lectureInfoIdx,
-    selectedClassId,
-  } = useSelector((state) => state.lectureDetailReducer);
+  const { timetables, lectureClassInfo, lectureInfoIdx, selectedClassId } = useSelector(
+    (state) => state.lectureDetailReducer
+  );
 
   const checkLectureToTimetable = async (index, idx, timetableId) => {
     try {
+      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
+
+      if (isSelected(lectureClassInfo, lectureInfoIdx, timetableId) === 0) {
+        await LectureDetailAPI.removeTimetablesLecture(
+          accessToken,
+          timetableId,
+          selectedClassId
+        );
+      } else {
+        await LectureDetailAPI.addTimetablesLecture(
+          accessToken,
+          timetableId,
+          selectedClassId
+        );
+      }
+
       dispatch(
         clickTitmetableAddRemoveButton({
           idx: lectureInfoIdx,
           timetableId: timetableId,
         })
       );
-
-      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-
-      switch (
-        isSelected(changedLectureClassInfo, lectureClassInfo, lectureInfoIdx, timetableId)
-      ) {
-        case 0:
-          await LectureDetailAPI.removeTimetablesLecture(
-            accessToken,
-            timetableId,
-            selectedClassId
-          ).catch((error) => {
-            showTimetableAlertModal(dispatch, error);
-            dispatch(
-              clickTitmetableAddRemoveButton({
-                idx: lectureInfoIdx,
-                timetableId: timetableId,
-              })
-            );
-          });
-          break;
-        case 1:
-          await LectureDetailAPI.addTimetablesLecture(
-            accessToken,
-            timetableId,
-            selectedClassId
-          ).catch((error) => {
-            showTimetableAlertModal(dispatch, error);
-            dispatch(
-              clickTitmetableAddRemoveButton({
-                idx: lectureInfoIdx,
-                timetableId: timetableId,
-              })
-            );
-          });
-          break;
-        default:
-      }
     } catch (error) {
-      throw new Error(error);
-    }
-  };
-
-  const rollbackTimetable = async () => {
-    try {
-      const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
-
-      await Promise.all(
-        timetables.map((props) => {
-          return props.map(async (el) => {
-            switch (
-              isSelected(changedLectureClassInfo, lectureClassInfo, lectureInfoIdx, el.id)
-            ) {
-              case 1:
-                return LectureDetailAPI.removeTimetablesLecture(
-                  accessToken,
-                  el.id,
-                  selectedClassId
-                ).catch((error) => {
-                  showTimetableAlertModal(dispatch, error);
-                });
-              case 0:
-                return LectureDetailAPI.addTimetablesLecture(
-                  accessToken,
-                  el.id,
-                  selectedClassId
-                ).catch((error) => {
-                  showTimetableAlertModal(dispatch, error);
-                });
-              default:
-            }
-          });
-        })
-      );
-      dispatch(updateLectureClassInfo());
-    } catch (error) {
+      showTimetableAlertModal(dispatch, error);
       throw new Error(error);
     }
   };
@@ -241,26 +176,16 @@ const TimetableModal = () => {
                 onClick={() => checkLectureToTimetable(index, idx, el.id)}
               >
                 {el.name}
-                {changedLectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(
-                  el.id
-                ) !== -1 && <Check />}
+                {lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(el.id) !==
+                  -1 && <Check />}
               </TimetableLabel>
             );
           });
         })}
 
       <ButtonSection>
-        <Close
-          onClick={() => {
-            rollbackTimetable();
-            dispatch(closeTimetableModal());
-          }}
-        >
-          닫기
-        </Close>
         <Confirm
           onClick={() => {
-            dispatch(updateLectureClassInfo());
             dispatch(closeTimetableModal());
           }}
         >
