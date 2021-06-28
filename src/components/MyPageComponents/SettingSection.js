@@ -27,14 +27,7 @@ import {
 } from "components/MyPageComponents/styles/SettingSection.style";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
 
-const SettingSection = ({
-  nicknameTest,
-  checkValidNickname,
-  changeNickname,
-  changeMajor,
-  userInfo,
-  membershipWithdrawal,
-}) => {
+const SettingSection = ({ nicknameTest, checkValidNickname, membershipWithdrawal }) => {
   const majors = majorsFullName;
   const [isModify, setIsModify] = useState(false);
   const [isAutoLogin, setIsAutoLogin] = useState(
@@ -50,7 +43,8 @@ const SettingSection = ({
             <SubLabel>이름 (학번)</SubLabel>
             <ProfileInput value={"박종호 (2015136053)"} disabled />
             <SubLabel>아이디</SubLabel>
-            <ProfileInput value={userInfo.portal_account} disabled />
+            <ProfileInput disabled />
+            {/* <ProfileInput value={userInfo.portal_account} disabled /> */}
             <SubLabel>
               닉네임
               {nicknameTest.errorCode === 26 && (
@@ -75,9 +69,9 @@ const SettingSection = ({
                   </ModifyButton>
                 )}
 
-                {isModify && nicknameTest.errorCode === "" && (
+                {/* {isModify && nicknameTest.errorCode === "" && (
                   <AbleButton onClick={changeNickname}>완료</AbleButton>
-                )}
+                )} */}
               </NicknameModifySection>
             </NicknameInputWrapper>
           </ProfileLeftSection>
@@ -85,7 +79,7 @@ const SettingSection = ({
             <SubLabel>
               전공 선택<MajorSubLabel>복수선택 가능</MajorSubLabel>
             </SubLabel>
-            <MajorChoiceSection>
+            {/* <MajorChoiceSection>
               {majors.map((val) => (
                 <Major
                   key={val}
@@ -94,7 +88,7 @@ const SettingSection = ({
                   onClick={() => changeMajor(val)}
                 />
               ))}
-            </MajorChoiceSection>
+            </MajorChoiceSection> */}
           </ProfileRightSection>
         </div>
       </Profile>

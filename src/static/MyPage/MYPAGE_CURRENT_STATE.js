@@ -1,0 +1,5 @@
+export const POINTS = "POINTS";
+export const PURCHASED = "PURCHASED";
+export const SCRAPPED_LECTURES = "SCRAPPED_LECTURES";
+export const SCRAPPED_RESOURCES = "SCRAPPED_RESOURCES";
+export const SETTING = "SETTING";
