@@ -17,13 +17,14 @@ import {
 } from "components/MyPageComponents/styles/PurchasedSection.style";
 import MaterialIcon from "static/MyPage/MateriaIcon";
 import { convertHTMLEntities } from "utils/convertHTMLEntities";
+import { PURCHASED } from "static/MyPage/MYPAGE_CURRENT_STATE";
 
 const PurchasedSection = () => {
   const { purchasedResource } = useSelector((state) => state.myPageReducer);
 
   return (
     <SectionWrapper>
-      {purchasedResource.length === 0 && <NoData type="purchased" />}
+      {purchasedResource.length === 0 && <NoData type={PURCHASED} />}
       {purchasedResource.length !== 0 &&
         purchasedResource.map(({ id, title, lecture, uploadFiles }) => (
           <Purchased
