@@ -42,7 +42,7 @@ const PointSection = () => {
         <TotalLabel>{getTotalPointLabel(infos.point)}</TotalLabel>
         <BreakdownWrapper>
           {pointRecords
-            .sort(({ id }) => -id)
+            .sort((prev, next) => next.id - prev.id)
             .map(({ id, variance, title, created_at }) => (
               <Breakdown key={id}>
                 <Title>{title}</Title>
