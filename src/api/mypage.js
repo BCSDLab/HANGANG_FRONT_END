@@ -36,7 +36,11 @@ export default {
     return response;
   },
   deleteScrapLecture: async (id = []) => {
-    const response = await axios.delete("/scrap/lecture", setTokenInHeader({ id }));
+    const accessToken = getAccessToken();
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.delete("/scrap/lecture", { data: id, headers });
     return response;
   },
   updateUserInfo: async (major = [], nickname = "") => {

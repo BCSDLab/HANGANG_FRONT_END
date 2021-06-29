@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-import NoPurchasedResource from "components/MyPageComponents/NoPurchasedResource";
+import NoData from "components/MyPageComponents/NoData";
 import {
   Wrapper,
   SectionWrapper,
@@ -23,7 +23,7 @@ const PurchasedSection = () => {
 
   return (
     <SectionWrapper>
-      {purchasedResource.length === 0 && <NoPurchasedResource />}
+      {purchasedResource.length === 0 && <NoData type="purchased" />}
       {purchasedResource.length !== 0 &&
         purchasedResource.map(({ id, title, lecture, uploadFiles }) => (
           <Purchased
