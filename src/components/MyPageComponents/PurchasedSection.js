@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-import MaterialIcon from "static/MyPage/MateriaIcon";
-import { convertHTMLEntities } from "utils/convertHTMLEntities";
+import NoPurchasedResource from "components/MyPageComponents/NoPurchasedResource";
 import {
   Wrapper,
   SectionWrapper,
@@ -14,25 +15,25 @@ import {
   RightIcon,
   LeftIcon,
 } from "components/MyPageComponents/styles/PurchasedSection.style";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import MaterialIcon from "static/MyPage/MateriaIcon";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 
 const PurchasedSection = () => {
   const { purchasedResource } = useSelector((state) => state.myPageReducer);
-  React.useEffect(() => {
-    console.log(purchasedResource);
-  });
+
   return (
     <SectionWrapper>
-      {purchasedResource.map(({ id, title, lecture, uploadFiles }) => (
-        <Purchased
-          key={id}
-          id={id}
-          label={title}
-          lecture={lecture}
-          uploadFiles={uploadFiles}
-        />
-      ))}
+      {purchasedResource.length === 0 && <NoPurchasedResource />}
+      {purchasedResource.length !== 0 &&
+        purchasedResource.map(({ id, title, lecture, uploadFiles }) => (
+          <Purchased
+            key={id}
+            id={id}
+            label={title}
+            lecture={lecture}
+            uploadFiles={uploadFiles}
+          />
+        ))}
     </SectionWrapper>
   );
 };
