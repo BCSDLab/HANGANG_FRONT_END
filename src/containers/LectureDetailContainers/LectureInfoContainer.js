@@ -1,72 +1,28 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
 
 import LectureDetailAPI from "api/lectureDetail";
 
+import {
+  Section,
+  Wrapper,
+  Title,
+  SubTitleSection,
+  SubTitle,
+  SubLabel,
+  Classification,
+  Professor,
+  Bookmark,
+} from "containers/LectureDetailContainers/styles/LectureInfoContainer.style";
+
 import { clickScrapIcon, unclickScrapIcon } from "store/modules/lectureDetailModule";
 import { showAlertModal } from "store/modules/modalModule";
-import { FontColor, ConceptColor, PlaceholderColor } from "static/Shared/commonStyles";
+
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { triggerWhenNotLoggedIn } from "utils/reportUtils";
 
-import { bookmark, bookmarked } from "static/LectureDetailPage/imgPath";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
-
-const Section = styled.section`
-  width: 100%;
-  margin-bottom: 32px;
-`;
-
-const Wrapper = styled.section`
-  padding: 16px;
-`;
-
-const Title = styled.label`
-  display: block;
-  margin: 0 10px 24px 0;
-  color: ${FontColor};
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const SubTitleSection = styled.div`
-  display: block;
-  margin-bottom: 8px;
-`;
-const SubTitle = styled.p`
-  display: inline-block;
-  font-size: 18px;
-  color: ${FontColor};
-`;
-const SubLabel = styled.label`
-  margin: 4px 8px 71px 0;
-  font-size: 14px;
-  color: ${PlaceholderColor};
-`;
-
-const Classification = styled.span`
-  float: right;
-  font-size: 14px;
-  color: ${ConceptColor};
-`;
-
-const Professor = styled(Title)`
-  margin-top: 14px;
-  font-size: 16px;
-  font-weight: normal;
-`;
-
-const Bookmark = styled.img.attrs(({ isScrapped }) => ({
-  alt: "스크랩",
-  src: isScrapped ? bookmarked : bookmark,
-}))`
-  float: right;
-  width: 14px;
-
-  cursor: pointer;
-`;
 
 function LectureInfoContainer({ lectureInfo = {} }) {
   const dispatch = useDispatch();

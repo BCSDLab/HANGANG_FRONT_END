@@ -2,13 +2,20 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import styled from "styled-components";
 import {
-  BorderColor,
-  FontColor,
-  ConceptColor,
-  PlaceholderColor,
-} from "static/Shared/commonStyles";
+  Section,
+  Wrapper,
+  InfoLabel,
+  SubInfoLabel,
+  SubWarningWrapper,
+  SubWarningLabel,
+  SubLabel,
+  SubLabelContent,
+  ClassContent,
+  ButtonWrapper,
+  AddTimtable,
+  RemoveTimetable,
+} from "containers/LectureDetailContainers/styles/LectureClassContainer.style";
 
 import TimetableModal from "components/LectureDetailComponents/TimetableModal";
 import {
@@ -16,96 +23,6 @@ import {
   closeTimetableModal,
 } from "store/modules/lectureDetailModule";
 import { CLASS_TIME } from "static/LectureDetailPage/classTime";
-
-const Section = styled.section`
-  width: 368px;
-  height: fit-content;
-  min-height: 381px;
-  grid-column: 8 / 12;
-  padding: 24px;
-  border-radius: 8px;
-  border: solid 1px ${BorderColor};
-`;
-
-const Wrapper = styled.section`
-  min-height: 320px;
-`;
-
-const InfoLabel = styled.div`
-  display: block;
-
-  margin: 0 10px 24px 0;
-  color: ${FontColor};
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const SubInfoLabel = styled.p`
-  margin-bottom: 16px;
-`;
-
-const SubWarningWrapper = styled.div`
-  display: flex;
-  height: 327px;
-  justify-content: center;
-  align-items: center;
-`;
-const SubWarningLabel = styled.p`
-  text-align: center;
-  font-size: 12px;
-  line-height: normal;
-  letter-spacing: normal;
-  color: ${PlaceholderColor};
-`;
-
-const SubLabel = styled.label`
-  margin: 16px 16px 17px 0;
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  line-height: normal;
-  color: ${PlaceholderColor};
-`;
-const SubLabelContent = styled.label`
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  line-height: normal;
-  color: ${FontColor};
-`;
-const ClassContent = styled.div`
-  margin-bottom: 13px;
-  height: 28px;
-  line-height: 28px;
-  margin-left: 40px;
-`;
-const ButtonWrapper = styled.div`
-  display: contents;
-`;
-const AddTimtable = styled.button`
-  float: right;
-  width: 56px;
-  height: 28px;
-
-  padding: 5px 16px 5px 17px;
-
-  border: none;
-  color: #fff;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  background-color: ${ConceptColor};
-  :before {
-    content: "담기";
-  }
-`;
-const RemoveTimetable = styled(AddTimtable)`
-  background-color: #ffab2e;
-  :before {
-    content: "빼기";
-  }
-`;
 
 /**
  * 인자로 받은 배열의 첫번째 요소로 요일을 가져오는 함수입니다.

@@ -9,21 +9,25 @@ import {
 import { FontColor } from "static/Shared/commonStyles";
 
 const ModalWrapper = styled.div`
+  display: flex;
+
   position: absolute;
-  margin-left: 595px;
-  margin-top: 140px;
+
   width: 112px;
   height: 112px;
 
-  display: flex;
+  margin-left: 595px;
+  margin-top: 140px;
+  padding: 22px 16px;
+
+  border: solid 1px #eeeeee;
+
+  background-color: #ffffff;
+
   flex-direction: column;
   justify-content: space-between;
-
-  padding: 22px 16px;
   border-radius: 8px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
-  border: solid 1px #eeeeee;
-  background-color: #ffffff;
 
   z-index: 1;
 `;
