@@ -278,10 +278,6 @@ const getTimetableReflectedResult = (lectureClassInfo, idx, timetableId) => {
   return lectureClassInfo;
 };
 
-const copyObject = (data) => {
-  return JSON.parse(JSON.stringify(data));
-};
-
 /**
  * 순수 데이터 배열로 재 구성
  * @param {*} array
