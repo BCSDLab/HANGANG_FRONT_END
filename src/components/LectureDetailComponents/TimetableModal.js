@@ -30,14 +30,6 @@ import { showAlertModal } from "store/modules/modalModule";
  * @returns
  */
 const isSelected = (lectureClassInfo, lectureInfoIdx, tableId) => {
-  console.log(
-    lectureClassInfo,
-    lectureClassInfo[lectureInfoIdx].selectedTableId,
-    lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId),
-    lectureInfoIdx,
-    tableId
-  );
-
   if (lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(tableId) !== -1) {
     return 0;
   }
