@@ -4,6 +4,7 @@ const SET_SCRAPPED_LECTURES = "SET_SCRAPPED_LECTURES";
 const REMOVE_SCRAPPED_LECTURES = "REMOVE_SCRAPPED_LECTURES";
 const SET_SCRAPPED_RESOURCES = "SET_SCRAPPED_RESOURCES";
 const REMOVE_SCRAPPED_RESOURCES = "REMOVE_SCRAPPED_RESOURCES";
+const SET_USER_MAJOR = "SET_USER_MAJOR";
 const FINISH_LOAD_RESOURCES = "FINISH_LOAD_RESOURCES";
 
 export const setUserInfos = (payload) => ({ type: SET_USER_INFOS, payload });
@@ -27,6 +28,10 @@ export const removeScrappedResources = (payload) => ({
   type: REMOVE_SCRAPPED_RESOURCES,
   payload,
 });
+export const setUserMajor = (payload) => ({
+  type: SET_USER_MAJOR,
+  payload,
+});
 export const finishLoadResources = () => ({ type: FINISH_LOAD_RESOURCES });
 
 const USER_INFO_STATE = {
@@ -37,7 +42,7 @@ const USER_INFO_STATE = {
 };
 
 const STATE = {
-  isLoaded: false,
+  isFetchedUserInfos: false,
   purchasedResource: [],
   scrappedLectures: [],
   scrappedResources: [],
@@ -82,12 +87,22 @@ export default function myPageReducer(state = STATE, action) {
           (elem) => !action.payload.selected.includes(elem.scrap_id)
         ),
       };
+    case SET_USER_MAJOR:
+      return {
+        ...state,
+        infos: {
+          ...state.infos,
+          major: action.payload.major,
+        },
+      };
     case FINISH_LOAD_RESOURCES:
       return {
         ...state,
-        isLoaded: true,
+        isFetchedUserInfos: true,
       };
     default:
-      return STATE;
+      return {
+        ...state,
+      };
   }
 }
