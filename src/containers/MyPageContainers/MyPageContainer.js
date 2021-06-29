@@ -10,7 +10,7 @@ import {
   BelowContent,
   Content,
 } from "containers/MyPageContainers/styles/MyPageContainer.style";
-import SettingSectionContainer from "containers/MyPageContainers/SettingSectionContainer";
+import EnvironmentSettingSectionContainer from "containers/MyPageContainers/EnvironmentSettingSectionContainer";
 import UserInfo from "components/MyPageComponents/UserInfo";
 import PointSection from "components/MyPageComponents/PointSection";
 import ScrapSection from "components/MyPageComponents/ScrapSection";
@@ -40,17 +40,12 @@ const MyPageContainer = () => {
   const dispatch = useDispatch();
 
   const [current, setCurrent] = useState(POINTS);
-  const [nicknameTest, setNicknameTest] = useState({
-    currentNickname: "",
-    tried: false,
-    errorCode: "",
-  });
 
   useEffect(async () => {
     if (isCheckedToken && !isLoggedIn) {
       sendAwayToHome(INVALID_ACCESS_WITHOUT_TOKEN, history, dispatch);
     } else if (isCheckedToken && isLoggedIn) {
-      fetchUserInfos(setNicknameTest, dispatch);
+      fetchUserInfos(dispatch);
     }
   }, [isCheckedToken, isLoggedIn]);
 
@@ -86,13 +81,7 @@ const MyPageContainer = () => {
               {current === PURCHASED && <PurchasedSection />}
               {current === SCRAPPED_LECTURES && <ScrapSection current={current} />}
               {current === SCRAPPED_RESOURCES && <ScrapSection current={current} />}
-              {/* {TODO: erase set user info and nicknametest} */}
-              {current === SETTING && (
-                <SettingSectionContainer
-                  nicknameTest={nicknameTest}
-                  setNicknameTest={setNicknameTest}
-                />
-              )}
+              {current === SETTING && <EnvironmentSettingSectionContainer />}
             </Content>
           </BelowContent>
         </>
@@ -128,7 +117,7 @@ const fetchPurchasedResource = async (dispatch) => {
   }
 };
 
-const fetchUserInfos = async (setNicknameTest, dispatch) => {
+const fetchUserInfos = async (dispatch) => {
   try {
     const { getAmountOfActivity, getInfo, getPointRecords } = MypageAPI;
 
@@ -137,11 +126,6 @@ const fetchUserInfos = async (setNicknameTest, dispatch) => {
       { data: infos },
       { data: pointRecords },
     ] = await Promise.all([getAmountOfActivity(), getInfo(), getPointRecords()]);
-
-    setNicknameTest((prev) => ({
-      ...prev,
-      currentNickname: infos.nickname,
-    }));
 
     dispatch(setUserInfos({ activityAmount, infos, pointRecords }));
   } catch (error) {

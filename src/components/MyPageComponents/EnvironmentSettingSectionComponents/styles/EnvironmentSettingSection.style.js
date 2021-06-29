@@ -16,7 +16,10 @@ export const SettingSectionWrapper = styled.div`
 `;
 
 export const Profile = styled.div`
-  width: 100%;
+  width: fit-content;
+  margin-right: 112px;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Setting = styled.div`
@@ -24,7 +27,9 @@ export const Setting = styled.div`
   margin-top: 40px;
 `;
 
-export const Etc = styled(Setting)``;
+export const Etc = styled(Setting)`
+  margin-bottom: 112px;
+`;
 
 export const ProfileLeftSection = styled.div`
   width: 547px;
@@ -75,7 +80,7 @@ export const AbleButton = styled(ModifyButton)`
   color: ${ConceptColor};
 `;
 
-export const MajorChoiceSection = styled.div`
+export const MajorGrid = styled.div`
   display: grid;
   grid-template-columns: 176px 176px;
   grid-template-rows: 29px 29px 29px 29px;
@@ -108,6 +113,7 @@ export const Label = styled.label`
   color: ${ConceptColor};
   font-size: 16px;
   font-weight: 500;
+  margin-bottom: 20px;
 `;
 
 export const SubLabel = styled(Label)`

@@ -80,4 +80,7 @@ export default {
     title: "전공 변경 중 오류가 발생하였습니다.",
     content: "전공은 1개 이상 2개 이하로 선택 가능합니다.",
   },
+  SUCCESS_MEMBERSHIP_WITHDRAWAL: {
+    content: "성공적으로 탈퇴 처리가 되었습니다.",
+  },
 };
