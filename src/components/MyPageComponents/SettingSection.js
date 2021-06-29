@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { majorsFullName } from "static/MyPage/majors";
+import { useDispatch, useSelector } from "react-redux";
+
+import MypageAPI from "api/mypage";
 import {
   SettingSectionWrapper,
   Profile,
@@ -12,6 +14,7 @@ import {
   NicknameModifySection,
   ModifyButton,
   AbleButton,
+  Major,
   ProfileRightSection,
   MajorSubLabel,
   MajorChoiceSection,
@@ -25,15 +28,24 @@ import {
   RightButton,
   WithdrawalButton,
 } from "components/MyPageComponents/styles/SettingSection.style";
+import { majorsFullName } from "static/MyPage/majors";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
+import { setUserMajor } from "store/modules/myPageModule";
+import { showAlertModal } from "store/modules/modalModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const SettingSection = ({ nicknameTest, checkValidNickname, membershipWithdrawal }) => {
   const majors = majorsFullName;
+  const dispatch = useDispatch();
+  const { infos } = useSelector((state) => state.myPageReducer);
   const [isModify, setIsModify] = useState(false);
   const [isAutoLogin, setIsAutoLogin] = useState(
     getValueOnLocalStorage("didHangangAutoLogin")
   );
 
+  React.useEffect(() => {
+    console.log(infos);
+  });
   return (
     <SettingSectionWrapper>
       <Profile>
@@ -79,16 +91,16 @@ const SettingSection = ({ nicknameTest, checkValidNickname, membershipWithdrawal
             <SubLabel>
               전공 선택<MajorSubLabel>복수선택 가능</MajorSubLabel>
             </SubLabel>
-            {/* <MajorChoiceSection>
+            <MajorChoiceSection>
               {majors.map((val) => (
                 <Major
                   key={val}
                   value={val}
-                  choiced={userInfo.major.includes(val)}
-                  onClick={() => changeMajor(val)}
+                  choiced={infos.major.includes(val)}
+                  onClick={() => changeMajor(val, infos, dispatch)}
                 />
               ))}
-            </MajorChoiceSection> */}
+            </MajorChoiceSection>
           </ProfileRightSection>
         </div>
       </Profile>
@@ -126,6 +138,35 @@ const SettingSection = ({ nicknameTest, checkValidNickname, membershipWithdrawal
       </Etc>
     </SettingSectionWrapper>
   );
+};
+
+/**
+ * Setting 창에서 전공을 바꾸려 시도할 경우,
+ * 전공명을 파라미터에 담아 changeMajor를 호출한다.
+ */
+const changeMajor = async (target, infos, dispatch) => {
+  let currentMajor = infos.major;
+
+  if (currentMajor.includes(target)) {
+    currentMajor = currentMajor.filter((elem) => elem !== target);
+  } else {
+    currentMajor = [...currentMajor, target];
+  }
+
+  try {
+    const { data } = await MypageAPI.updateUserInfo(currentMajor, infos.nickname);
+    if (data.httpStatus === "OK") {
+      dispatch(setUserMajor({ major: currentMajor }));
+    }
+  } catch (err) {
+    if (err.response.data.code === 10 || err.response.data.code === 16) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["INVALID_MAJOR_AMOUNT"];
+      dispatch(showAlertModal({ title, content }));
+    } else {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
+    }
+  }
 };
 
 export default SettingSection;

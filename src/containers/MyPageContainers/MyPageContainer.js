@@ -18,88 +18,77 @@ import PurchasedSection from "components/MyPageComponents/PurchasedSection";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
-import { finishLoadResources, setUserInfos } from "store/modules/myPageModule";
+import {
+  finishLoadResources,
+  setPurchasedResource,
+  setScrappedLectures,
+  setScrappedResources,
+  setUserInfos,
+} from "store/modules/myPageModule";
+import {
+  POINTS,
+  PURCHASED,
+  SCRAPPED_LECTURES,
+  SCRAPPED_RESOURCES,
+  SETTING,
+} from "static/MyPage/MYPAGE_CURRENT_STATE";
 
 const MyPageContainer = () => {
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
-  const { isLoaded } = useSelector((state) => state.myPageReducer);
+  const { isFetchedUserInfos } = useSelector((state) => state.myPageReducer);
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [current, setCurrent] = useState("pointRecords");
-  const [pointRecords, setPointRecords] = useState([]);
-  const [purchased, setPurchased] = useState([]);
-  const [scrapped, setScrapped] = useState([]);
+  const [current, setCurrent] = useState(POINTS);
   const [nicknameTest, setNicknameTest] = useState({
     currentNickname: "",
     tried: false,
     errorCode: "",
   });
 
-  /**
-   * 마이페이지에 필요한 API들을 요청합니다.
-   * getAmountOfActivity : 우상단 사용자 활동 수들
-   * getInfo : 사용자 정보
-   * getPointRecords : 사용자 포인트 사용 내역
-   */
   useEffect(async () => {
     if (isCheckedToken && !isLoggedIn) {
       sendAwayToHome(INVALID_ACCESS_WITHOUT_TOKEN, history, dispatch);
     } else if (isCheckedToken && isLoggedIn) {
-      fetchUserInfos(setPointRecords, setNicknameTest, dispatch);
+      fetchUserInfos(setNicknameTest, dispatch);
     }
   }, [isCheckedToken, isLoggedIn]);
 
-  /**
-   * 구매한 강의자료, 내 스크랩을 누를 경우 이에 맞는 API를 호출합니다.
-   */
   useEffect(async () => {
     switch (current) {
-      case "purchased":
-        if (purchased.length === 0) {
-          try {
-            const { data } = await MypageAPI.getPurchasedRecords();
-            setPurchased(data);
-          } catch (error) {
-            sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
-          }
-        }
+      case PURCHASED:
+        fetchPurchasedResource(dispatch);
         break;
-      case "scrapped":
-        if (scrapped.length === 0) {
-          try {
-            const { data } = await MypageAPI.getScrapLecture();
-            setScrapped(data);
-          } catch (error) {
-            sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
-          }
-        }
+      case SCRAPPED_LECTURES:
+        fetchScrappedLectures(dispatch);
+        break;
+      case SCRAPPED_RESOURCES:
+        fetchScrappedResources(dispatch);
         break;
       default:
         break;
     }
-  }, [isLoaded, current]);
+  }, [current]);
 
   return (
     <Wrapper>
-      {isCheckedToken && isLoggedIn && !isLoaded && <LoadingSpinner height="1005px" />}
-
-      {isCheckedToken && isLoggedIn && isLoaded && (
+      {isCheckedToken && isLoggedIn && !isFetchedUserInfos && (
+        <LoadingSpinner height="1005px" />
+      )}
+      {isCheckedToken && isLoggedIn && isFetchedUserInfos && (
         <>
           <UpperContent>
             <UserInfo current={current} setCurrent={setCurrent} />
           </UpperContent>
           <BelowContent>
             <Content>
-              {current === "pointRecords" && <PointSection />}
-              {current === "purchased" && <PurchasedSection purchased={purchased} />}
-              {current === "scrapped" && (
-                <ScrapSection scrapped={scrapped} setScrapped={setScrapped} />
-              )}
-              {current === "setting" && (
+              {current === POINTS && <PointSection />}
+              {current === PURCHASED && <PurchasedSection />}
+              {current === SCRAPPED_LECTURES && <ScrapSection current={current} />}
+              {current === SCRAPPED_RESOURCES && <ScrapSection current={current} />}
+              {/* {TODO: erase set user info and nicknametest} */}
+              {current === SETTING && (
                 <SettingSectionContainer
-                  userInfo={userInfo}
-                  setUserInfo={setUserInfo}
                   nicknameTest={nicknameTest}
                   setNicknameTest={setNicknameTest}
                 />
@@ -112,7 +101,34 @@ const MyPageContainer = () => {
   );
 };
 
-const fetchUserInfos = async (setPointRecords, setNicknameTest, dispatch) => {
+const fetchScrappedResources = async (dispatch) => {
+  try {
+    const { data } = await MypageAPI.getScrapResources();
+    dispatch(setScrappedResources({ resources: data }));
+  } catch (error) {
+    sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
+  }
+};
+
+const fetchScrappedLectures = async (dispatch) => {
+  try {
+    const { data } = await MypageAPI.getScrapLecture();
+    dispatch(setScrappedLectures({ lectures: data }));
+  } catch (error) {
+    sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
+  }
+};
+
+const fetchPurchasedResource = async (dispatch) => {
+  try {
+    const { data } = await MypageAPI.getPurchasedRecords();
+    dispatch(setPurchasedResource({ resource: data }));
+  } catch (error) {
+    sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
+  }
+};
+
+const fetchUserInfos = async (setNicknameTest, dispatch) => {
   try {
     const { getAmountOfActivity, getInfo, getPointRecords } = MypageAPI;
 
@@ -122,7 +138,6 @@ const fetchUserInfos = async (setPointRecords, setNicknameTest, dispatch) => {
       { data: pointRecords },
     ] = await Promise.all([getAmountOfActivity(), getInfo(), getPointRecords()]);
 
-    setPointRecords(pointRecords);
     setNicknameTest((prev) => ({
       ...prev,
       currentNickname: infos.nickname,

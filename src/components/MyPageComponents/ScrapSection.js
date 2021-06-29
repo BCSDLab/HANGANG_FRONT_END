@@ -11,7 +11,6 @@ import {
 } from "components/MyPageComponents/styles/ScrapSection.style";
 import LectureCard from "components/Shared/LectureCard";
 import { useDispatch, useSelector } from "react-redux";
-import { showAlertModal } from "store/modules/modalModule";
 import {
   removeScrappedLectures,
   removeScrappedResources,
@@ -22,6 +21,8 @@ import {
   SCRAPPED_RESOURCES,
 } from "static/MyPage/MYPAGE_CURRENT_STATE";
 import ResourceCard from "components/Shared/ResourceCard";
+import { showAlertModal } from "store/modules/modalModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const ScrapSection = ({ current }) => {
   const dispatch = useDispatch();
@@ -66,7 +67,8 @@ const ScrapSection = ({ current }) => {
   const deleteScrap = async () => {
     if (confirm("정말로 삭제하시겠습니까?")) {
       if (selectedScrap.length === 0) {
-        alert("자료를 선택해주세요.");
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["INVALID_DELETE_REQUEST"];
+        dispatch(showAlertModal({ title, content }));
       } else {
         if (current === SCRAPPED_LECTURES) {
           requestDeleteScrappedLecture(
@@ -163,7 +165,8 @@ const requestDeleteScrappedResources = async (
       setSelectedScrap([]);
     }
   } catch (error) {
-    alert("자료 삭제에 실패하였습니다.");
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
   }
 };
 
@@ -179,7 +182,8 @@ const requestDeleteScrappedLecture = async (
       setSelectedScrap([]);
     }
   } catch (error) {
-    alert("자료 삭제에 실패하였습니다.");
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
   }
 };
 
