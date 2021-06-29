@@ -43,6 +43,18 @@ export default {
     const response = await axios.delete("/scrap/lecture", { data: id, headers });
     return response;
   },
+  getScrapResources: async () => {
+    const response = await axios.get("/lecture-banks/scrap", setTokenInHeader());
+    return response;
+  },
+  deleteScrapResources: async (id = []) => {
+    const accessToken = getAccessToken();
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.delete("/lecture-banks/scrap", { data: id, headers });
+    return response;
+  },
   updateUserInfo: async (major = [], nickname = "") => {
     let body = {
       major,

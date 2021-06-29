@@ -12,18 +12,24 @@ import {
 import LectureCard from "components/Shared/LectureCard";
 import { useDispatch, useSelector } from "react-redux";
 import { showAlertModal } from "store/modules/modalModule";
-import { removeScrappedLectures } from "store/modules/myPageModule";
+import {
+  removeScrappedLectures,
+  removeScrappedResources,
+} from "store/modules/myPageModule";
 import NoData from "./NoData";
+import {
+  SCRAPPED_LECTURES,
+  SCRAPPED_RESOURCES,
+} from "static/MyPage/MYPAGE_CURRENT_STATE";
+import ResourceCard from "components/Shared/ResourceCard";
 
-const ScrapSection = () => {
+const ScrapSection = ({ current }) => {
   const dispatch = useDispatch();
-  const { scrappedLectures } = useSelector((state) => state.myPageReducer);
+  const { scrappedLectures, scrappedResources } = useSelector(
+    (state) => state.myPageReducer
+  );
   const [selectedScrap, setSelectedScrap] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
-
-  React.useEffect(() => {
-    console.log(scrappedLectures);
-  });
 
   /**
    * chooseScrap
@@ -43,7 +49,8 @@ const ScrapSection = () => {
    * 전체 선택 클릭 시 모든 내 스크랩 id를 selectedScrap에 추가합니다.
    */
   const chooseAll = () => {
-    scrappedLectures.forEach(({ id }) => {
+    const target = current === SCRAPPED_LECTURES ? scrappedLectures : scrappedResources;
+    target.forEach(({ id }) => {
       if (!selectedScrap.includes(id)) {
         setSelectedScrap((prev) => [...prev, id]);
       }
@@ -61,48 +68,80 @@ const ScrapSection = () => {
       if (selectedScrap.length === 0) {
         alert("자료를 선택해주세요.");
       } else {
-        try {
-          const { data } = await MypageAPI.deleteScrapLecture(selectedScrap);
-          if (data.httpStatus === "OK") {
-            setIsEditMode(false);
-            setSelectedScrap([]);
-            dispatch(removeScrappedLectures({ selected: selectedScrap }));
-          }
-        } catch (err) {
-          alert("자료 삭제에 실패하였습니다.");
+        if (current === SCRAPPED_LECTURES) {
+          requestDeleteScrappedLecture(
+            { lectures: selectedScrap, setIsEditMode, setSelectedScrap },
+            dispatch
+          );
+        } else if (current === SCRAPPED_RESOURCES) {
+          requestDeleteScrappedResources(
+            { resources: selectedScrap, setIsEditMode, setSelectedScrap },
+            dispatch
+          );
         }
       }
     }
   };
 
+  const EditController = () => {
+    return (
+      <ActionRow>
+        {!isEditMode && (
+          <ActionLabel onClick={() => setIsEditMode(true)}>편집</ActionLabel>
+        )}
+        {isEditMode && (
+          <>
+            <AllChoose onClick={() => chooseAll()}>
+              <CheckImg />
+              전체선택
+            </AllChoose>
+            <ActionLabel onClick={() => deleteScrap()}>삭제</ActionLabel>
+          </>
+        )}
+      </ActionRow>
+    );
+  };
+
   return (
     <ScrapSectionWrapper>
-      {scrappedLectures.length === 0 && <NoData type="scrappedLectures" />}
-      {scrappedLectures.length !== 0 && (
+      {current === SCRAPPED_LECTURES && scrappedLectures.length === 0 && (
         <>
-          <ActionRow>
-            {!isEditMode && (
-              <ActionLabel onClick={() => setIsEditMode(true)}>편집</ActionLabel>
-            )}
-            {isEditMode && (
-              <>
-                <AllChoose onClick={() => chooseAll()}>
-                  <CheckImg />
-                  전체선택
-                </AllChoose>
-                <ActionLabel onClick={() => deleteScrap()}>삭제</ActionLabel>
-              </>
-            )}
-          </ActionRow>
+          <NoData type={current} />
+        </>
+      )}
+      {current === SCRAPPED_RESOURCES && scrappedResources.length === 0 && (
+        <>
+          <NoData type={current} />
+        </>
+      )}
+      {current === SCRAPPED_LECTURES && scrappedLectures.length !== 0 && (
+        <>
+          <EditController />
           <ScrapGrid>
             {scrappedLectures.map((data) => (
               <LectureCard
                 key={data.id}
                 data={data}
-                isScrapped={true}
                 isChosen={selectedScrap.includes(data.id)}
-                isEditMode={isEditMode}
                 chooseScrap={chooseScrap}
+                isEditMode={isEditMode}
+                isScrapped={true}
+              />
+            ))}
+          </ScrapGrid>
+        </>
+      )}
+      {current === SCRAPPED_RESOURCES && scrappedResources.length !== 0 && (
+        <>
+          <EditController />
+          <ScrapGrid>
+            {scrappedResources.map((data) => (
+              <ResourceCard
+                key={data.id}
+                data={data}
+                isChosen={selectedScrap.includes(data.scrap_id)}
+                chooseScrap={chooseScrap}
+                isEditMode={isEditMode}
               />
             ))}
           </ScrapGrid>
@@ -110,6 +149,38 @@ const ScrapSection = () => {
       )}
     </ScrapSectionWrapper>
   );
+};
+
+const requestDeleteScrappedResources = async (
+  { resources, setIsEditMode, setSelectedScrap },
+  dispatch
+) => {
+  try {
+    const { data } = await MypageAPI.deleteScrapResources(resources);
+    if (data.httpStatus === "OK") {
+      dispatch(removeScrappedResources({ selected: resources }));
+      setIsEditMode(false);
+      setSelectedScrap([]);
+    }
+  } catch (error) {
+    alert("자료 삭제에 실패하였습니다.");
+  }
+};
+
+const requestDeleteScrappedLecture = async (
+  { lectures, setIsEditMode, setSelectedScrap },
+  dispatch
+) => {
+  try {
+    const { data } = await MypageAPI.deleteScrapLecture(lectures);
+    if (data.httpStatus === "OK") {
+      dispatch(removeScrappedLectures({ selected: lectures }));
+      setIsEditMode(false);
+      setSelectedScrap([]);
+    }
+  } catch (error) {
+    alert("자료 삭제에 실패하였습니다.");
+  }
 };
 
 export default ScrapSection;
