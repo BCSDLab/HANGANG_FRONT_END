@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import MypageAPI from "api/mypage";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { logout } from "store/modules/auth";
-import { showAlertModal } from "store/modules/modalModule";
+import { showAlertModal, showConfirmModal } from "store/modules/modalModule";
 import {
   getValueOnLocalStorage,
   removeValueOnLocalStorage,
@@ -24,18 +24,30 @@ const EtcBox = () => {
 
   return (
     <Etc>
-      <Label>기타</Label>
-      <Row style={{ marginTop: "16px" }}>
-        <NotifyLabel>문의하기</NotifyLabel>
-        <RightButton />
+      <Label>{ETC_LABEL}</Label>
+      <Row>
+        <NotifyLabel>{INQUIRE_LABEL}</NotifyLabel>
+        <RightButton onClick={() => onInquireButtonClick()} />
       </Row>
-      <Row style={{ marginTop: "24px" }}>
-        <NotifyLabel>회원탈퇴</NotifyLabel>
-        <WithdrawalButton onClick={() => withdrawMembership(dispatch)}>
+      <Row>
+        <NotifyLabel>{WITHDRAWAL_LABEL}</NotifyLabel>
+        <WithdrawalButton onClick={() => onWithdrawlButtonClick(dispatch)}>
           <RightButton />
         </WithdrawalButton>
       </Row>
     </Etc>
+  );
+};
+
+const onInquireButtonClick = () => window.open(BCSD_FACEBOOK_LINK, "_blank");
+
+const onWithdrawlButtonClick = (dispatch) => {
+  dispatch(
+    showConfirmModal({
+      title: "",
+      content: "회원 탈퇴를 하시겠습니까?",
+      onConfirm: () => withdrawMembership(dispatch),
+    })
   );
 };
 
@@ -62,5 +74,10 @@ const withdrawMembership = async (dispatch) => {
     }
   }
 };
+
+const ETC_LABEL = "기타";
+const INQUIRE_LABEL = "문의하기";
+const WITHDRAWAL_LABEL = "회원탈퇴";
+const BCSD_FACEBOOK_LINK = "https://www.facebook.com/BCSD-Lab-1727922507422214/";
 
 export default EtcBox;

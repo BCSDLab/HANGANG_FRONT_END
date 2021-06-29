@@ -110,10 +110,11 @@ export const ProfileRightSection = styled.div`
 `;
 
 export const Label = styled.label`
+  display: block;
   color: ${ConceptColor};
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 `;
 
 export const SubLabel = styled(Label)`
@@ -149,8 +150,11 @@ export const AlertLabel = styled.span`
 `;
 
 export const Row = styled.div`
-  height: 24px;
+  all: unset;
+  display: block;
   position: relative;
+  height: 24px;
+  margin-bottom: 26px;
 `;
 
 export const ToggleButton = styled.button`
@@ -189,9 +193,9 @@ export const RightButton = styled.img.attrs({
   top: 2px;
   right: 0;
   width: 20px;
+  cursor: pointer;
 `;
 
 export const WithdrawalButton = styled.button`
   all: unset;
-  cursor: pointer;
 `;

@@ -8,7 +8,6 @@ import {
   NotifyLabel,
   ToggleButton,
   Circle,
-  VersionNotify,
 } from "./styles/EnvironmentSettingSection.style";
 
 const SettingBox = () => {
@@ -29,10 +28,6 @@ const SettingBox = () => {
         >
           <Circle status={isAutoLogin} />
         </ToggleButton>
-      </Row>
-      <Row style={{ marginTop: "24px" }}>
-        <NotifyLabel>버전 정보</NotifyLabel>
-        <VersionNotify>최신 버전입니다.</VersionNotify>
       </Row>
     </Setting>
   );
