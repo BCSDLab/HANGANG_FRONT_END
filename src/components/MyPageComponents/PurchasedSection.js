@@ -14,18 +14,31 @@ import {
   RightIcon,
   LeftIcon,
 } from "components/MyPageComponents/styles/PurchasedSection.style";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-const PurchasedSection = ({ purchased }) => {
+const PurchasedSection = () => {
+  const { purchasedResource } = useSelector((state) => state.myPageReducer);
+  React.useEffect(() => {
+    console.log(purchasedResource);
+  });
   return (
     <SectionWrapper>
-      {purchased.map(({ id, title, lecture, uploadFiles }) => (
-        <Purchased key={id} label={title} lecture={lecture} uploadFiles={uploadFiles} />
+      {purchasedResource.map(({ id, title, lecture, uploadFiles }) => (
+        <Purchased
+          key={id}
+          id={id}
+          label={title}
+          lecture={lecture}
+          uploadFiles={uploadFiles}
+        />
       ))}
     </SectionWrapper>
   );
 };
 
-const Purchased = ({ label, lecture, uploadFiles }) => {
+const Purchased = ({ id, label, lecture, uploadFiles }) => {
+  const history = useHistory();
   const SLIDING_DISTANCE = 400;
   const MAX_ROW_WIDTH = 1135;
   const maxRowCoverage = Math.floor(MAX_ROW_WIDTH / SLIDING_DISTANCE);
@@ -54,8 +67,10 @@ const Purchased = ({ label, lecture, uploadFiles }) => {
   };
   return (
     <Wrapper>
-      <Label>{convertHTMLEntities(label)}</Label>
-      <SubLabel>
+      <Label onClick={() => history.push(`/resource/${id}`)}>
+        {convertHTMLEntities(label)}
+      </Label>
+      <SubLabel onClick={() => history.push(`/resource/${id}`)}>
         {lecture.name}
         <MiddleLine />
         {lecture.professor}
@@ -87,10 +102,9 @@ const Material = ({ type, name }) => {
     return convertedName;
   };
 
-  // TODO: Change Icon of file extension
   return (
     <MaterialWrapper>
-      {MaterialIcon[type]}
+      {MaterialIcon[type.toLowerCase()]}
       <MaterialName>
         {nameSlicer(name)}.{type}
       </MaterialName>
