@@ -65,6 +65,7 @@ export const FilterImage = styled.img.attrs({
 
 export const LecturesSection = styled.section`
   width: 100%;
+  min-height: 1000px;
   padding: 24px 0px 98px 0px;
 `;
 

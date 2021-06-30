@@ -1,6 +1,10 @@
 import axios from "axios";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const setTokenInHeader = (accessToken = null, data = null) => {
+const getAccessToken = () => getValueOnLocalStorage("hangangToken")?.access_token;
+
+const setTokenInHeader = (data = null) => {
+  const accessToken = getAccessToken();
   let config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -25,7 +29,7 @@ export default {
    * @param {object} filterOptions
    * @returns query
    */
-  getLectures: async (filterOptions = {}, accessToken = null) => {
+  getLectures: async (filterOptions = {}, isLoggedIn = false) => {
     let query = "";
 
     Object.entries(filterOptions).forEach(([key, value]) => {
@@ -43,10 +47,10 @@ export default {
     query = query.slice(0, -1);
 
     let response;
-    if (accessToken === null) {
+    if (!isLoggedIn) {
       response = await axios.get(`/lectures?${query}`);
     } else {
-      response = await axios.get(`/lectures?${query}`, setTokenInHeader(accessToken));
+      response = await axios.get(`/lectures?${query}`, setTokenInHeader());
     }
 
     return response;

@@ -6,10 +6,8 @@ const SET_LECTURE_FILTER = "SET_LECTURE_FILTER";
 const SET_DEFAULT_LECTURE_FILTER = "SET_DEFAULT_LECTURE_FILTER";
 
 const SET_LECTURES_LOADING_START = "SET_LECTURES_LOADING_START";
-const SET_LECTURES_LOADING_FINISHED = "SET_LECTURES_LOADING_FINISHED";
 
 const SET_LECTURES = "SET_LECTURES";
-const SET_LECTURES_NEXT_PAGE = "SET_LECTURES_NEXT_PAGE";
 
 // Action Creators
 export const setKeywordOnLectures = (payload) => ({
@@ -24,10 +22,8 @@ export const setLectureFilter = (payload) => ({ type: SET_LECTURE_FILTER, payloa
 export const setDefaultLectureFilter = () => ({ type: SET_DEFAULT_LECTURE_FILTER });
 
 export const requestLectures = () => ({ type: SET_LECTURES_LOADING_START });
-export const requestLecturesFinished = () => ({ type: SET_LECTURES_LOADING_FINISHED });
 
 export const setLectures = (payload) => ({ type: SET_LECTURES, payload });
-export const setLecturesNextPage = () => ({ type: SET_LECTURES_NEXT_PAGE });
 
 const DEFAULT_FILTER_OPTIONS = {
   sort: "평점순",
@@ -41,8 +37,7 @@ const INITIAL_OPTIONS = {
   limit: 10,
   page: 1,
   ...DEFAULT_FILTER_OPTIONS,
-  isLoading: false,
-  isFetchedOnFirstLecturesMount: false,
+  isLoading: true,
 };
 
 const STATE = {
@@ -115,23 +110,14 @@ export default function lectureReducer(state = STATE, action) {
         page: 1,
         lectures: [],
       };
-    case SET_LECTURES_LOADING_FINISHED:
-      return {
-        ...state,
-        isLoading: false,
-        isFetchedOnFirstLecturesMount: true,
-      };
     case SET_LECTURES:
       return {
         ...state,
         lectures: [...state.lectures, ...action.payload.result],
         lecture_amount: action.payload.count,
         max_page: Math.ceil(action.payload.count / state.limit),
-      };
-    case SET_LECTURES_NEXT_PAGE:
-      return {
-        ...state,
         page: state.page !== state.max_page ? state.page + 1 : state.page,
+        isLoading: false,
       };
     default:
       return {

@@ -166,23 +166,19 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
   const setFilter = (key, value) => {
     if (type === "lecture") {
       dispatch(setLectureFilter({ key, value }));
+      dispatch(requestLectures());
     } else {
       dispatch(setResourcesFilter({ key, value }));
+      dispatch(requestResources());
     }
   };
 
   const refreshFilter = (type) => {
     if (type === "lecture") {
       dispatch(setDefaultLectureFilter());
-    } else {
-      dispatch(setDefaultResourceFilter());
-    }
-  };
-
-  const apply = (type) => {
-    if (type === "lecture") {
       dispatch(requestLectures());
     } else {
+      dispatch(setDefaultResourceFilter());
       dispatch(requestResources());
     }
   };
@@ -235,7 +231,6 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
           </Buttons>
         </Section>
       ))}
-      <ApplyButton onClick={() => apply(type)} />
     </Wrapper>
   );
 };
