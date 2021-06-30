@@ -36,8 +36,8 @@ const LectureReviewWriteModalComponent = () => {
   );
   const defaultOptions = getSemesterOptions();
   defaultOptions.sort((prev, next) => next.value - prev.value);
-  // TODO: Change 2 to lectureId
-  const [form, setForm] = useState(createDefaultLectureWriteForm(defaultOptions[0], 2));
+
+  const [form, setForm] = useState({});
   const [semesterOptions, setSemesterOptions] = useState(defaultOptions);
 
   React.useEffect(() => {
