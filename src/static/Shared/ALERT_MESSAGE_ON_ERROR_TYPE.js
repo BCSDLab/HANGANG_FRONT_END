@@ -76,6 +76,9 @@ export default {
     title: "허용되지 않은 접근입니다.",
     content: "로그인 이후에 접근할 수 있습니다.",
   },
+  INVALID_URL_ACCESS: {
+    content: "허용되지 않은 접근입니다.",
+  },
   INVALID_MAJOR_AMOUNT: {
     title: "전공 변경 중 오류가 발생하였습니다.",
     content: "전공은 1개 이상 2개 이하로 선택 가능합니다.",

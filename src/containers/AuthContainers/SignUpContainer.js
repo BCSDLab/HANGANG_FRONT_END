@@ -6,11 +6,12 @@ import { useToasts } from "react-toast-notifications";
 import { debounce } from "lodash";
 
 import AuthAPI from "api/auth";
-import { kickOut } from "utils/kickOut";
 import { signUp } from "store/modules/auth";
 
 import Container from "components/AuthComponents/Shared/Container";
 import SignUpForm from "components/AuthComponents/SignUp/SignUpForm";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 /**
  * SignUpContainer
@@ -151,9 +152,15 @@ const SignUpContainer = () => {
       });
   };
 
+  if (!isVerifiedEmail) {
+    history.push("/");
+
+    const { content } = ALERT_MESSAGE_ON_ERROR_TYPE["INVALID_URL_ACCESS"];
+    dispatch(showAlertModal({ content }));
+  }
+
   return (
     <>
-      {!isVerifiedEmail && kickOut(0)}
       {isVerifiedEmail && (
         <Container>
           <SignUpForm
