@@ -36,8 +36,9 @@ export const showLectureInfoModal = (payload) => ({
   payload,
 });
 export const hideLectureInfoModal = () => ({ type: HIDE_LECTURE_INFO_MODAL });
-export const showLectureReviewWriteModal = () => ({
+export const showLectureReviewWriteModal = (payload) => ({
   type: SHOW_LECTURE_REVIEW_WRITE_MODAL,
+  payload,
 });
 export const hideLectureReviewWriteModal = () => ({
   type: HIDE_LECTURE_REVIEW_WRITE_MODAL,
@@ -82,7 +83,12 @@ const INITIAL_LECTURE_INFO_MODAL_STATE = {
 };
 
 const INITIAL_LECTURE_REVIEW_WRITE_MODAL_STATE = {
-  isLectureReviewWriteModalShowing: true,
+  isLectureReviewWriteModalShowing: false,
+  basicLectureInfos: {
+    id: null,
+    name: null,
+    professor: null,
+  },
 };
 
 const STATE = {
@@ -175,6 +181,7 @@ export default function modalReducer(state = STATE, action) {
       return {
         ...state,
         isLectureReviewWriteModalShowing: true,
+        basicLectureInfos: action.payload.basicLectureInfos,
       };
     case HIDE_LECTURE_REVIEW_WRITE_MODAL:
       return {

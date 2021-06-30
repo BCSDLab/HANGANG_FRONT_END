@@ -190,7 +190,17 @@ const LectureDetailContainer = () => {
                 />
 
                 <WriteLectureReviewButton
-                  onClick={() => dispatch(showLectureReviewWriteModal())}
+                  onClick={() =>
+                    dispatch(
+                      showLectureReviewWriteModal({
+                        basicLectureInfos: {
+                          id: rest.id,
+                          name: rest.name,
+                          professor: rest.professor,
+                        },
+                      })
+                    )
+                  }
                 >
                   {"강의평가 작성하기 >"}
                 </WriteLectureReviewButton>

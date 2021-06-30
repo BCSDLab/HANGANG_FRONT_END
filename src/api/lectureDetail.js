@@ -62,6 +62,10 @@ export default {
     }
     return response;
   },
+  postLectureReview: async (accessToken, form) => {
+    const response = await axios.post(`/reviews`, form, axiosConfig(accessToken));
+    return response;
+  },
   postLectureReviewLike: async (accessToken, reviewId) => {
     const response = await axios.post(
       `/review/recommend`,
