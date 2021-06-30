@@ -43,7 +43,6 @@ const LectureDetailContainer = () => {
   const history = useHistory();
 
   const {
-    isLoading,
     lectureReviews,
     lectureResources,
     lectureEvaluationRating,
@@ -53,11 +52,22 @@ const LectureDetailContainer = () => {
     resourcePage,
     limit,
     sort,
-    isFetchedOnFirstReviewsMount,
     ...rest
   } = useSelector((state) => state.lectureDetailReducer);
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
   const [isFetched, setIsFetched] = useState(false);
+
+  useEffect(() => {
+    if (isCheckedToken) {
+      fetchLectureDetailInfo();
+    }
+  }, [isCheckedToken]);
+
+  useEffect(() => {
+    if (isCheckedToken && isLoggedIn) {
+      fetchReviews();
+    }
+  }, [isCheckedToken, isLoggedIn]);
 
   const fetchLectureDetailInfo = async () => {
     try {
@@ -134,18 +144,6 @@ const LectureDetailContainer = () => {
       dispatch(requestLectureReviewsFinished());
     }
   };
-
-  useEffect(() => {
-    if (isCheckedToken) {
-      fetchLectureDetailInfo();
-    }
-  }, [isCheckedToken]);
-
-  useEffect(() => {
-    if ((isCheckedToken && isFetchedOnFirstReviewsMount) || isLoading) {
-      fetchReviews();
-    }
-  }, [isCheckedToken, isFetchedOnFirstReviewsMount, isLoading]);
 
   const closeModalEventTriggered = () => {
     if (rest.isFilterModalOpened) dispatch(closeFilterModal());

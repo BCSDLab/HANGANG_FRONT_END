@@ -91,7 +91,6 @@ const REVIEW_STATE = {
   resourcePage: 1,
   maxPage: 1,
   maxResourcePage: 1,
-  isFetchedOnFirstReviewsMount: false,
 };
 const STATE = {
   isLoading: false,
@@ -235,7 +234,6 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         isLoading: true,
-        isFetchedOnFirstReviewsMount: true,
         page: 1,
         lectureReviews: { count: state.lectureReviews.count, result: [] },
       };
