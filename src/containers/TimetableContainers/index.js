@@ -29,13 +29,13 @@ const TimetablePageContainer = () => {
     if (isCheckedToken && !isLoggedIn) {
       triggerWhenNotLoggedIn({ history, dispatch });
     }
-  });
+  }, [isCheckedToken, isLoggedIn]);
 
   useEffect(() => getDefaultData(dispatch), []);
 
   return (
     <Background>
-      {!isFetched || (isCheckedToken && !isLoggedIn) ? (
+      {!isFetched ? (
         <SpinnerWrapper>
           <LoadingSpinner />
         </SpinnerWrapper>
@@ -85,8 +85,6 @@ const getDefaultData = async (dispatch) => {
     dispatch(setLectureList(defaultLectures));
     dispatch(finishFetchDefaultData());
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
-    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
   }
 };
