@@ -45,10 +45,7 @@ export default {
     if (accessToken === null) {
       response = await axios.get(`/lecture-banks?${query}`);
     } else {
-      response = await axios.get(
-        `/lecture-banks?${query}`,
-        setTokenInHeader(accessToken)
-      );
+      response = await axios.get(`/lecture-banks?${query}`, setTokenInHeader());
     }
 
     return response;
@@ -86,6 +83,10 @@ export default {
     };
 
     const response = await axios.post(`/lecture-banks`, body, setTokenInHeader());
+    return response;
+  },
+  fetchRecommendResources: async () => {
+    const response = await axios.get(`/lecture-banks/hit`, setTokenInHeader());
     return response;
   },
 };

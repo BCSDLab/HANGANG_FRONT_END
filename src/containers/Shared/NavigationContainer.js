@@ -60,8 +60,9 @@ const StyledLink = styled(Link)`
  */
 const currentConverter = (current) => {
   let resourcePathRegex = /(\/resource\/)[0-9]+/g;
+  let lecturePathRegex = /(\/lecture\/)[0-9]+/g;
 
-  if (current.includes("/lectures")) return 1;
+  if (current.includes("/lectures") || current.match(lecturePathRegex)) return 1;
   else if (current.includes("/resources") || current.match(resourcePathRegex)) return 2;
   else if (current.includes("/timetable")) return 3;
   else if (current.includes("/my")) return -1;

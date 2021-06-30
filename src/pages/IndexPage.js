@@ -1,124 +1,96 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useEffect } from "react";
+import { Promise } from "core-js";
 
-import { FontColor, InnerContentWidth } from "static/Shared/commonStyles";
+import ResourceAPI from "api/resources";
+import TimetableAPI from "api/timetable";
+
 import MajorSearchContainer from "containers/IndexContainers/MajorSearchContainer";
 import RecommendResourceContainer from "containers/IndexContainers/RecommendResourceContainer";
 import MyTimetableContainer from "containers/IndexContainers/MyTimetableContainer";
 import RecentlyViewedLectureContainer from "containers/IndexContainers/RecentlyViewedLectureContainer";
 import LectureRankingContainer from "containers/IndexContainers/LectureRankingContainer";
 
-const Wrapper = styled.div`
-  width: ${InnerContentWidth};
-  height: fit-content;
-  margin: 40px auto 100px auto;
-`;
+import {
+  Banner,
+  BeneathLayout,
+  Wrapper,
+  CatchPhraseWrapper,
+  NormalSpan,
+  BoldSpan,
+  BannerImg,
+  MajorSearchSection,
+  LectureRankingSection,
+  RestSection,
+  RestTopSection,
+  RestBottomSection,
+  RestBottomLeftSection,
+  RestBottomRightSection,
+} from "pages/styles/IndexPage.style";
+import { setMyTimetable, setRecommendResources } from "store/modules/mainPageModule";
+import { useDispatch } from "react-redux";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
-const Banner = styled.div`
-  position: relative;
-  min-width: ${InnerContentWidth};
-  height: 289px;
-`;
+const IndexPage = () => {
+  const dispatch = useDispatch();
 
-const CatchPhraseWrapper = styled.div`
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  width: 240px;
-  margin-bottom: 40px;
-`;
+  useEffect(() => {
+    fetchUserDatas(dispatch);
+  }, []);
 
-const BoldSpan = styled.span`
-  margin-top: 16px;
-  font-size: 36px;
-  font-weight: 800;
-  color: ${FontColor};
-`;
+  return (
+    <Wrapper>
+      <Banner>
+        <CatchPhraseWrapper>
+          <NormalSpan>{SUB_CATCH_PHRASE}</NormalSpan>
+          <BoldSpan>{MAIN_CATCH_PHRASE}</BoldSpan>
+        </CatchPhraseWrapper>
+        <BannerImg />
+      </Banner>
+      <MajorSearchSection>
+        <MajorSearchContainer />
+      </MajorSearchSection>
+      <BeneathLayout>
+        <LectureRankingSection>
+          <LectureRankingContainer />
+        </LectureRankingSection>
+        <RestSection>
+          <RestTopSection>
+            <RecommendResourceContainer />
+          </RestTopSection>
+          <RestBottomSection>
+            <RestBottomLeftSection>
+              <MyTimetableContainer />
+            </RestBottomLeftSection>
+            <RestBottomRightSection>
+              <RecentlyViewedLectureContainer />
+            </RestBottomRightSection>
+          </RestBottomSection>
+        </RestSection>
+      </BeneathLayout>
+    </Wrapper>
+  );
+};
 
-const NormalSpan = styled.span`
-  font-size: 18px;
-  font-weight: normal;
-  color: ${FontColor};
-`;
+const fetchUserDatas = async (dispatch) => {
+  try {
+    const { fetchRecommendResources } = ResourceAPI;
+    const { fetchMainTimetable } = TimetableAPI;
 
-const BannerImg = styled.img.attrs({
-  src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/index_page_image.png",
-  alt: "메인페이지 이미지",
-})`
-  position: absolute;
-  right: 0;
-  width: 445px;
-`;
+    const [recommendResources, myTimetable] = await Promise.all([
+      fetchRecommendResources(),
+      fetchMainTimetable(),
+    ]);
 
-const MajorSearchSection = styled.section`
-  position: relative;
-  width: 100%;
-  margin-bottom: 32px;
-`;
+    dispatch(setRecommendResources({ resources: recommendResources.data }));
+    dispatch(setMyTimetable({ lectureList: myTimetable.data.lectureList }));
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    dispatch(showAlertModal({ title, content }));
+  }
+};
 
-const LectureRankingSection = styled.section`
-  width: 464px;
-  height: fit-content;
-`;
-
-const RestSection = styled.section`
-  width: 655px;
-  margin-left: 16px;
-`;
-
-const RestTopSection = styled.section`
-  width: 655px;
-  margin-bottom: 32px;
-`;
-
-const RestBottomSection = styled.section`
-  display: flex;
-  width: 655px;
-`;
-
-const RestBottomLeftSection = styled.section`
-  width: 368px;
-  margin-right: 16px;
-`;
-
-const RestBottomRightSection = styled.section`
-  width: 272px;
-`;
-
-const IndexPage = () => (
-  <Wrapper>
-    <Banner>
-      <CatchPhraseWrapper>
-        <NormalSpan>솔직한 강의평을 원한다면?</NormalSpan>
-        <BoldSpan>가자, 한강으로!</BoldSpan>
-      </CatchPhraseWrapper>
-      <BannerImg />
-    </Banner>
-    <MajorSearchSection>
-      <MajorSearchContainer />
-    </MajorSearchSection>
-    <div style={{ display: "flex" }}>
-      <LectureRankingSection>
-        <LectureRankingContainer />
-      </LectureRankingSection>
-      <RestSection>
-        <RestTopSection>
-          <RecommendResourceContainer />
-        </RestTopSection>
-        <RestBottomSection>
-          <RestBottomLeftSection>
-            <MyTimetableContainer />
-          </RestBottomLeftSection>
-          <RestBottomRightSection>
-            <RecentlyViewedLectureContainer />
-          </RestBottomRightSection>
-        </RestBottomSection>
-      </RestSection>
-    </div>
-  </Wrapper>
-);
+const SUB_CATCH_PHRASE = "솔직한 강의평을 원한다면?";
+const MAIN_CATCH_PHRASE = "가자, 한강으로!";
 
 export default IndexPage;
