@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import {
@@ -15,7 +15,6 @@ import {
  * RecentlyViewedLectureContainer
  * 최근 본 강의 컨테이너입니다.
  * lectureMaterials의 크기에 따라 없으면 안내 문구, 있으면 최근 본 강의를 보여줍니다.
- * 추후에 API 연결이 필요합니다.
  */
 const RecentlyViewedLectureContainer = () => {
   const history = useHistory();
@@ -26,9 +25,7 @@ const RecentlyViewedLectureContainer = () => {
       <Label>최근 본 강의</Label>
       <Content>
         {(recentlyViewedLectures === null || recentlyViewedLectures.length === 0) && (
-          <NoViewedLectureMaterial>
-            <span>최근에 본 강의평이 없습니다.</span>
-          </NoViewedLectureMaterial>
+          <NoViewedLectureMaterial>최근에 본 강의평이 없습니다.</NoViewedLectureMaterial>
         )}
         {recentlyViewedLectures !== null &&
           recentlyViewedLectures.length !== 0 &&

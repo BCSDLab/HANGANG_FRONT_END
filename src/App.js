@@ -28,6 +28,7 @@ import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
 import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
 import SignUpPage from "pages/AuthPages/SignUpPage";
 import MyPage from "pages/MyPage";
+import ScrollToTop from "containers/Shared/ScrollToTop";
 
 const Main = styled.main`
   height: fit-content;
@@ -154,21 +155,23 @@ const App = () => {
   return (
     <Main role="main">
       <NavigationContainer />
-      <Switch>
-        <Route path="/" exact component={IndexPage} />
-        <Route path="/lectures" component={LecturesPage} />
-        <Route path="/lecture" component={LectureDetailPage} />
-        <Route path="/resources" component={ResourcesPage} />
-        <Route path="/resource" component={ResourceDetailPage} />
-        <Route path="/timetable" component={TimetablePage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/findpwauth" component={FindPwAuthPage} />
-        <Route path="/findpw" component={FindPwPage} />
-        <Route path="/signupauth" component={SignUpAuthPage} />
-        <Route path="/signup" component={SignUpPage} />
-        <Route path="/my" component={MyPage} />
-        {/* <Redirect from="*" to="/" /> */}
-      </Switch>
+      <ScrollToTop>
+        <Switch>
+          <Route path="/" exact component={IndexPage} />
+          <Route path="/lectures" component={LecturesPage} />
+          <Route path="/lecture" component={LectureDetailPage} />
+          <Route path="/resources" component={ResourcesPage} />
+          <Route path="/resource" component={ResourceDetailPage} />
+          <Route path="/timetable" component={TimetablePage} />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/findpwauth" component={FindPwAuthPage} />
+          <Route path="/findpw" component={FindPwPage} />
+          <Route path="/signupauth" component={SignUpAuthPage} />
+          <Route path="/signup" component={SignUpPage} />
+          <Route path="/my" component={MyPage} />
+          <Redirect from="*" to="/" />
+        </Switch>
+      </ScrollToTop>
       <FooterContainer />
     </Main>
   );
