@@ -58,14 +58,13 @@ const withdrawMembership = async (dispatch) => {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
 
     await MypageAPI.deleteUser(accessToken);
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[
-      "SUCCESS_MEMBERSHIP_WITHDRAWAL"
-    ];
-    dispatch(showAlertModal({ title, content }));
 
     dispatch(logout());
     removeValueOnLocalStorage("hangangToken");
     history.push("/");
+
+    const { content } = ALERT_MESSAGE_ON_ERROR_TYPE["SUCCESS_MEMBERSHIP_WITHDRAWAL"];
+    dispatch(showAlertModal({ content }));
   } catch (err) {
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));

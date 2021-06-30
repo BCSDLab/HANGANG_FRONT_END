@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showAlertModal } from "store/modules/modalModule";
 import {
   Day,
   DayWrapper,
@@ -18,6 +20,7 @@ const TimeOnDirectlyAddContainer = ({
   directlyAddForm,
   setDirectlyAddForm,
 }) => {
+  const dispatch = useDispatch();
   const [isDropdownVisible, setIsDropdownVisible] = useState({
     startTime: false,
     endTime: false,
@@ -58,12 +61,20 @@ const TimeOnDirectlyAddContainer = ({
    */
   const onTimeDropdownClick = (e, target, value) => {
     if (target === "startTime" && parseInt(value) > parseInt(info.time.endTime)) {
-      alert("시작 시간보다 종료 시간이 빠를 수 없습니다.");
+      dispatch(
+        showAlertModal({
+          content: "시작 시간보다 종료 시간이 빠를 수 없습니다.",
+        })
+      );
       return;
     }
 
     if (target === "endTime" && parseInt(value) < parseInt(info.time.startTime)) {
-      alert("시작 시간보다 종료 시간이 빠를 수 없습니다.");
+      dispatch(
+        showAlertModal({
+          content: "시작 시간보다 종료 시간이 빠를 수 없습니다.",
+        })
+      );
       return;
     }
 

@@ -13,6 +13,7 @@ import {
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { useDispatch } from "react-redux";
 import { eraseFile, setFiles } from "store/modules/resourceCreateModule";
+import { showAlertModal } from "store/modules/modalModule";
 
 const ACCEPT_FILE_TYPES = [
   "zip",
@@ -166,7 +167,11 @@ const getFilesFromUser = async (inputFiles, currentFiles, dispatch) => {
   let inputFilesSize = Object.values(inputFiles).reduce((acc, { size }) => acc + size, 0);
 
   if (currSize + inputFilesSize > 50 * MB) {
-    alert("총 파일 크기가 50MB를 넘을 수 없습니다.");
+    dispatch(
+      showAlertModal({
+        title: "총 파일 크기가 50MB를 넘을 수 없습니다.",
+      })
+    );
     return;
   }
 
@@ -185,7 +190,12 @@ const getFilesFromUser = async (inputFiles, currentFiles, dispatch) => {
 
     dispatch(setFiles({ fileUrl, trimmedFiles }));
   } catch (error) {
-    alert("파일 업로드 중 문제가 발생하였습니다. 관리자에게 문의하세요.");
+    dispatch(
+      showAlertModal({
+        title: "파일 업로드 중 문제가 발생하였습니다. ",
+        content: "관리자에게 문의하세요.",
+      })
+    );
     throw new Error(error);
   }
 };

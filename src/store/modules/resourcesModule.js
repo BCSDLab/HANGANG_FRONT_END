@@ -10,6 +10,7 @@ const SET_RESOURCES_LOADING_FINISHED = "SET_RESOURCES_LOADING_FINISHED";
 
 const SET_RESOURCES = "SET_RESOURCES";
 const SET_RESOURCES_NEXT_PAGE = "SET_RESOURCES_NEXT_PAGE";
+const SET_CREATE_RESOURCE = "SET_CREATE_RESOURCE";
 
 // Action Creators
 export const setKeywordOnResources = (payload) => ({
@@ -28,6 +29,7 @@ export const requestResourcesFinished = () => ({ type: SET_RESOURCES_LOADING_FIN
 
 export const setResources = (payload) => ({ type: SET_RESOURCES, payload });
 export const setResourcesNextPage = () => ({ type: SET_RESOURCES_NEXT_PAGE });
+export const setCreateResource = (payload) => ({ type: SET_CREATE_RESOURCE, payload });
 
 const DEFAULT_FILTER_OPTIONS = {
   order: "id",
@@ -128,7 +130,13 @@ export default function resourceReducer(state = STATE, action) {
         ...state,
         page: state.page !== state.max_page ? state.page + 1 : state.page,
       };
-
+    case SET_CREATE_RESOURCE:
+      return {
+        ...state,
+        resources: [action.payload.resource, ...state.resources],
+        resource_amount: action.payload.count + 1,
+        max_page: Math.ceil(action.payload.count + 1 / state.limit),
+      };
     default:
       return {
         ...state,

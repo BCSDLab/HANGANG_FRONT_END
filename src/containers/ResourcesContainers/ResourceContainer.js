@@ -35,6 +35,7 @@ import {
   SpinnerWrapper,
   Wrapper,
 } from "./styles/ResourceContainer.style";
+import { showAlertModal } from "store/modules/modalModule";
 
 const ResourceContainer = () => {
   const dispatch = useDispatch();
@@ -57,8 +58,14 @@ const ResourceContainer = () => {
    */
   const [isCreateFormOpened, setIsCreateFormOpened] = useState(false);
   const checkUserHasCreateAuthentication = () => {
-    if (!isLoggedIn) return alert("강의 자료 작성을 위해서 로그인이 필요합니다.");
-    else setIsCreateFormOpened(true);
+    if (!isLoggedIn) {
+      dispatch(
+        showAlertModal({
+          content: "강의 자료 작성을 위해서 로그인이 필요합니다.",
+        })
+      );
+      return;
+    } else setIsCreateFormOpened(true);
   };
 
   useEffect(() => {

@@ -19,9 +19,9 @@ import ContentSection from "components/ResourceComponents/ResourceWriteComponent
 import FileSection from "components/ResourceComponents/ResourceWriteComponents/FileSection";
 
 import { setDefaultForm, setForm } from "store/modules/resourceCreateModule";
-import { requestResources } from "store/modules/resourcesModule";
+import { setCreateResource } from "store/modules/resourcesModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { showConfirmModal } from "store/modules/modalModule";
+import { showAlertModal, showConfirmModal } from "store/modules/modalModule";
 
 /**
  * Main Component to create resource.
@@ -36,7 +36,7 @@ const ResourceCreateContainer = ({ isCreateFormOpened, setIsCreateFormOpened }) 
         screenHeight={document.querySelector("main").clientHeight}
         onClick={() => cancelResourceCreate(setIsCreateFormOpened, dispatch)}
       >
-        <Container>
+        <Container onClick={(e) => e.stopPropagation()}>
           <CloseButton
             onClick={() => cancelResourceCreate(setIsCreateFormOpened, dispatch)}
           />
@@ -53,8 +53,7 @@ const ResourceCreateContainer = ({ isCreateFormOpened, setIsCreateFormOpened }) 
           <SubmitButton
             isValid={checkValidation(form)}
             onClick={() => {
-              submitWriteForm(form, setIsCreateFormOpened);
-              dispatch(requestResources());
+              submitWriteForm(form, setIsCreateFormOpened, dispatch);
             }}
           />
         </Container>
@@ -84,14 +83,20 @@ const cancelResourceCreate = (setIsCreateFormOpened, dispatch) => {
  * @param {function} setIsCreateFormOpened A function to close write form when resources submitted.
  * @returns
  */
-const submitWriteForm = async (form, setIsCreateFormOpened) => {
+const submitWriteForm = async (form, setIsCreateFormOpened, dispatch) => {
   if (!checkValidation(form)) return;
   try {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
     const { data } = await ResourceAPI.requestWriteResource(form, accessToken);
     if (data.httpStatus === "CREATED") {
+      // FIXME: Change form To returned created data
+      dispatch(setCreateResource({ resource: form }));
       setIsCreateFormOpened(false);
-      alert("강의자료 작성이 성공적으로 완료되었습니다.");
+      dispatch(
+        showAlertModal({
+          content: "강의자료 작성이 성공적으로 완료되었습니다.",
+        })
+      );
     }
   } catch (error) {
     throw new Error(error);

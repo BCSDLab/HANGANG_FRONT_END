@@ -16,6 +16,8 @@ import ResourceInfoContainer from "./ResourceInfoContainer";
 import CommentsContainer from "./CommentsContainer";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 import { Promise } from "core-js";
+import { showAlertModal } from "store/modules/modalModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -68,9 +70,14 @@ const ResourceDetailContainer = () => {
       dispatch(setResourceInfo(fetchedData));
     } catch (error) {
       if (error.response.data.code === 30) {
-        alert("존재하지 않는 게시물입니다.");
+        dispatch(
+          showAlertModal({
+            content: "존재하지 않는 게시물입니다.",
+          })
+        );
       } else {
-        alert("확인되지 않은 오류입니다. 관리자에게 문의하세요.");
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+        dispatch(showAlertModal({ title, content }));
       }
       history.push("/resources");
     } finally {
