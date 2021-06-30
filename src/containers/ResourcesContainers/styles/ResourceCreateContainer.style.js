@@ -9,11 +9,10 @@ import { CLOSE_WRITE_FORM_URL } from "static/Shared/imageUrls";
 
 export const Wrapper = styled.div`
   position: absolute;
-  display: ${({ show }) => (show ? "block" : "none")};
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  height: ${({ screenHeight }) => screenHeight}px;
+  width: 100vw;
 
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.2);
@@ -21,8 +20,7 @@ export const Wrapper = styled.div`
 
 export const Container = styled.div`
   position: absolute;
-  top: 222px;
-  /* top: calc(50% - 333.5px); 정중앙에 위치 시키는게 이상해서 zeppelin 따름 문제 될 시 해당 코드 사용*/
+  top: 333.5px;
   left: calc(50% - 424px);
   width: 848px;
   height: 667px;

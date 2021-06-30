@@ -30,30 +30,35 @@ const ResourceCreateContainer = ({ isCreateFormOpened, setIsCreateFormOpened }) 
   const form = useSelector((state) => state.resourceCreateReducer);
 
   return (
-    <Wrapper show={isCreateFormOpened}>
-      <Container>
-        <CloseButton
-          onClick={() => cancelResourceCreate(setIsCreateFormOpened, dispatch)}
-        />
-        <Title
-          value={form.title}
-          onChange={(e) => dispatch(setForm("title", e.target.value))}
-        />
-        <Delimiter />
-        <SemesterSection semester={form.semester_id} />
-        <LectureSearchSection term={form.term} />
-        <CategorySection category={form.category} />
-        <ContentSection content={form.content} />
-        <FileSection fileInfos={form.file_infos} />
-        <SubmitButton
-          isValid={checkValidation(form)}
-          onClick={() => {
-            submitWriteForm(form, setIsCreateFormOpened);
-            dispatch(requestResources());
-          }}
-        />
-      </Container>
-    </Wrapper>
+    isCreateFormOpened && (
+      <Wrapper
+        screenHeight={document.querySelector("main").clientHeight}
+        onClick={() => cancelResourceCreate(setIsCreateFormOpened, dispatch)}
+      >
+        <Container>
+          <CloseButton
+            onClick={() => cancelResourceCreate(setIsCreateFormOpened, dispatch)}
+          />
+          <Title
+            value={form.title}
+            onChange={(e) => dispatch(setForm("title", e.target.value))}
+          />
+          <Delimiter />
+          <SemesterSection semester={form.semester_id} />
+          <LectureSearchSection term={form.term} />
+          <CategorySection category={form.category} />
+          <ContentSection content={form.content} />
+          <FileSection fileInfos={form.file_infos} />
+          <SubmitButton
+            isValid={checkValidation(form)}
+            onClick={() => {
+              submitWriteForm(form, setIsCreateFormOpened);
+              dispatch(requestResources());
+            }}
+          />
+        </Container>
+      </Wrapper>
+    )
   );
 };
 
