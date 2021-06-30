@@ -21,6 +21,8 @@ import {
   Professor,
 } from "components/Shared/styles/ResourceCard.style";
 import { changeResourceIsHitStatus } from "store/modules/myPageModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const ResourceCard = ({ data, isEditMode, chooseScrap, isChosen }) => {
   const history = useHistory();
@@ -68,7 +70,8 @@ const onClickHitIcon = async (e, id, dispatch) => {
       dispatch(changeResourceIsHitStatus({ id }));
     }
   } catch (error) {
-    console.dir(error);
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
   }
 };
 

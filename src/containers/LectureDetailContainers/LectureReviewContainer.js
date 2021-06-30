@@ -23,6 +23,8 @@ import LoadingSpinner from "components/Shared/LoadingSpinner";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { addNextPageReviews, openFilterModal } from "store/modules/lectureDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
   const dispatch = useDispatch();
@@ -89,6 +91,8 @@ const getMoreReviews = async ({ lectureId, limit, page, sort }, isLoggedIn, disp
 
     if (status === 200) dispatch(addNextPageReviews({ count, result }));
   } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
   }
 };

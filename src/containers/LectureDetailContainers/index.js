@@ -127,6 +127,8 @@ const LectureDetailContainer = () => {
       });
       dispatch(setLectureReviews(data));
     } catch (error) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
       throw new Error(error);
     } finally {
       dispatch(requestLectureReviewsFinished());

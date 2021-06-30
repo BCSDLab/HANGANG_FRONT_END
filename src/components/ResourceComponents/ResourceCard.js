@@ -22,7 +22,7 @@ import {
   HitIcon,
 } from "./styles/ResourceCard.style";
 import { convertHTMLEntities } from "utils/convertHTMLEntities";
-import { showConfirmModal } from "store/modules/modalModule";
+import { showAlertModal, showConfirmModal } from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 /**
@@ -59,6 +59,8 @@ const ResourceCard = ({ data: { is_hit, hits, ...rest } }) => {
           );
         }
       } catch (err) {
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+        dispatch(showAlertModal({ title, content }));
         throw new Error(err);
       }
     }

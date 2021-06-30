@@ -26,6 +26,7 @@ import {
 import { setCreateResource } from "store/modules/resourcesModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { showAlertModal, showConfirmModal } from "store/modules/modalModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 /**
  * Main Component to create resource.
@@ -102,6 +103,8 @@ const submitWriteForm = async (form, setIsCreateFormOpened, dispatch) => {
       })
     );
   } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
   }
 };

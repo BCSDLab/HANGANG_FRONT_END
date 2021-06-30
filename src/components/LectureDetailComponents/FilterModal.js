@@ -7,6 +7,8 @@ import {
   requestLectureReviews,
 } from "store/modules/lectureDetailModule";
 import { FontColor } from "static/Shared/commonStyles";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const ModalWrapper = styled.div`
   display: flex;
@@ -50,6 +52,8 @@ const FilterModal = () => {
       dispatch(setLectureReviewFilter({ sort: sortLabel }));
       dispatch(requestLectureReviews());
     } catch (error) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
       throw new Error(error);
     }
   };

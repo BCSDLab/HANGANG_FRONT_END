@@ -48,8 +48,8 @@ const LectureClassSection = ({ props, ...rest }) => {
       if (error.response) {
         const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[error.response.data.code];
         dispatch(showAlertModal({ title, content }));
+        throw new Error(error);
       }
-      throw new Error(error);
     }
   };
 

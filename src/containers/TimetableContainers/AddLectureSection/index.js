@@ -47,6 +47,8 @@ import DirectlyAddContainer from "./DirectlyAddContainer";
 import NoData from "components/TimetableComponents/NoData";
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const AddLectureSection = () => {
   const boxWrapperRef = useRef();
@@ -238,6 +240,8 @@ const fetchLectureOnNextPage = async (options, dispatch) => {
     const { data } = await TimetableAPI.fetchLectures(nextPageOptions);
     dispatch(setLectureOnNextPage({ lectures: data.result }));
   } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
   }
 };
@@ -248,6 +252,8 @@ const setLecturesOnState = async (options, dispatch) => {
     const { data } = await TimetableAPI.fetchLectures(firstPageOptions);
     dispatch(setLectureList(data));
   } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
   }
 };

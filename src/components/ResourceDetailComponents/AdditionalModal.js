@@ -8,6 +8,8 @@ import { scrapResource, unscrapResource } from "store/modules/resourceDetailModu
 import { ModalWrapper, Report, Scrap } from "./styles/AdditionalModal.style";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { triggerWhenNotLoggedIn, callReportModal } from "utils/reportUtils";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 AdditionalModal.propTypes = {
   contentId: PropTypes.string.isRequired,
@@ -64,6 +66,8 @@ const requestScrap = async (contentId, dispatch) => {
     );
     if (status === 200) dispatch(scrapResource({ user_scrap_id: data }));
   } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
   }
 };
@@ -74,6 +78,8 @@ const requestUnscrap = async (userScrapId, dispatch) => {
     const { data } = await ResourceDetailAPI.unscrapResource(userScrapId, accessToken);
     if (data.httpStatus === "OK") dispatch(unscrapResource());
   } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
   }
 };

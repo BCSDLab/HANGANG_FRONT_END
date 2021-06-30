@@ -14,6 +14,8 @@ import {
 import { majorList } from "static/LecturesPage/majorList";
 import { useDispatch } from "react-redux";
 import { setLectureIdWithTerm } from "store/modules/resourceCreateModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -110,6 +112,8 @@ const LectureSearchBox = ({ term, setIsSearchBoxVisible, setIsCodeProfessorVisib
       const { data } = await LectureAPI.getLectures(filterOptions);
       setLectures(data);
     } catch (error) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
       throw new Error(error);
     }
   };

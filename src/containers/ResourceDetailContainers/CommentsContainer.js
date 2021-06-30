@@ -79,6 +79,8 @@ function CommentsContainer({ comments, amount }) {
       } = await ResourceDetailAPI.getComment(resourceId, limit, pageOnComment + 1);
       if (status === 200) dispatch(addCommentOnNextPage({ comments }));
     } catch (error) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
       throw new Error(error);
     }
   };
