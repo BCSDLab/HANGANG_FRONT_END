@@ -36,7 +36,6 @@ export default function authReducer(state = INITIAL_STATE, action) {
       return {
         ...INITIAL_STATE,
         isCheckedToken: true,
-        errorCode: action.payload.errorCode,
       };
     case EMAIL_AUTH:
       return {
