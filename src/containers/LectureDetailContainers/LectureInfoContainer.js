@@ -23,6 +23,7 @@ import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { triggerWhenNotLoggedIn } from "utils/reportUtils";
 
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 
 function LectureInfoContainer({ lectureInfo = {} }) {
   const dispatch = useDispatch();
@@ -67,7 +68,7 @@ function LectureInfoContainer({ lectureInfo = {} }) {
       <Title>{`기본 정보`}</Title>
       <Wrapper>
         <SubTitleSection>
-          <SubTitle>{lectureInfo.name}</SubTitle>
+          <SubTitle>{convertHTMLEntities(lectureInfo.name)}</SubTitle>
           <SubLabel style={{ margin: "16px" }}>{lectureInfo.code}</SubLabel>
           <Classification>{lectureInfo.classification}</Classification>
         </SubTitleSection>

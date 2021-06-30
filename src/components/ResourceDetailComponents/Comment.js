@@ -5,6 +5,7 @@ import { Content, Date, Report, Wrapper, Writer } from "./styles/Comment.style";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { callReportModal } from "utils/reportUtils";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 
 Comment.propTypes = {
   id: PropTypes.number,
@@ -23,7 +24,7 @@ function Comment({ id = 0, nickname = "", elapsedMinutes = 0, comments = "" }) {
     <Wrapper>
       <Writer>{nickname}</Writer>
       <Date>{getDateTextOnElapsedMinutes(elapsedMinutes)}</Date>
-      <Content>{comments}</Content>
+      <Content>{convertHTMLEntities(comments)}</Content>
       <Report
         onClick={() => callReportModal("comment", id, isAuthenticated, history, dispatch)}
       >

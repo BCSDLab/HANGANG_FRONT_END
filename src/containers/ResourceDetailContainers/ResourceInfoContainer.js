@@ -34,6 +34,7 @@ import {
   TopPart,
   Writer,
 } from "./styles/ResourceInfoContainer.style";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 
 ResourceInfoContainer.propTypes = {
   resourceInfo: PropTypes.object,
@@ -99,7 +100,7 @@ function ResourceInfoContainer({
 
   return (
     <>
-      <Title>{resourceInfo.title}</Title>
+      <Title>{convertHTMLEntities(resourceInfo.title)}</Title>
       <Writer>{resourceInfo.user.nickname}</Writer>
       <CreatedAt>{convertCreatedAt(resourceInfo.created_at)}</CreatedAt>
       <More onClick={() => dispatch(openAdditionalModal())} />
@@ -126,7 +127,7 @@ function ResourceInfoContainer({
           </TopPart>
           <Professor>{resourceInfo.lecture.professor}</Professor>
           <Semester>{convertresourceInfoSemester(resourceInfo.semester_date)}</Semester>
-          <Content>{resourceInfo.content}</Content>
+          <Content>{convertHTMLEntities(resourceInfo.content)}</Content>
           <PurchaseButton isPurchased={isPurchased} onClick={onPurchaseButtonClick} />
         </InfoWrapper>
       </ResourceInfoSection>
