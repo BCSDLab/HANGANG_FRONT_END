@@ -116,7 +116,7 @@ export default function lectureReducer(state = STATE, action) {
         lectures: [...state.lectures, ...action.payload.result],
         lecture_amount: action.payload.count,
         max_page: Math.ceil(action.payload.count / state.limit),
-        page: state.page !== state.max_page ? state.page + 1 : state.page,
+        page: ++state.page,
         isLoading: false,
       };
     default:

@@ -24,7 +24,7 @@ export default {
     );
     return response;
   },
-  getResources: async (filterOptions = {}, accessToken = null) => {
+  getResources: async (filterOptions = {}, isLoggedIn = false) => {
     let query = "";
 
     Object.entries(filterOptions).forEach(([key, value]) => {
@@ -42,7 +42,7 @@ export default {
     query = query.slice(0, -1);
 
     let response;
-    if (accessToken === null) {
+    if (!isLoggedIn) {
       response = await axios.get(`/lecture-banks?${query}`);
     } else {
       response = await axios.get(`/lecture-banks?${query}`, setTokenInHeader());

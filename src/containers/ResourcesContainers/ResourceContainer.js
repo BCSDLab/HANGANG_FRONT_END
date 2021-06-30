@@ -8,21 +8,17 @@ import ResourceAPI from "api/resources";
 import SearchForm from "components/Shared/SearchForm";
 import FilterBox from "components/Shared/FilterBox";
 import ResourceCard from "components/ResourceComponents/ResourceCard";
-import LoadingSpinner from "components/Shared/LoadingSpinner";
 import ResourceCreateContainer from "containers/ResourcesContainers/ResourceCreateContainer";
 
 import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { majorList } from "static/LecturesPage/majorList";
 import {
   requestResources,
-  requestResourcesFinished,
   setDepartmentOnResources,
   setResources,
-  setResourcesNextPage,
 } from "store/modules/resourcesModule";
 import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
 
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import {
   CardGrid,
   FilterButton,
@@ -32,16 +28,15 @@ import {
   ResourceWriteButton,
   SearchResultLabel,
   SearchSection,
-  SpinnerWrapper,
   Wrapper,
 } from "./styles/ResourceContainer.style";
 import { showAlertModal } from "store/modules/modalModule";
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const ResourceContainer = () => {
   const dispatch = useDispatch();
   const {
     isLoading,
-    isFetchedOnFirstResourcesMount,
     resources,
     resource_amount,
     page,
@@ -50,7 +45,7 @@ const ResourceContainer = () => {
   } = useSelector((state) => state.resourceReducer);
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
-  const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
   /**
    * A Function to check user authentication.
    * If user didnt logged in, show alert.
@@ -69,9 +64,10 @@ const ResourceContainer = () => {
   };
 
   useEffect(() => {
-    if ((isCheckedToken && !isFetchedOnFirstResourcesMount) || isLoading)
+    if (isLoading) {
       fetchResources({ page, ...filterOptions }, isLoggedIn, dispatch);
-  }, [isCheckedToken, isFetchedOnFirstResourcesMount, isLoading]);
+    }
+  }, [filterOptions]);
 
   /**
    * 강의자료 페이지에서 제일 마지막 요소에 도달할 경우
@@ -82,89 +78,65 @@ const ResourceContainer = () => {
    */
   const fetchMore = debounce((entries) => {
     const target = entries[0];
-    if (target.isIntersecting && page < max_page) {
+    if (target.isIntersecting && page <= max_page) {
       fetchResources({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, 500);
-
-  const { targetRef } = useInfiniteScroll(fetchMore);
+  const { targetRef } = useInfiniteScroll(fetchMore, 2);
 
   return (
     <Wrapper>
-      {!isFetchedOnFirstResourcesMount && (
-        <SpinnerWrapper>
-          <LoadingSpinner />
-        </SpinnerWrapper>
-      )}
-
-      {isFetchedOnFirstResourcesMount && (
-        <>
-          <SearchSection>
-            <SearchForm type="resources" />
-          </SearchSection>
-          <FilterSection>
-            {majorList.map(({ label, department }) => (
-              <FilterButton
-                key={label}
-                name="department"
-                onClick={() => {
-                  dispatch(setDepartmentOnResources({ department }));
-                  dispatch(requestResources());
-                }}
-                isChosen={filterOptions.department === department}
-              >
-                {label}
-              </FilterButton>
-            ))}
-            <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
-            {isFilterBoxVisible && (
-              <FilterBox
-                type="resources"
-                filterList={ResourceFilterList}
-                setIsFilterBoxVisible={setIsFilterBoxVisible}
-              />
-            )}
-          </FilterSection>
-
-          <ResourcesSection>
-            <SearchResultLabel>{`탐색 결과 (${resource_amount})`}</SearchResultLabel>
-            <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
-            <CardGrid ref={targetRef}>
-              {resources.map((data) => (
-                <ResourceCard data={data} key={data.id} />
-              ))}
-            </CardGrid>
-          </ResourcesSection>
-
-          <ResourceCreateContainer
-            isCreateFormOpened={isCreateFormOpened}
-            setIsCreateFormOpened={setIsCreateFormOpened}
+      <SearchSection>
+        <SearchForm type="resources" />
+      </SearchSection>
+      <FilterSection>
+        {majorList.map(({ label, department }) => (
+          <FilterButton
+            key={label}
+            name="department"
+            onClick={() => {
+              dispatch(setDepartmentOnResources({ department }));
+              dispatch(requestResources());
+            }}
+            isChosen={filterOptions.department === department}
+          >
+            {label}
+          </FilterButton>
+        ))}
+        <FilterImage onClick={() => setIsFilterBoxVisible((prev) => !prev)} />
+        {isFilterBoxVisible && (
+          <FilterBox
+            type="resources"
+            filterList={ResourceFilterList}
+            setIsFilterBoxVisible={setIsFilterBoxVisible}
           />
-        </>
-      )}
+        )}
+      </FilterSection>
+      <ResourcesSection>
+        <SearchResultLabel>{`탐색 결과 (${resource_amount})`}</SearchResultLabel>
+        <ResourceWriteButton onClick={() => checkUserHasCreateAuthentication()} />
+        <CardGrid ref={targetRef}>
+          {resources.map((data) => (
+            <ResourceCard data={data} key={data.id} />
+          ))}
+        </CardGrid>
+      </ResourcesSection>
+      <ResourceCreateContainer
+        isCreateFormOpened={isCreateFormOpened}
+        setIsCreateFormOpened={setIsCreateFormOpened}
+      />
     </Wrapper>
   );
 };
 
-/**
- * 특정한 상황에서 resources를 fetch 합니다.
- * 1. 유저 token 체크가 끝나 로그인 여부가 파악되고, 아직 resource를 fetch 하지 않았을 때
- * 2. 필터를 클릭할 때마다 isLoading을 true로 만들며, 이 때 fetchResources를 실행한다.
- */
-
 const fetchResources = async (options, isLoggedIn, dispatch) => {
   try {
-    let accessToken = isLoggedIn
-      ? getValueOnLocalStorage("hangangToken").access_token
-      : null;
-
-    const { data } = await ResourceAPI.getResources(options, accessToken);
+    const { data } = await ResourceAPI.getResources(options, isLoggedIn);
     dispatch(setResources(data));
-    dispatch(setResourcesNextPage());
   } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
     throw new Error(error);
-  } finally {
-    dispatch(requestResourcesFinished());
   }
 };
 

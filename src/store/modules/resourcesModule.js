@@ -6,10 +6,9 @@ const SET_RESOURCES_FILTER = "SET_RESOURCES_FILTER";
 const SET_DEFAULT_RESOURCE_FILTER = "SET_DEFAULT_RESOURCE_FILTER";
 
 const SET_RESOURCES_LOADING_START = "SET_RESOURCES_LOADING_START";
-const SET_RESOURCES_LOADING_FINISHED = "SET_RESOURCES_LOADING_FINISHED";
 
 const SET_RESOURCES = "SET_RESOURCES";
-const SET_RESOURCES_NEXT_PAGE = "SET_RESOURCES_NEXT_PAGE";
+
 const SET_CREATE_RESOURCE = "SET_CREATE_RESOURCE";
 
 // Action Creators
@@ -25,10 +24,8 @@ export const setResourcesFilter = (payload) => ({ type: SET_RESOURCES_FILTER, pa
 export const setDefaultResourceFilter = () => ({ type: SET_DEFAULT_RESOURCE_FILTER });
 
 export const requestResources = () => ({ type: SET_RESOURCES_LOADING_START });
-export const requestResourcesFinished = () => ({ type: SET_RESOURCES_LOADING_FINISHED });
 
 export const setResources = (payload) => ({ type: SET_RESOURCES, payload });
-export const setResourcesNextPage = () => ({ type: SET_RESOURCES_NEXT_PAGE });
 export const setCreateResource = (payload) => ({ type: SET_CREATE_RESOURCE, payload });
 
 const DEFAULT_FILTER_OPTIONS = {
@@ -42,8 +39,7 @@ const FILTER_OPTIONS = {
   limit: 10,
   page: 1,
   ...DEFAULT_FILTER_OPTIONS,
-  isLoading: false,
-  isFetchedOnFirstResourcesMount: false,
+  isLoading: true,
 };
 
 const STATE = {
@@ -112,23 +108,14 @@ export default function resourceReducer(state = STATE, action) {
         page: 1,
         resources: [],
       };
-    case SET_RESOURCES_LOADING_FINISHED:
-      return {
-        ...state,
-        isLoading: false,
-        isFetchedOnFirstResourcesMount: true,
-      };
     case SET_RESOURCES:
       return {
         ...state,
         resources: [...state.resources, ...action.payload.result],
         resource_amount: action.payload.count,
+        page: ++state.page,
         max_page: Math.ceil(action.payload.count / state.limit),
-      };
-    case SET_RESOURCES_NEXT_PAGE:
-      return {
-        ...state,
-        page: state.page !== state.max_page ? state.page + 1 : state.page,
+        isLoading: false,
       };
     case SET_CREATE_RESOURCE:
       return {

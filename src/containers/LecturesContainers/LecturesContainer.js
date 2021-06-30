@@ -52,7 +52,7 @@ const LecturesContainer = () => {
    */
   const fetchMore = debounce((entries) => {
     const target = entries[0];
-    if (target.isIntersecting && page < max_page) {
+    if (target.isIntersecting && page <= max_page) {
       fetchLectures({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, 500);
