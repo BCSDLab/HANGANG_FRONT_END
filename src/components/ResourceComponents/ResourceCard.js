@@ -91,15 +91,14 @@ const Category = styled.span`
 const HitWrapper = styled.div`
   position: absolute;
   display: flex;
-  align-items: flex-end;
-  bottom: 21px;
+  align-items: center;
+  bottom: 20px;
   right: 15px;
 `;
 
 const HitAmount = styled.div`
-  height: 15px;
   margin-left: 4px;
-  font-size: 17px;
+  font-size: 16px;
   color: ${({ isHit }) => (isHit ? `${ConceptColor}` : `${PlaceholderColor}`)};
 `;
 

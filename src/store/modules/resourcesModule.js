@@ -130,6 +130,8 @@ export default function resourceReducer(state = STATE, action) {
       };
 
     default:
-      return state;
+      return {
+        ...state,
+      };
   }
 }

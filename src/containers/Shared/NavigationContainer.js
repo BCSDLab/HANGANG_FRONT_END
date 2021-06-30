@@ -64,7 +64,8 @@ const currentConverter = (current) => {
 
   if (current.includes("/lectures") || current.match(lecturePathRegex)) return 1;
   else if (current.includes("/resources") || current.match(resourcePathRegex)) return 2;
-  else if (current.includes("/timetables")) return 3;
+  else if (current.includes("/timetable")) return 3;
+  else if (current.includes("/my")) return -1;
   else if (current.includes("/")) return 0;
   else return -1;
 };
@@ -148,7 +149,7 @@ const NavigationContainer = () => {
             <StyledLink to="/">홈</StyledLink>
             <StyledLink to="/lectures">강의평</StyledLink>
             <StyledLink to="/resources">강의자료</StyledLink>
-            <StyledLink to="/timetables">시간표</StyledLink>
+            <StyledLink to="/timetable">시간표</StyledLink>
             <NavigationUnderline current={current} />
           </StyledLinkWrapper>
           <AuthBox>

@@ -132,7 +132,7 @@ const MyTimetableContainer = () => {
         {timetableLectures.length === 0 && (
           <NoTimetable>
             <NoTimetableSpan>아직 작성한 시간표가 없습니다.</NoTimetableSpan>
-            <GotoTimetable to="/timetables">
+            <GotoTimetable to="/timetable">
               <GotoTimetableButton>작성하러 가기</GotoTimetableButton>
             </GotoTimetable>
           </NoTimetable>

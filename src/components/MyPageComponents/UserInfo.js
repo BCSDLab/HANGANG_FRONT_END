@@ -1,131 +1,35 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
+import { useSelector } from "react-redux";
+import {
+  POINTS,
+  PURCHASED,
+  SCRAPPED_LECTURES,
+  SCRAPPED_RESOURCES,
+  SETTING,
+} from "static/MyPage/MYPAGE_CURRENT_STATE";
 
 import {
-  ConceptColor,
-  FontColor,
-  InnerContentWidth,
-  PlaceholderColor,
-} from "static/Shared/commonStyles";
-
-const Wrapper = styled.div`
-  position: relative;
-  width: ${InnerContentWidth};
-  height: 100%;
-  margin: 0 auto;
-`;
-
-const UserInfoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-top: 40px;
-`;
-
-const Nickname = styled.span`
-  font-size: 24px;
-  height: 24px;
-  font-weight: 500;
-  color: ${FontColor};
-  margin-bottom: 10px;
-`;
-
-const Major = styled.span`
-  height: 24px;
-  color: ${PlaceholderColor};
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: normal;
-  margin-bottom: 22px;
-`;
-
-const Point = styled.div`
-  width: 328px;
-  height: 56px;
-  border-radius: 8px;
-  padding-left: 16px;
-  background-color: ${ConceptColor};
-
-  span {
-    line-height: 60px;
-    font-size: 24px;
-    font-weight: 500;
-    color: #fff;
-  }
-`;
-
-const ActivityAmountWrapper = styled.div`
-  position: absolute;
-  top: 138px;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  width: 240px;
-  height: 45px;
-`;
-
-const ActivityWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-`;
-
-const Amount = styled.div`
-  font-size: 16px;
-  color: ${FontColor};
-`;
-
-const Label = styled.label`
-  font-size: 12px;
-  color: ${PlaceholderColor};
-`;
-
-const CurrentNavigator = styled.div`
-  position: absolute;
-  bottom: 0;
-  display: flex;
-`;
-
-const Current = styled.input.attrs({
-  type: "button",
-})`
-  all: unset;
-  padding: 18px 40px;
-  font-size: 14px;
-  color: ${FontColor};
-  cursor: pointer;
-`;
+  Wrapper,
+  UserInfoWrapper,
+  Nickname,
+  Major,
+  Point,
+  ActivityAmountWrapper,
+  ActivityWrapper,
+  Amount,
+  Label,
+  CurrentNavigator,
+  Current,
+  CurrentBottomBar,
+} from "components/MyPageComponents/styles/UserInfo.style";
 
 /**
  * current를 받아 navigation 바의 width, 움직여야 할 거리를 반환합니다.
  * @param {string} current
  * @returns [width, translateX]
  */
-const currentConverter = (current) => {
-  switch (current) {
-    case "pointRecords":
-      return [116.35, 0];
-    case "purchased":
-      return [168.46, 116.5];
-    case "scrapped":
-      return [132.13, 285];
-    case "setting":
-      return [128.46, 416];
-    default:
-      return;
-  }
-};
-
-const CurrentBottomBar = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: ${({ current }) => currentConverter(current)[0]}px;
-  height: 2px;
-  background-color: ${ConceptColor};
-  transition: all 0.3s ease;
-  transform: translateX(${({ current }) => currentConverter(current)[1]}px);
-`;
 
 const Activity = ({ amount, label }) => (
   <ActivityWrapper>
@@ -134,14 +38,16 @@ const Activity = ({ amount, label }) => (
   </ActivityWrapper>
 );
 
-const UserInfo = ({ userInfo: { activityAmount, infoDatas }, current, setCurrent }) => {
+const UserInfo = ({ current, setCurrent }) => {
+  const { activityAmount, infos } = useSelector((state) => state.myPageReducer);
+
   return (
     <Wrapper>
       <UserInfoWrapper>
-        <Nickname>{infoDatas.nickname}</Nickname>
-        <Major>{infoDatas.major.join(", ")}</Major>
+        <Nickname>{infos.nickname}</Nickname>
+        <Major>{infos.major.join(", ")}</Major>
         <Point>
-          <span>{infoDatas.point}P</span>
+          <span>{infos.point}P</span>
         </Point>
       </UserInfoWrapper>
       <ActivityAmountWrapper>
@@ -150,10 +56,17 @@ const UserInfo = ({ userInfo: { activityAmount, infoDatas }, current, setCurrent
         <Activity amount={activityAmount.getLectureBankCommentCount} label={"댓글"} />
       </ActivityAmountWrapper>
       <CurrentNavigator>
-        <Current onClick={() => setCurrent("pointRecords")} value={"포인트"} />
-        <Current onClick={() => setCurrent("purchased")} value={"구매한 강의자료"} />
-        <Current onClick={() => setCurrent("scrapped")} value={"내 스크랩"} />
-        <Current onClick={() => setCurrent("setting")} value={"환경설정"} />
+        <Current onClick={() => setCurrent(POINTS)} value={POINTS_LABEL} />
+        <Current onClick={() => setCurrent(PURCHASED)} value={PURCHASED_LABEL} />
+        <Current
+          onClick={() => setCurrent(SCRAPPED_LECTURES)}
+          value={SCRAPPED_LECTURES_LABEL}
+        />
+        <Current
+          onClick={() => setCurrent(SCRAPPED_RESOURCES)}
+          value={SCRAPPED_RESOURCES_LABEL}
+        />
+        <Current onClick={() => setCurrent(SETTING)} value={SETTING_LABEL} />
         <CurrentBottomBar current={current} />
       </CurrentNavigator>
     </Wrapper>
@@ -167,7 +80,7 @@ UserInfo.defaultProps = {
       LectureReview: 0,
       getLectureBankCount: 0,
     },
-    infoDatas: {
+    infos: {
       id: 0,
       portal_account: "",
       nickname: "",
@@ -189,7 +102,7 @@ UserInfo.propTypes = {
       LectureReview: PropTypes.number,
       getLectureBankCount: PropTypes.number,
     }),
-    infoDatas: PropTypes.shape({
+    infos: PropTypes.shape({
       id: PropTypes.number,
       portal_account: PropTypes.string,
       nickname: PropTypes.string,
@@ -203,5 +116,11 @@ UserInfo.propTypes = {
   current: PropTypes.string,
   setCurrent: PropTypes.func,
 };
+
+const POINTS_LABEL = "포인트";
+const PURCHASED_LABEL = "구매한 강의자료";
+const SCRAPPED_LECTURES_LABEL = "강의평 스크랩";
+const SCRAPPED_RESOURCES_LABEL = "강의자료 스크랩";
+const SETTING_LABEL = "환경설정";
 
 export default UserInfo;

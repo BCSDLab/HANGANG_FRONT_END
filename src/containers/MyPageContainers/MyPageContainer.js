@@ -1,176 +1,87 @@
+import { Promise } from "core-js";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
-import styled from "styled-components";
 
 import MypageAPI from "api/mypage";
-import { InnerContentWidth } from "static/Shared/commonStyles";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
-import { kickOut } from "utils/kickOut";
-
+import {
+  Wrapper,
+  UpperContent,
+  BelowContent,
+  Content,
+} from "containers/MyPageContainers/styles/MyPageContainer.style";
+import EnvironmentSettingSectionContainer from "containers/MyPageContainers/EnvironmentSettingSectionContainer";
 import UserInfo from "components/MyPageComponents/UserInfo";
 import PointSection from "components/MyPageComponents/PointSection";
 import ScrapSection from "components/MyPageComponents/ScrapSection";
 import PurchasedSection from "components/MyPageComponents/PurchasedSection";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
-
-import SettingSectionContainer from "./SettingSectionContainer";
-import { logout } from "store/modules/auth";
-
-const minHeight = "798px";
-
-const Wrapper = styled.div`
-  position: relative;
-  min-height: ${minHeight};
-  width: 100%;
-`;
-
-const UpperContent = styled.div`
-  width: 100%;
-  height: 285px;
-  background-color: #f7f7f7;
-`;
-
-const BelowContent = styled.div`
-  width: 100%;
-  background-color: transparent;
-`;
-
-const Content = styled.div`
-  width: ${InnerContentWidth};
-  height: 100%;
-  margin: 0 auto;
-`;
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { showAlertModal } from "store/modules/modalModule";
+import {
+  finishLoadResources,
+  setPurchasedResource,
+  setScrappedLectures,
+  setScrappedResources,
+  setUserInfos,
+} from "store/modules/myPageModule";
+import {
+  POINTS,
+  PURCHASED,
+  SCRAPPED_LECTURES,
+  SCRAPPED_RESOURCES,
+  SETTING,
+} from "static/MyPage/MYPAGE_CURRENT_STATE";
 
 const MyPageContainer = () => {
-  const { addToast } = useToasts();
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isFetchedUserInfos } = useSelector((state) => state.myPageReducer);
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [current, setCurrent] = useState("pointRecords");
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    activityAmount: {},
-    infoDatas: {},
-  });
-  const [pointRecords, setPointRecords] = useState([]);
-  const [purchased, setPurchased] = useState([]);
-  const [scrapped, setScrapped] = useState([]);
-  const [nicknameTest, setNicknameTest] = useState({
-    currentNickname: "",
-    tried: false,
-    errorCode: "",
-  });
+  const [current, setCurrent] = useState(POINTS);
 
-  /**
-   * 유저가 token이 없이 접근할 경우 홈으로 내보냅니다.
-   */
-  let accessToken;
-  if (getValueOnLocalStorage("hangangToken") === null) {
-    kickOut(1);
-  } else {
-    accessToken = getValueOnLocalStorage("hangangToken").access_token;
-  }
-
-  /**
-   * 유저가 로그인 하지 않고 url로 접근할 경우 홈으로 내보냅니다.
-   *
-   * 만약 로그인이 되어있다면, 마이페이지에 필요한 API들을 요청합니다.
-   * getAmountOfActivity : 우상단 사용자 활동 수들
-   * getInfo : 사용자 정보
-   * getPointRecords : 사용자 포인트 사용 내역
-   *
-   * 모든 요청이 끝나면 setIsLoaded를 true로 해준다.
-   * isLoaded가 false 인 경우 로딩 스피너를 보여준다.
-   */
   useEffect(async () => {
     if (isCheckedToken && !isLoggedIn) {
-      kickOut(1);
+      sendAwayToHome(INVALID_ACCESS_WITHOUT_TOKEN, history, dispatch);
     } else if (isCheckedToken && isLoggedIn) {
-      try {
-        const { data: activityAmount } = await MypageAPI.getAmountOfActivity(accessToken);
-        const { data: infoDatas } = await MypageAPI.getInfo(accessToken);
-        const { data: pointRecords } = await MypageAPI.getPointRecords(accessToken);
-        setUserInfo({ activityAmount, infoDatas });
-        setPointRecords(pointRecords);
-        setNicknameTest((prev) => ({
-          ...prev,
-          currentNickname: infoDatas.nickname,
-        }));
-      } catch (error) {
-        dispatch(logout({ errorCode: error.response.data.code }));
-        addToast("토큰이 만료되었습니다. 다시 로그인 해주세요.", {
-          appearance: "error",
-          autoDismiss: true,
-        });
-        history.push("/");
-      } finally {
-        setIsLoaded(true);
-      }
+      fetchUserInfos(dispatch);
     }
   }, [isCheckedToken, isLoggedIn]);
 
-  /**
-   * 구매한 강의자료, 내 스크랩을 누를 경우 이에 맞는 API를 호출합니다.
-   */
   useEffect(async () => {
     switch (current) {
-      case "purchased":
-        if (purchased.length === 0) {
-          try {
-            const { data } = await MypageAPI.getPurchasedRecords(accessToken);
-            setPurchased(data);
-          } catch (error) {
-            kickOut(5);
-          }
-        }
+      case PURCHASED:
+        fetchPurchasedResource(dispatch);
         break;
-      case "scrapped":
-        if (scrapped.length === 0) {
-          try {
-            const { data } = await MypageAPI.getScrapLecture(accessToken);
-            setScrapped(data);
-          } catch (error) {
-            kickOut(5);
-          }
-        }
+      case SCRAPPED_LECTURES:
+        fetchScrappedLectures(dispatch);
+        break;
+      case SCRAPPED_RESOURCES:
+        fetchScrappedResources(dispatch);
         break;
       default:
         break;
     }
-  }, [isLoaded, current]);
+  }, [current]);
 
   return (
     <Wrapper>
-      {isCheckedToken && isLoggedIn && !isLoaded && <LoadingSpinner height="1005px" />}
-
-      {isCheckedToken && isLoggedIn && isLoaded && (
+      {isCheckedToken && isLoggedIn && !isFetchedUserInfos && (
+        <LoadingSpinner height="1005px" />
+      )}
+      {isCheckedToken && isLoggedIn && isFetchedUserInfos && (
         <>
           <UpperContent>
-            <UserInfo userInfo={userInfo} current={current} setCurrent={setCurrent} />
+            <UserInfo current={current} setCurrent={setCurrent} />
           </UpperContent>
           <BelowContent>
             <Content>
-              {current === "pointRecords" && (
-                <PointSection
-                  breakdown={pointRecords}
-                  totalPoint={userInfo.infoDatas.point}
-                />
-              )}
-              {current === "purchased" && <PurchasedSection purchased={purchased} />}
-              {current === "scrapped" && (
-                <ScrapSection scrapped={scrapped} setScrapped={setScrapped} />
-              )}
-              {current === "setting" && (
-                <SettingSectionContainer
-                  userInfo={userInfo}
-                  setUserInfo={setUserInfo}
-                  nicknameTest={nicknameTest}
-                  setNicknameTest={setNicknameTest}
-                />
-              )}
+              {current === POINTS && <PointSection />}
+              {current === PURCHASED && <PurchasedSection />}
+              {current === SCRAPPED_LECTURES && <ScrapSection current={current} />}
+              {current === SCRAPPED_RESOURCES && <ScrapSection current={current} />}
+              {current === SETTING && <EnvironmentSettingSectionContainer />}
             </Content>
           </BelowContent>
         </>
@@ -178,5 +89,64 @@ const MyPageContainer = () => {
     </Wrapper>
   );
 };
+
+const fetchScrappedResources = async (dispatch) => {
+  try {
+    const { data } = await MypageAPI.getScrapResources();
+    dispatch(setScrappedResources({ resources: data }));
+  } catch (error) {
+    sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
+  }
+};
+
+const fetchScrappedLectures = async (dispatch) => {
+  try {
+    const { data } = await MypageAPI.getScrapLecture();
+    dispatch(setScrappedLectures({ lectures: data }));
+  } catch (error) {
+    sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
+  }
+};
+
+const fetchPurchasedResource = async (dispatch) => {
+  try {
+    const { data } = await MypageAPI.getPurchasedRecords();
+    dispatch(setPurchasedResource({ resource: data }));
+  } catch (error) {
+    sendAwayToHome(NOT_DEFINED_ERROR, history, dispatch);
+  }
+};
+
+const fetchUserInfos = async (dispatch) => {
+  try {
+    const { getAmountOfActivity, getInfo, getPointRecords } = MypageAPI;
+
+    const [
+      { data: activityAmount },
+      { data: infos },
+      { data: pointRecords },
+    ] = await Promise.all([getAmountOfActivity(), getInfo(), getPointRecords()]);
+
+    dispatch(setUserInfos({ activityAmount, infos, pointRecords }));
+  } catch (error) {
+    sendAwayToHome(TOKEN_EXPIRED_ERROR, history, dispatch);
+  } finally {
+    dispatch(finishLoadResources());
+  }
+};
+
+/**
+ * 허용되지 않은 접근을 할 경우,
+ * Modal과 함께 홈으로 보냅니다.
+ */
+const sendAwayToHome = (type, history, dispatch) => {
+  const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[type];
+  dispatch(showAlertModal({ title, content }));
+  history.push("/");
+};
+
+const INVALID_ACCESS_WITHOUT_TOKEN = "INVALID_ACCESS_WITHOUT_TOKEN";
+const TOKEN_EXPIRED_ERROR = "TOKEN_EXPIRED_ERROR";
+const NOT_DEFINED_ERROR = "NOT_DEFINED_ERROR";
 
 export default MyPageContainer;

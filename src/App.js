@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Redirect, Switch, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useToasts } from "react-toast-notifications";
 import styled from "styled-components";
@@ -12,19 +12,22 @@ import {
   setValueOnLocalStorage,
 } from "utils/localStorageUtils";
 
-import LoginPage from "pages/AuthPages/LoginPage";
-import LecturesPage from "pages/LecturesPages/LecturesPage";
-import LectureDetailPage from "pages/LectureDetailPage";
-import ResourcesPage from "pages/ResourcesPages/ResourcesPage";
-import FindPwPage from "pages/AuthPages/FindPwPage";
-import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
-import SignUpPage from "pages/AuthPages/SignUpPage";
-import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
-import IndexPage from "pages/IndexPage";
 import NavigationContainer from "containers/Shared/NavigationContainer";
 import FooterContainer from "containers/Shared/FooterContainer";
-import MyPage from "pages/MyPage";
+
+import IndexPage from "pages/IndexPage";
+import LecturesPage from "pages/LecturesPage";
+import ResourcesPage from "pages/ResourcesPage";
 import ResourceDetailPage from "pages/ResourceDetailPage";
+import TimetablePage from "pages/TimeTablePage";
+import LoginPage from "pages/AuthPages/LoginPage";
+import LectureDetailPage from "pages/LectureDetailPage";
+
+import FindPwPage from "pages/AuthPages/FindPwPage";
+import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
+import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
+import SignUpPage from "pages/AuthPages/SignUpPage";
+import MyPage from "pages/MyPage";
 
 const Main = styled.main`
   height: fit-content;
@@ -157,6 +160,7 @@ const App = () => {
         <Route path="/lecture" component={LectureDetailPage} />
         <Route path="/resources" component={ResourcesPage} />
         <Route path="/resource" component={ResourceDetailPage} />
+        <Route path="/timetable" component={TimetablePage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/findpwauth" component={FindPwAuthPage} />
         <Route path="/findpw" component={FindPwPage} />

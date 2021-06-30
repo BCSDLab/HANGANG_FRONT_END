@@ -1,17 +1,68 @@
-# HANGANG_WEB
+![GitHub Banner](https://raw.githubusercontent.com/BCSDLab/HANGANG_FRONT_END/develop/.github/images/hangang-banner.png)
 
-✏️ 한강(Hangang) - 한기대 강의평가 프론트엔드 저장소입니다.
+<h3 align="center">http://stage.hangang.in</h3>
 
-## Project Guideline
+This project is web application for [KOREATECH](https://www.koreatech.ac.kr/eng/Main.do) students to share insights which they achieved from lectures. Users can organize their lectures by creating lecture review, resource and timetable, and learn about classes they will learn by seeing resources shared by previous users. We worked so hard to offer familiar user experience.
 
-[한강 프로젝트 FE 가이드라인](https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/2021.03.16+%E1%84%92%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A1%E1%86%BC+%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3+Guideline.pdf)
+## Resources
 
-## Patch Notes
+- [Development Retrospective](https://jhpa.tistory.com/4)
+- [Development Guideline](https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/2021.03.16+%E1%84%92%E1%85%A1%E1%86%AB%E1%84%80%E1%85%A1%E1%86%BC+%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3+Guideline.pdf)
 
-- 0.0.1 (3/21/2021) : 한강 프론트엔드 프로젝트 repository 생성 및 초기 설정
-- 0.0.2 (3/29/2021) : 로그인 페이지 구현
-- 0.0.3 (4/2/2021) : 메인 페이지 구현
-- 0.0.4 (4/5/2021) : 마이 페이지 구현
-- 0.0.5 (4/12/2021) : 강의평 페이지 구현
-- 0.0.6 (5/22/2021) : 강의자료 페이지 구현
-- 0.0.7 (5/25/2021) : 강의자료 상세 페이지 구현
+## npm scripts
+
+**Install dependencies**
+
+```zsh
+npm install
+
+or
+
+yarn
+```
+
+**Dev**
+
+```zsh
+npm run dev
+
+or
+
+yarn run dev
+```
+
+**Build**
+
+```zsh
+npm run build
+
+or
+
+yarn run build
+```
+
+**Serve**
+
+```zsh
+npm run serve
+
+or
+
+yarn run serve
+```
+
+**Lint**
+
+```zsh
+npm run lint
+
+or
+
+yarn lint
+```
+
+
+
+## License
+
+MIT 2021 © [jonghopark95](https://github.com/jonghopark95), [crazy-oung](https://github.com/crazy-oung)

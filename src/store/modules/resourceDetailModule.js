@@ -97,7 +97,9 @@ export default function resourceDetailReducer(state = STATE, action) {
         pageOnComment: ++state.pageOnComment,
       };
     default:
-      return state;
+      return {
+        ...state,
+      };
   }
 }
 
