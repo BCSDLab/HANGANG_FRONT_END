@@ -44,8 +44,7 @@ const onInquireButtonClick = () => window.open(BCSD_FACEBOOK_LINK, "_blank");
 const onWithdrawlButtonClick = (dispatch) => {
   dispatch(
     showConfirmModal({
-      title: "",
-      content: "회원 탈퇴를 하시겠습니까?",
+      title: "정말 탈퇴하시겠습니까?",
       onConfirm: () => withdrawMembership(dispatch),
     })
   );
@@ -55,23 +54,21 @@ const onWithdrawlButtonClick = (dispatch) => {
  * 회원 탈퇴 요청 시 가진 데이터를 모두 날리고 탈퇴시킨다.
  */
 const withdrawMembership = async (dispatch) => {
-  if (confirm("회원 탈퇴를 하시겠습니까?")) {
-    try {
-      let accessToken = getValueOnLocalStorage("hangangToken").access_token;
+  try {
+    let accessToken = getValueOnLocalStorage("hangangToken").access_token;
 
-      await MypageAPI.deleteUser(accessToken);
-      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[
-        "SUCCESS_MEMBERSHIP_WITHDRAWAL"
-      ];
-      dispatch(showAlertModal({ title, content }));
+    await MypageAPI.deleteUser(accessToken);
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE[
+      "SUCCESS_MEMBERSHIP_WITHDRAWAL"
+    ];
+    dispatch(showAlertModal({ title, content }));
 
-      dispatch(logout());
-      removeValueOnLocalStorage("hangangToken");
-      history.push("/");
-    } catch (err) {
-      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
-      dispatch(showAlertModal({ title, content }));
-    }
+    dispatch(logout());
+    removeValueOnLocalStorage("hangangToken");
+    history.push("/");
+  } catch (err) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
   }
 };
 

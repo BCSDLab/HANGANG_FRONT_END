@@ -21,6 +21,7 @@ import FileSection from "components/ResourceComponents/ResourceWriteComponents/F
 import { setDefaultForm, setForm } from "store/modules/resourceCreateModule";
 import { requestResources } from "store/modules/resourcesModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { showConfirmModal } from "store/modules/modalModule";
 
 /**
  * Main Component to create resource.
@@ -66,10 +67,15 @@ const ResourceCreateContainer = ({ isCreateFormOpened, setIsCreateFormOpened }) 
  * If user want to cancel writing, request delete itself.
  */
 const cancelResourceCreate = (setIsCreateFormOpened, dispatch) => {
-  if (confirm("강의자료 작성을 취소하시겠습니까?")) {
-    setIsCreateFormOpened(false);
-    dispatch(setDefaultForm());
-  }
+  dispatch(
+    showConfirmModal({
+      title: "강의자료 작성을 취소하시겠습니까?",
+      onConfirm: () => {
+        setIsCreateFormOpened(false);
+        dispatch(setDefaultForm());
+      },
+    })
+  );
 };
 
 /**
