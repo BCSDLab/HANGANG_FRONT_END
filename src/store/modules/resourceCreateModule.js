@@ -7,6 +7,8 @@ const SET_LECTURE_ID_WITH_TERM = "SET_LECTURE_ID_WITH_TERM";
 const SET_FILES = "SET_FILES";
 const ERASE_FILE = "ERASE_FILE";
 
+const RESET_RESOURCE_CREATE_MODULE_STATE = "RESET_RESOURCE_CREATE_MODULE_STATE";
+
 // Action Creators
 export const setForm = (key, value) => ({ type: SET_FORM, key, value });
 export const setDefaultForm = () => ({ type: SET_DEFAULT_FORM });
@@ -23,6 +25,9 @@ export const setFiles = ({ fileUrl, trimmedFiles }) => ({
 export const eraseFile = (fileId) => ({
   type: ERASE_FILE,
   fileId,
+});
+export const resetResourceCreateModuleState = () => ({
+  type: RESET_RESOURCE_CREATE_MODULE_STATE,
 });
 
 // Reducer
@@ -75,6 +80,10 @@ export default function resourceCreateReducer(state = STATE, action) {
         ...state,
         files: state.files.filter((file) => file !== action.fileId),
         file_infos: state.file_infos.filter((file) => file.id !== action.fileId),
+      };
+    case RESET_RESOURCE_CREATE_MODULE_STATE:
+      return {
+        ...STATE,
       };
     default:
       return {

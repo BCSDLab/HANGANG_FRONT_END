@@ -57,7 +57,7 @@ function ResourceInfoContainer({
   const clickThumb = async () => {
     try {
       if (!isLoggedIn && isCheckedToken) {
-        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
+        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_LOGGED_IN"];
         const onConfirm = () => history.push("/login");
         dispatch(showConfirmModal({ title, content, onConfirm }));
       } else {
@@ -86,7 +86,7 @@ function ResourceInfoContainer({
 
   const onPurchaseButtonClick = () => {
     if (!isLoggedIn && isCheckedToken) {
-      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notLoggedIn"];
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_LOGGED_IN"];
       const onConfirm = () => history.push("/login");
       dispatch(showConfirmModal({ title, content, onConfirm }));
     } else {
