@@ -28,6 +28,7 @@ const Content = styled.textarea.attrs({
   padding: 16px;
 
   font-size: 12px;
+  font-family: NotoSansCJKKR;
   border: none;
   outline: none;
   resize: none;
@@ -35,7 +36,6 @@ const Content = styled.textarea.attrs({
   color: ${FontColor};
 
   ::placeholder {
-    font-family: NotoSansCJKKR;
     color: #999999;
   }
 `;

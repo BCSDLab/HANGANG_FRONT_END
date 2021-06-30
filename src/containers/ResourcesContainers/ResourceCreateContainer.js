@@ -47,6 +47,7 @@ const ResourceCreateContainer = ({ isCreateFormOpened, setIsCreateFormOpened }) 
           <Title
             value={form.title}
             onChange={(e) => dispatch(setForm("title", e.target.value))}
+            maxLength={26}
           />
           <Delimiter />
           <SemesterSection semester={form.semester_id} />

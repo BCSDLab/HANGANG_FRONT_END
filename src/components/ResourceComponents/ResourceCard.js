@@ -68,7 +68,7 @@ const ResourceCard = ({ data: { is_hit, hits, ...rest } }) => {
     <Wrapper onClick={() => history.push(`/resource/${rest.id}`)}>
       <Thumbnail uri={rest.thumbnail} />
       <Content>
-        <Title>{convertHTMLEntities(sliceString(rest.title, 26))}</Title>
+        <Title>{convertHTMLEntities(sliceString(rest.title, 22))}</Title>
         <Nickname>{rest.user.nickname}</Nickname>
         <LectureInfos>
           <LectureName to={`lectures/${rest.lecture_id}`}>
