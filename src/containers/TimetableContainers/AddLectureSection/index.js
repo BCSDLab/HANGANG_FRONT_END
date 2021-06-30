@@ -71,8 +71,8 @@ const AddLectureSection = () => {
         dispatch
       );
     }
-  }, 200);
-  const { targetRef } = useInfiniteScroll(fetchMore);
+  }, 500);
+  const { targetRef } = useInfiniteScroll(fetchMore, 5);
 
   const setSearchTermOnLocalStorage = (term) => {
     if (searchTermList === null) {
