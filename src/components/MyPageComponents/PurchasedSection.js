@@ -60,7 +60,8 @@ const Purchased = ({ id, label, lecture, uploadFiles }) => {
    * right일 경우 current에 -1, left는 +1을 해줍니다.
    * @param {string} direction
    */
-  const move = (direction) => {
+  const move = (e, direction) => {
+    e.stopPropagation();
     if (direction === "right") {
       setCurrent((prev) => prev - 1);
     } else {
@@ -68,11 +69,9 @@ const Purchased = ({ id, label, lecture, uploadFiles }) => {
     }
   };
   return (
-    <Wrapper>
-      <Label onClick={() => history.push(`/resource/${id}`)}>
-        {convertHTMLEntities(label)}
-      </Label>
-      <SubLabel onClick={() => history.push(`/resource/${id}`)}>
+    <Wrapper onClick={() => history.push(`/resource/${id}`)}>
+      <Label>{convertHTMLEntities(label)}</Label>
+      <SubLabel>
         {lecture.name}
         <MiddleLine />
         {lecture.professor}
@@ -82,9 +81,9 @@ const Purchased = ({ id, label, lecture, uploadFiles }) => {
           <Material type={ext} name={fileName} key={id} />
         ))}
       </MaterialRow>
-      {current !== 0 && <LeftIcon onClick={() => move("left")} />}
+      {current !== 0 && <LeftIcon onClick={(e) => move(e, "left")} />}
       {coverage > maxRowCoverage && current !== maxRowCoverage - coverage && (
-        <RightIcon onClick={() => move("right")} />
+        <RightIcon onClick={(e) => move(e, "right")} />
       )}
     </Wrapper>
   );

@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
+  cursor: pointer;
 `;
 
 export const SectionWrapper = styled.div`
@@ -39,7 +40,6 @@ export const Label = styled.label`
   color: ${FontColor};
   font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
 `;
 
 export const SubLabel = styled(Label)`
@@ -86,7 +86,6 @@ export const RightIcon = styled.img.attrs({
   top: calc(50% + 20px);
   right: 0;
   width: 18px;
-  cursor: pointer;
   z-index: 9990;
 `;
 
