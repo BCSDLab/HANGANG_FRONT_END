@@ -7,6 +7,7 @@ import resourceReducer from "./modules/resourcesModule";
 import resourceCreateReducer from "./modules/resourceCreateModule";
 import resourceDetailReducer from "./modules/resourceDetailModule";
 import modalReducer from "./modules/modalModule";
+import myPageReducer from "./modules/myPageModule";
 import timetableReducer from "./modules/timetableModule";
 
 const rootReducer = combineReducers({
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   resourceCreateReducer,
   resourceDetailReducer,
   modalReducer,
+  myPageReducer,
   timetableReducer,
 });
 

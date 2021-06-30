@@ -1,6 +1,10 @@
 import axios from "axios";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const setTokenInHeader = (accessToken = null, data = null) => {
+const getAccessToken = () => getValueOnLocalStorage("hangangToken")?.access_token;
+
+const setTokenInHeader = (data = null) => {
+  const accessToken = getAccessToken();
   let config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -12,11 +16,11 @@ const setTokenInHeader = (accessToken = null, data = null) => {
 };
 
 export default {
-  requestHit: async (id = undefined, accessToken = null) => {
+  requestHit: async (id = undefined) => {
     const response = await axios.post(
       `/lecture-banks/hit/${id}`,
       null,
-      setTokenInHeader(accessToken)
+      setTokenInHeader()
     );
     return response;
   },
@@ -49,29 +53,29 @@ export default {
 
     return response;
   },
-  uploadFiles: async (files = null, accessToken = null) => {
+  uploadFiles: async (files = null) => {
     const form = new FormData();
     for (let f of Object.values(files)) form.append("files", f);
 
-    const response = await axios.post(
-      `/lecture-banks/files`,
-      form,
-      setTokenInHeader(accessToken)
-    );
+    const response = await axios.post(`/lecture-banks/files`, form, setTokenInHeader());
     return response;
   },
   // deprecated
-  cancelUploadFile: async (id = undefined, accessToken = null) => {
+  cancelUploadFile: async (id = undefined) => {
     const response = await axios.get(
       `/lecture-banks/file/cancel_upload/${id}`,
-      setTokenInHeader(accessToken)
+      setTokenInHeader()
     );
     return response;
   },
-  requestWriteResource: async (
-    { category, content, files, lecture_id, semester_id, title },
-    accessToken = null
-  ) => {
+  requestWriteResource: async ({
+    category,
+    content,
+    files,
+    lecture_id,
+    semester_id,
+    title,
+  }) => {
     let body = {
       category,
       content,
@@ -81,11 +85,7 @@ export default {
       title,
     };
 
-    const response = await axios.post(
-      `/lecture-banks`,
-      body,
-      setTokenInHeader(accessToken)
-    );
+    const response = await axios.post(`/lecture-banks`, body, setTokenInHeader());
     return response;
   },
 };

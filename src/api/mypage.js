@@ -1,6 +1,10 @@
 import axios from "axios";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
-const setTokenInHeader = (accessToken, data = null) => {
+const getAccessToken = () => getValueOnLocalStorage("hangangToken")?.access_token;
+
+const setTokenInHeader = (data = null) => {
+  const accessToken = getAccessToken();
   let config = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -11,43 +15,57 @@ const setTokenInHeader = (accessToken, data = null) => {
 };
 
 export default {
-  getAmountOfActivity: async (accessToken) => {
-    const response = await axios.get("/user/lecture", setTokenInHeader(accessToken));
+  getAmountOfActivity: async () => {
+    const response = await axios.get("/user/lecture", setTokenInHeader());
     return response;
   },
-  getInfo: async (accessToken) => {
-    const response = await axios.get("/user/me", setTokenInHeader(accessToken));
+  getInfo: async () => {
+    const response = await axios.get("/user/me", setTokenInHeader());
     return response;
   },
-  getPointRecords: async (accessToken) => {
-    const response = await axios.get("/user/point", setTokenInHeader(accessToken));
+  getPointRecords: async () => {
+    const response = await axios.get("/user/point", setTokenInHeader());
     return response;
   },
-  getPurchasedRecords: async (accessToken) => {
-    const response = await axios.get("/user/purchase", setTokenInHeader(accessToken));
+  getPurchasedRecords: async () => {
+    const response = await axios.get("/user/purchase", setTokenInHeader());
     return response;
   },
-  getScrapLecture: async (accessToken) => {
-    const response = await axios.get("/scrap/lecture", setTokenInHeader(accessToken));
+  getScrapLecture: async () => {
+    const response = await axios.get("/scrap/lecture", setTokenInHeader());
     return response;
   },
-  deleteScrapLecture: async (accessToken, id = []) => {
-    const response = await axios.delete(
-      "/scrap/lecture",
-      setTokenInHeader(accessToken, { id })
-    );
+  deleteScrapLecture: async (id = []) => {
+    const accessToken = getAccessToken();
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.delete("/scrap/lecture", { data: id, headers });
     return response;
   },
-  updateUserInfo: async (accessToken, major = [], nickname = "") => {
+  getScrapResources: async () => {
+    const response = await axios.get("/lecture-banks/scrap", setTokenInHeader());
+    return response;
+  },
+  deleteScrapResources: async (id = []) => {
+    const accessToken = getAccessToken();
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.delete("/lecture-banks/scrap", { data: id, headers });
+    return response;
+  },
+  updateUserInfo: async (major = [], nickname = "", name = "") => {
     let body = {
       major,
       nickname,
+      name,
     };
-    const response = await axios.put("/user/me", body, setTokenInHeader(accessToken));
+    const response = await axios.put("/user/me", body, setTokenInHeader());
     return response;
   },
-  deleteUser: async (accessToken) => {
-    const response = await axios.delete("/user/me", setTokenInHeader(accessToken));
+  deleteUser: async () => {
+    const response = await axios.delete("/user/me", setTokenInHeader());
     return response;
   },
   checkValidNickname: async (nickname) => {

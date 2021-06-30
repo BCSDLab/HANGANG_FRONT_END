@@ -73,7 +73,7 @@ const changeDisplayTimetable = async (timetableId, dispatch) => {
     const { data } = await TimetableAPI.fetchTimetableInfo(timetableId);
     dispatch(setDisplayTimetable({ displayTimetable: data }));
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
   }
 };

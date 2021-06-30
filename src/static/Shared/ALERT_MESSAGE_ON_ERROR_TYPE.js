@@ -45,7 +45,7 @@ export default {
   56: {
     title: "메인 시간표는 삭제가 불가능합니다.",
   },
-  notDefinedError: {
+  NOT_DEFINED_ERROR: {
     title: "문제가 발생하였습니다.",
     content: "알 수 없는 오류로 요청이 실패하였습니다. 관리자에게 문의하세요.",
   },
@@ -63,5 +63,24 @@ export default {
   inValidAddTimetableError: {
     title: "시간표 이름이 입력되지 않았습니다.",
     content: "추가하려는 시간표의 이름을 모두 입력해주세요.",
+  },
+  TOKEN_EXPIRED_ERROR: {
+    title: "",
+    content: "토큰이 만료되었습니다. \n다시 로그인해주세요.",
+  },
+  INVALID_DELETE_REQUEST: {
+    title: "자료 삭제에 실패하였습니다.",
+    content: "알 수 없는 이유로 자료 삭제에 관리자에게 문의해주세요.",
+  },
+  INVALID_ACCESS_WITHOUT_TOKEN: {
+    title: "허용되지 않은 접근입니다.",
+    content: "로그인 이후에 접근할 수 있습니다.",
+  },
+  INVALID_MAJOR_AMOUNT: {
+    title: "전공 변경 중 오류가 발생하였습니다.",
+    content: "전공은 1개 이상 2개 이하로 선택 가능합니다.",
+  },
+  SUCCESS_MEMBERSHIP_WITHDRAWAL: {
+    content: "성공적으로 탈퇴 처리가 되었습니다.",
   },
 };

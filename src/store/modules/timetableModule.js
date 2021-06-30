@@ -274,6 +274,8 @@ export default function timetableReducer(state = STATE, action) {
         lecturePosition: [...state.lecturePosition, action.payload.infos],
       };
     default:
-      return state;
+      return {
+        ...state,
+      };
   }
 }
