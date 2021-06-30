@@ -92,7 +92,8 @@ export default function lectureReducer(state = STATE, action) {
        * case : 교양 값이 있는 상태에서 교양 버튼을 누름
        */
       let valueToChange = action.payload.department;
-      if (state.department === valueToChange) {
+
+      if (!action.payload.allowDuplicate && state.department === valueToChange) {
         valueToChange = "";
       }
       return {

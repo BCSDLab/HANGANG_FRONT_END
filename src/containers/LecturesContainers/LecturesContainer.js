@@ -81,7 +81,9 @@ const LecturesContainer = () => {
                 key={label}
                 name="department"
                 onClick={() => {
-                  dispatch(setDepartmentOnLectures({ department }));
+                  dispatch(
+                    setDepartmentOnLectures({ department, allowDuplicate: false })
+                  );
                   dispatch(requestLectures());
                 }}
                 isChosen={filterOptions.department === department}

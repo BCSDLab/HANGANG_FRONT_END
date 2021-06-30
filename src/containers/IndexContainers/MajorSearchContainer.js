@@ -27,7 +27,11 @@ const MajorSearchContainer = () => {
             to="/lectures"
             key={label}
             imagesrc={src}
-            onClick={() => dispatch(setDepartmentOnLectures({ department: value }))}
+            onClick={() =>
+              dispatch(
+                setDepartmentOnLectures({ department: value, allowDuplicate: true })
+              )
+            }
           >
             <MajorLabel>{label}</MajorLabel>
           </MajorCard>
