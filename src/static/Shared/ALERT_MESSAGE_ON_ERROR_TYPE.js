@@ -10,10 +10,6 @@ export default {
   confirmDeleteTimetable: {
     title: "해당 시간표를 삭제하시겠습니까?",
   },
-  notLoggedIn: {
-    title: "로그인 후 이용 가능한 서비스입니다.",
-    content: "로그인하러 가시겠습니까?",
-  },
   16: {
     title: "댓글 작성 과정에서 문제가 발생하였습니다.",
     content: "본문은 최소 한 글자 이상이여야 합니다.",
@@ -44,6 +40,10 @@ export default {
   },
   56: {
     title: "메인 시간표는 삭제가 불가능합니다.",
+  },
+  NOT_LOGGED_IN: {
+    title: "로그인 후 이용 가능한 서비스입니다.",
+    content: "로그인하러 가시겠습니까?",
   },
   NOT_DEFINED_ERROR: {
     title: "문제가 발생하였습니다.",
