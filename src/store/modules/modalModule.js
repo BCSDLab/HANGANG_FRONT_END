@@ -12,6 +12,8 @@ const SHOW_TIMETABLE_MORE_MODAL = "SHOW_TIMETABLE_MORE_MODAL";
 const HIDE_TIMETABLE_MORE_MODAL = "HIDE_TIMETABLE_MORE_MODAL";
 const SHOW_LECTURE_INFO_MODAL = "SHOW_LECTURE_INFO_MODAL";
 const HIDE_LECTURE_INFO_MODAL = "HIDE_LECTURE_INFO_MODAL";
+const SHOW_LECTURE_REVIEW_WRITE_MODAL = "SHOW_LECTURE_REVIEW_WRITE_MODAL";
+const HIDE_LECTURE_REVIEW_WRITE_MODAL = "HIDE_LECTURE_REVIEW_WRITE_MODAL";
 
 // Action Creators
 export const showAlertModal = (payload) => ({ type: SHOW_ALERT_MODAL, payload });
@@ -34,8 +36,15 @@ export const showLectureInfoModal = (payload) => ({
   payload,
 });
 export const hideLectureInfoModal = () => ({ type: HIDE_LECTURE_INFO_MODAL });
+export const showLectureReviewWriteModal = () => ({
+  type: SHOW_LECTURE_REVIEW_WRITE_MODAL,
+});
+export const hideLectureReviewWriteModal = () => ({
+  type: HIDE_LECTURE_REVIEW_WRITE_MODAL,
+});
 
 // State
+
 const INITIAL_ALERT_MODAL_STATE = {
   isAlertModalShowing: false,
   alertModalTitle: "",
@@ -72,6 +81,10 @@ const INITIAL_LECTURE_INFO_MODAL_STATE = {
   lectureInfo: {},
 };
 
+const INITIAL_LECTURE_REVIEW_WRITE_MODAL_STATE = {
+  isLectureReviewWriteModalShowing: true,
+};
+
 const STATE = {
   ...INITIAL_ALERT_MODAL_STATE,
   ...INITIAL_CONFIRM_MODAL_STATE,
@@ -79,6 +92,7 @@ const STATE = {
   ...INITIAL_ADD_TIMETABLE_MODAL_STATE,
   ...INITIAL_TIMETABLE_MORE_STATE,
   ...INITIAL_LECTURE_INFO_MODAL_STATE,
+  ...INITIAL_LECTURE_REVIEW_WRITE_MODAL_STATE,
 };
 
 // Reducer
@@ -156,6 +170,16 @@ export default function modalReducer(state = STATE, action) {
       return {
         ...state,
         ...INITIAL_LECTURE_INFO_MODAL_STATE,
+      };
+    case SHOW_LECTURE_REVIEW_WRITE_MODAL:
+      return {
+        ...state,
+        isLectureReviewWriteModalShowing: true,
+      };
+    case HIDE_LECTURE_REVIEW_WRITE_MODAL:
+      return {
+        ...state,
+        isLectureReviewWriteModalShowing: false,
       };
     default:
       return {

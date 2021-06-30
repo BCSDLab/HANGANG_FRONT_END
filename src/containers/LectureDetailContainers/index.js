@@ -5,6 +5,7 @@ import { Promise } from "core-js";
 
 import LectureDetailAPI from "api/lectureDetail";
 import ResourceAPI from "api/resources";
+import LectureReviewWriteModalComponent from "components/ModalComponents/LectureDetailPage/LectureReviewWriteModalComponent";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 
 import {
@@ -16,7 +17,7 @@ import {
   setLectureTimetables,
   closeFilterModal,
 } from "store/modules/lectureDetailModule";
-import { showAlertModal } from "store/modules/modalModule";
+import { showAlertModal, showLectureReviewWriteModal } from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
@@ -188,7 +189,9 @@ const LectureDetailContainer = () => {
                   lectureClassInfo={lectureClassInfo}
                 />
 
-                <WriteLectureReviewButton>
+                <WriteLectureReviewButton
+                  onClick={() => dispatch(showLectureReviewWriteModal())}
+                >
                   {"강의평가 작성하기 >"}
                 </WriteLectureReviewButton>
               </RightSection>
@@ -196,6 +199,7 @@ const LectureDetailContainer = () => {
           )}
         </Content>
       </Wrapper>
+      <LectureReviewWriteModalComponent />
     </>
   );
 };
