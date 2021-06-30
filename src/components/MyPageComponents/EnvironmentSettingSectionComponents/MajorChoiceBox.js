@@ -7,7 +7,7 @@ import { showAlertModal } from "store/modules/modalModule";
 import { setUserMajor } from "store/modules/myPageModule";
 
 import {
-  ProfileRightSection,
+  ProfileLayout,
   SubLabel,
   MajorSubLabel,
   MajorGrid,
@@ -18,9 +18,10 @@ const MajorChoiceSection = ({ infos }) => {
   const dispatch = useDispatch();
 
   return (
-    <ProfileRightSection>
+    <ProfileLayout>
       <SubLabel>
-        전공 선택<MajorSubLabel>복수선택 가능</MajorSubLabel>
+        {MAJOR_CHOICE_LABEL}
+        <MajorSubLabel>{MAJOR_CHOICE_SUB_LABEL}</MajorSubLabel>
       </SubLabel>
       <MajorGrid>
         {MAJORS.map((val) => (
@@ -32,7 +33,7 @@ const MajorChoiceSection = ({ infos }) => {
           />
         ))}
       </MajorGrid>
-    </ProfileRightSection>
+    </ProfileLayout>
   );
 };
 
@@ -75,5 +76,8 @@ const MAJORS = [
   "컴퓨터공학부",
   "융합학과",
 ];
+
+const MAJOR_CHOICE_LABEL = "전공 선택";
+const MAJOR_CHOICE_SUB_LABEL = "복수선택 가능";
 
 export default MajorChoiceSection;
