@@ -132,6 +132,8 @@ export default function lectureReducer(state = STATE, action) {
         page: state.page !== state.max_page ? state.page + 1 : state.page,
       };
     default:
-      return state;
+      return {
+        ...state,
+      };
   }
 }

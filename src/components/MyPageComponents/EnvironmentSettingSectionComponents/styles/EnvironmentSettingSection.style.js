@@ -16,7 +16,21 @@ export const SettingSectionWrapper = styled.div`
 `;
 
 export const Profile = styled.div`
-  width: 100%;
+  position: relative;
+  width: fit-content;
+  margin-right: 112px;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const EditModeButton = styled.span`
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 14px;
+  color: ${({ isEditMode, isValidNickname }) =>
+    isEditMode && isValidNickname ? `${ConceptColor}` : `${PlaceholderColor}`};
+  cursor: ${({ isValidNickname }) => (isValidNickname ? `pointer` : `default`)};
 `;
 
 export const Setting = styled.div`
@@ -24,12 +38,8 @@ export const Setting = styled.div`
   margin-top: 40px;
 `;
 
-export const Etc = styled(Setting)``;
-
-export const ProfileLeftSection = styled.div`
-  width: 547px;
-  margin-top: 16px;
-  margin-right: 112px;
+export const Etc = styled(Setting)`
+  margin-bottom: 112px;
 `;
 
 export const ProfileInput = styled.input`
@@ -40,6 +50,9 @@ export const ProfileInput = styled.input`
   padding-bottom: 4px;
   border-bottom: 1px solid ${BorderColor};
   font-size: 15px;
+  ::placeholder {
+    color: ${PlaceholderColor};
+  }
 `;
 
 export const NicknameInputWrapper = styled.div`
@@ -51,31 +64,13 @@ export const AlertImg = styled.img.attrs({
   alt: "경고 이미지",
 })`
   position: absolute;
-  right: 33px;
+  right: 3px;
   bottom: 4px;
   width: 20px;
   height: 20px;
 `;
 
-export const NicknameModifySection = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 6px;
-
-  cursor: pointer;
-`;
-
-export const ModifyButton = styled.button`
-  all: unset;
-  font-size: 14px;
-  color: ${PlaceholderColor};
-`;
-
-export const AbleButton = styled(ModifyButton)`
-  color: ${ConceptColor};
-`;
-
-export const MajorChoiceSection = styled.div`
+export const MajorGrid = styled.div`
   display: grid;
   grid-template-columns: 176px 176px;
   grid-template-rows: 29px 29px 29px 29px;
@@ -99,19 +94,22 @@ export const Major = styled.input.attrs(() => ({
   cursor: pointer;
 `;
 
-export const ProfileRightSection = styled.div`
+export const ProfileLayout = styled.div`
   width: calc(100% - 547px);
-  margin-top: 16px;
+  margin-top: 36px;
 `;
 
 export const Label = styled.label`
+  display: block;
   color: ${ConceptColor};
   font-size: 16px;
   font-weight: 500;
+  margin-bottom: 20px;
 `;
 
 export const SubLabel = styled(Label)`
   color: ${FontColor};
+  margin-bottom: 0px;
 `;
 
 export const NotifyLabel = styled(Label)`
@@ -143,8 +141,11 @@ export const AlertLabel = styled.span`
 `;
 
 export const Row = styled.div`
-  height: 24px;
+  all: unset;
+  display: block;
   position: relative;
+  height: 24px;
+  margin-bottom: 26px;
 `;
 
 export const ToggleButton = styled.button`
@@ -183,9 +184,9 @@ export const RightButton = styled.img.attrs({
   top: 2px;
   right: 0;
   width: 20px;
+  cursor: pointer;
 `;
 
 export const WithdrawalButton = styled.button`
   all: unset;
-  cursor: pointer;
 `;

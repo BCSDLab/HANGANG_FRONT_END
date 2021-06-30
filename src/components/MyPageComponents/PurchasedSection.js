@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-import MaterialIcon from "static/MyPage/MateriaIcon";
-import { convertHTMLEntities } from "utils/convertHTMLEntities";
+import NoData from "components/MyPageComponents/NoData";
 import {
   Wrapper,
   SectionWrapper,
@@ -14,18 +15,32 @@ import {
   RightIcon,
   LeftIcon,
 } from "components/MyPageComponents/styles/PurchasedSection.style";
+import MaterialIcon from "static/MyPage/MateriaIcon";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
+import { PURCHASED } from "static/MyPage/MYPAGE_CURRENT_STATE";
 
-const PurchasedSection = ({ purchased }) => {
+const PurchasedSection = () => {
+  const { purchasedResource } = useSelector((state) => state.myPageReducer);
+
   return (
     <SectionWrapper>
-      {purchased.map(({ id, title, lecture, uploadFiles }) => (
-        <Purchased key={id} label={title} lecture={lecture} uploadFiles={uploadFiles} />
-      ))}
+      {purchasedResource.length === 0 && <NoData type={PURCHASED} />}
+      {purchasedResource.length !== 0 &&
+        purchasedResource.map(({ id, title, lecture, uploadFiles }) => (
+          <Purchased
+            key={id}
+            id={id}
+            label={title}
+            lecture={lecture}
+            uploadFiles={uploadFiles}
+          />
+        ))}
     </SectionWrapper>
   );
 };
 
-const Purchased = ({ label, lecture, uploadFiles }) => {
+const Purchased = ({ id, label, lecture, uploadFiles }) => {
+  const history = useHistory();
   const SLIDING_DISTANCE = 400;
   const MAX_ROW_WIDTH = 1135;
   const maxRowCoverage = Math.floor(MAX_ROW_WIDTH / SLIDING_DISTANCE);
@@ -54,8 +69,10 @@ const Purchased = ({ label, lecture, uploadFiles }) => {
   };
   return (
     <Wrapper>
-      <Label>{convertHTMLEntities(label)}</Label>
-      <SubLabel>
+      <Label onClick={() => history.push(`/resource/${id}`)}>
+        {convertHTMLEntities(label)}
+      </Label>
+      <SubLabel onClick={() => history.push(`/resource/${id}`)}>
         {lecture.name}
         <MiddleLine />
         {lecture.professor}
@@ -87,10 +104,9 @@ const Material = ({ type, name }) => {
     return convertedName;
   };
 
-  // TODO: Change Icon of file extension
   return (
     <MaterialWrapper>
-      {MaterialIcon[type]}
+      {MaterialIcon[type.toLowerCase()]}
       <MaterialName>
         {nameSlicer(name)}.{type}
       </MaterialName>

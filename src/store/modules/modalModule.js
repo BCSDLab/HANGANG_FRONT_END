@@ -158,6 +158,8 @@ export default function modalReducer(state = STATE, action) {
         ...INITIAL_LECTURE_INFO_MODAL_STATE,
       };
     default:
-      return state;
+      return {
+        ...state,
+      };
   }
 }

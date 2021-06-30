@@ -68,8 +68,19 @@ export default {
     title: "",
     content: "토큰이 만료되었습니다. \n다시 로그인해주세요.",
   },
+  INVALID_DELETE_REQUEST: {
+    title: "자료 삭제에 실패하였습니다.",
+    content: "알 수 없는 이유로 자료 삭제에 관리자에게 문의해주세요.",
+  },
   INVALID_ACCESS_WITHOUT_TOKEN: {
     title: "허용되지 않은 접근입니다.",
     content: "로그인 이후에 접근할 수 있습니다.",
+  },
+  INVALID_MAJOR_AMOUNT: {
+    title: "전공 변경 중 오류가 발생하였습니다.",
+    content: "전공은 1개 이상 2개 이하로 선택 가능합니다.",
+  },
+  SUCCESS_MEMBERSHIP_WITHDRAWAL: {
+    content: "성공적으로 탈퇴 처리가 되었습니다.",
   },
 };

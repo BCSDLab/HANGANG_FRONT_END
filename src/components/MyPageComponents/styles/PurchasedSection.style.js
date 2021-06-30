@@ -7,11 +7,11 @@ import {
 } from "static/Shared/commonStyles";
 
 export const Wrapper = styled.div`
+  overflow-x: hidden;
   position: relative;
   display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
   width: 100%;
+  flex-direction: column;
 `;
 
 export const SectionWrapper = styled.div`
@@ -39,6 +39,7 @@ export const Label = styled.label`
   color: ${FontColor};
   font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
 `;
 
 export const SubLabel = styled(Label)`
@@ -86,6 +87,7 @@ export const RightIcon = styled.img.attrs({
   right: 0;
   width: 18px;
   cursor: pointer;
+  z-index: 9990;
 `;
 
 export const LeftIcon = styled(RightIcon)`
