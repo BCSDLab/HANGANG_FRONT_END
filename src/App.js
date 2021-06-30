@@ -14,7 +14,7 @@ import {
 
 import LoginPage from "pages/AuthPages/LoginPage";
 import LecturesPage from "pages/LecturesPages/LecturesPage";
-import LectureDetailPage from "pages/LectureDetailPages/LectureDetailPage";
+import LectureDetailPage from "pages/LectureDetailPage";
 import ResourcesPage from "pages/ResourcesPages/ResourcesPage";
 import FindPwPage from "pages/AuthPages/FindPwPage";
 import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
