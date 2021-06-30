@@ -3,6 +3,7 @@ import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStora
 // Actions
 const SET_LECTURE_INFO = "SET_LECTURE_INFO";
 const SET_LECTURE_REVIEWS = "SET_LECTURE_REVIEWS";
+const ADD_LECTURE_REVIEW = "ADD_LECTURE_REVIEW";
 const SET_LECTURE_CLASS_SEMESTER = "SET_LECTURE_CLASS_SEMESTER";
 const SET_LECTURE_RESOURCES = "SET_LECTURE_RESOURCES";
 const SET_LECTURE_TIMETABLES = "SET_LECTURE_TIMETABLES";
@@ -32,6 +33,7 @@ export const setLectureClassSemester = (payload) => ({
   type: SET_LECTURE_CLASS_SEMESTER,
   payload,
 });
+export const addLectureReview = (payload) => ({ type: ADD_LECTURE_REVIEW, payload });
 export const setLectureReviews = (payload) => ({ type: SET_LECTURE_REVIEWS, payload });
 export const setLectureResources = (payload) => ({
   type: SET_LECTURE_RESOURCES,
@@ -134,6 +136,14 @@ export default function lectureDetailReducer(state = STATE, action) {
         ...state,
         lectureReviews: action.payload,
         maxPage: Math.ceil(action.payload.count / state.limit),
+      };
+    case ADD_LECTURE_REVIEW:
+      return {
+        ...state,
+        lectureReviews: {
+          result: [...state.lectureReviews.result, action.payload.data],
+          count: ++state.lectureReviews.count,
+        },
       };
     case SET_LECTURE_RESOURCES:
       return {

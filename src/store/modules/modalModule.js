@@ -186,7 +186,7 @@ export default function modalReducer(state = STATE, action) {
     case HIDE_LECTURE_REVIEW_WRITE_MODAL:
       return {
         ...state,
-        isLectureReviewWriteModalShowing: false,
+        ...INITIAL_LECTURE_REVIEW_WRITE_MODAL_STATE,
       };
     default:
       return {

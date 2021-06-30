@@ -17,7 +17,11 @@ import {
   setLectureTimetables,
   closeFilterModal,
 } from "store/modules/lectureDetailModule";
-import { showAlertModal, showLectureReviewWriteModal } from "store/modules/modalModule";
+import {
+  showAlertModal,
+  showConfirmModal,
+  showLectureReviewWriteModal,
+} from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
@@ -149,6 +153,25 @@ const LectureDetailContainer = () => {
     if (rest.isFilterModalOpened) dispatch(closeFilterModal());
   };
 
+  const checkLoggedIn = () => {
+    if (isCheckedToken && !isLoggedIn) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_LOGGED_IN"];
+      const onConfirm = () => history.push("/login");
+      dispatch(showConfirmModal({ title, content, onConfirm }));
+      return;
+    }
+
+    dispatch(
+      showLectureReviewWriteModal({
+        basicLectureInfos: {
+          id: rest.id,
+          name: rest.name,
+          professor: rest.professor,
+        },
+      })
+    );
+  };
+
   return (
     <>
       <Wrapper onClick={() => closeModalEventTriggered()}>
@@ -189,19 +212,7 @@ const LectureDetailContainer = () => {
                   lectureClassInfo={lectureClassInfo}
                 />
 
-                <WriteLectureReviewButton
-                  onClick={() =>
-                    dispatch(
-                      showLectureReviewWriteModal({
-                        basicLectureInfos: {
-                          id: rest.id,
-                          name: rest.name,
-                          professor: rest.professor,
-                        },
-                      })
-                    )
-                  }
-                >
+                <WriteLectureReviewButton onClick={checkLoggedIn}>
                   {"강의평가 작성하기 >"}
                 </WriteLectureReviewButton>
               </RightSection>

@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import LectureDetailAPI from "api/lectureDetail";
@@ -28,6 +28,7 @@ import {
   AlertImg,
 } from "./styles/LectureReviewWriteModalComponent.style";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { addLectureReview } from "store/modules/lectureDetailModule";
 
 const LectureReviewWriteModalComponent = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const LectureReviewWriteModalComponent = () => {
   const [form, setForm] = useState({});
   const [semesterOptions, setSemesterOptions] = useState(defaultOptions);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const form = createDefaultLectureWriteForm(defaultOptions[0], basicLectureInfos?.id);
     setForm(form);
   }, [basicLectureInfos]);
@@ -202,11 +203,12 @@ const requestWriteLectureReview = async (e, form, dispatch) => {
   try {
     const accessToken = getValueOnLocalStorage("hangangToken").access_token;
     const { data } = await LectureDetailAPI.postLectureReview(accessToken, form);
-    if (data.httpStatus === "OK") {
-      dispatch(hideLectureReviewWriteModal());
-      dispatch(showAlertModal({ content: "강의평이 생성되었습니다." }));
-    }
+    dispatch(addLectureReview({ data }));
+    dispatch(hideLectureReviewWriteModal());
+    dispatch(showAlertModal({ content: "강의평이 생성되었습니다." }));
   } catch (error) {
+    console.dir(error);
+    dispatch(hideLectureReviewWriteModal());
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
   }
