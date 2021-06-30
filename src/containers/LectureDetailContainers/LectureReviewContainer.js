@@ -64,7 +64,7 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
 
         {!isLoading &&
           lectureReviews.count !== 0 &&
-          lectureReviews.result.map((props, idx) => {
+          lectureReviews.result?.map((props, idx) => {
             return <Review key={props.id} idx={idx} props={props} />;
           })}
       </ReviewWrapper>

@@ -39,12 +39,14 @@ const MyTimetableContainer = () => {
         {lectureList.length !== 0 &&
           lectureList
             .filter(({ is_custom }) => !is_custom)
-            .map(({ name, professor, is_reviewed, id }) => (
+            .map(({ name, professor, is_reviewed, id, lecture_id }) => (
               <Lecture key={id}>
                 <Name>{name}</Name>
                 <Professor>{professor}</Professor>
                 {!is_reviewed && (
-                  <AssessButton to="/lectures">{GO_TO_ASSESS}</AssessButton>
+                  <AssessButton to={`/lecture/${lecture_id}`}>
+                    {GO_TO_ASSESS}
+                  </AssessButton>
                 )}
                 {is_reviewed && (
                   <AssessedButton as="div">{COMPLETE_ASSESS}</AssessedButton>

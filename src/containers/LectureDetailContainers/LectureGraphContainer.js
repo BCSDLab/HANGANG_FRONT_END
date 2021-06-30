@@ -43,7 +43,7 @@ const getPercentage = (count, sum) => {
  * @returns
  */
 const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) => {
-  const sum = evaluationRating.reduce((acc, curr) => acc + curr);
+  const sum = evaluationRating?.reduce((acc, curr) => acc + curr);
   let cnt = 1.0;
 
   return (
@@ -51,11 +51,11 @@ const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) =
       <InfoLabel>종합 평가</InfoLabel>
       <GraphWrapper>
         <SubLabel>평점</SubLabel>
-        <SubInfoLabel>{rest.rating.toFixed(1)}</SubInfoLabel>
+        <SubInfoLabel>{rest.rating?.toFixed(1)}</SubInfoLabel>
         <SubSubLabel>전체 평가 수 {rest.count}명</SubSubLabel>
         <GraphSection>
           <Graph>
-            {evaluationRating.map((rating, idx) => (
+            {evaluationRating?.map((rating, idx) => (
               <li key={idx}>
                 <div>
                   <span
@@ -75,25 +75,25 @@ const LectureGraphContainer = ({ evaluationRating, evaluationTotal, ...rest }) =
         <EvaluationInfo>
           <SubLabel>출첵빈도</SubLabel>
           <SubLabelContent>
-            {difficultyLabelConverter(evaluationTotal.attendance_frequency)}
+            {difficultyLabelConverter(evaluationTotal?.attendance_frequency)}
           </SubLabelContent>
           <SubLabel>시험 난이도</SubLabel>
           <SubLabelContent>
-            {difficultyLabelConverter(evaluationTotal.difficulty)}
+            {difficultyLabelConverter(evaluationTotal?.difficulty)}
           </SubLabelContent>
 
           <SubLabel>과제량</SubLabel>
           <SubLabelContent>
-            {difficultyLabelConverter(evaluationTotal.assignment_amount)}
+            {difficultyLabelConverter(evaluationTotal?.assignment_amount)}
           </SubLabelContent>
           <SubLabel>성적비율</SubLabel>
           <SubLabelContent>
-            {gradePortionLabelConverter(evaluationTotal.grade_portion)}
+            {gradePortionLabelConverter(evaluationTotal?.grade_portion)}
           </SubLabelContent>
         </EvaluationInfo>
 
         <HashTagWrapper>
-          {rest.hashtags.map(({ id, tag }) => (
+          {rest.hashtags?.map(({ id, tag }) => (
             <HashTag key={id}>{`# ${tag} `} </HashTag>
           ))}
         </HashTagWrapper>
