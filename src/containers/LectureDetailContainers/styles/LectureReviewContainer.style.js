@@ -37,10 +37,12 @@ export const ReviewWrapper = styled.div`
 `;
 
 export const FilterPickSection = styled.div`
-  margin-left: 4px;
+  height: 100%;
+  width: fit-content;
   display: flex;
   align-items: center;
   cursor: pointer;
+  z-index: 9999;
 `;
 
 export const FilterPickLabel = styled.label`

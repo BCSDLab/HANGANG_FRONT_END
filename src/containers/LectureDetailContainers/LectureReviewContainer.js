@@ -36,7 +36,7 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
 
   const fetchMore = debounce((entries) => {
     const target = entries[0];
-    if (target.isIntersecting && page < maxPage) {
+    if (target.isIntersecting && page <= maxPage) {
       getMoreReviews({ lectureId, limit, page, sort }, isLoggedIn, dispatch);
     }
   }, 500);
@@ -85,7 +85,7 @@ const getMoreReviews = async ({ lectureId, limit, page, sort }, isLoggedIn, disp
       status,
     } = await LectureDetailAPI.getLectureReviews(accessToken, lectureId, {
       limit,
-      page: ++page,
+      page,
       sort,
     });
 

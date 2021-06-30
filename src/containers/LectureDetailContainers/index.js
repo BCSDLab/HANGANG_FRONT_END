@@ -56,6 +56,7 @@ const LectureDetailContainer = () => {
     resourcePage,
     limit,
     sort,
+    isLoading,
     ...rest
   } = useSelector((state) => state.lectureDetailReducer);
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
@@ -68,10 +69,10 @@ const LectureDetailContainer = () => {
   }, [isCheckedToken]);
 
   useEffect(() => {
-    if (isCheckedToken && isLoggedIn) {
+    if ((isCheckedToken && isLoggedIn) || isLoading) {
       fetchReviews();
     }
-  }, [isCheckedToken, isLoggedIn]);
+  }, [isCheckedToken, isLoggedIn, isLoading]);
 
   const fetchLectureDetailInfo = async () => {
     try {
@@ -135,9 +136,9 @@ const LectureDetailContainer = () => {
         ? getValueOnLocalStorage("hangangToken").access_token
         : null;
       const { data } = await LectureDetailAPI.getLectureReviews(accessToken, lectureId, {
-        limit: limit,
-        page: page,
-        sort: sort,
+        limit,
+        page,
+        sort,
       });
       dispatch(setLectureReviews(data));
     } catch (error) {

@@ -87,7 +87,7 @@ const MODAL_STATE = {
   isTimetableModalOpened: false,
 };
 const REVIEW_STATE = {
-  limit: 5,
+  limit: 10,
   resourceLimit: 100,
   page: 1,
   resourcePage: 1,
@@ -135,13 +135,14 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         lectureReviews: action.payload,
+        page: ++state.page,
         maxPage: Math.ceil(action.payload.count / state.limit),
       };
     case ADD_LECTURE_REVIEW:
       return {
         ...state,
         lectureReviews: {
-          result: [...state.lectureReviews.result, action.payload.data],
+          result: [action.payload.data, ...state.lectureReviews.result],
           count: ++state.lectureReviews.count,
         },
       };
