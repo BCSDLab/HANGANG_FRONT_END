@@ -100,6 +100,7 @@ export default function lectureReducer(state = STATE, action) {
         department: valueToChange,
         page: 1,
         lectures: [],
+        isLoading: true,
       };
     case SET_KEYWORD_ON_LECTURES:
       return {
