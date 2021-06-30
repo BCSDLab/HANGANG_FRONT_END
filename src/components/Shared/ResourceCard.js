@@ -1,12 +1,8 @@
 import React from "react";
-import {
-  BorderColor,
-  ConceptColor,
-  FontColor,
-  PlaceholderColor,
-} from "static/Shared/commonStyles";
-import styled from "styled-components";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
+import ResourceAPI from "api/resources";
 import {
   Layout,
   ThumbnailLayout,
@@ -24,12 +20,12 @@ import {
   Delimiter,
   Professor,
 } from "components/Shared/styles/ResourceCard.style";
-import { useHistory } from "react-router-dom";
+import { changeResourceIsHitStatus } from "store/modules/myPageModule";
 
 const ResourceCard = ({ data, isEditMode, chooseScrap, isChosen }) => {
   const history = useHistory();
+  const dispatch = useDispatch();
 
-  console.log(data);
   return (
     <Layout
       onClick={() => {
@@ -56,13 +52,25 @@ const ResourceCard = ({ data, isEditMode, chooseScrap, isChosen }) => {
           <Professor>{sliceContent(data.lecture.professor, "professor")}</Professor>
         </ResourceDetailInfoBlock>
         {/* {TODO: 엄지 클릭 시 true, false 변경} */}
-        <HitsBlock>
-          <Thumb isHitted={true} />
-          <Amount isHitted={true}>{data.hits}</Amount>
+        <HitsBlock onClick={(e) => onClickHitIcon(e, data.id, dispatch)}>
+          <Thumb isHitted={data.is_hit} />
+          <Amount isHitted={data.is_hit}>{data.hits}</Amount>
         </HitsBlock>
       </InfoLayout>
     </Layout>
   );
+};
+
+const onClickHitIcon = async (e, id, dispatch) => {
+  e.stopPropagation();
+  try {
+    const { data } = await ResourceAPI.requestHit(id);
+    if (data.httpStatus === "OK") {
+      dispatch(changeResourceIsHitStatus({ id }));
+    }
+  } catch (error) {
+    console.dir(error);
+  }
 };
 
 const sliceContent = (content, type) => {
