@@ -1,3 +1,5 @@
+import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
+
 // Actions
 const SET_LECTURE_INFO = "SET_LECTURE_INFO";
 const SET_LECTURE_REVIEWS = "SET_LECTURE_REVIEWS";
@@ -107,6 +109,7 @@ const STATE = {
 export default function lectureDetailReducer(state = STATE, action) {
   switch (action.type) {
     case SET_LECTURE_INFO:
+      reflectRecentlyViewedData(action.payload[0].data);
       return {
         ...state,
         ...action.payload[0].data,
@@ -292,3 +295,24 @@ const getDatasFrom2DepthPayload = (data = []) => {
 
   return result;
 };
+
+const reflectRecentlyViewedData = (infos) => {
+  const { id, professor, name, total_rating } = infos;
+  const compressedData = { id, professor, name, total_rating };
+  const data = getValueOnLocalStorage("recentlyViewedLectures");
+
+  if (data === null) {
+    setValueOnLocalStorage("recentlyViewedLectures", [compressedData]);
+    return;
+  }
+
+  if (data.some(({ id }) => id === compressedData.id)) return;
+
+  if (data.length !== MAX_RECENTLY_VIEWED_DATA_LENGTH) {
+    setValueOnLocalStorage("recentlyViewedLectures", [...data, compressedData]);
+  } else {
+    setValueOnLocalStorage("recentlyViewedLectures", [...data.slice(1), compressedData]);
+  }
+};
+
+const MAX_RECENTLY_VIEWED_DATA_LENGTH = 5;
