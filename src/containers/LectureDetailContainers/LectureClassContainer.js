@@ -71,57 +71,59 @@ const LectureClassContainer = ({ grade, lectureClassInfo = [] }) => {
   const { isTimetableModalOpened } = useSelector((state) => state.lectureDetailReducer);
 
   return (
-    <Section>
-      <InfoLabel>{`시간표 정보`}</InfoLabel>
+    <>
+      <Section>
+        <InfoLabel>{`시간표 정보`}</InfoLabel>
 
-      <Wrapper>
-        {lectureClassInfo.length === 0 && (
-          <SubWarningWrapper>
-            <SubWarningLabel>등록된 시간표 정보가 없습니다.</SubWarningLabel>
-          </SubWarningWrapper>
-        )}
+        <Wrapper>
+          {lectureClassInfo.length === 0 && (
+            <SubWarningWrapper>
+              <SubWarningLabel>등록된 시간표 정보가 없습니다.</SubWarningLabel>
+            </SubWarningWrapper>
+          )}
 
-        {lectureClassInfo.length !== 0 && (
-          <>
-            <SubInfoLabel>
-              <SubLabel>{`학점`}</SubLabel>
-              <SubLabelContent>{`${grade}학점`}</SubLabelContent>
-            </SubInfoLabel>
-            <SubInfoLabel>
-              <SubLabel>{`시간`}</SubLabel>
-              <SubLabelContent>{`분반과 시간을 확인하세요.`}</SubLabelContent>
-            </SubInfoLabel>
+          {lectureClassInfo.length !== 0 && (
+            <>
+              <SubInfoLabel>
+                <SubLabel>{`학점`}</SubLabel>
+                <SubLabelContent>{`${grade}학점`}</SubLabelContent>
+              </SubInfoLabel>
+              <SubInfoLabel>
+                <SubLabel>{`시간`}</SubLabel>
+                <SubLabelContent>{`분반과 시간을 확인하세요.`}</SubLabelContent>
+              </SubInfoLabel>
 
-            {lectureClassInfo.map((data, idx) => (
-              <ClassContent key={data.id}>
-                <SubLabelContent>
-                  {getDay(data.classTime)}
-                  {getClassTimePeriod(data.classTime)}
-                  {` (${data.classNumber})`}
-                </SubLabelContent>
+              {lectureClassInfo.map((data, idx) => (
+                <ClassContent key={data.id}>
+                  <SubLabelContent>
+                    {getDay(data.classTime)}
+                    {getClassTimePeriod(data.classTime)}
+                    {` (${data.classNumber})`}
+                  </SubLabelContent>
 
-                <ButtonWrapper
-                  onClick={() => {
-                    openModal(dispatch, isTimetableModalOpened, {
-                      lectureInfoIdx: idx,
-                      selectedClassId: data.id,
-                    });
-                  }}
-                >
-                  {data.selectedTableId.length !== 0 ? (
-                    <RemoveTimetable />
-                  ) : (
-                    <AddTimtable />
-                  )}
-                </ButtonWrapper>
-              </ClassContent>
-            ))}
+                  <ButtonWrapper
+                    onClick={() => {
+                      openModal(dispatch, isTimetableModalOpened, {
+                        lectureInfoIdx: idx,
+                        selectedClassId: data.id,
+                      });
+                    }}
+                  >
+                    {data.selectedTableId.length !== 0 ? (
+                      <RemoveTimetable />
+                    ) : (
+                      <AddTimtable />
+                    )}
+                  </ButtonWrapper>
+                </ClassContent>
+              ))}
 
-            {isTimetableModalOpened && <TimetableModal />}
-          </>
-        )}
-      </Wrapper>
-    </Section>
+              {isTimetableModalOpened && <TimetableModal />}
+            </>
+          )}
+        </Wrapper>
+      </Section>
+    </>
   );
 };
 

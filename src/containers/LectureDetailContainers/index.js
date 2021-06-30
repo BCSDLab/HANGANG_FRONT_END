@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
+import { Promise } from "core-js";
 
 import LectureDetailAPI from "api/lectureDetail";
 import ResourceAPI from "api/resources";
+import LoadingSpinner from "components/Shared/LoadingSpinner";
 
 import {
   setLectureInfo,
@@ -18,7 +19,6 @@ import {
 import { showAlertModal } from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
-import { BorderColor, InnerContentWidth } from "static/Shared/commonStyles";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 import LectureInfoContainer from "./LectureInfoContainer";
@@ -27,32 +27,14 @@ import LectureResourceContainer from "./LectureResourceContainer";
 import LectureReviewContainer from "./LectureReviewContainer";
 import LectureClassContainer from "./LectureClassContainer";
 
-import LoadingSpinner from "components/Shared/LoadingSpinner";
-import { Promise } from "core-js";
-
-const Wrapper = styled.div`
-  width: ${InnerContentWidth};
-  margin: 40px auto 32px auto;
-`;
-
-const Content = styled.div`
-  display: grid;
-`;
-
-const SpinnerWrapper = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-`;
-
-const ReviewSection = styled.section`
-  width: 752px;
-  grid-column: 0 / 12;
-  padding: 24px 24px 16px;
-  border-radius: 8px;
-  border: solid 1px ${BorderColor};
-`;
+import {
+  Wrapper,
+  Content,
+  SpinnerWrapper,
+  RightSection,
+  ReviewSection,
+  WriteLectureReviewButton,
+} from "./styles/index.style";
 
 const LectureDetailContainer = () => {
   let { lectureId } = useParams();
@@ -200,10 +182,16 @@ const LectureDetailContainer = () => {
                 />
               </ReviewSection>
 
-              <LectureClassContainer
-                grade={rest.grade}
-                lectureClassInfo={lectureClassInfo}
-              />
+              <RightSection>
+                <LectureClassContainer
+                  grade={rest.grade}
+                  lectureClassInfo={lectureClassInfo}
+                />
+
+                <WriteLectureReviewButton>
+                  {"강의평가 작성하기 >"}
+                </WriteLectureReviewButton>
+              </RightSection>
             </>
           )}
         </Content>

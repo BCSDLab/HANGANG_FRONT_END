@@ -16,7 +16,6 @@ export const Section = styled.section`
 
   min-height: 381px;
   border-radius: 8px;
-  grid-column: 8 / 12;
 `;
 
 export const Wrapper = styled.section`

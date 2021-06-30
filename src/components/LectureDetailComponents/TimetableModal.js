@@ -63,7 +63,7 @@ const TimetableModal = () => {
     (state) => state.lectureDetailReducer
   );
 
-  const checkLectureToTimetable = async (index, idx, timetableId) => {
+  const checkLectureToTimetable = async (timetableId) => {
     try {
       const { access_token: accessToken } = getValueOnLocalStorage("hangangToken");
 
@@ -96,13 +96,10 @@ const TimetableModal = () => {
   return (
     <ModalWrapper>
       {timetables &&
-        timetables.map((props, index) => {
-          return props.map((el, idx) => {
+        timetables.map((props) => {
+          return props.map((el) => {
             return (
-              <TimetableLabel
-                key={el.id}
-                onClick={() => checkLectureToTimetable(index, idx, el.id)}
-              >
+              <TimetableLabel key={el.id} onClick={() => checkLectureToTimetable(el.id)}>
                 {el.name}
                 {lectureClassInfo[lectureInfoIdx].selectedTableId.indexOf(el.id) !==
                   -1 && <Check />}
