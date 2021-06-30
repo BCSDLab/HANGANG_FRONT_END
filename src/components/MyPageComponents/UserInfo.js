@@ -45,7 +45,7 @@ const UserInfo = ({ current, setCurrent }) => {
     <Wrapper>
       <UserInfoWrapper>
         <Nickname>{infos.nickname}</Nickname>
-        <Major>{infos.major.join(", ")}</Major>
+        <Major>{convertMajor(infos.major)}</Major>
         <Point>
           <span>{infos.point}P</span>
         </Point>
@@ -115,6 +115,18 @@ UserInfo.propTypes = {
   }),
   current: PropTypes.string,
   setCurrent: PropTypes.func,
+};
+
+/**
+ * 디자인건축공학부 => 디자인·건축공학부 로 변경합니다.
+ */
+const convertMajor = (majors) => {
+  const convertedMajor = majors.reduce((acc, curr) => {
+    if (curr === "디자인건축공학부") acc.push("디자인·건축공학부");
+    else acc.push(curr);
+    return acc;
+  }, []);
+  return convertedMajor.join(", ");
 };
 
 const POINTS_LABEL = "포인트";

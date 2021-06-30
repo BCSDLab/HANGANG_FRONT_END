@@ -24,12 +24,12 @@ const MajorChoiceSection = ({ infos }) => {
         <MajorSubLabel>{MAJOR_CHOICE_SUB_LABEL}</MajorSubLabel>
       </SubLabel>
       <MajorGrid>
-        {MAJORS.map((val) => (
+        {MAJORS.map(({ label, value }) => (
           <Major
-            key={val}
-            value={val}
-            choiced={infos.major.includes(val)}
-            onClick={() => changeMajor(val, infos, dispatch)}
+            key={value}
+            value={label}
+            choiced={infos.major.includes(value)}
+            onClick={() => changeMajor(value, infos, dispatch)}
           />
         ))}
       </MajorGrid>
@@ -71,14 +71,14 @@ const changeMajor = async (target, infos, dispatch) => {
 };
 
 const MAJORS = [
-  "기계공학부",
-  "디자인·건축공학부",
-  "메카트로닉스공학부",
-  "산업경영학부",
-  "에너지신소재화학공학부",
-  "전기전자통신공학부",
-  "컴퓨터공학부",
-  "융합학과",
+  { label: "기계공학부", value: "기계공학부" },
+  { label: "디자인·건축공학부", value: "디자인건축공학부" },
+  { label: "메카트로닉스공학부", value: "메카트로닉스공학부" },
+  { label: "산업경영학부", value: "산업경영학부" },
+  { label: "에너지신소재화학공학부", value: "에너지신소재화학공학부" },
+  { label: "전기전자통신공학부", value: "전기전자통신공학부" },
+  { label: "컴퓨터공학부", value: "컴퓨터공학부" },
+  { label: "융합학과", value: "융합학과" },
 ];
 
 const MAJOR_CHOICE_LABEL = "전공 선택";
