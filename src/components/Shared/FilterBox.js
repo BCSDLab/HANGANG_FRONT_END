@@ -1,15 +1,8 @@
 import React from "react";
-import styled from "styled-components";
+
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import {
-  BorderColor,
-  ConceptColor,
-  CopyRightColor,
-  FontColor,
-  PlaceholderColor,
-} from "static/Shared/commonStyles";
 import {
   requestLectures,
   setDefaultLectureFilter,
@@ -21,135 +14,16 @@ import {
   setDefaultResourceFilter,
 } from "store/modules/resourcesModule";
 
-const Wrapper = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 40px;
-  right: 0;
-  width: 383px;
-  height: 538px;
-  border-radius: 16px;
-  background-color: #fff;
-  border: solid 1px ${CopyRightColor};
-  padding: 20px;
-
-  z-index: 9995;
-`;
-
-const NotifyLabel = styled.label`
-  margin-bottom: 25px;
-  color: ${PlaceholderColor};
-  font-size: 12px;
-`;
-
-const Exit = styled.img.attrs({
-  src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/lecturespage/exit.png",
-  alt: "exit",
-})`
-  position: absolute;
-  width: 24px;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-`;
-
-const Refresh = styled(Exit).attrs({
-  src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/lecturespage/refresh.png",
-  alt: "refresh",
-})`
-  right: 52px;
-`;
-
-const ApplyButton = styled.input.attrs({
-  type: "button",
-  alt: "apply",
-  value: "적용",
-})`
-  position: absolute;
-  bottom: 20px;
-  width: 343px;
-  height: 40px;
-  border: none;
-  border-radius: 20px;
-  background-color: ${ConceptColor};
-
-  font-size: 16px;
-  font-weight: 500;
-  color: #fff;
-
-  cursor: pointer;
-  outline: none;
-`;
-
-const Section = styled.section`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 37px;
-`;
-
-const Label = styled.label`
-  margin-bottom: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  color: ${FontColor};
-`;
-
-const columnConverter = (type) => {
-  switch (type) {
-    case "sort":
-      return 5;
-    case "order":
-    case "classification":
-    case "category":
-      return 4;
-    case "hashtag":
-      return 3;
-    default:
-      return;
-  }
-};
-
-const Buttons = styled.div`
-  display: grid;
-  grid-template-columns: repeat(${({ type }) => columnConverter(type)}, 1fr);
-  grid-gap: 8px 8px;
-`;
-
-const FilterButton = styled.input.attrs({
-  type: "button",
-  alt: "filter",
-})`
-  padding: 8px 0px;
-  border: none;
-  border-radius: 20px;
-
-  background-color: ${({ isChoiced }) =>
-    isChoiced ? `${ConceptColor}` : `${BorderColor}`};
-  color: ${({ isChoiced }) => (isChoiced ? `#fff` : `${FontColor}`)};
-  font-size: 14px;
-
-  cursor: pointer;
-  outline: none;
-`;
-
-const labelConverter = (key) => {
-  switch (key) {
-    case "sort":
-    case "order":
-      return "정렬";
-    case "classification":
-      return "유형";
-    case "hashtag":
-      return "해시태그";
-    case "category":
-      return "유형";
-    default:
-      return;
-  }
-};
+import {
+  Wrapper,
+  NotifyLabel,
+  Refresh,
+  Exit,
+  Section,
+  Label,
+  Buttons,
+  FilterButton,
+} from "./styles/FilterBox.style";
 
 /**
  * 강의평, 강의자료에서 공동으로 사용합니다.
@@ -233,6 +107,22 @@ const FilterBox = ({ type, filterList, setIsFilterBoxVisible }) => {
       ))}
     </Wrapper>
   );
+};
+
+const labelConverter = (key) => {
+  switch (key) {
+    case "sort":
+    case "order":
+      return "정렬";
+    case "classification":
+      return "유형";
+    case "hashtag":
+      return "해시태그";
+    case "category":
+      return "유형";
+    default:
+      return;
+  }
 };
 
 FilterBox.defaultProps = {
