@@ -27,16 +27,19 @@ import {
   RestBottomRightSection,
 } from "pages/styles/IndexPage.style";
 import { setMyTimetable, setRecommendResources } from "store/modules/mainPageModule";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
 
 const IndexPage = () => {
   const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((state) => state.authReducer);
 
   useEffect(() => {
-    fetchUserDatas(dispatch);
-  }, []);
+    if (isLoggedIn) {
+      fetchUserDatas(dispatch);
+    }
+  }, [isLoggedIn]);
 
   return (
     <Wrapper>
@@ -85,7 +88,7 @@ const fetchUserDatas = async (dispatch) => {
     dispatch(setRecommendResources({ resources: recommendResources.data }));
     dispatch(setMyTimetable({ lectureList: myTimetable.data.lectureList }));
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["notDefinedError"];
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
   }
 };
