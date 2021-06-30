@@ -18,7 +18,11 @@ import CategorySection from "components/ResourceComponents/ResourceWriteComponen
 import ContentSection from "components/ResourceComponents/ResourceWriteComponents/ContentSection";
 import FileSection from "components/ResourceComponents/ResourceWriteComponents/FileSection";
 
-import { setDefaultForm, setForm } from "store/modules/resourceCreateModule";
+import {
+  resetResourceCreateModuleState,
+  setDefaultForm,
+  setForm,
+} from "store/modules/resourceCreateModule";
 import { setCreateResource } from "store/modules/resourcesModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import { showAlertModal, showConfirmModal } from "store/modules/modalModule";
@@ -88,16 +92,14 @@ const submitWriteForm = async (form, setIsCreateFormOpened, dispatch) => {
   try {
     let accessToken = getValueOnLocalStorage("hangangToken").access_token;
     const { data } = await ResourceAPI.requestWriteResource(form, accessToken);
-    if (data.httpStatus === "CREATED") {
-      // FIXME: Change form To returned created data
-      dispatch(setCreateResource({ resource: form }));
-      setIsCreateFormOpened(false);
-      dispatch(
-        showAlertModal({
-          content: "강의자료 작성이 성공적으로 완료되었습니다.",
-        })
-      );
-    }
+    setIsCreateFormOpened(false);
+    dispatch(setCreateResource({ resource: data }));
+    dispatch(resetResourceCreateModuleState());
+    dispatch(
+      showAlertModal({
+        content: "강의자료 작성이 성공적으로 완료되었습니다.",
+      })
+    );
   } catch (error) {
     throw new Error(error);
   }
