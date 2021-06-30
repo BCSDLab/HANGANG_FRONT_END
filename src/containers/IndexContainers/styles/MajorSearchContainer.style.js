@@ -37,4 +37,5 @@ export const MajorLabel = styled.label`
   line-height: 1.4;
   color: #fff;
   text-align: center;
+  cursor: pointer;
 `;
