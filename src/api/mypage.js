@@ -55,10 +55,11 @@ export default {
     const response = await axios.delete("/lecture-banks/scrap", { data: id, headers });
     return response;
   },
-  updateUserInfo: async (major = [], nickname = "") => {
+  updateUserInfo: async (major = [], nickname = "", name = "") => {
     let body = {
       major,
       nickname,
+      name,
     };
     const response = await axios.put("/user/me", body, setTokenInHeader());
     return response;

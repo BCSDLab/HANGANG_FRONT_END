@@ -16,10 +16,21 @@ export const SettingSectionWrapper = styled.div`
 `;
 
 export const Profile = styled.div`
+  position: relative;
   width: fit-content;
   margin-right: 112px;
   display: flex;
   flex-direction: column;
+`;
+
+export const EditModeButton = styled.span`
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 14px;
+  color: ${({ isEditMode, isValidNickname }) =>
+    isEditMode && isValidNickname ? `${ConceptColor}` : `${PlaceholderColor}`};
+  cursor: ${({ isValidNickname }) => (isValidNickname ? `pointer` : `default`)};
 `;
 
 export const Setting = styled.div`
@@ -31,12 +42,6 @@ export const Etc = styled(Setting)`
   margin-bottom: 112px;
 `;
 
-export const ProfileLeftSection = styled.div`
-  width: 547px;
-  margin-top: 16px;
-  margin-right: 112px;
-`;
-
 export const ProfileInput = styled.input`
   all: unset;
   height: 22px;
@@ -45,6 +50,9 @@ export const ProfileInput = styled.input`
   padding-bottom: 4px;
   border-bottom: 1px solid ${BorderColor};
   font-size: 15px;
+  ::placeholder {
+    color: ${PlaceholderColor};
+  }
 `;
 
 export const NicknameInputWrapper = styled.div`
@@ -56,28 +64,10 @@ export const AlertImg = styled.img.attrs({
   alt: "경고 이미지",
 })`
   position: absolute;
-  right: 33px;
+  right: 3px;
   bottom: 4px;
   width: 20px;
   height: 20px;
-`;
-
-export const NicknameModifySection = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 6px;
-
-  cursor: pointer;
-`;
-
-export const ModifyButton = styled.button`
-  all: unset;
-  font-size: 14px;
-  color: ${PlaceholderColor};
-`;
-
-export const AbleButton = styled(ModifyButton)`
-  color: ${ConceptColor};
 `;
 
 export const MajorGrid = styled.div`
@@ -104,9 +94,9 @@ export const Major = styled.input.attrs(() => ({
   cursor: pointer;
 `;
 
-export const ProfileRightSection = styled.div`
+export const ProfileLayout = styled.div`
   width: calc(100% - 547px);
-  margin-top: 16px;
+  margin-top: 36px;
 `;
 
 export const Label = styled.label`
@@ -114,11 +104,12 @@ export const Label = styled.label`
   color: ${ConceptColor};
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 `;
 
 export const SubLabel = styled(Label)`
   color: ${FontColor};
+  margin-bottom: 0px;
 `;
 
 export const NotifyLabel = styled(Label)`

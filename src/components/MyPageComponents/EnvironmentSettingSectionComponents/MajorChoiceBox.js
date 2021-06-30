@@ -51,7 +51,11 @@ const changeMajor = async (target, infos, dispatch) => {
   }
 
   try {
-    const { data } = await MypageAPI.updateUserInfo(currentMajor, infos.nickname);
+    const { data } = await MypageAPI.updateUserInfo(
+      currentMajor,
+      infos.nickname,
+      infos.name
+    );
     if (data.httpStatus === "OK") {
       dispatch(setUserMajor({ major: currentMajor }));
     }
