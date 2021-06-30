@@ -29,6 +29,7 @@ import { useHistory } from "react-router-dom";
 const ResourceCard = ({ data, isEditMode, chooseScrap, isChosen }) => {
   const history = useHistory();
 
+  console.log(data);
   return (
     <Layout
       onClick={() => {
@@ -46,14 +47,13 @@ const ResourceCard = ({ data, isEditMode, chooseScrap, isChosen }) => {
         <Thumbnail src={data.thumbnail} />
       </ThumbnailLayout>
       <InfoLayout>
-        {/* {TODO: 키 값 수정되면 writer, lecture, professor 변경} */}
         <Title>{sliceContent(data.title, "title")}</Title>
-        <Writer>{sliceContent("닉네임은130까지가요요요요...", "writer")}</Writer>
-        <Category>필기</Category>
+        <Writer>{sliceContent(data.user.nickname, "writer")}</Writer>
+        <Category>{data.category.map((s) => s.slice(0, 2)).join(", ")}</Category>
         <ResourceDetailInfoBlock>
-          <Lecture>{sliceContent("디자인논리 및 실습인지뭔지", "lecture")}</Lecture>
+          <Lecture>{sliceContent(data.lecture.name, "lecture")}</Lecture>
           <Delimiter />
-          <Professor>{sliceContent("디자인논리 및 실습인지뭔지", "professor")}</Professor>
+          <Professor>{sliceContent(data.lecture.professor, "professor")}</Professor>
         </ResourceDetailInfoBlock>
         {/* {TODO: 엄지 클릭 시 true, false 변경} */}
         <HitsBlock>
