@@ -14,6 +14,7 @@ import useInfiniteScroll from "hooks/useInfiniteScroll";
 import { majorList } from "static/LecturesPage/majorList";
 import {
   requestResources,
+  resetResourceModuleState,
   setDepartmentOnResources,
   setResources,
 } from "store/modules/resourcesModule";
@@ -45,7 +46,7 @@ const ResourceContainer = () => {
   } = useSelector((state) => state.resourceReducer);
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
   /**
    * A Function to check user authentication.
    * If user didnt logged in, show alert.
@@ -64,7 +65,13 @@ const ResourceContainer = () => {
   };
 
   useEffect(() => {
-    if (isLoading) {
+    return () => {
+      dispatch(resetResourceModuleState());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isCheckedToken && isLoading) {
       fetchResources({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, [filterOptions]);

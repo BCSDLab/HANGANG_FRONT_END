@@ -21,6 +21,7 @@ import lectureFilterList from "static/LecturesPage/lectureFilterList.json";
 import { majorList } from "static/LecturesPage/majorList";
 import {
   requestLectures,
+  resetLectureModuleState,
   setDepartmentOnLectures,
   setLectures,
 } from "store/modules/lecturesModule";
@@ -39,10 +40,16 @@ const LecturesContainer = () => {
   } = useSelector((state) => state.lectureReducer);
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
 
   useEffect(() => {
-    if (isLoading) {
+    return () => {
+      dispatch(resetLectureModuleState());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isCheckedToken && isLoading) {
       fetchLectures({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, [filterOptions]);

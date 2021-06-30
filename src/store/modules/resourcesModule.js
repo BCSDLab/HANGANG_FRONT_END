@@ -10,6 +10,7 @@ const SET_RESOURCES_LOADING_START = "SET_RESOURCES_LOADING_START";
 const SET_RESOURCES = "SET_RESOURCES";
 
 const SET_CREATE_RESOURCE = "SET_CREATE_RESOURCE";
+const RESET_RESOURCE_MODULE_STATE = "RESET_RESOURCE_MODULE_STATE";
 
 // Action Creators
 export const setKeywordOnResources = (payload) => ({
@@ -27,6 +28,7 @@ export const requestResources = () => ({ type: SET_RESOURCES_LOADING_START });
 
 export const setResources = (payload) => ({ type: SET_RESOURCES, payload });
 export const setCreateResource = (payload) => ({ type: SET_CREATE_RESOURCE, payload });
+export const resetResourceModuleState = () => ({ type: RESET_RESOURCE_MODULE_STATE });
 
 const DEFAULT_FILTER_OPTIONS = {
   order: "id",
@@ -123,6 +125,10 @@ export default function resourceReducer(state = STATE, action) {
         resources: [action.payload.resource, ...state.resources],
         resource_amount: action.payload.count + 1,
         max_page: Math.ceil(action.payload.count + 1 / state.limit),
+      };
+    case RESET_RESOURCE_MODULE_STATE:
+      return {
+        ...STATE,
       };
     default:
       return {
