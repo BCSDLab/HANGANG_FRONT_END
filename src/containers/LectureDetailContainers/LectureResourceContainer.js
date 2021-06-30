@@ -17,6 +17,7 @@ import {
   Thumbnail,
   ResourceTitle,
 } from "containers/LectureDetailContainers/styles/LectureResourceContainer.style";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 
 const MoveLeftButtonComponent = ({ move }) => (
   <MoveLeftButton onClick={() => move("left")}>
@@ -78,7 +79,9 @@ const LectureResourceContainer = ({ lectureResource = {} }) => {
                   <ResourceBox>
                     <Thumbnail thumbnail={thumbnail} />
                   </ResourceBox>
-                  <ResourceTitle>{sliceString(title, 7)}</ResourceTitle>
+                  <ResourceTitle>
+                    {sliceString(convertHTMLEntities(title), 7)}
+                  </ResourceTitle>
                 </Resource>
               ))}
             </ResourceWrapper>
@@ -96,7 +99,7 @@ const LectureResourceContainer = ({ lectureResource = {} }) => {
 
 const sliceString = (string, max) => {
   if (string.length > max) {
-    string = string.slice(0, max) + "・・・";
+    string = string.slice(0, max) + "...";
   }
   return string;
 };
