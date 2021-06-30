@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
 import {
   Title,
   Icon,
@@ -24,12 +25,14 @@ const Thumbnail = ({ index }) => {
       onClick={() => history.push(`/resource/${recommendResources[index].id}`)}
     >
       <Icon thumbnailURL={recommendResources[index].thumbnail} />
-      <Title index={index}>{recommendResources[index].title}</Title>
+      <Title index={index}>{convertHTMLEntities(recommendResources[index].title)}</Title>
 
       <LectureNameAndAuthor>
-        <Name>{recommendResources[index].lecture.name}</Name>
+        <Name>{convertHTMLEntities(recommendResources[index].lecture.name)}</Name>
         <Slash>/</Slash>
-        <Author>{recommendResources[index].lecture.professor}</Author>
+        <Author>
+          {convertHTMLEntities(recommendResources[index].lecture.professor)}
+        </Author>
       </LectureNameAndAuthor>
     </ThumbnailWrapper>
   );
