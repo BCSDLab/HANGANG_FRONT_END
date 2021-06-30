@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const SET_USER_INFOS = "SET_USER_INFOS";
 const SET_PURCHASED_RESOURCE = "SET_PURCHASED_RESOURCE";
 const SET_SCRAPPED_LECTURES = "SET_SCRAPPED_LECTURES";
@@ -5,6 +6,8 @@ const REMOVE_SCRAPPED_LECTURES = "REMOVE_SCRAPPED_LECTURES";
 const SET_SCRAPPED_RESOURCES = "SET_SCRAPPED_RESOURCES";
 const REMOVE_SCRAPPED_RESOURCES = "REMOVE_SCRAPPED_RESOURCES";
 const SET_USER_MAJOR = "SET_USER_MAJOR";
+const CHANGE_USER_INFOS = "CHANGE_USER_INFOS";
+const CHANGE_RESOURCE_IS_HIT_STATUS = "CHANGE_RESOURCE_IS_HIT_STATUS";
 const FINISH_LOAD_RESOURCES = "FINISH_LOAD_RESOURCES";
 
 export const setUserInfos = (payload) => ({ type: SET_USER_INFOS, payload });
@@ -30,6 +33,11 @@ export const removeScrappedResources = (payload) => ({
 });
 export const setUserMajor = (payload) => ({
   type: SET_USER_MAJOR,
+  payload,
+});
+export const changeUserInfos = (payload) => ({ type: CHANGE_USER_INFOS, payload });
+export const changeResourceIsHitStatus = (payload) => ({
+  type: CHANGE_RESOURCE_IS_HIT_STATUS,
   payload,
 });
 export const finishLoadResources = () => ({ type: FINISH_LOAD_RESOURCES });
@@ -94,6 +102,31 @@ export default function myPageReducer(state = STATE, action) {
           ...state.infos,
           major: action.payload.major,
         },
+      };
+    case CHANGE_USER_INFOS:
+      return {
+        ...state,
+        infos: {
+          ...state.infos,
+          name: action.payload.name,
+          nickname: action.payload.nickname,
+        },
+      };
+    case CHANGE_RESOURCE_IS_HIT_STATUS:
+      const resources = state.scrappedResources.reduce((acc, curr) => {
+        if (curr.id === action.payload.id) {
+          if (curr.is_hit) {
+            curr = { ...curr, is_hit: !curr.is_hit, hits: --curr.hits };
+          } else {
+            curr = { ...curr, is_hit: !curr.is_hit, hits: ++curr.hits };
+          }
+        }
+        acc.push(curr);
+        return acc;
+      }, []);
+      return {
+        ...state,
+        scrappedResources: [...resources],
       };
     case FINISH_LOAD_RESOURCES:
       return {

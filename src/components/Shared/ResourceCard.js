@@ -51,7 +51,6 @@ const ResourceCard = ({ data, isEditMode, chooseScrap, isChosen }) => {
           <Delimiter />
           <Professor>{sliceContent(data.lecture.professor, "professor")}</Professor>
         </ResourceDetailInfoBlock>
-        {/* {TODO: 엄지 클릭 시 true, false 변경} */}
         <HitsBlock onClick={(e) => onClickHitIcon(e, data.id, dispatch)}>
           <Thumb isHitted={data.is_hit} />
           <Amount isHitted={data.is_hit}>{data.hits}</Amount>

@@ -21,7 +21,7 @@ import {
   SCRAPPED_RESOURCES,
 } from "static/MyPage/MYPAGE_CURRENT_STATE";
 import ResourceCard from "components/Shared/ResourceCard";
-import { showAlertModal } from "store/modules/modalModule";
+import { showAlertModal, showConfirmModal } from "store/modules/modalModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 
 const ScrapSection = ({ current }) => {
@@ -58,29 +58,35 @@ const ScrapSection = ({ current }) => {
     });
   };
 
+  const checkDeleteRequest = () => {
+    dispatch(
+      showConfirmModal({
+        title: "",
+        content: "정말로 삭제하시겠습니까?",
+        onConfirm: () => deleteScrap(),
+      })
+    );
+  };
+
   /**
    * deleteScrap
    * 선택된 자료를 삭제합니다.
-   * 자료가 선택되어 있지 않을 경우 alert 창을 내보냅니다.
-   * 자료가 선택되었을 경우 delete API 호출과 함께 현재 scrap state도 변경시켜 줍니다.
    */
   const deleteScrap = async () => {
-    if (confirm("정말로 삭제하시겠습니까?")) {
-      if (selectedScrap.length === 0) {
-        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["INVALID_DELETE_REQUEST"];
-        dispatch(showAlertModal({ title, content }));
-      } else {
-        if (current === SCRAPPED_LECTURES) {
-          requestDeleteScrappedLecture(
-            { lectures: selectedScrap, setIsEditMode, setSelectedScrap },
-            dispatch
-          );
-        } else if (current === SCRAPPED_RESOURCES) {
-          requestDeleteScrappedResources(
-            { resources: selectedScrap, setIsEditMode, setSelectedScrap },
-            dispatch
-          );
-        }
+    if (selectedScrap.length === 0) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["INVALID_DELETE_REQUEST"];
+      dispatch(showAlertModal({ title, content }));
+    } else {
+      if (current === SCRAPPED_LECTURES) {
+        requestDeleteScrappedLecture(
+          { lectures: selectedScrap, setIsEditMode, setSelectedScrap },
+          dispatch
+        );
+      } else if (current === SCRAPPED_RESOURCES) {
+        requestDeleteScrappedResources(
+          { resources: selectedScrap, setIsEditMode, setSelectedScrap },
+          dispatch
+        );
       }
     }
   };
@@ -97,7 +103,7 @@ const ScrapSection = ({ current }) => {
               <CheckImg />
               전체선택
             </AllChoose>
-            <ActionLabel onClick={() => deleteScrap()}>삭제</ActionLabel>
+            <ActionLabel onClick={() => checkDeleteRequest()}>삭제</ActionLabel>
           </>
         )}
       </ActionRow>
