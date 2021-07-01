@@ -24,12 +24,15 @@ import {
   resetLectureModuleState,
   setDepartmentOnLectures,
   setLectures,
+  setNextPageLectures,
 } from "store/modules/lecturesModule";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
 
 const LecturesContainer = () => {
   const dispatch = useDispatch();
+  const lectureReducerState = useSelector((state) => state.lectureReducer);
+
   const {
     isLoading,
     lectures,
@@ -37,7 +40,7 @@ const LecturesContainer = () => {
     page,
     max_page,
     ...filterOptions
-  } = useSelector((state) => state.lectureReducer);
+  } = lectureReducerState;
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
@@ -60,7 +63,7 @@ const LecturesContainer = () => {
   const fetchMore = debounce((entries) => {
     const target = entries[0];
     if (target.isIntersecting && page <= max_page) {
-      fetchLectures({ page, ...filterOptions }, isLoggedIn, dispatch);
+      fetchNextPageLectures({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, 500);
   const { targetRef } = useInfiniteScroll(fetchMore, 2);
@@ -116,6 +119,17 @@ const fetchLectures = async (options, isLoggedIn, dispatch) => {
   try {
     const { data } = await LectureAPI.getLectures(options, isLoggedIn);
     dispatch(setLectures(data));
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
+    throw new Error(error);
+  }
+};
+
+const fetchNextPageLectures = async (options, isLoggedIn, dispatch) => {
+  try {
+    const { data } = await LectureAPI.getLectures(options, isLoggedIn);
+    dispatch(setNextPageLectures(data));
   } catch (error) {
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));

@@ -43,7 +43,6 @@ const AuthRoute = ({ path, ...rest }) => {
     return <Redirect from="*" to="/" />;
   }
 
-  console.log("rest");
   return <Route {...rest} />;
 };
 

@@ -42,27 +42,28 @@ const ResourceCard = ({ data: { is_hit, hits, ...rest } }) => {
    */
   const clickHitIcon = async (e, id) => {
     e.stopPropagation();
+
     if (!isLoggedIn) {
       const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_LOGGED_IN"];
       const onConfirm = () => history.push("/login");
       dispatch(showConfirmModal({ title, content, onConfirm }));
       return;
-    } else {
-      try {
-        const accessToken = getValueOnLocalStorage("hangangToken").access_token;
-        const { data } = await ResourceAPI.requestHit(id, accessToken);
-        if (data.httpStatus === "OK") {
-          setHitInfos((prev) =>
-            prev.is_hit
-              ? { is_hit: false, hits: prev.hits - 1 }
-              : { is_hit: true, hits: prev.hits + 1 }
-          );
-        }
-      } catch (err) {
-        const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
-        dispatch(showAlertModal({ title, content }));
-        throw new Error(err);
+    }
+
+    try {
+      const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+      const { data } = await ResourceAPI.requestHit(id, accessToken);
+      if (data.httpStatus === "OK") {
+        setHitInfos((prev) =>
+          prev.is_hit
+            ? { is_hit: false, hits: prev.hits - 1 }
+            : { is_hit: true, hits: prev.hits + 1 }
+        );
       }
+    } catch (err) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
+      throw new Error(err);
     }
   };
 

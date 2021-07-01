@@ -8,6 +8,7 @@ const SET_DEFAULT_LECTURE_FILTER = "SET_DEFAULT_LECTURE_FILTER";
 const SET_LECTURES_LOADING_START = "SET_LECTURES_LOADING_START";
 
 const SET_LECTURES = "SET_LECTURES";
+const SET_NEXT_PAGE_LECTURES = "SET_NEXT_PAGE_LECTURES";
 const RESET_LECTURE_MODULE_STATE = "RESET_LECTURE_MODULE_STATE";
 
 // Action Creators
@@ -25,7 +26,13 @@ export const setDefaultLectureFilter = () => ({ type: SET_DEFAULT_LECTURE_FILTER
 export const requestLectures = () => ({ type: SET_LECTURES_LOADING_START });
 
 export const setLectures = (payload) => ({ type: SET_LECTURES, payload });
-export const resetLectureModuleState = () => ({ type: RESET_LECTURE_MODULE_STATE });
+export const setNextPageLectures = (payload) => ({
+  type: SET_NEXT_PAGE_LECTURES,
+  payload,
+});
+export const resetLectureModuleState = () => ({
+  type: RESET_LECTURE_MODULE_STATE,
+});
 
 const DEFAULT_FILTER_OPTIONS = {
   sort: "평점순",
@@ -115,11 +122,17 @@ export default function lectureReducer(state = STATE, action) {
     case SET_LECTURES:
       return {
         ...state,
-        lectures: [...state.lectures, ...action.payload.result],
+        lectures: [...action.payload.result],
         lecture_amount: action.payload.count,
         max_page: Math.ceil(action.payload.count / state.limit),
         page: ++state.page,
         isLoading: false,
+      };
+    case SET_NEXT_PAGE_LECTURES:
+      return {
+        ...state,
+        lectures: [...state.lectures, ...action.payload.result],
+        page: ++state.page,
       };
     case RESET_LECTURE_MODULE_STATE:
       return {

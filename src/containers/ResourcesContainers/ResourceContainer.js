@@ -16,6 +16,7 @@ import {
   requestResources,
   resetResourceModuleState,
   setDepartmentOnResources,
+  setNextPageResources,
   setResources,
 } from "store/modules/resourcesModule";
 import ResourceFilterList from "static/ResourcesPage/ResourceFilterList.json";
@@ -36,6 +37,8 @@ import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TY
 
 const ResourceContainer = () => {
   const dispatch = useDispatch();
+  const resourceReducerState = useSelector((state) => state.resourceReducer);
+
   const {
     isLoading,
     resources,
@@ -43,7 +46,7 @@ const ResourceContainer = () => {
     page,
     max_page,
     ...filterOptions
-  } = useSelector((state) => state.resourceReducer);
+  } = resourceReducerState;
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false);
   const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
@@ -86,7 +89,7 @@ const ResourceContainer = () => {
   const fetchMore = debounce((entries) => {
     const target = entries[0];
     if (target.isIntersecting && page <= max_page) {
-      fetchResources({ page, ...filterOptions }, isLoggedIn, dispatch);
+      fetchNextPageResources({ page, ...filterOptions }, isLoggedIn, dispatch);
     }
   }, 500);
   const { targetRef } = useInfiniteScroll(fetchMore, 2);
@@ -140,6 +143,17 @@ const fetchResources = async (options, isLoggedIn, dispatch) => {
   try {
     const { data } = await ResourceAPI.getResources(options, isLoggedIn);
     dispatch(setResources(data));
+  } catch (error) {
+    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+    dispatch(showAlertModal({ title, content }));
+    throw new Error(error);
+  }
+};
+
+const fetchNextPageResources = async (options, isLoggedIn, dispatch) => {
+  try {
+    const { data } = await ResourceAPI.getResources(options, isLoggedIn);
+    dispatch(setNextPageResources(data));
   } catch (error) {
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));

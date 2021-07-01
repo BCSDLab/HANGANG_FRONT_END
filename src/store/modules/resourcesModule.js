@@ -8,6 +8,7 @@ const SET_DEFAULT_RESOURCE_FILTER = "SET_DEFAULT_RESOURCE_FILTER";
 const SET_RESOURCES_LOADING_START = "SET_RESOURCES_LOADING_START";
 
 const SET_RESOURCES = "SET_RESOURCES";
+const SET_NEXT_PAGE_RESOURCES = "SET_NEXT_PAGE_RESOURCES";
 
 const SET_CREATE_RESOURCE = "SET_CREATE_RESOURCE";
 const RESET_RESOURCE_MODULE_STATE = "RESET_RESOURCE_MODULE_STATE";
@@ -27,8 +28,15 @@ export const setDefaultResourceFilter = () => ({ type: SET_DEFAULT_RESOURCE_FILT
 export const requestResources = () => ({ type: SET_RESOURCES_LOADING_START });
 
 export const setResources = (payload) => ({ type: SET_RESOURCES, payload });
+export const setNextPageResources = (payload) => ({
+  type: SET_NEXT_PAGE_RESOURCES,
+  payload,
+});
+
 export const setCreateResource = (payload) => ({ type: SET_CREATE_RESOURCE, payload });
-export const resetResourceModuleState = () => ({ type: RESET_RESOURCE_MODULE_STATE });
+export const resetResourceModuleState = () => ({
+  type: RESET_RESOURCE_MODULE_STATE,
+});
 
 const DEFAULT_FILTER_OPTIONS = {
   order: "id",
@@ -113,11 +121,17 @@ export default function resourceReducer(state = STATE, action) {
     case SET_RESOURCES:
       return {
         ...state,
-        resources: [...state.resources, ...action.payload.result],
+        resources: [...action.payload.result],
         resource_amount: action.payload.count,
         page: ++state.page,
         max_page: Math.ceil(action.payload.count / state.limit),
         isLoading: false,
+      };
+    case SET_NEXT_PAGE_RESOURCES:
+      return {
+        ...state,
+        resources: [...state.resources, ...action.payload.result],
+        page: ++state.page,
       };
     case SET_CREATE_RESOURCE:
       return {
