@@ -37,13 +37,18 @@ import { showAlertModal } from "store/modules/modalModule";
 
 const IndexPage = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isCheckedToken && !isLoggedIn) {
+      dispatch(finishFetchUserData());
+      return;
+    }
+
+    if (isCheckedToken && isLoggedIn) {
       fetchUserDatas(dispatch);
     }
-  }, [isLoggedIn]);
+  }, [isCheckedToken, isLoggedIn]);
 
   return (
     <Wrapper>
