@@ -3,7 +3,7 @@ import { InnerContentWidth } from "static/Shared/commonStyles";
 
 export const Wrapper = styled.div`
   position: relative;
-  min-height: ${MIN_HEIGHT};
+  min-height: 1050px;
   width: 100%;
 `;
 
@@ -23,5 +23,3 @@ export const Content = styled.div`
   height: 100%;
   margin: 0 auto;
 `;
-
-const MIN_HEIGHT = "798px";
