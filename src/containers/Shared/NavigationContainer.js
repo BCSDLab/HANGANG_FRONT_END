@@ -26,18 +26,21 @@ import {
  */
 const NavigationContainer = () => {
   const { isLoggedIn, isCheckedToken } = useSelector((state) => state.authReducer);
-  const ignorePathList = ["/login", "/findpwauth", "/findpw", "/signupauth", "/signup"];
+
   const [isVisible, setIsVisible] = useState(
-    !ignorePathList.includes(window.location.pathname)
+    !IGNORE_PATH_LIST.includes(window.location.pathname)
   );
   const history = useHistory();
   const [current, setCurrent] = useState(window.location.pathname);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setCurrent(window.location.pathname);
+    setIsVisible(!IGNORE_PATH_LIST.includes(window.location.pathname));
+
     return history.listen((loc) => {
       setCurrent(loc.pathname);
-      setIsVisible(!ignorePathList.includes(loc.pathname));
+      setIsVisible(!IGNORE_PATH_LIST.includes(loc.pathname));
     });
   }, [history]);
 
@@ -77,5 +80,7 @@ const NavigationContainer = () => {
     )
   );
 };
+
+const IGNORE_PATH_LIST = ["/login", "/findpwauth", "/findpw", "/signupauth", "/signup"];
 
 export default NavigationContainer;

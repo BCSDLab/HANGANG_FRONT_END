@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { InnerContentWidth } from "static/Shared/commonStyles";
 import styled from "styled-components";
 
@@ -115,49 +115,66 @@ const CopyRight = styled.span`
  * ignorePathList는 AuthPage 관련 path들입니다.
  */
 const FooterContainer = () => {
+  const [isVisible, setIsVisible] = useState(
+    !IGNORE_PATH_LIST.includes(window.location.pathname)
+  );
+  const history = useHistory();
+
+  useEffect(() => {
+    setIsVisible(!IGNORE_PATH_LIST.includes(window.location.pathname));
+
+    return history.listen((loc) => {
+      setIsVisible(!IGNORE_PATH_LIST.includes(loc.pathname));
+    });
+  }, [history]);
+
   return (
-    <FooterWrapper>
-      <InnerContent>
-        <Left>
-          <HangangLogo />
-        </Left>
-        <Center>
-          <InnerPush>
-            <InnerPushLink to="/lectures">강의평</InnerPushLink>
-            <InnerPushLink to="/resources">강의자료</InnerPushLink>
-            <InnerPushLink to="/timetable">시간표</InnerPushLink>
-          </InnerPush>
-          <ExternalURL>
-            <ExternalURLButton>
-              <ExternalLink href="https://bcsdlab.com/">BCSD Lab 바로가기</ExternalLink>
-            </ExternalURLButton>
-            <ExternalURLButton>
-              <ExternalLink href="https://www.koreatech.ac.kr/kor/Main.do">
-                코리아텍 바로가기
-              </ExternalLink>
-            </ExternalURLButton>
-            <ExternalURLButton>
-              <ExternalLink href="https://portal.koreatech.ac.kr/login.jsp">
-                아우누리 바로가기
-              </ExternalLink>
-            </ExternalURLButton>
-            <ExternalURLButton>
-              <ExternalLink>개인정보 처리방침</ExternalLink>
-            </ExternalURLButton>
-          </ExternalURL>
-          <CopyRight>{`COPYRIGHT © ${new Date().getFullYear()} BCSD LAB ALL RIGHTS RESERVED.`}</CopyRight>
-        </Center>
-        <Right>
-          <ExternalLink href="https://www.facebook.com/BCSD-Lab-1727922507422214/">
-            <FacebookLogo />
-          </ExternalLink>
-          <ExternalLink href="https://www.hangang.com">
-            <HomeLogo />
-          </ExternalLink>
-        </Right>
-      </InnerContent>
-    </FooterWrapper>
+    isVisible && (
+      <FooterWrapper>
+        <InnerContent>
+          <Left>
+            <HangangLogo />
+          </Left>
+          <Center>
+            <InnerPush>
+              <InnerPushLink to="/lectures">강의평</InnerPushLink>
+              <InnerPushLink to="/resources">강의자료</InnerPushLink>
+              <InnerPushLink to="/timetable">시간표</InnerPushLink>
+            </InnerPush>
+            <ExternalURL>
+              <ExternalURLButton>
+                <ExternalLink href="https://bcsdlab.com/">BCSD Lab 바로가기</ExternalLink>
+              </ExternalURLButton>
+              <ExternalURLButton>
+                <ExternalLink href="https://www.koreatech.ac.kr/kor/Main.do">
+                  코리아텍 바로가기
+                </ExternalLink>
+              </ExternalURLButton>
+              <ExternalURLButton>
+                <ExternalLink href="https://portal.koreatech.ac.kr/login.jsp">
+                  아우누리 바로가기
+                </ExternalLink>
+              </ExternalURLButton>
+              <ExternalURLButton>
+                <ExternalLink>개인정보 처리방침</ExternalLink>
+              </ExternalURLButton>
+            </ExternalURL>
+            <CopyRight>{`COPYRIGHT © ${new Date().getFullYear()} BCSD LAB ALL RIGHTS RESERVED.`}</CopyRight>
+          </Center>
+          <Right>
+            <ExternalLink href="https://www.facebook.com/BCSD-Lab-1727922507422214/">
+              <FacebookLogo />
+            </ExternalLink>
+            <ExternalLink href="/">
+              <HomeLogo />
+            </ExternalLink>
+          </Right>
+        </InnerContent>
+      </FooterWrapper>
+    )
   );
 };
+
+const IGNORE_PATH_LIST = ["/login", "/findpwauth", "/findpw", "/signupauth", "/signup"];
 
 export default FooterContainer;
