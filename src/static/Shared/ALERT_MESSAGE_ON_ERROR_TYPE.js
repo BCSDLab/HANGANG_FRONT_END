@@ -90,4 +90,7 @@ export default {
   SUCCESS_MEMBERSHIP_WITHDRAWAL: {
     content: "성공적으로 탈퇴 처리가 되었습니다.",
   },
+  ALREADY_LOGGED_IN: {
+    content: "이미 로그인 되어있습니다.",
+  },
 };
