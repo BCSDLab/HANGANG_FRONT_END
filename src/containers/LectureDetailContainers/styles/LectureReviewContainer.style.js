@@ -42,7 +42,7 @@ export const FilterPickSection = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  z-index: 9999;
+  z-index: 1;
 `;
 
 export const FilterPickLabel = styled.label`
