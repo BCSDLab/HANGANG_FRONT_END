@@ -32,11 +32,12 @@ export const Title = styled.span`
 export const LectureNameAndAuthor = styled.div`
   position: absolute;
   display: flex;
+  height: 12px;
   top: 9px;
   right: 12px;
 `;
 
-export const Name = styled.div`
+export const Name = styled.span`
   max-width: 50px;
   white-space: nowrap;
   overflow: hidden;
