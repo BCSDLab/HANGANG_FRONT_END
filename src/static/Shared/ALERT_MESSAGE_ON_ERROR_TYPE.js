@@ -68,6 +68,10 @@ export default {
     title: "",
     content: "토큰이 만료되었습니다. \n다시 로그인해주세요.",
   },
+  INVALID_NICKNAME_ERROR: {
+    title: "프로필 수정에 실패하였습니다.",
+    content: "특수문자와 초성은 사용 불가능합니다.",
+  },
   INVALID_DELETE_REQUEST: {
     title: "자료 삭제에 실패하였습니다.",
     content: "알 수 없는 이유로 자료 삭제에 관리자에게 문의해주세요.",

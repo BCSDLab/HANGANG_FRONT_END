@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { majorsFullName } from "static/AuthPage/majors";
 import Terms from "static/AuthPage/terms";
 import {
   BorderColor,
