@@ -3,6 +3,8 @@ const SET_MY_TIMETABLE = "SET_MY_TIMETABLE";
 const SET_DISPLAY_LECTURE_RANKING = "SET_DISPLAY_LECTURE_RANKING";
 const SET_DEPARTMENT_ON_RANKING = "SET_DEPARTMENT_ON_RANKING";
 
+const FINISH_FETCH_USER_DATA = "FINISH_FETCH_USER_DATA";
+
 export const setRecommendResources = (payload) => ({
   type: SET_RECOMMEND_RESOURCES,
   payload,
@@ -16,6 +18,9 @@ export const setDepartmentOnRanking = (payload) => ({
   type: SET_DEPARTMENT_ON_RANKING,
   payload,
 });
+export const finishFetchUserData = () => ({
+  type: FINISH_FETCH_USER_DATA,
+});
 
 const LECTURE_RANKING_STATE = {
   currentDepartment: { label: "교양", value: "교양학부" },
@@ -25,6 +30,7 @@ const LECTURE_RANKING_STATE = {
 const STATE = {
   recommendResources: [],
   lectureList: [],
+  isFetchFinished: false,
   ...LECTURE_RANKING_STATE,
 };
 
@@ -49,6 +55,11 @@ export default function mainPageReducer(state = STATE, action) {
       return {
         ...state,
         currentDepartment: action.payload.department,
+      };
+    case FINISH_FETCH_USER_DATA:
+      return {
+        ...state,
+        isFetchFinished: true,
       };
     default:
       return state;
