@@ -62,11 +62,11 @@ const NavigationContainer = () => {
             <NavigationUnderline current={current} />
           </StyledLinkWrapper>
           <AuthBox>
-            {!isLoggedIn && <Item to="/login">로그인</Item>}
-            {isLoggedIn && <Item to="/my">마이페이지</Item>}
+            {isCheckedToken && !isLoggedIn && <Item to="/login">로그인</Item>}
+            {isCheckedToken && isLoggedIn && <Item to="/my">마이페이지</Item>}
             <MiddleLine />
-            {!isLoggedIn && <Item to="/signupauth">회원가입</Item>}
-            {isLoggedIn && (
+            {isCheckedToken && !isLoggedIn && <Item to="/signupauth">회원가입</Item>}
+            {isCheckedToken && isLoggedIn && (
               <LogoutButton as="button" onClick={() => executeLogout()}>
                 로그아웃
               </LogoutButton>
