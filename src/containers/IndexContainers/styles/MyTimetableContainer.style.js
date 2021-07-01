@@ -13,6 +13,14 @@ export const Label = styled.label`
   font-weight: 500;
 `;
 
+export const Lecture = styled.div`
+  position: relative;
+  width: 100%;
+  min-height: 39px;
+  margin-bottom: 24px;
+  padding: 0 20px;
+`;
+
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -21,20 +29,20 @@ export const Content = styled.div`
   border: 1px solid ${BorderColor};
   border-radius: 8px;
   margin-top: 16px;
-  padding: 12px 20px;
-`;
 
-export const Lecture = styled.div`
-  position: relative;
-  width: 100%;
-  min-height: 39px;
-  margin: 12px 0px;
+  ${Lecture}:first-child {
+    margin-top: 24px;
+  }
+
+  ${Lecture}:last-child {
+    margin-bottom: 24px;
+  }
 `;
 
 export const Name = styled.span`
   position: absolute;
   top: 2px;
-  left: 0;
+  left: 20px;
   font-size: 14px;
   font-weight: 500;
   color: ${FontColor};
@@ -43,7 +51,7 @@ export const Name = styled.span`
 export const Professor = styled.span`
   position: absolute;
   bottom: 2px;
-  left: 0;
+  left: 20px;
   font-size: 12px;
   color: #828282;
 `;
@@ -52,7 +60,7 @@ export const AssessButton = styled(Link)`
   all: unset;
   position: absolute;
   top: calc(50% - 14px);
-  right: 0;
+  right: 20px;
   display: flex;
   justify-content: center;
   align-items: center;

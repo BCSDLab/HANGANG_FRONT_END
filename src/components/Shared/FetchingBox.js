@@ -9,7 +9,6 @@ const flowBackground = keyframes`
 const Fetching = styled.div`
   width: 100%;
   height: ${({ height }) => height}px;
-  border-radius: 10px;
 
   opacity: 0.5;
   background: linear-gradient(
