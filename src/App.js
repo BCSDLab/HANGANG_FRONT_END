@@ -35,6 +35,12 @@ const Main = styled.main`
   height: fit-content;
   min-height: 1080px;
   min-width: 1135px;
+
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 `;
 
 const App = () => {

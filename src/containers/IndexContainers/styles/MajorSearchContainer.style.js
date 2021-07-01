@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { FontColor } from "static/Shared/commonStyles";
@@ -16,7 +15,7 @@ export const Content = styled.div`
   margin-top: 16px;
 `;
 
-export const MajorCard = styled(Link)`
+export const MajorCard = styled.div`
   all: unset;
   position: relative;
   width: 100px;
