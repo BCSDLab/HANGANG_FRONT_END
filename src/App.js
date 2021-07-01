@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useToasts } from "react-toast-notifications";
 import styled from "styled-components";
 
+import AuthRoute from "./AuthRoute";
 import AuthAPI from "api/auth";
 import { setUserInfo, succeedTokenCheck } from "store/modules/auth";
 import {
@@ -163,11 +164,11 @@ const App = () => {
           <Route path="/resources" component={ResourcesPage} />
           <Route path="/resource" component={ResourceDetailPage} />
           <Route path="/timetable" component={TimetablePage} />
-          <Route path="/login" component={LoginPage} />
-          <Route path="/findpwauth" component={FindPwAuthPage} />
-          <Route path="/findpw" component={FindPwPage} />
-          <Route path="/signupauth" component={SignUpAuthPage} />
-          <Route path="/signup" component={SignUpPage} />
+          <AuthRoute path="/login" component={LoginPage} />
+          <AuthRoute path="/findpwauth" component={FindPwAuthPage} />
+          <AuthRoute path="/findpw" component={FindPwPage} />
+          <AuthRoute path="/signupauth" component={SignUpAuthPage} />
+          <AuthRoute path="/signup" component={SignUpPage} />
           <Route path="/my" component={MyPage} />
           <Redirect from="*" to="/" />
         </Switch>

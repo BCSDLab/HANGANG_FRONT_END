@@ -111,8 +111,14 @@ const requestChangeProfileInfo = async (infos, temporaryProfile, dispatch) => {
       dispatch(changeUserInfos({ name, nickname }));
     }
   } catch (error) {
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
-    dispatch(showAlertModal({ title, content }));
+    console.dir(error);
+    if (error.response.data.code === 16) {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["INVALID_NICKNAME_ERROR"];
+      dispatch(showAlertModal({ title, content }));
+    } else {
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
+    }
   }
 };
 

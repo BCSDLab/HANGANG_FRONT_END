@@ -26,20 +26,29 @@ import {
   RestBottomLeftSection,
   RestBottomRightSection,
 } from "pages/styles/IndexPage.style";
-import { setMyTimetable, setRecommendResources } from "store/modules/mainPageModule";
+import {
+  finishFetchUserData,
+  setMyTimetable,
+  setRecommendResources,
+} from "store/modules/mainPageModule";
 import { useDispatch, useSelector } from "react-redux";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
 
 const IndexPage = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
+  const { isCheckedToken, isLoggedIn } = useSelector((state) => state.authReducer);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isCheckedToken && !isLoggedIn) {
+      dispatch(finishFetchUserData());
+      return;
+    }
+
+    if (isCheckedToken && isLoggedIn) {
       fetchUserDatas(dispatch);
     }
-  }, [isLoggedIn]);
+  }, [isCheckedToken, isLoggedIn]);
 
   return (
     <Wrapper>
@@ -90,6 +99,8 @@ const fetchUserDatas = async (dispatch) => {
   } catch (error) {
     const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
     dispatch(showAlertModal({ title, content }));
+  } finally {
+    dispatch(finishFetchUserData());
   }
 };
 

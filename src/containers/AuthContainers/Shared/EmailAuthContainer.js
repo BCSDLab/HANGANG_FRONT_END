@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import PropTypes from "prop-types";
 
 import AuthAPI from "api/auth";
-import { kickOut } from "utils/kickOut";
 import { emailAuth } from "store/modules/auth";
 
 import EmailAuthForm from "components/AuthComponents/EmailAuth/EmailAuthForm";
@@ -23,7 +22,6 @@ const EmailAuthContainer = ({ emailAuthForWhat = "signup" }) => {
   const { addToast } = useToasts();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { isLoggedIn } = useSelector((state) => state.authReducer);
 
   const [accountDisabled, setAccountDisabled] = useState(false);
   const [authInfo, setAuthInfo] = useState({
@@ -118,26 +116,21 @@ const EmailAuthContainer = ({ emailAuthForWhat = "signup" }) => {
   };
 
   return (
-    <>
-      {isLoggedIn && kickOut(2)}
-      {!isLoggedIn && (
-        <Container>
-          <EmailAuthForm
-            accountDisabled={accountDisabled}
-            authInfo={authInfo}
-            errorCode={errorCode}
-            resend={resend}
-            sentEmail={sentEmail}
-            onChange={onChange}
-            setAccountDisabled={setAccountDisabled}
-            setErrorCode={setErrorCode}
-            setResend={setResend}
-            checkPortalEmail={checkPortalEmail}
-            checkEmailConfig={checkEmailConfig}
-          />
-        </Container>
-      )}
-    </>
+    <Container>
+      <EmailAuthForm
+        accountDisabled={accountDisabled}
+        authInfo={authInfo}
+        errorCode={errorCode}
+        resend={resend}
+        sentEmail={sentEmail}
+        onChange={onChange}
+        setAccountDisabled={setAccountDisabled}
+        setErrorCode={setErrorCode}
+        setResend={setResend}
+        checkPortalEmail={checkPortalEmail}
+        checkEmailConfig={checkEmailConfig}
+      />
+    </Container>
   );
 };
 

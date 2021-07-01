@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import { majorsFullName } from "static/AuthPage/majors";
 import Terms from "static/AuthPage/terms";
 import {
   BorderColor,
@@ -149,7 +148,6 @@ const SignUpForm = ({
   const { account, pw, pwConfirm, nickname, majors } = signUpInfo;
   const pwRef = useRef();
   const pwConfirmRef = useRef();
-  const majorChoices = majorsFullName;
 
   /**
    * term button onClick 함수
@@ -283,13 +281,13 @@ const SignUpForm = ({
         전공 선택 <NotifySpan>복수선택 가능</NotifySpan>
       </Label>
       <MajorChoiceSection>
-        {majorChoices.map((val) => (
+        {MAJORS.map(({ label, value }) => (
           <Major
             as="input"
-            key={val}
-            value={val}
-            choiced={majors.includes(val)}
-            onClick={() => onClickMajor(val)}
+            key={value}
+            value={label}
+            choiced={majors.includes(value)}
+            onClick={() => onClickMajor(value)}
           />
         ))}
       </MajorChoiceSection>
@@ -334,6 +332,17 @@ const SignUpForm = ({
     </Form>
   );
 };
+
+const MAJORS = [
+  { label: "기계공학부", value: "기계공학부" },
+  { label: "디자인·건축공학부", value: "디자인건축공학부" },
+  { label: "메카트로닉스공학부", value: "메카트로닉스공학부" },
+  { label: "산업경영학부", value: "산업경영학부" },
+  { label: "에너지신소재화학공학부", value: "에너지신소재화학공학부" },
+  { label: "전기전자통신공학부", value: "전기전자통신공학부" },
+  { label: "컴퓨터공학부", value: "컴퓨터공학부" },
+  { label: "융합학과", value: "융합학과" },
+];
 
 SignUpForm.propTypes = {
   error: PropTypes.object,

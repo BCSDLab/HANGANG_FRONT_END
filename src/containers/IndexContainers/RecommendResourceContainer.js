@@ -1,5 +1,7 @@
 import React from "react";
+
 import Thumbnail from "components/IndexComponents/Thumbnail";
+import FetchingBox from "components/Shared/FetchingBox";
 import {
   Content,
   Label,
@@ -17,16 +19,17 @@ import { useSelector } from "react-redux";
  * recommendResources의 크기에 따라 없으면 안내 문구, 있으면 추천 강의자료를 보여줍니다.
  */
 const RecommendResourceContainer = () => {
-  const { recommendResources } = useSelector((state) => state.mainPageReducer);
+  const { recommendResources, isFetchFinished } = useSelector(
+    (state) => state.mainPageReducer
+  );
 
   return (
     <>
       <Label>{RECOMMEND_RESOURCE_LABEL}</Label>
       <Content isData={recommendResources.length !== 0}>
-        {recommendResources.length === 0 && (
-          <NoResource>{NO_RECOMMEND_RESOURCE_ALERT}</NoResource>
-        )}
-        {recommendResources.length !== 0 && (
+        {!isFetchFinished && <FetchingBox height={183} />}
+
+        {isFetchFinished && recommendResources.length !== 0 && (
           <>
             <LeftSide>
               <LeftTopSide>
@@ -42,6 +45,10 @@ const RecommendResourceContainer = () => {
               <Thumbnail index={4} />
             </RightSide>
           </>
+        )}
+
+        {isFetchFinished && recommendResources.length === 0 && (
+          <NoResource>{NO_RECOMMEND_RESOURCE_ALERT}</NoResource>
         )}
       </Content>
     </>
