@@ -9,6 +9,7 @@ import {
 } from "containers/IndexContainers/styles/MajorSearchContainer.style";
 import MajorInfoArray from "static/IndexPage/majorInfoArray";
 import { setDepartmentOnLectures } from "store/modules/lecturesModule";
+import { useHistory } from "react-router-dom";
 
 /**
  * MajorSearchContainer
@@ -17,6 +18,7 @@ import { setDepartmentOnLectures } from "store/modules/lecturesModule";
  */
 const MajorSearchContainer = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   return (
     <>
@@ -24,14 +26,14 @@ const MajorSearchContainer = () => {
       <Content>
         {MajorInfoArray.map(({ src, label, value }) => (
           <MajorCard
-            to="/lectures"
             key={label}
-            imagesrc={src}
-            onClick={() =>
+            onClick={() => {
               dispatch(
                 setDepartmentOnLectures({ department: value, allowDuplicate: true })
-              )
-            }
+              );
+              history.push("/lectures");
+            }}
+            img={src}
           >
             <MajorLabel>{label}</MajorLabel>
           </MajorCard>

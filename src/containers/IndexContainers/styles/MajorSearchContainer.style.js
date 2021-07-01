@@ -21,7 +21,7 @@ export const MajorCard = styled(Link)`
   position: relative;
   width: 100px;
   height: 87px;
-  background-image: url(${({ imagesrc }) => imagesrc});
+  background-image: url(${({ img }) => img});
   background-size: contain;
   background-repeat: no-repeat;
   cursor: pointer;
