@@ -9,6 +9,7 @@ module.exports = {
   env: {
     browser: true,
     node: true, // fix the "module" is not defined and "process" is not defined error.
+    es6: true,
   },
   rules: {
     "react/prop-types": 0,

@@ -47,11 +47,20 @@ const LoginContainer = () => {
     setLoginInfo({ ...loginInfo, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+
+    // FIXME: 백엔드 API 에서 hash 된 비밀번호만 받게 될 경우, 아래 주석 해제
+
+    // const pwBuffer = new TextEncoder("utf-8").encode(loginInfo.password);
+    // const hash = await window.crypto.subtle.digest("SHA-256", pwBuffer);
+    // const hashArr = Array.from(new Uint8Array(hash));
+    // const hashHex = hashArr.map((b) => b.toString(16).padStart(2, "0")).join("");
+
     AuthAPI.login({
-      ...loginInfo,
       portal_account: `${loginInfo.portal_account}@koreatech.ac.kr`,
+      password: loginInfo.password,
+      // password: hashHex,
     })
       .then((res) => {
         if (res.status === 200) {
