@@ -20,7 +20,7 @@ export const InnerContent = styled.div`
 
 export const Logo = styled.img.attrs({
   src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/navigation_logo.png",
+    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/logo.svg",
   alt: "로고",
 })`
   width: 80px;

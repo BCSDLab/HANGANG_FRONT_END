@@ -39,12 +39,12 @@ export const NormalSpan = styled.span`
 
 export const BannerImg = styled.img.attrs({
   src:
-    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/index_page_image.png",
-  alt: "메인페이지 이미지",
+    "https://hangang-storage.s3.ap-northeast-2.amazonaws.com/assets/img/indexpage/represent.svg",
+  alt: "banner-img",
 })`
   position: absolute;
   right: 0;
-  width: 445px;
+  fill-opacity: 0;
 `;
 
 export const MajorSearchSection = styled.section`
