@@ -1,7 +1,3 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-
 import {
   AlertColor,
   BorderColor,
@@ -9,6 +5,10 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+
+import PropTypes from "prop-types";
+import React from "react";
+import styled from "styled-components";
 
 const Form = styled.form`
   width: 100%;
@@ -157,7 +157,6 @@ const LoginForm = ({
             name="portal_account"
             placeholder="KOREATECH 이메일"
             autoComplete="username"
-            autoFocus
           />
           <KoreatechSpan>@koreatech.ac.kr</KoreatechSpan>
         </Section>

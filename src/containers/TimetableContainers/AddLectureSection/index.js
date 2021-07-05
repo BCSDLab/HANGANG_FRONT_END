@@ -1,17 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { debounce } from "lodash";
-
-import TimetableAPI from "api/timetable";
-import { CLASSIFICATION_LIST } from "static/Shared/CLASSIFICATION_LIST";
-import { MAJOR_LIST } from "static/Shared/MAJOR_LIST";
-import {
-  removeCandidateClassTimes,
-  setDefaultFilterOption,
-  setFilterOption,
-  setLectureList,
-  setLectureOnNextPage,
-} from "store/modules/timetableModule";
 import {
   AdjustmentButton,
   BoxWrapper,
@@ -36,19 +22,33 @@ import {
   SearchBarSection,
   SearchButton,
   Term,
+  TermDeleteButton,
+  TermWrapper,
   UnderBar,
   WhiteBackground,
   XButton,
-  TermDeleteButton,
-  TermWrapper,
 } from "./styles/index.style";
-import Lecture from "components/TimetableComponents/Lecture";
-import DirectlyAddContainer from "./DirectlyAddContainer";
-import NoData from "components/TimetableComponents/NoData";
-import useInfiniteScroll from "hooks/useInfiniteScroll";
+import React, { useEffect, useRef, useState } from "react";
 import { getValueOnLocalStorage, setValueOnLocalStorage } from "utils/localStorageUtils";
+import {
+  removeCandidateClassTimes,
+  setDefaultFilterOption,
+  setFilterOption,
+  setLectureList,
+  setLectureOnNextPage,
+} from "store/modules/timetableModule";
+import { useDispatch, useSelector } from "react-redux";
+
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import { CLASSIFICATION_LIST } from "static/Shared/CLASSIFICATION_LIST";
+import DirectlyAddContainer from "./DirectlyAddContainer";
+import Lecture from "components/TimetableComponents/Lecture";
+import { MAJOR_LIST } from "static/Shared/MAJOR_LIST";
+import NoData from "components/TimetableComponents/NoData";
+import TimetableAPI from "api/timetable";
+import { debounce } from "lodash";
 import { showAlertModal } from "store/modules/modalModule";
+import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 const AddLectureSection = () => {
   const boxWrapperRef = useRef();
@@ -134,7 +134,8 @@ const AddLectureSection = () => {
 
   return (
     <LectureAddBox>
-      <div onClick={(e) => setCurrent(e.target.value)}>
+      {/* TODO: delete event delegation */}
+      <div onClick={(e) => setCurrent(e.target.value)} role="button" tabIndex={0}> {/* eslint-disable-line jsx-a11y/click-events-have-key-events */}
         <SearchAddButton isSelected={["검색추가", "검색"].includes(current)} />
         <DirectlyAddButton isSelected={["직접추가"].includes(current)} />
       </div>
