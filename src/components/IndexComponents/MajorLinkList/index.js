@@ -1,14 +1,14 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-
 import {
-  Label,
   Content,
+  Label,
   MajorCard,
   MajorLabel,
-} from "containers/IndexContainers/styles/MajorSearchContainer.style";
+} from "components/IndexComponents/MajorLinkList/MajorLinkList.style";
+
 import MajorInfoArray from "static/IndexPage/majorInfoArray";
+import React from "react";
 import { setDepartmentOnLectures } from "store/modules/lecturesModule";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 /**

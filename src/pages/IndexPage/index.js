@@ -24,11 +24,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import LectureRankingContainer from "containers/IndexContainers/LectureRankingContainer";
-import MajorSearchContainer from "containers/IndexContainers/MajorSearchContainer";
-import MyTimetableContainer from "containers/IndexContainers/MyTimetableContainer";
+import MajorSearchContainer from "components/IndexComponents/MajorLinkList";
+import MyTimetableContainer from "components/IndexComponents/MyTimetable";
 import { Promise } from "core-js";
-import RecentlyViewedLectureContainer from "containers/IndexContainers/RecentlyViewedLectureContainer";
-import RecommendResourceContainer from "containers/IndexContainers/RecommendResourceContainer";
+import RecentlyViewedLectureContainer from "components/IndexComponents/RecentViewedRating";
+import RecommendResourceContainer from "components/IndexComponents/RecommendResource";
 import ResourceAPI from "api/resources";
 import TimetableAPI from "api/timetable";
 import { showAlertModal } from "store/modules/modalModule";

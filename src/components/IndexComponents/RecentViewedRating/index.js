@@ -1,15 +1,16 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import {
-  Label,
   Content,
+  Label,
   Lecture,
   Name,
+  NoViewedLectureMaterial,
   Professor,
   Rating,
-  NoViewedLectureMaterial,
-} from "./styles/RecentlyViewedLecutrecontainer.style";
+} from "./RecentlyViewedRating.style";
+
+import React from "react";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
+import { useHistory } from "react-router-dom";
 
 /**
  * RecentlyViewedLectureContainer

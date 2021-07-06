@@ -1,16 +1,17 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { convertHTMLEntities } from "utils/convertHTMLEntities";
 import {
-  Title,
+  Author,
   Icon,
+  LectureNameAndAuthor,
   Name,
   Slash,
-  Author,
-  LectureNameAndAuthor,
   ThumbnailWrapper,
+  Title,
 } from "./Thumbnail.style";
+
+import React from "react";
+import { convertHTMLEntities } from "utils/convertHTMLEntities";
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 /**
  * 인덱스를 받아 해당 인덱스에 맞는 썸네일 반환

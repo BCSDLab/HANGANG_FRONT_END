@@ -1,16 +1,16 @@
-import React from "react";
-
-import Thumbnail from "components/IndexComponents/Thumbnail";
-import FetchingBox from "components/Shared/FetchingBox";
 import {
   Content,
   Label,
-  NoResource,
+  LeftBottomSide,
   LeftSide,
   LeftTopSide,
-  LeftBottomSide,
+  NoResource,
   RightSide,
-} from "./styles/RecommendResourceContainer.style";
+} from "./RecommendResource.style";
+
+import FetchingBox from "components/Shared/FetchingBox";
+import React from "react";
+import Thumbnail from "components/IndexComponents/Thumbnail";
 import { useSelector } from "react-redux";
 
 /**
