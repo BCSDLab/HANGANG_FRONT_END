@@ -1,29 +1,29 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-
-import LectureAPI from "api/lecture";
 import {
-  Label,
   Content,
-  Topbar,
   Department,
   DepartmentLabel,
+  Label,
   LectureList,
   LectureRow,
-  Ranking,
-  TitleProfessorWrapper,
-  Title,
   Professor,
+  Ranking,
   Rating,
-} from "containers/IndexContainers/styles/LectureRankingContainer.style";
-import DEPARTMENT_LIST from "static/IndexPage/DEPARTMENT_LIST";
-import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+  Title,
+  TitleProfessorWrapper,
+  Topbar,
+} from "components/IndexComponents/LectureRanking/LectureRanking.style";
+import React, { useEffect } from "react";
 import {
   setDepartmentOnRanking,
   setDisplayLectureRanking,
 } from "store/modules/mainPageModule";
+import { useDispatch, useSelector } from "react-redux";
+
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import DEPARTMENT_LIST from "static/IndexPage/DEPARTMENT_LIST";
+import LectureAPI from "api/lecture";
 import { showAlertModal } from "store/modules/modalModule";
+import { useHistory } from "react-router-dom";
 
 /**
  * LectureRankingContainer

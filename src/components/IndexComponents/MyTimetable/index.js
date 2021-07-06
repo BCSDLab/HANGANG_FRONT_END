@@ -1,20 +1,20 @@
-import React from "react";
-import { useSelector } from "react-redux";
-
-import FetchingBox from "components/Shared/FetchingBox";
 import {
-  Label,
-  Content,
-  NoTimetableWrapper,
-  NoTimetableSpan,
-  GotoTimetable,
-  GotoTimetableButton,
-  Lecture,
-  Name,
-  Professor,
   AssessButton,
   AssessedButton,
-} from "containers/IndexContainers/styles/MyTimetableContainer.style";
+  Content,
+  GotoTimetable,
+  GotoTimetableButton,
+  Label,
+  Lecture,
+  Name,
+  NoTimetableSpan,
+  NoTimetableWrapper,
+  Professor,
+} from "components/IndexComponents/MyTimetable/MyTimetable.style";
+
+import FetchingBox from "components/Shared/FetchingBox";
+import React from "react";
+import { useSelector } from "react-redux";
 
 /**
  * MyTimetableContainer

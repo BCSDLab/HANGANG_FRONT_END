@@ -1,35 +1,32 @@
 import React, { useEffect } from "react";
-import { Route, Redirect, Switch, useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useToasts } from "react-toast-notifications";
-import styled from "styled-components";
-
-import AuthRoute from "./AuthRoute";
-import AuthAPI from "api/auth";
-import { setUserInfo, succeedTokenCheck } from "store/modules/auth";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import {
   getValueOnLocalStorage,
   removeValueOnLocalStorage,
   setValueOnLocalStorage,
 } from "utils/localStorageUtils";
+import { setUserInfo, succeedTokenCheck } from "store/modules/auth";
+import { useDispatch, useSelector } from "react-redux";
 
-import NavigationContainer from "containers/Shared/NavigationContainer";
-import FooterContainer from "containers/Shared/FooterContainer";
-
-import IndexPage from "pages/IndexPage";
-import LecturesPage from "pages/LecturesPage";
-import ResourcesPage from "pages/ResourcesPage";
-import ResourceDetailPage from "pages/ResourceDetailPage";
-import TimetablePage from "pages/TimeTablePage";
-import LoginPage from "pages/AuthPages/LoginPage";
-import LectureDetailPage from "pages/LectureDetailPage";
-
-import FindPwPage from "pages/AuthPages/FindPwPage";
+import AuthAPI from "api/auth";
+import AuthRoute from "./AuthRoute";
 import FindPwAuthPage from "pages/AuthPages/FindPwAuthPage";
+import FindPwPage from "pages/AuthPages/FindPwPage";
+import FooterContainer from "containers/Shared/FooterContainer";
+import IndexPage from "pages/IndexPage";
+import LectureDetailPage from "pages/LectureDetailPage";
+import LecturesPage from "pages/LecturesPage";
+import LoginPage from "pages/AuthPages/LoginPage";
+import MyPage from "pages/MyPage";
+import NavigationContainer from "containers/Shared/NavigationContainer";
+import ResourceDetailPage from "pages/ResourceDetailPage";
+import ResourcesPage from "pages/ResourcesPage";
+import ScrollToTop from "containers/Shared/ScrollToTop";
 import SignUpAuthPage from "pages/AuthPages/SignUpAuthPage";
 import SignUpPage from "pages/AuthPages/SignUpPage";
-import MyPage from "pages/MyPage";
-import ScrollToTop from "containers/Shared/ScrollToTop";
+import TimetablePage from "pages/TimeTablePage";
+import styled from "styled-components";
+import { useToasts } from "react-toast-notifications";
 
 const Main = styled.main`
   height: fit-content;
