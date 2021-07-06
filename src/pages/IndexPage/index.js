@@ -23,7 +23,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
-import LectureRankingContainer from "containers/IndexContainers/LectureRankingContainer";
+import LectureRankingContainer from "components/IndexComponents/LectureRanking";
 import MajorSearchContainer from "components/IndexComponents/MajorLinkList";
 import MyTimetableContainer from "components/IndexComponents/MyTimetable";
 import { Promise } from "core-js";
