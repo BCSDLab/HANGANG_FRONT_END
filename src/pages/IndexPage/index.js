@@ -1,38 +1,36 @@
-import React, { useEffect } from "react";
-import { Promise } from "core-js";
-
-import ResourceAPI from "api/resources";
-import TimetableAPI from "api/timetable";
-
-import MajorSearchContainer from "containers/IndexContainers/MajorSearchContainer";
-import RecommendResourceContainer from "containers/IndexContainers/RecommendResourceContainer";
-import MyTimetableContainer from "containers/IndexContainers/MyTimetableContainer";
-import RecentlyViewedLectureContainer from "containers/IndexContainers/RecentlyViewedLectureContainer";
-import LectureRankingContainer from "containers/IndexContainers/LectureRankingContainer";
-
 import {
   Banner,
-  BeneathLayout,
-  Wrapper,
-  CatchPhraseWrapper,
-  NormalSpan,
-  BoldSpan,
   BannerImg,
-  MajorSearchSection,
+  BeneathLayout,
+  BoldSpan,
+  CatchPhraseWrapper,
   LectureRankingSection,
-  RestSection,
-  RestTopSection,
-  RestBottomSection,
+  MajorSearchSection,
+  NormalSpan,
   RestBottomLeftSection,
   RestBottomRightSection,
-} from "pages/styles/IndexPage.style";
+  RestBottomSection,
+  RestSection,
+  RestTopSection,
+  Wrapper,
+} from "pages/IndexPage/IndexPage.style";
+import React, { useEffect } from "react";
 import {
   finishFetchUserData,
   setMyTimetable,
   setRecommendResources,
 } from "store/modules/mainPageModule";
 import { useDispatch, useSelector } from "react-redux";
+
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import LectureRankingContainer from "containers/IndexContainers/LectureRankingContainer";
+import MajorSearchContainer from "containers/IndexContainers/MajorSearchContainer";
+import MyTimetableContainer from "containers/IndexContainers/MyTimetableContainer";
+import { Promise } from "core-js";
+import RecentlyViewedLectureContainer from "containers/IndexContainers/RecentlyViewedLectureContainer";
+import RecommendResourceContainer from "containers/IndexContainers/RecommendResourceContainer";
+import ResourceAPI from "api/resources";
+import TimetableAPI from "api/timetable";
 import { showAlertModal } from "store/modules/modalModule";
 
 const IndexPage = () => {
