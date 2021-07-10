@@ -1,13 +1,13 @@
 /* eslint-disable no-useless-escape */
+
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
 
 import AuthAPI from "api/auth";
-
 import Container from "components/AuthComponents/Shared/Container";
 import FindPwForm from "components/AuthComponents/FindPw/FindPwForm";
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useToasts } from "react-toast-notifications";
 
 /**
  * FindPwContainer
@@ -51,7 +51,7 @@ const FindPwContainer = () => {
     setInfos({ ...infos, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const { newPw, confirmPw } = infos;
 
@@ -67,8 +67,14 @@ const FindPwContainer = () => {
         autoDismiss: true,
       });
     } else {
+      
+
+    const pwBuffer = new TextEncoder("utf-8").encode(newPw);
+    const hash = await window.crypto.subtle.digest("SHA-256", pwBuffer);
+    const hashArr = Array.from(new Uint8Array(hash));
+    const hashHex = hashArr.map((b) => b.toString(16).padStart(2, "0")).join("");
       AuthAPI.renewPw({
-        password: newPw,
+        password: hashHex,
         portal_account: `${account}@koreatech.ac.kr`,
       })
         .then(({ status }) => {
