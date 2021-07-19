@@ -1,0 +1,34 @@
+{
+  "order": [
+    {
+      "label": "최신순",
+      "value": "id"
+    },
+    {
+      "label": "좋아요순",
+      "value": "hits"
+    }
+  ],
+  "category": [
+    {
+      "label": "기출자료",
+      "value": "기출자료"
+    },
+    {
+      "label": "필기자료",
+      "value": "필기자료"
+    },
+    {
+      "label": "과제자료",
+      "value": "과제자료"
+    },
+    {
+      "label": "강의자료",
+      "value": "강의자료"
+    },
+    {
+      "label": "기타자료",
+      "value": "기타자료"
+    }
+  ]
+}
