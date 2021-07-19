@@ -117,13 +117,18 @@ const SignUpContainer = () => {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+
+    const pwBuffer = new TextEncoder("utf-8").encode(signUpInfo.pw);
+    const hash = await window.crypto.subtle.digest("SHA-256", pwBuffer);
+    const hashArr = Array.from(new Uint8Array(hash));
+    const hashHex = hashArr.map((b) => b.toString(16).padStart(2, "0")).join("");
 
     const infos = {
       major: signUpInfo.majors,
       nickname: signUpInfo.nickname,
-      password: signUpInfo.pw,
+      password: hashHex,
       portal_account: `${signUpInfo.account}@koreatech.ac.kr`,
     };
     AuthAPI.signUp(infos)
