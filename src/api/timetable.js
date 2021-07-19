@@ -117,4 +117,11 @@ export default {
     const response = await axios.patch("/memo", body, setTokenInHeader());
     return response;
   },
+  getSemester: async (isRegular) => {
+    return axios.get("/semester", {
+      params: {
+         isRegular,
+      },
+    });
+  },
 };
