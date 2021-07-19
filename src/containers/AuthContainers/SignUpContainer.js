@@ -117,7 +117,7 @@ const SignUpContainer = () => {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const pwBuffer = new TextEncoder("utf-8").encode(signUpInfo.pw);
