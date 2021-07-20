@@ -32,6 +32,7 @@ const Main = styled.main`
   height: fit-content;
   min-height: 1080px;
   min-width: 1135px;
+  padding: 0 20px;
 
   -ms-user-select: none;
   -moz-user-select: -moz-none;
