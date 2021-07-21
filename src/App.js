@@ -158,27 +158,29 @@ const App = () => {
   }, []);
 
   return (
-    <Main role="main">
-      <NavigationContainer />
-      <ScrollToTop>
-        <Switch>
-          <Route path="/" exact component={IndexPage} />
-          <Route path="/lectures" component={LecturesPage} />
-          <Route path="/lecture" component={LectureDetailPage} />
-          <Route path="/resources" component={ResourcesPage} />
-          <Route path="/resource" component={ResourceDetailPage} />
-          <Route path="/timetable" component={TimetablePage} />
-          <AuthRoute path="/login" component={LoginPage} />
-          <AuthRoute path="/findpwauth" component={FindPwAuthPage} />
-          <AuthRoute path="/findpw" component={FindPwPage} />
-          <AuthRoute path="/signupauth" component={SignUpAuthPage} />
-          <AuthRoute path="/signup" component={SignUpPage} />
-          <Route path="/my" component={MyPage} />
-          <Redirect from="*" to="/" />
-        </Switch>
-      </ScrollToTop>
+    <>
+      <Main role="main">
+        <NavigationContainer />
+        <ScrollToTop>
+          <Switch>
+            <Route path="/" exact component={IndexPage} />
+            <Route path="/lectures" component={LecturesPage} />
+            <Route path="/lecture" component={LectureDetailPage} />
+            <Route path="/resources" component={ResourcesPage} />
+            <Route path="/resource" component={ResourceDetailPage} />
+            <Route path="/timetable" component={TimetablePage} />
+            <AuthRoute path="/login" component={LoginPage} />
+            <AuthRoute path="/findpwauth" component={FindPwAuthPage} />
+            <AuthRoute path="/findpw" component={FindPwPage} />
+            <AuthRoute path="/signupauth" component={SignUpAuthPage} />
+            <AuthRoute path="/signup" component={SignUpPage} />
+            <Route path="/my" component={MyPage} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </ScrollToTop>
+      </Main>
       <FooterContainer />
-    </Main>
+    </>
   );
 };
 
