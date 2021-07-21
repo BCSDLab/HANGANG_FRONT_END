@@ -120,6 +120,7 @@ export default function lectureDetailReducer(state = STATE, action) {
         lectureClassInfo: action.payload[4]
           ? action.payload[4].data
           : state.lectureClassInfo,
+        page: 1,
         maxPage: Math.ceil(action.payload[1].data.count / state.limit),
         semesterDates: action.payload[5] ? action.payload[5].data : state.semesterDates,
       };
@@ -135,7 +136,7 @@ export default function lectureDetailReducer(state = STATE, action) {
       return {
         ...state,
         lectureReviews: action.payload,
-        page: ++state.page,
+        page: state.page + 1,
         maxPage: Math.ceil(action.payload.count / state.limit),
       };
     case ADD_LECTURE_REVIEW:
