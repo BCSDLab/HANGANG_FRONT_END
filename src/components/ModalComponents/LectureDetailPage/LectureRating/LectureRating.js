@@ -11,7 +11,7 @@ export const LectureRatingContainer = styled.div`
 const LectureRating = (_, ref) => {
     const [starReview, setStarReview] = React.useState(6);
     React.useImperativeHandle(ref, () => ({
-        value: starReview,
+        value: starReview / 2,
     }), [starReview]);
 
     return (
