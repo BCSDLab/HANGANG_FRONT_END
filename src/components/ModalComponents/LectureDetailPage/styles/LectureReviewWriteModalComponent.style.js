@@ -1,6 +1,3 @@
-import styled from "styled-components";
-
-import { DOWN_URL, X_URL } from "static/Shared/imageUrls";
 import {
   BorderColor,
   ConceptColor,
@@ -8,6 +5,9 @@ import {
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import { DOWN_URL, X_URL } from "static/Shared/imageUrls";
+
+import styled from "styled-components";
 
 export const LectureReviewWriteModalBackground = styled.aside`
   position: absolute;
@@ -164,6 +164,12 @@ export const Semester = styled.span`
   padding-left: 12px;
   font-size: 12px;
   cursor: pointer;
+`;
+
+export const RatingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: calc(100% - 82px);
 `;
 
 export const CommentAlert = styled.span`

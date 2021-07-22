@@ -1,14 +1,14 @@
-import React from "react";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-
-import { hideConfirmModal } from "store/modules/modalModule";
 import {
   ConceptColor,
   CopyRightColor,
   FontColor,
   PlaceholderColor,
 } from "static/Shared/commonStyles";
+import { useDispatch, useSelector } from "react-redux";
+
+import React from "react";
+import { hideConfirmModal } from "store/modules/modalModule";
+import styled from "styled-components";
 
 const Wrapper = styled.aside`
   position: absolute;
@@ -70,6 +70,7 @@ const ConfirmModalComponent = () => {
     confirmModalTitle,
     confirmModalContent,
     onConfirm,
+    onClose,
   } = useSelector((state) => state.modalReducer);
 
   return (
@@ -78,7 +79,10 @@ const ConfirmModalComponent = () => {
         <ConfirmModalBox>
           {confirmModalTitle !== "" && <Title>{confirmModalTitle}</Title>}
           <Content>{confirmModalContent}</Content>
-          <Close onClick={() => dispatch(hideConfirmModal())}>닫기</Close>
+          <Close onClick={() => {
+            onClose();
+            dispatch(hideConfirmModal())
+          }}>닫기</Close>
           <Confirm
             onClick={() => {
               onConfirm();
