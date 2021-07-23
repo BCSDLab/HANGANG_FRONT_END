@@ -1,6 +1,6 @@
 ![GitHub Banner](https://raw.githubusercontent.com/BCSDLab/HANGANG_FRONT_END/develop/.github/images/hangang-banner.png)
 
-<h3 align="center">http://stage.hangang.in</h3>
+<h3 align="center">https://hangang.in/</h3>
 
 This project is web application for [KOREATECH](https://www.koreatech.ac.kr/eng/Main.do) students to share insights which they achieved from lectures. Users can organize their lectures by creating lecture review, resource and timetable, and learn about classes they will learn by seeing resources shared by previous users. We worked so hard to offer familiar user experience.
 
