@@ -60,7 +60,7 @@ const App = () => {
       const res = await AuthAPI.refreshToken(token.refresh_token);
 
       if (res.status === 200) {
-        const { data } = await AuthAPI.fetchUserInfo(res.data.refresh_token);
+        const { data } = await AuthAPI.fetchUserInfo(res.data.access_token);
         dispatch(setUserInfo(data));
         setValueOnLocalStorage("hangangToken", res.data);
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));

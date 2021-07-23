@@ -29,6 +29,7 @@ import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TY
 import LectureDetailAPI from "api/lectureDetail";
 import LectureRating from "./LectureRating/LectureRating";
 import { addLectureReview } from "store/modules/lectureDetailModule";
+import debounce from "lodash.debounce";
 import { getSemesterOptions } from "utils/timetablePage/getSemesterOptions";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
@@ -200,20 +201,21 @@ export default LectureReviewWriteModalComponent;
 
 const requestWriteLectureReview = async (e, form, dispatch) => {
   e.preventDefault();
-  if (form.comment.length < 10) return;
+  debounce(async () => {
+    if (form.comment.length < 10) return;
 
-  try {
-    const accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    const { data } = await LectureDetailAPI.postLectureReview(accessToken, form);
-    dispatch(addLectureReview({ data }));
-    dispatch(hideLectureReviewWriteModal());
-    dispatch(showAlertModal({ content: "강의평이 생성되었습니다." }));
-  } catch (error) {
-    console.dir(error);
-    dispatch(hideLectureReviewWriteModal());
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
-    dispatch(showAlertModal({ title, content }));
-  }
+    try {
+      const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+      const { data } = await LectureDetailAPI.postLectureReview(accessToken, form);
+      dispatch(addLectureReview({ data }));
+      dispatch(hideLectureReviewWriteModal());
+      dispatch(showAlertModal({ content: "강의평이 생성되었습니다." }));
+    } catch (error) {
+      dispatch(hideLectureReviewWriteModal());
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
+    }
+  }, 1000);
 };
 
 const createDefaultLectureWriteForm = (currentSemester, lectureId) => {
