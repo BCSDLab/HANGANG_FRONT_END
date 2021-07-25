@@ -58,7 +58,7 @@ const AddLectureSection = () => {
   );
   const [current, setCurrent] = useState("검색추가");
   const [searchTermList, setSearchTermList] = useState(
-    getValueOnLocalStorage("timetableSearchTerm")
+    getValueOnLocalStorage("timetableSearchTerm") ?? []
   );
   const [isClassificationFilterVisible, setIsClassificationFilterVisible] = useState(
     false
