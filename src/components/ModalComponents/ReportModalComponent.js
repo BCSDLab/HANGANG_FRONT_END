@@ -93,6 +93,7 @@ const handleReportClick = (contentId, reportId, reportType, dispatch) => {
       title: "",
       content: "정말로 신고하시겠습니까?",
       onConfirm: () => requestReport(contentId, reportId, reportType, dispatch),
+      onClose: () => {}
     })
   );
 };
