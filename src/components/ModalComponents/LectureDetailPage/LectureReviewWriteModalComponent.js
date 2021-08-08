@@ -68,6 +68,8 @@ const LectureReviewWriteModalComponent = () => {
       case "assignment_amount":
       case "difficulty":
       case "grade_portion":
+        setForm((prev) => ({ ...prev, [key]: value }));
+        return;
       case "assignment":
         if (form[key].some(({ id }) => id === value)) {
           if (form[key].length === 1) return;
