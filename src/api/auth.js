@@ -1,7 +1,6 @@
 import axios from "axios";
-
-axios.defaults.baseURL = "https://api.hangang.in";
-// axios.defaults.baseURL = `${process.env.BACKEND_URL}`;
+console.log()
+axios.defaults.baseURL = `${process.env.HANGANG_URL}`;
 
 export default {
   requestEmail: async (infos) => {
