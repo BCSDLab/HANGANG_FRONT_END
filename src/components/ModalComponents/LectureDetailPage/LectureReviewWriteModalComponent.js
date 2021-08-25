@@ -1,34 +1,37 @@
-/* eslint-disable no-case-declarations */
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import LectureDetailAPI from "api/lectureDetail";
-import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
-import { hideLectureReviewWriteModal, showAlertModal } from "store/modules/modalModule";
-import { getSemesterOptions } from "utils/timetablePage/getSemesterOptions";
 import {
-  LectureReviewWriteModalBackground,
-  LectureReviewWriteModal,
-  CloseButton,
-  SubmitButton,
-  Title,
-  Professor,
+  AlertImg,
   Bold,
-  Delimiter,
-  Grid,
-  ButtonRow,
-  Label,
   Button,
   ButtonNotify,
-  SemesterSelectBar,
-  DownImage,
-  Semester,
+  ButtonRow,
+  CloseButton,
   CommentAlert,
   CommentArea,
-  AlertImg,
+  Delimiter,
+  DownImage,
+  Grid,
+  Label,
+  LectureReviewWriteModal,
+  LectureReviewWriteModalBackground,
+  Professor,
+  RatingContainer,
+  Semester,
+  SemesterSelectBar,
+  SubmitButton,
+  Title,
 } from "./styles/LectureReviewWriteModalComponent.style";
-import { getValueOnLocalStorage } from "utils/localStorageUtils";
+/* eslint-disable no-case-declarations */
+import React, { useEffect, useState } from "react";
+import { hideLectureReviewWriteModal, showAlertModal } from "store/modules/modalModule";
+import { useDispatch, useSelector } from "react-redux";
+
+import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
+import LectureDetailAPI from "api/lectureDetail";
+import LectureRating from "./LectureRating/LectureRating";
 import { addLectureReview } from "store/modules/lectureDetailModule";
+import debounce from "lodash.debounce";
+import { getSemesterOptions } from "utils/timetablePage/getSemesterOptions";
+import { getValueOnLocalStorage } from "utils/localStorageUtils";
 
 const LectureReviewWriteModalComponent = () => {
   const dispatch = useDispatch();
@@ -39,6 +42,7 @@ const LectureReviewWriteModalComponent = () => {
   defaultOptions.sort((prev, next) => next.value - prev.value);
 
   const [form, setForm] = useState({});
+  const RatingRef = React.useRef();
   const [semesterOptions, setSemesterOptions] = useState(defaultOptions);
 
   useEffect(() => {
@@ -64,7 +68,6 @@ const LectureReviewWriteModalComponent = () => {
       case "assignment_amount":
       case "difficulty":
       case "grade_portion":
-      case "rating":
         setForm((prev) => ({ ...prev, [key]: value }));
         return;
       case "assignment":
@@ -104,7 +107,6 @@ const LectureReviewWriteModalComponent = () => {
       case "assignment_amount":
       case "difficulty":
       case "grade_portion":
-      case "rating":
         return form[key] === value;
       case "assignment":
       case "hash_tags":
@@ -166,6 +168,9 @@ const LectureReviewWriteModalComponent = () => {
             ))}
 
             <Label>{ROW_LABEL["rating"]}</Label>
+            <RatingContainer>
+              <LectureRating ref={RatingRef} />
+            </RatingContainer>
           </Grid>
           <CommentAlert>
             {form.comment === "" && (
@@ -184,7 +189,7 @@ const LectureReviewWriteModalComponent = () => {
           <CommentArea onChange={onChangeTextarea} value={form.comment} />
           <SubmitButton
             isValidForm={form.comment.length >= 10}
-            onClick={(e) => requestWriteLectureReview(e, form, dispatch)}
+            onClick={(e) => requestWriteLectureReview(e, Object.assign(form, {rating: RatingRef.current.value}), dispatch)}
           >
             {SUBMIT_BUTTON_LABEL}
           </SubmitButton>
@@ -198,20 +203,21 @@ export default LectureReviewWriteModalComponent;
 
 const requestWriteLectureReview = async (e, form, dispatch) => {
   e.preventDefault();
-  if (form.comment.length < 10) return;
+  debounce(async () => {
+    if (form.comment.length < 10) return;
 
-  try {
-    const accessToken = getValueOnLocalStorage("hangangToken").access_token;
-    const { data } = await LectureDetailAPI.postLectureReview(accessToken, form);
-    dispatch(addLectureReview({ data }));
-    dispatch(hideLectureReviewWriteModal());
-    dispatch(showAlertModal({ content: "강의평이 생성되었습니다." }));
-  } catch (error) {
-    console.dir(error);
-    dispatch(hideLectureReviewWriteModal());
-    const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
-    dispatch(showAlertModal({ title, content }));
-  }
+    try {
+      const accessToken = getValueOnLocalStorage("hangangToken").access_token;
+      const { data } = await LectureDetailAPI.postLectureReview(accessToken, form);
+      dispatch(addLectureReview({ data }));
+      dispatch(hideLectureReviewWriteModal());
+      dispatch(showAlertModal({ content: "강의평이 생성되었습니다." }));
+    } catch (error) {
+      dispatch(hideLectureReviewWriteModal());
+      const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
+      dispatch(showAlertModal({ title, content }));
+    }
+  }, 1000);
 };
 
 const createDefaultLectureWriteForm = (currentSemester, lectureId) => {

@@ -32,6 +32,7 @@ const Main = styled.main`
   height: fit-content;
   min-height: 1080px;
   min-width: 1135px;
+  padding: 0 20px;
 
   -ms-user-select: none;
   -moz-user-select: -moz-none;
@@ -59,7 +60,7 @@ const App = () => {
       const res = await AuthAPI.refreshToken(token.refresh_token);
 
       if (res.status === 200) {
-        const { data } = await AuthAPI.fetchUserInfo(res.data.refresh_token);
+        const { data } = await AuthAPI.fetchUserInfo(res.data.access_token);
         dispatch(setUserInfo(data));
         setValueOnLocalStorage("hangangToken", res.data);
         dispatch(succeedTokenCheck({ isLoggedIn: true, token: token }));
@@ -157,27 +158,29 @@ const App = () => {
   }, []);
 
   return (
-    <Main role="main">
-      <NavigationContainer />
-      <ScrollToTop>
-        <Switch>
-          <Route path="/" exact component={IndexPage} />
-          <Route path="/lectures" component={LecturesPage} />
-          <Route path="/lecture" component={LectureDetailPage} />
-          <Route path="/resources" component={ResourcesPage} />
-          <Route path="/resource" component={ResourceDetailPage} />
-          <Route path="/timetable" component={TimetablePage} />
-          <AuthRoute path="/login" component={LoginPage} />
-          <AuthRoute path="/findpwauth" component={FindPwAuthPage} />
-          <AuthRoute path="/findpw" component={FindPwPage} />
-          <AuthRoute path="/signupauth" component={SignUpAuthPage} />
-          <AuthRoute path="/signup" component={SignUpPage} />
-          <Route path="/my" component={MyPage} />
-          <Redirect from="*" to="/" />
-        </Switch>
-      </ScrollToTop>
+    <>
+      <Main role="main">
+        <NavigationContainer />
+        <ScrollToTop>
+          <Switch>
+            <Route path="/" exact component={IndexPage} />
+            <Route path="/lectures" component={LecturesPage} />
+            <Route path="/lecture" component={LectureDetailPage} />
+            <Route path="/resources" component={ResourcesPage} />
+            <Route path="/resource" component={ResourceDetailPage} />
+            <Route path="/timetable" component={TimetablePage} />
+            <AuthRoute path="/login" component={LoginPage} />
+            <AuthRoute path="/findpwauth" component={FindPwAuthPage} />
+            <AuthRoute path="/findpw" component={FindPwPage} />
+            <AuthRoute path="/signupauth" component={SignUpAuthPage} />
+            <AuthRoute path="/signup" component={SignUpPage} />
+            <Route path="/my" component={MyPage} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </ScrollToTop>
+      </Main>
       <FooterContainer />
-    </Main>
+    </>
   );
 };
 
