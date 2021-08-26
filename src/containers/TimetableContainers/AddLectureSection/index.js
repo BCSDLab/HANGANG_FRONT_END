@@ -11,6 +11,7 @@ import {
   Label,
   LectureAddBox,
   LectureSection,
+  LectureSectionFooter,
   MajorFilterButton,
   PrevButton,
   RecentlySearchTermLabel,
@@ -46,9 +47,8 @@ import Lecture from "components/TimetableComponents/Lecture";
 import { MAJOR_LIST } from "static/Shared/MAJOR_LIST";
 import NoData from "components/TimetableComponents/NoData";
 import TimetableAPI from "api/timetable";
-import { debounce } from "lodash";
 import { showAlertModal } from "store/modules/modalModule";
-import useInfiniteScroll from "hooks/useInfiniteScroll";
+import useIntersection from "hooks/useIntersection";
 
 const AddLectureSection = () => {
   const boxWrapperRef = useRef();
@@ -64,17 +64,17 @@ const AddLectureSection = () => {
     false
   );
 
-  const fetchMore = debounce((entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && rest.page < maxPageOnLectureList) {
-      const { classification, department, keyword, limit, page, semesterDateId } = rest;
+  const LectureFooterRef = React.useRef(null);
+  const isTriggeredFetchingMore = useIntersection(LectureFooterRef);
+  React.useEffect(() => {
+    if (isTriggeredFetchingMore && rest.page < maxPageOnLectureList) {
+      const { classification, department, keyword, limit, page, currentSemesterValue } = rest;
       fetchLectureOnNextPage(
-        { classification, department, keyword, limit, page, semesterDateId },
+        { classification, department, keyword, limit, page, semesterDateId: currentSemesterValue },
         dispatch
       );
     }
-  }, 500);
-  const { targetRef } = useInfiniteScroll(fetchMore, 5);
+  }, [isTriggeredFetchingMore]);
 
   const setSearchTermOnLocalStorage = (term) => {
     if (searchTermList === null) {
@@ -176,7 +176,6 @@ const AddLectureSection = () => {
             {/* LECTURES SECTION */}
             {current === "검색추가" && (
               <LectureSection
-                ref={targetRef}
                 onMouseLeave={() => dispatch(removeCandidateClassTimes())}
               >
                 {lectureList.length !== 0 &&
@@ -186,6 +185,7 @@ const AddLectureSection = () => {
                 {lectureList.length === 0 && (
                   <NoData isSeasonSemester={rest.currentSemesterValue % 2 === 0} />
                 )}
+                <LectureSectionFooter ref={LectureFooterRef} />
               </LectureSection>
             )}
 
