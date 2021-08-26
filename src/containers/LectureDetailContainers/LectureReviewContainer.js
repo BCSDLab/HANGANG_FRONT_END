@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import debounce from "lodash.debounce";
 
 import LectureDetailAPI from "api/lectureDetail";
 
@@ -15,12 +14,13 @@ import {
   ReviewWrapper,
   SpinnerWrapper,
   SubWarningLabel,
+  ReviewListFooter,
 } from "containers/LectureDetailContainers/styles/LectureReviewContainer.style";
 import FilterModal from "components/LectureDetailComponents/FilterModal";
 import Review from "components/LectureDetailComponents/Review";
 import LoadingSpinner from "components/Shared/LoadingSpinner";
 
-import useInfiniteScroll from "hooks/useInfiniteScroll";
+import useIntersection from "hooks/useIntersection";
 import { addNextPageReviews, openFilterModal } from "store/modules/lectureDetailModule";
 import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
@@ -34,14 +34,13 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
     (state) => state.lectureDetailReducer
   );
 
-  const fetchMore = debounce((entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && page <= maxPage) {
+  const ReviewListFooterRef = React.useRef(null);
+  const isTriggeredFetching = useIntersection(ReviewListFooterRef);
+  React.useEffect(() => {
+    if (isTriggeredFetching && page < maxPage) {
       getMoreReviews({ lectureId, limit, page, sort }, isLoggedIn, dispatch);
     }
-  }, 500);
-  const { targetRef } = useInfiniteScroll(fetchMore, 2);
-
+  }, [isTriggeredFetching]);
   return (
     <Section>
       <ReviewInfoSection>
@@ -53,7 +52,7 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
         {isFilterModalOpened && <FilterModal />}
       </ReviewInfoSection>
 
-      <ReviewWrapper ref={targetRef}>
+      <ReviewWrapper>
         {isLoading && (
           <SpinnerWrapper>
             <LoadingSpinner />
@@ -66,9 +65,14 @@ const LectureReviewContainer = ({ lectureId, lectureReviews, ...rest }) => {
 
         {!isLoading &&
           lectureReviews.count !== 0 &&
-          lectureReviews.result?.map((props, idx) => (
-            <Review key={props.id} idx={idx} props={props} />
-          ))}
+          (
+            <>
+              {lectureReviews.result?.map((props, idx) => (
+                <Review key={props.id} idx={idx} props={props} />
+              ))}
+              <ReviewListFooter ref={ReviewListFooterRef} />
+            </>
+          )}
       </ReviewWrapper>
     </Section>
   );
