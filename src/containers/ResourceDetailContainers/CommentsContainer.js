@@ -11,6 +11,7 @@ import {
   CountComment,
   Wrapper,
   WriteSectionWrapper,
+  CommentListFooter,
 } from "./styles/CommentsContainer.style";
 import ResourceDetailAPI from "api/resourceDetail";
 import Comment from "components/ResourceDetailComponents/Comment";
@@ -19,8 +20,7 @@ import { getValueOnLocalStorage } from "utils/localStorageUtils";
 import ALERT_MESSAGE_ON_ERROR_TYPE from "static/Shared/ALERT_MESSAGE_ON_ERROR_TYPE";
 import { showAlertModal } from "store/modules/modalModule";
 import { addCommentOnNextPage, addNewComment } from "store/modules/resourceDetailModule";
-import useInfiniteScroll from "hooks/useInfiniteScroll";
-import debounce from "lodash.debounce";
+import useIntersection from "hooks/useIntersection";
 
 CommentsContainer.propTypes = {
   comments: PropTypes.array,
@@ -84,13 +84,15 @@ function CommentsContainer({ comments, amount }) {
       throw new Error(error);
     }
   };
-  const fetchMore = debounce((entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && pageOnComment < maxPageOnComment) {
+
+  const CommentFooterRef = React.useRef(null);
+  const triggerCommentFetching = useIntersection(CommentFooterRef);
+  React.useEffect(() => {
+    if (triggerCommentFetching && pageOnComment < maxPageOnComment) {
       fetchCommentOnNextPage();
     }
-  }, 200);
-  const { targetRef } = useInfiniteScroll(fetchMore, 2);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerCommentFetching]);
 
   // JSX
   return (
@@ -107,7 +109,7 @@ function CommentsContainer({ comments, amount }) {
           </>
         )}
       </WriteSectionWrapper>
-      <CommentWrapper ref={targetRef}>
+      <CommentWrapper>
         {comments.map((props) => (
           <Comment
             key={props.id}
@@ -117,6 +119,7 @@ function CommentsContainer({ comments, amount }) {
             comments={props.comments}
           />
         ))}
+        <CommentListFooter ref={CommentFooterRef} />
       </CommentWrapper>
     </Wrapper>
   );

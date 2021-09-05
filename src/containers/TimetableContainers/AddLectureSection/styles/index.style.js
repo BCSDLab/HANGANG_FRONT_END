@@ -225,6 +225,10 @@ export const LectureSection = styled.div`
   overflow-y: auto;
 `;
 
+export const LectureSectionFooter = styled.div`
+  height: 50px;
+`;
+
 export const RecentlySearchTermSection = styled.div`
   position: absolute;
   width: 100%;

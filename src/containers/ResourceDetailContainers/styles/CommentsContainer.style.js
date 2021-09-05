@@ -83,3 +83,7 @@ overflow-y: auto; */
     border-bottom: 1px solid ${BorderColor};
   }
 `;
+
+export const CommentListFooter = styled.div`
+  height: 20px;
+`;

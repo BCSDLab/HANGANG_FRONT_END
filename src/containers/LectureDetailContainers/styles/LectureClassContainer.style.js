@@ -86,7 +86,7 @@ export const AddTimtable = styled.button`
   width: 56px;
   height: 28px;
 
-  padding: 5px 16px 5px 17px;
+  padding: 5px 0;
 
   border: none;
 

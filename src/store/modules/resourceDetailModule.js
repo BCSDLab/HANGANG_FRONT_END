@@ -87,14 +87,14 @@ export default function resourceDetailReducer(state = STATE, action) {
       return {
         ...state,
         comments: [{ id, comments, elapsedMinutes, nickname }, ...state.comments],
-        comment_amount: ++state.comment_amount,
+        comment_amount: state.comment_amount + 1,
       };
     case ADD_COMMENT_ON_NEXT_PAGE:
       let convertedNewComment = getElapsedMinute(action.payload.comments);
       return {
         ...state,
         comments: [...state.comments, ...convertedNewComment],
-        pageOnComment: ++state.pageOnComment,
+        pageOnComment: state.pageOnComment + 1,
       };
     default:
       return {

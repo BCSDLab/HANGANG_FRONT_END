@@ -74,3 +74,7 @@ export const SpinnerWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export const ReviewListFooter = styled.div`
+  height: 50px;
+`;
