@@ -126,7 +126,7 @@ const LectureReviewWriteModalComponent = () => {
         screenHeight={document.querySelector("main").clientHeight}
         onClick={() => dispatch(hideLectureReviewWriteModal())}
       >
-        <LectureReviewWriteModal onClick={(e) => e.stopPropagation()}>
+        <LectureReviewWriteModal onClick={(e) => e.stopPropagation()} onSubmit={(e) => e.preventDefault()}>
           <CloseButton onClick={() => dispatch(hideLectureReviewWriteModal())} />
           <Title>{basicLectureInfos.name}</Title>
           <Professor>
@@ -201,12 +201,13 @@ const LectureReviewWriteModalComponent = () => {
 
 export default LectureReviewWriteModalComponent;
 
-const requestWriteLectureReview = async (e, form, dispatch) => {
+const requestWriteLectureReview = debounce(async (e, form, dispatch) => {
+  console.log("triggered", form);
   e.preventDefault();
-  debounce(async () => {
-    if (form.comment.length < 10) return;
+  if (form.comment.length < 10) return;
 
     try {
+      console.log("triggered2");
       const accessToken = getValueOnLocalStorage("hangangToken").access_token;
       const { data } = await LectureDetailAPI.postLectureReview(accessToken, form);
       dispatch(addLectureReview({ data }));
@@ -217,8 +218,7 @@ const requestWriteLectureReview = async (e, form, dispatch) => {
       const { title, content } = ALERT_MESSAGE_ON_ERROR_TYPE["NOT_DEFINED_ERROR"];
       dispatch(showAlertModal({ title, content }));
     }
-  }, 1000);
-};
+}, 1000);
 
 const createDefaultLectureWriteForm = (currentSemester, lectureId) => {
   let form = DEFAULT_LECTURE_WRITE_FORM;
